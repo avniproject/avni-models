@@ -40,8 +40,8 @@ workflows:
   version: 2
   test_deploy:
     jobs:
-      - test
-      - deploy:
+      - build
+      - publish:
           requires:
             - test
           filters:
