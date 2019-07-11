@@ -1,6 +1,7 @@
 import BaseEntity from "../BaseEntity";
 import General from "../utility/General";
 import moment from "moment";
+import _ from 'lodash';
 
 class VideoTelemetric extends BaseEntity {
     static schema = {
@@ -18,7 +19,7 @@ class VideoTelemetric extends BaseEntity {
 
     static create(obj={}) {
         const {uuid = General.randomUUID()} = obj;
-        return Object.assign(new VideoTelemetric(), _.pick(obj, [
+        return _.assignIn(new VideoTelemetric(), _.pick(obj, [
             'uuid',
             'video',
             'playerOpenTime',
@@ -35,7 +36,7 @@ class VideoTelemetric extends BaseEntity {
     }
 
     cloneForReference() {
-        return VideoTelemetric.create({...this});
+        return VideoTelemetric.create(_.assignIn({}, this));
     }
 
     setPlayerOpenTime() {

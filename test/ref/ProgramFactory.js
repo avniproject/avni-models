@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 import EntityFactory from "../EntityFactory";
 import {Concept, EncounterType, FormMapping} from '../../src/index';
 import General from "../../src/utility/General";
@@ -118,7 +118,7 @@ export default class ProgramBuilder {
     }
 
     build() {
-        return Object.assign(this.program, {
+        return _.assignIn(this.program, {
             forms: this.forms,
             concepts: this.concepts.filter(c => c.name != undefined),
             encounterTypes: this.encounterTypes,

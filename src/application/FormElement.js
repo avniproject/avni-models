@@ -114,7 +114,7 @@ class FormElement {
 
     getAnswers() {
         const allAnswers = this.concept.getAnswers();
-        const excludedAnswers = this.excludedAnswers().map((conceptName) => Object.assign({concept: {name: conceptName}}));
+        const excludedAnswers = this.excludedAnswers().map((conceptName) => ({concept: {name: conceptName}}));
         return _.differenceBy(allAnswers, excludedAnswers.concat(_.isEmpty(this.answersToExclude) ? [] : this.answersToExclude),
             (a) => a.concept.name);
     }

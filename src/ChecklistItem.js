@@ -21,7 +21,7 @@ class ChecklistItem {
     };
 
     static create({uuid = General.randomUUID(), observations = [], checklist, detail}) {
-        return Object.assign(new ChecklistItem(), {uuid, observations, checklist, detail});
+        return _.assignIn(new ChecklistItem(), {uuid, observations, checklist, detail});
     }
 
     static fromResource(checklistItemResource, entityService) {

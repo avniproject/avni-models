@@ -1,4 +1,5 @@
 import BaseEntity from "../BaseEntity";
+import _ from 'lodash';
 
 class Video extends BaseEntity {
     static schema = {
@@ -15,18 +16,15 @@ class Video extends BaseEntity {
     };
 
     static create({uuid, title, filePath, description, duration}) {
-        return Object.assign(new Video(), {uuid, title, filePath, description, duration});
+        return _.assignIn(new Video(), {uuid, title, filePath, description, duration});
     }
 
     static fromResource(resource) {
-        return Video.create({
-            ...resource,
-            voided: !!resource.voided,
-        });
+        return Video.create(_.assignIn({}, resource, { voided: !!resource.voided, }));
     }
 
     cloneForReference() {
-        return Video.create({...this});
+        return Video.create(_.assignIn({}, this));
     }
 
     get translatedFieldValue() {

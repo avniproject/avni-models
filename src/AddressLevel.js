@@ -1,6 +1,7 @@
 import BaseEntity from "./BaseEntity";
 import ResourceUtil from "./utility/ResourceUtil";
 import General from "./utility/General";
+import _ from 'lodash';
 
 const PARENT_LOCATION_UUID = "parentLocationUUID";
 const CHILD_LOCATION_UUID = "locationUUID";
@@ -18,7 +19,7 @@ export class LocationMapping extends BaseEntity {
     };
 
     static create({uuid, parent, child, voided}) {
-        return Object.assign(new LocationMapping(), {uuid, parent, child, voided});
+        return _.assignIn(new LocationMapping(), {uuid, parent, child, voided});
     }
 
     static fromResource(resource, entityService) {
@@ -45,7 +46,7 @@ class AddressLevel extends BaseEntity {
     };
 
     static create({uuid, title, level, typeString, locationMappings = []}) {
-        return Object.assign(new AddressLevel(), {uuid, name: title, type: typeString, level, locationMappings});
+        return _.assignIn(new AddressLevel(), {uuid, name: title, type: typeString, level, locationMappings});
     }
 
     static fromResource(resource) {
@@ -73,7 +74,7 @@ class AddressLevel extends BaseEntity {
     }
 
     cloneForReference() {
-        return AddressLevel.create({...this, title: this.name, typeString: this.type});
+        return AddressLevel.create(_.assignIn({title: this.name, typeString: this.type}, this));
     }
 
     get translatedFieldValue() {
