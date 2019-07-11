@@ -18,4 +18,5 @@ build: check-node-v
 	yarn run build
 
 release:
-	@echo "   Please look at instructions in README.md. "
+	yarn version
+	@echo "   Now please git push "
