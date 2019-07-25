@@ -1,6 +1,6 @@
 import {assert} from "chai";
 import EntityFactory from "../EntityFactory";
-import Concept from '../../src/Concept';
+import {Concept,FormElement,FormElementGroup} from '../../src';
 
 describe("FormElementTest", () => {
     describe("Form Element Type Test", () => {
@@ -45,4 +45,42 @@ describe("FormElementTest", () => {
     });
 
 
+  it("can create from json", () => {
+    const feg = {};
+    const fe = FormElement.fromJson(sampleJson, feg);
+
+    assert.equal(fe.mandatory, true);
+    assert.equal(fe.uuid, "828e27a6-28f0-4cdb-bc02-972d31389c36");
+    assert.equal(fe.voided, false);
+    assert.equal(fe.displayOrder, 5);
+    assert.equal(fe.keyValues.length, 0);
+    assert.equal(fe.validFormat, null);
+    assert.equal(fe.name, "Standard upto which schooling completed");
+    assert.equal(fe.type, "SingleSelect");
+    assert.equal(fe.formElementGroup, feg);
+
+    assert.equal(fe.concept.constructor, Concept);
+  });
 });
+
+const sampleJson = {
+  "mandatory": true,
+  "uuid": "828e27a6-28f0-4cdb-bc02-972d31389c36",
+  "concept": {
+    "uuid": "38eaf459-4316-4da3-acfd-3c9c71334041",
+    "dataType": "Numeric",
+    "conceptAnswers": [],
+    "voided": false,
+    "highAbsolute": null,
+    "lowAbsolute": null,
+    "highNormal": null,
+    "lowNormal": null,
+    "name": "Standard upto which schooling completed"
+  },
+  "voided": false,
+  "displayOrder": 5,
+  "keyValues": [],
+  "validFormat": null,
+  "name": "Standard upto which schooling completed",
+  "type": "SingleSelect"
+};

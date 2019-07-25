@@ -26,6 +26,17 @@ export class ConceptAnswer {
         return this.concept.name;
     }
 
+    static fromJson(json) {
+      const conceptAnswer = new ConceptAnswer();
+      conceptAnswer.uuid = json.uuid;
+      conceptAnswer.answerOrder = json.order;
+      conceptAnswer.abnormal = json.abnormal;
+      conceptAnswer.unique = json.unique;
+      conceptAnswer.voided = !!json.voided;
+      conceptAnswer.concept = Concept.fromJson(json.answerConcept);
+      return conceptAnswer;
+    }
+
     static fromResource(resource, entityService) {
         const conceptAnswer = new ConceptAnswer();
         conceptAnswer.concept = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "conceptAnswerUUID"), Concept.schema.name);
@@ -79,6 +90,12 @@ export default class Concept {
     };
 
     // static primitiveDataTypes = [Concept.dataType.Boolean, Concept.dataType.Coded, Concept.dataType.Numeric, Concept.dataType.Date, Concept.dataType.Text];
+
+    static fromJson(json) {
+      const concept = Concept.fromResource(json);
+      concept.answers = _.map(json.conceptAnswers, ConceptAnswer.fromJson);
+      return concept;
+    }
 
     static fromResource(conceptResource) {
         const concept = new Concept();

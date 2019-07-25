@@ -4,6 +4,7 @@ import Concept from '../../src/Concept';
 import FormElement from "openchs-models/src/application/FormElement";
 import FormElementStatus from "../../src/application/FormElementStatus";
 import FormElementGroup from "../../src/application/FormElementGroup";
+import Form from "../../src/application/Form";
 
 describe('FormElementGroupTest', () => {
     it('previous and next', () => {
@@ -59,4 +60,139 @@ describe('FormElementGroupTest', () => {
         }
         return x;
     }
+
+  it("can create from json", () => {
+    const form = {};
+    const feg = FormElementGroup.fromJson(sampleJson, form);
+
+    assert.equal(feg.name, "Individual details");
+    assert.equal(feg.uuid, "01ec7a55-3204-4518-bfaf-996e44c44243");
+    assert.equal(feg.displayOrder, 2);
+    assert.equal(feg.voided, false);
+    assert.equal(feg.formElements.length, 3);
+  });
 });
+
+const sampleJson = {
+  "uuid": "01ec7a55-3204-4518-bfaf-996e44c44243",
+  "applicableFormElements": [{
+    "mandatory": true,
+    "uuid": "828e27a6-28f0-4cdb-bc02-972d31389c36",
+    "concept": {
+      "uuid": "38eaf459-4316-4da3-acfd-3c9c71334041",
+      "dataType": "Numeric",
+      "conceptAnswers": [],
+      "voided": false,
+      "highAbsolute": null,
+      "lowAbsolute": null,
+      "highNormal": null,
+      "lowNormal": null,
+      "name": "Standard upto which schooling completed"
+    },
+    "voided": false,
+    "displayOrder": 5,
+    "keyValues": [],
+    "validFormat": null,
+    "name": "Standard upto which schooling completed",
+    "type": "SingleSelect"
+  }, {
+    "mandatory": true,
+    "uuid": "e0cbda04-4ee4-49e5-bdc5-85efdfd3640c",
+    "concept": {
+      "uuid": "60c44aa2-3635-487d-8962-43000e77d382",
+      "dataType": "Text",
+      "conceptAnswers": [],
+      "voided": false,
+      "highAbsolute": null,
+      "lowAbsolute": null,
+      "highNormal": null,
+      "lowNormal": null,
+      "name": "Caste (Free Text)"
+    },
+    "voided": false,
+    "displayOrder": 2.5,
+    "keyValues": [],
+    "validFormat": null,
+    "name": "Caste",
+    "type": "SingleSelect"
+  }, {
+    "mandatory": false,
+    "uuid": "14f3babd-1e75-432a-ad42-f5a94eac2059",
+    "concept": {
+      "uuid": "61ab6413-5c6a-4512-ab6e-7d5cd1439569",
+      "dataType": "Coded",
+      "conceptAnswers": [{
+        "unique": false,
+        "order": 4,
+        "answerConcept": {
+          "uuid": "cae99772-b389-4baf-849b-9c7c2b06c951",
+          "dataType": "NA",
+          "voided": false,
+          "highAbsolute": null,
+          "lowAbsolute": null,
+          "highNormal": null,
+          "lowNormal": null,
+          "name": "General"
+        },
+        "abnormal": false
+      }, {
+        "unique": false,
+        "order": 1,
+        "answerConcept": {
+          "uuid": "dd076e03-68ae-4b53-adf6-641c69b9a518",
+          "dataType": "NA",
+          "voided": false,
+          "highAbsolute": null,
+          "lowAbsolute": null,
+          "highNormal": null,
+          "lowNormal": null,
+          "name": "ST"
+        },
+        "abnormal": false
+      }, {
+        "unique": false,
+        "order": 2,
+        "answerConcept": {
+          "uuid": "a3519a96-350e-4da4-90d9-827c0ff15538",
+          "dataType": "NA",
+          "voided": false,
+          "highAbsolute": null,
+          "lowAbsolute": null,
+          "highNormal": null,
+          "lowNormal": null,
+          "name": "SC"
+        },
+        "abnormal": false
+      }, {
+        "unique": false,
+        "order": 3,
+        "answerConcept": {
+          "uuid": "e92925ed-4a15-40c0-a0a7-a21c965dad48",
+          "dataType": "NA",
+          "voided": false,
+          "highAbsolute": null,
+          "lowAbsolute": null,
+          "highNormal": null,
+          "lowNormal": null,
+          "name": "OBC"
+        },
+        "abnormal": false
+      }],
+      "voided": false,
+      "highAbsolute": null,
+      "lowAbsolute": null,
+      "highNormal": null,
+      "lowNormal": null,
+      "name": "Caste Category"
+    },
+    "voided": false,
+    "displayOrder": 3,
+    "keyValues": [],
+    "validFormat": null,
+    "name": "Caste category",
+    "type": "SingleSelect"
+  }],
+  "voided": false,
+  "displayOrder": 2,
+  "name": "Individual details"
+};
