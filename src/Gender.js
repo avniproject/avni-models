@@ -30,6 +30,10 @@ class Gender extends ReferenceEntity {
         return ReferenceEntity.fromResource(resource, new Gender());
     }
 
+    static fromJson(json) {
+        return General.assignFields(json, new Gender(), ["uuid", "name"]);
+    }
+
     clone() {
         return super.clone(new Gender());
     }
