@@ -20,13 +20,6 @@ class FormElementGroup {
         }
     };
 
-    static fromJson(json, form) {
-        const formElementGroup = General.assignFields(json, new FormElementGroup(), ["uuid", "name", "displayOrder", "display", "voided"]);
-        formElementGroup.formElements = _.map(json.applicableFormElements, (feJson) => FormElement.fromJson(feJson, formElementGroup));
-        formElementGroup.form = form;
-        return formElementGroup;
-    }
-
     static fromResource(resource, entityService) {
         const formElementGroup = General.assignFields(resource, new FormElementGroup(), ["uuid", "name", "displayOrder", "display", "voided"]);
         formElementGroup.form = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "formUUID"), Form.schema.name);

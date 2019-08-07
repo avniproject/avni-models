@@ -29,12 +29,6 @@ class Form {
         return this;
     }
 
-    static fromJson(json) {
-        let form = General.assignFields(json, new Form(), ["uuid", "name", "formType"]);
-        form.formElementGroups = _.map(json.formElementGroups, (fegJson) => FormElementGroup.fromJson(fegJson, form));
-        return form;
-    }
-
     static fromResource(resource) {
         return General.assignFields(resource, new Form(), ["uuid", "name", "formType"]);
     }

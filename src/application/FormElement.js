@@ -26,15 +26,6 @@ class FormElement {
         }
     };
 
-    static fromJson(json, formElementGroup) {
-      const formElement = General.assignFields(json, new FormElement(), ["uuid", "name", "displayOrder", "mandatory", "type", "voided"], []);
-      formElement.formElementGroup = formElementGroup;
-      formElement.keyValues = _.map(json.keyValues, KeyValue.fromResource);
-      formElement.validFormat = Format.fromResource(json.validFormat);
-      formElement.concept = Concept.fromJson(json.concept);
-      return formElement;
-    }
-
     static fromResource(resource, entityService) {
         const formElementGroup = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "formElementGroupUUID"), FormElementGroup.schema.name);
         const concept = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "conceptUUID"), Concept.schema.name);
