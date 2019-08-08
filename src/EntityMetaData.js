@@ -34,6 +34,7 @@ import SubjectType from "./SubjectType";
 import SyncTelemetry from "./SyncTelemetry";
 import IdentifierSource from "./IdentifierSource";
 import IdentifierAssignment from "./IdentifierAssignment";
+import RuleFailureTelemetry from "./RuleFailureTelemetry";
 
 const refData = (clazz, {res, filter, translated, parent, syncWeight} = {}) => ({
     entityName: clazz.schema.name,
@@ -95,7 +96,7 @@ const videoTelemetric = txData(VideoTelemetric, {res: 'videotelemetric', parent:
 const syncTelemetry = txData(SyncTelemetry, {resUrl: 'syncTelemetry', syncWeight: 1});
 const userInfo = txData(UserInfo, {resUrl: 'me', apiVersion: 'v2', syncWeight: 1});
 const identifierAssignment = txData(IdentifierAssignment, {syncWeight: 0});
-
+const ruleFailureTelemetry = txData(RuleFailureTelemetry, {resUrl: 'ruleFailureTelemetry', syncWeight: 0});
 
 class EntityMetaData {
     //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
@@ -137,6 +138,7 @@ class EntityMetaData {
             individual,
             userInfo,
             syncTelemetry,
+            ruleFailureTelemetry
         ];
     }
 

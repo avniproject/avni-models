@@ -47,6 +47,7 @@ import SubjectType from "./SubjectType";
 import SyncTelemetry from "./SyncTelemetry";
 import IdentifierSource from "./IdentifierSource";
 import IdentifierAssignment from "./IdentifierAssignment";
+import RuleFailureTelemetry from "./RuleFailureTelemetry";
 
 export default {
     //order is important, should be arranged according to the dependency
@@ -57,7 +58,7 @@ export default {
         VisitScheduleConfig, ProgramConfig, Family, IndividualRelation, IndividualRelationGenderMapping,
         IndividualRelationshipType, IndividualRelationship, RuleDependency, Rule, ChecklistItemStatus,
         ChecklistDetail, ChecklistItemDetail, VideoTelemetric, Video, MediaQueue, Point, SyncTelemetry, IdentifierSource,
-        IdentifierAssignment
+        IdentifierAssignment, RuleFailureTelemetry
     ],
     schemaVersion: 105,
     migration: function (oldDB, newDB) {
