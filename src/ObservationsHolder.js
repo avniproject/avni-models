@@ -1,8 +1,9 @@
-import _ from "lodash";
+import _, { isNil } from "lodash";
 import Observation from "./Observation";
 import PrimitiveValue from "./observation/PrimitiveValue";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import MultipleCodedValues from "./observation/MultipleCodedValues";
+import Concept from "./Concept";
 
 class ObservationsHolder {
     constructor(observations) {
@@ -16,13 +17,39 @@ class ObservationsHolder {
     }
 
     getObservation(concept) {
-        return _.find(this.observations, (observation) => {
-            return observation.concept.uuid === concept.uuid;
-        });
+        return this.findObservation(concept);
     }
 
     findObservationByValue(value) {
         return _.find(this.observations, (observation) => observation.getValue() === value);
+    }
+
+    updateObs(formElement, value) {
+        _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
+
+        if ([Concept.dataType.Text,
+        Concept.dataType.Time,
+        Concept.dataType.Numeric, Concept.dataType.Id, Concept.dataType.Video,
+        Concept.dataType.Image].includes(formElement.getType())) {
+            this.addOrUpdatePrimitiveObs(formElement.concept, value);
+            return
+        }
+        if ([Concept.dataType.Date, Concept.dataType.DateTime].includes(formElement.getType()) && isNil(formElement.durationOptions)) {
+            this.addOrUpdatePrimitiveObs(formElement.concept, value);
+        }
+        if (formElement.isSingleSelect()) {
+            if (!_.isEmpty(value)) {
+                const observation = Observation.create(formElement.concept, new SingleCodedValue(value));
+                this.observations.push(observation);
+            }
+        }
+
+        if (formElement.isMultiSelect()) {
+            if (!_.isEmpty(value)) {
+                const observation = Observation.create(formElement.concept, new MultipleCodedValues(value));
+                this.observations.push(observation);
+            }
+        }
     }
 
     addOrUpdatePrimitiveObs(concept, value) {
