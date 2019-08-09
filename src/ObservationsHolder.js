@@ -1,4 +1,4 @@
-import _, { isNil } from "lodash";
+import _, {isNil} from "lodash";
 import Observation from "./Observation";
 import PrimitiveValue from "./observation/PrimitiveValue";
 import SingleCodedValue from "./observation/SingleCodedValue";
@@ -27,15 +27,18 @@ class ObservationsHolder {
     updateObs(formElement, value) {
         _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
 
-        if ([Concept.dataType.Text,
-        Concept.dataType.Time,
-        Concept.dataType.Numeric, Concept.dataType.Id, Concept.dataType.Video,
-        Concept.dataType.Image].includes(formElement.getType())) {
+        if ([
+            Concept.dataType.Text,
+            Concept.dataType.Time,
+            Concept.dataType.Numeric,
+            Concept.dataType.Id,
+            Concept.dataType.Video,
+            Concept.dataType.Image,
+            Concept.dataType.Date,
+            Concept.dataType.DateTime
+        ].includes(formElement.getType()) && isNil(formElement.durationOptions)) {
             this.addOrUpdatePrimitiveObs(formElement.concept, value);
             return
-        }
-        if ([Concept.dataType.Date, Concept.dataType.DateTime].includes(formElement.getType()) && isNil(formElement.durationOptions)) {
-            this.addOrUpdatePrimitiveObs(formElement.concept, value);
         }
         if (formElement.isSingleSelect()) {
             if (!_.isEmpty(value)) {
