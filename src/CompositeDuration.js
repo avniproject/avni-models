@@ -12,7 +12,7 @@ class CompositeDuration {
     }
 
     get isEmpty() {
-        return !this.durations.some(d => !d.isEmpty);
+        return this.durations.every(d => d.isEmpty);
     }
 
     toString(i18n) {

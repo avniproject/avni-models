@@ -4,6 +4,7 @@ import PrimitiveValue from "./observation/PrimitiveValue";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import MultipleCodedValues from "./observation/MultipleCodedValues";
 import Concept from "./Concept";
+import CompositeDuration from "./CompositeDuration";
 
 class ObservationsHolder {
     constructor(observations) {
@@ -38,7 +39,6 @@ class ObservationsHolder {
             Concept.dataType.DateTime
         ].includes(formElement.getType()) && isNil(formElement.durationOptions)) {
             this.addOrUpdatePrimitiveObs(formElement.concept, value);
-            return
         }
         if (formElement.isSingleSelect()) {
             if (!_.isEmpty(value)) {
@@ -46,10 +46,15 @@ class ObservationsHolder {
                 this.observations.push(observation);
             }
         }
-
         if (formElement.isMultiSelect()) {
             if (!_.isEmpty(value)) {
                 const observation = Observation.create(formElement.concept, new MultipleCodedValues(value));
+                this.observations.push(observation);
+            }
+        }
+        if (formElement.getType() === Concept.dataType.Duration && !isNil(formElement.durationOptions)) {
+            if (!_.isEmpty(value) && !_.isEmpty(value.durations)) {
+                const observation = Observation.create(formElement.concept, CompositeDuration.fromObs(value));
                 this.observations.push(observation);
             }
         }
