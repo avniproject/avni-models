@@ -19,4 +19,7 @@ build: check-node-v
 
 release:
 	yarn version
-	@echo "   Now please run \n 'git push && git push origin --tags'\n"
+	@echo "   Now please run \nmake publish"
+
+publish:
+	git push && git push origin --tags
