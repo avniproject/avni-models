@@ -11,6 +11,15 @@ class CompositeDuration {
             .map((d) => d.durationUnit === duration.durationUnit ? d.changeValue(value) : d));
     }
 
+    findByUnit(durationUnit) {
+        return _.find(this.durations, d => d.durationUnit === durationUnit);
+    }
+
+    changeValueByUnit(durationUnit, value) {
+        return new CompositeDuration(this.durations
+            .map((d) => d.durationUnit === durationUnit ? d.changeValue(value) : d));
+    }
+
     get isEmpty() {
         return this.durations.every(d => d.isEmpty);
     }
