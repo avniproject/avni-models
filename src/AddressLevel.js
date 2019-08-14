@@ -41,7 +41,8 @@ class AddressLevel extends BaseEntity {
             name: "string",
             level: "double",
             type: {type: 'string', optional: true},
-            locationMappings: {type: 'list', objectType: 'LocationMapping'}
+            locationMappings: {type: 'list', objectType: 'LocationMapping'},
+            titleLineage: {type: 'string', optional: true}
         }
     };
 
