@@ -73,6 +73,7 @@ import WorkLists from './application/WorkLists';
 import WorkItem from './application/WorkItem';
 import Format from "./application/Format";
 import RuleFailureTelemetry from './RuleFailureTelemetry';
+import BeneficiaryModePin from './BeneficiaryModePin';
 
 export {
     AbstractEncounter,
@@ -151,5 +152,6 @@ export {
     WorkList,
     WorkItem,
 
-    RuleFailureTelemetry
+    RuleFailureTelemetry,
+    BeneficiaryModePin,
 }
