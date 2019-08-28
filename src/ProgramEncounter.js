@@ -65,8 +65,8 @@ class ProgramEncounter extends AbstractEncounter {
         return validationResults;
     }
 
-    static createScheduledProgramEncounter(encounterType, programEnrolment) {
-        const programEncounter = ProgramEncounter.createScheduledProgramEncounter();
+    static createScheduled(encounterType, programEnrolment) {
+        const programEncounter = ProgramEncounter.createEmptyInstance();
         programEncounter.encounterType = encounterType;
         programEncounter.programEnrolment = programEnrolment;
         programEncounter.encounterDateTime = null;

@@ -67,7 +67,7 @@ class Encounter extends AbstractEncounter {
         return 'Encounter';
     }
 
-    static createScheduledProgramEncounter(encounterType, individual) {
+    static createScheduled(encounterType, individual) {
         const programEncounter = Encounter.createEmptyInstance();
         programEncounter.encounterType = encounterType;
         programEncounter.individual = individual;
