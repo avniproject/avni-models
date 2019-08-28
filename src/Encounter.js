@@ -4,10 +4,7 @@ import AbstractEncounter from "./AbstractEncounter";
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import G from "./utility/General";
-import moment from "moment";
 import EncounterType from "./EncounterType";
-import {findMediaObservations} from "./Media";
-import ObservationsHolder from "./ObservationsHolder";
 import Point from "./geo/Point";
 
 class Encounter extends AbstractEncounter {
@@ -17,10 +14,16 @@ class Encounter extends AbstractEncounter {
         properties: {
             uuid: 'string',
             encounterType: 'EncounterType',
-            encounterDateTime: 'date',
+            encounterDateTime: {type: 'date', optional: true},
             individual: 'Individual',
             observations: {type: 'list', objectType: 'Observation'},
             encounterLocation: {type: 'Point', optional: true},
+            name: {type: 'string', optional: true},
+            earliestVisitDateTime: {type: 'date', optional: true},
+            maxVisitDateTime: {type: 'date', optional: true},
+            cancelDateTime: {type: 'date', optional: true},
+            cancelObservations: {type: 'list', objectType: 'Observation'},
+            cancelLocation: {type: 'Point', optional: true},
             voided: {type: 'bool', default: false}
         }
     };
@@ -30,39 +33,26 @@ class Encounter extends AbstractEncounter {
     };
 
     static create() {
-        let encounter = AbstractEncounter.createEmptyInstance(new Encounter());
-        encounter.observations = [];
-        encounter.uuid = G.randomUUID();
-        encounter.encounterDateTime = new Date();
+        let encounter = super.createEmptyInstance();
         encounter.encounterType = EncounterType.create();
         return encounter;
     }
 
     static fromResource(resource, entityService) {
-        const encounter = AbstractEncounter.fromResource(resource, entityService, new Encounter());
-
+        const encounter = super.fromResource(resource, entityService);
         encounter.individual = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "individualUUID"), Individual.schema.name);
-
-        if(!_.isNil(resource.encounterLocation))
-            encounter.encounterLocation = Point.fromResource(resource.encounterLocation);
-
         return encounter;
     }
 
     get toResource() {
         const resource = super.toResource;
-        resource.encounterDateTime = moment(this.encounterDateTime).format();
-        resource["individualUUID"] = this.individual.uuid;
-        if(!_.isNil(this.encounterLocation)) {
-            resource["encounterLocation"] = this.encounterLocation.toResource;
-        }
+        resource.individualUUID = this.individual.uuid;
         return resource;
     }
 
     cloneForEdit() {
-        const encounter = super.cloneForEdit(new Encounter());
+        const encounter = super.cloneForEdit();
         encounter.individual = this.individual;
-        encounter.encounterLocation = _.isNil(this.encounterLocation) ? null : this.encounterLocation.clone();
         return encounter;
     }
 
@@ -77,13 +67,14 @@ class Encounter extends AbstractEncounter {
         return 'Encounter';
     }
 
-    findMediaObservations() {
-        return findMediaObservations(this.observations);
+    static createScheduledProgramEncounter(encounterType, individual) {
+        const programEncounter = Encounter.createEmptyInstance();
+        programEncounter.encounterType = encounterType;
+        programEncounter.individual = individual;
+        programEncounter.encounterDateTime = null;
+        return programEncounter;
     }
 
-    replaceObservation(originalValue, newValue) {
-        new ObservationsHolder(this.observations).updateObservationBasedOnValue(originalValue, newValue);
-    }
 }
 
 export default Encounter;

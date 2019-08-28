@@ -61,7 +61,7 @@ export default {
         ChecklistDetail, ChecklistItemDetail, VideoTelemetric, Video, MediaQueue, Point, SyncTelemetry, IdentifierSource,
         IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin
     ],
-    schemaVersion: 107,
+    schemaVersion: 108,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
@@ -307,6 +307,11 @@ export default {
                     uuid: rule.program ? rule.program.uuid : rule.form ? rule.form.uuid : null,
                     type: rule.program ? 'Program' : rule.form ? 'Form' : 'None',
                 };
+            });
+        }
+        if (oldDB.schemaVersion < 108 ) {
+            _.forEach(newDB.objects(Encounter.schema.name), enc => {
+                enc.cancelObservations = [];
             });
         }
     }
