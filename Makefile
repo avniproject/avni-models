@@ -9,6 +9,7 @@ clean:
 	rm -rf node_modules
 
 deps: check-node-v
+	@rm -rf package-lock.json
 	yarn install
 
 test: check-node-v
