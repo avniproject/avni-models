@@ -75,6 +75,9 @@ class Encounter extends AbstractEncounter {
         return programEncounter;
     }
 
+    getAllScheduledVisits() {
+        return this.individual.getAllScheduledVisits(this);
+    }
 }
 
 export default Encounter;
