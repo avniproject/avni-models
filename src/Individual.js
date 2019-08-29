@@ -332,12 +332,14 @@ class Individual extends BaseEntity {
     }
 
     addEncounter(encounter) {
-        if (!_.some(this.encounters, (existingEncounter) => existingEncounter.uuid === encounter.uuid))
+        if (!_.some(this.encounters, it => it.uuid === encounter.uuid)) {
+            this.encounters = this.encounters || [];
             this.encounters.push(encounter);
+        }
     }
 
     nonVoidedEncounters() {
-        return this.encounters.filter(x => !x.voided);
+        return _.reject(this.encounters, 'voided');
     }
 
     nonVoidedEnrolments() {
@@ -479,6 +481,39 @@ class Individual extends BaseEntity {
 
     address(i18n) {
         return this.isIndividual() ? {label: "Address", value: i18n.t(this.lowestAddressLevel.name)} : {};
+    }
+
+    _getEncounters(removeCancelledEncounters) {
+        return _.chain(this.nonVoidedEncounters())
+            .filter((encounter) => removeCancelledEncounters ? _.isNil(encounter.cancelDateTime) : true)
+            .sortBy((encounter) => moment().diff(encounter.encounterDateTime));
+    }
+
+    getEncounters(removeCancelledEncounters) {
+        return this._getEncounters(removeCancelledEncounters).value();
+    }
+
+    scheduledEncounters() {
+        return _.filter(this.getEncounters(true), (encounter) => !encounter.encounterDateTime && _.isNil(encounter.cancelDateTime));
+    }
+
+    scheduledEncountersOfType(encounterTypeName) {
+        return this.scheduledEncounters()
+            .filter((scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName);
+    }
+
+    getAllScheduledVisits(currentEncounter) {
+        return _.defaults(this.scheduledEncounters(true), [])
+            .filter(encounter => encounter.uuid !== currentEncounter.uuid)
+            .map(_.identity)
+            .map(({uuid, name, encounterType, earliestVisitDateTime, maxVisitDateTime}) => ({
+                    name: name,
+                    encounterType: encounterType.name,
+                    earliestDate: earliestVisitDateTime,
+                    maxDate: maxVisitDateTime,
+                    uuid: uuid
+                }
+            ));
     }
 
     toJSON() {
