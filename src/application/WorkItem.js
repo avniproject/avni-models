@@ -35,7 +35,7 @@ export default class WorkItem {
             this.ensureFieldExists('encounterType');
         }
         if (this.type === WorkItem.type.ENCOUNTER) {
-            this.ensureFieldExists('encounter');
+            this.ensureFieldExists('encounterType');
         }
     }
 
