@@ -14,23 +14,25 @@ class RuleFailureTelemetry {
       individualUuid: 'string',
       errorMessage: 'string',
       stacktrace: "string",
-      status: "string"
+      closed: {type: 'bool', default: false},
+      errorDateTime: "date"
     }
   };
 
   static create({ruleUUID, individualUUID, errorMessage, stacktrace}) {
     const ruleFailureTelemetry = new RuleFailureTelemetry();
     ruleFailureTelemetry.uuid = General.randomUUID();
-    ruleFailureTelemetry.status = 'open';
+    ruleFailureTelemetry.closed = false;
     ruleFailureTelemetry.ruleUuid = ruleUUID;
     ruleFailureTelemetry.individualUuid = individualUUID;
     ruleFailureTelemetry.errorMessage = errorMessage;
     ruleFailureTelemetry.stacktrace = stacktrace;
+    ruleFailureTelemetry.errorDateTime = new Date();
     return ruleFailureTelemetry;
   }
 
   get toResource() {
-    return _.pick(this, ["uuid", "ruleUuid", "individualUuid", "errorMessage", "stacktrace", "status"]);
+    return _.pick(this, ["uuid", "ruleUuid", "individualUuid", "errorMessage", "stacktrace", "closed", "errorDateTime"]);
   }
 
   clone() {
@@ -40,7 +42,8 @@ class RuleFailureTelemetry {
     ruleFailureTelemetry.individualUuid = this.individualUuid;
     ruleFailureTelemetry.errorMessage = this.errorMessage;
     ruleFailureTelemetry.stacktrace = this.stacktrace;
-    ruleFailureTelemetry.status = this.status;
+    ruleFailureTelemetry.closed = this.closed;
+    ruleFailureTelemetry.errorDateTime = this.errorDateTime;
     return ruleFailureTelemetry;
   }
 }
