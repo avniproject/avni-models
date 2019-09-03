@@ -61,7 +61,7 @@ export default {
         ChecklistDetail, ChecklistItemDetail, VideoTelemetric, Video, MediaQueue, Point, SyncTelemetry, IdentifierSource,
         IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin
     ],
-    schemaVersion: 108,
+    schemaVersion: 109,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
@@ -312,6 +312,12 @@ export default {
         if (oldDB.schemaVersion < 108 ) {
             _.forEach(newDB.objects(Encounter.schema.name), enc => {
                 enc.cancelObservations = [];
+            });
+        }
+        if(oldDB.schemaVersion < 109){
+            _.forEach(newDB.objects(RuleFailureTelemetry.schema.name), rule => {
+                rule.errorDateTime = new Date();
+                rule.closed = false;
             });
         }
     }
