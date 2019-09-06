@@ -93,6 +93,10 @@ class ProgramEncounter extends AbstractEncounter {
         return !_.isNil(this.programEnrolment.findObservationInEntireEnrolment(conceptName));
     }
 
+    get individual() {
+        return this.programEnrolment.individual;
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

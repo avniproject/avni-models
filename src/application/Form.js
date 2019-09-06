@@ -120,6 +120,7 @@ class Form {
         ProgramExit: 'ProgramExit',
         ProgramEncounterCancellation: 'ProgramEncounterCancellation',
         ChecklistItem: 'ChecklistItem',
+        IndividualEncounterCancellation: 'IndividualEncounterCancellation'
     };
 }
 
