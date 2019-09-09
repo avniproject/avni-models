@@ -6,6 +6,8 @@ import Form from "./application/Form";
 import ChecklistDetail from "./ChecklistDetail";
 import Concept from "./Concept";
 import ChecklistItemStatus from "./ChecklistItemStatus";
+import ProgramEncounter from "./ProgramEncounter";
+import Checklist from "./Checklist";
 
 class ChecklistItemDetail extends BaseEntity {
     static schema = {
@@ -25,6 +27,13 @@ class ChecklistItemDetail extends BaseEntity {
             expiresAfter: {type: 'int', optional: true}
         }
     };
+
+    static parentAssociations = () => new Map([
+        [ChecklistDetail, "checklistDetailUUID"],
+        [Form,"formUUID"],
+        [Concept, "conceptUUID"],
+        [ChecklistItemDetail,"leadDetailUUID"]
+    ]);
 
     static fromResource(checklistItemResource, entityService, resourcesInCurrentPage) {
         const checklistDetail = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(checklistItemResource, "checklistDetailUUID"), ChecklistDetail.schema.name);

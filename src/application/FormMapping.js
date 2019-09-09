@@ -38,6 +38,11 @@ class FormMapping {
 
         return formMapping;
     }
+
+    static parentAssociations = () => new Map([
+        [Form, "formUUID"],
+        [SubjectType, "subjectTypeUUID"],
+    ])
 }
 
 export default FormMapping;

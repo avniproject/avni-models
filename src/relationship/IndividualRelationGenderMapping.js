@@ -32,6 +32,10 @@ class IndividualRelationGenderMapping {
         return individualRelationGenderMapping;
     }
 
+    static parentAssociations = () => new Map([
+        [IndividualRelation, "relationUUID"],
+        [Gender, "genderUUID"]
+    ]);
 }
 
 export default IndividualRelationGenderMapping;

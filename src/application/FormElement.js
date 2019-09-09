@@ -26,6 +26,10 @@ class FormElement {
         }
     };
 
+    static parentAssociations = () => new Map([
+        [FormElementGroup, "formElementGroupUUID"]
+    ]);
+
     static fromResource(resource, entityService) {
         const formElementGroup = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "formElementGroupUUID"), FormElementGroup.schema.name);
         const concept = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "conceptUUID"), Concept.schema.name);

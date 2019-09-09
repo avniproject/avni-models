@@ -5,6 +5,7 @@ import AbstractEncounter from "./AbstractEncounter";
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import Point from "./geo/Point";
+import Individual from "./Individual";
 
 class ProgramEncounter extends AbstractEncounter {
     static fieldKeys = {
@@ -42,6 +43,9 @@ class ProgramEncounter extends AbstractEncounter {
         programEncounter.programEnrolment = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "programEnrolmentUUID"), ProgramEnrolment.schema.name);
         return programEncounter;
     }
+    static parentAssociations = () => new Map([
+        [ProgramEnrolment, "programEnrolmentUUID"]
+    ]);
 
     get toResource() {
         const resource = super.toResource;

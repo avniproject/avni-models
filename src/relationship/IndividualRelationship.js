@@ -43,6 +43,10 @@ class IndividualRelationship extends BaseEntity {
         return resource;
     }
 
+    static parentAssociations = () => new Map([
+        [Individual, "individualAUUID"]
+    ]);
+
     static fromResource(resource, entityService) {
         const relationshipType = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "relationshipTypeUUID"), IndividualRelationshipType.schema.name);
         const individualA = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "individualAUUID"), Individual.schema.name);

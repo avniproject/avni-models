@@ -101,6 +101,12 @@ class ProgramEnrolment extends BaseEntity {
         return programEnrolment;
     }
 
+    static parentAssociations = () => new Map([
+        [Individual, "individualUUID"]
+    ]);
+
+    static childAssociations = () => new Map([[ProgramEncounter, 'encounters'], [Checklist, "checklists"]]);
+
     static merge = (childEntityClass) =>
         BaseEntity.mergeOn(new Map([[ProgramEncounter, 'encounters'], [Checklist, "checklists"]]).get(childEntityClass));
 

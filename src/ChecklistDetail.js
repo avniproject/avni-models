@@ -2,6 +2,8 @@ import ResourceUtil from "./utility/ResourceUtil";
 import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
 import ChecklistItemDetail from "./ChecklistItemDetail";
+import ProgramEncounter from "./ProgramEncounter";
+import Checklist from "./Checklist";
 
 class ChecklistDetail extends BaseEntity {
     static schema = {
@@ -19,6 +21,8 @@ class ChecklistDetail extends BaseEntity {
         const checklistDetail = General.assignFields(checklistResource, new ChecklistDetail(), ["uuid", "name", "voided"]);
         return checklistDetail;
     }
+
+    static childAssociations = () => new Map([[ChecklistItemDetail, 'items']]);
 
     static merge = () => BaseEntity.mergeOn('items');
 

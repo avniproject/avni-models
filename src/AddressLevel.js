@@ -30,6 +30,10 @@ export class LocationMapping extends BaseEntity {
             voided: !!resource.voided
         });
     }
+
+    static parentAssociations = () => new Map([
+        [AddressLevel, PARENT_LOCATION_UUID]
+    ]);
 }
 
 class AddressLevel extends BaseEntity {
@@ -69,6 +73,14 @@ class AddressLevel extends BaseEntity {
     }
 
     static merge = () => BaseEntity.mergeOn('locationMappings');
+
+    static parentAssociations = () => new Map([
+        [AddressLevel, CHILD_LOCATION_UUID],
+    ]);
+
+    static childAssociations = () => new Map([
+        [LocationMapping, 'locationMappings'],
+    ]);
 
     getParentLocations() {
         return _.filter(this.locationMappings, locationMapping => !locationMapping.voided).map(locationMapping => locationMapping.parent);

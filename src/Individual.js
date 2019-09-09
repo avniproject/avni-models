@@ -154,6 +154,12 @@ class Individual extends BaseEntity {
         return individual;
     }
 
+    static childAssociations = () => new Map([
+        [IndividualRelationship, 'relationships'],
+        [ProgramEnrolment,'enrolments'],
+        [Encounter,'encounters'],
+    ]);
+
     static associateChild(child, childEntityClass, childResource, entityService) {
         if (childEntityClass === IndividualRelationship) {
             return Individual.associateRelationship(child, childEntityClass, childResource, entityService);

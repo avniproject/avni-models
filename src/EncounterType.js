@@ -32,6 +32,10 @@ class EncounterType extends ReferenceEntity {
         return encounterType;
     }
 
+    static parentAssociations = () => new Map([
+
+    ]);
+
     clone() {
         return General.assignFields(this,super.clone(new EncounterType()),['operationalEncounterTypeName','displayName']);
     }

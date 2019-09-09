@@ -33,6 +33,8 @@ class Form {
         return General.assignFields(resource, new Form(), ["uuid", "name", "formType"]);
     }
 
+    static childAssociations = () => new Map([[FormElementGroup, "formElementGroups"]]);
+
     static merge = () => BaseEntity.mergeOn('formElementGroups');
 
     static associateChild(child, childEntityClass, childResource, entityService) {

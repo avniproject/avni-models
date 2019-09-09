@@ -36,6 +36,10 @@ export class ConceptAnswer {
         conceptAnswer.voided = resource.voided || false;//This change should be independently deployable irrespective of server
         return conceptAnswer;
     }
+
+    static parentAssociations = () => new Map([
+        [Concept, "conceptUUID"]
+    ]);
 }
 
 export default class Concept {
@@ -93,6 +97,10 @@ export default class Concept {
         concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
         return concept;
     }
+
+    static childAssociations = () => new Map([
+        [ConceptAnswer, 'answers']
+    ]);
 
     static associateChild(child, childEntityClass, childResource, entityService) {
         let concept = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "conceptUUID"), Concept.schema.name);

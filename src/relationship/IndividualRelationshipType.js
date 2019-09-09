@@ -44,6 +44,10 @@ class IndividualRelationshipType extends ReferenceEntity {
         return individualRelationshipType;
     }
 
+    static parentAssociations = () => new Map([
+        [IndividualRelation, "individualAIsToBRelationUUID"],
+        [IndividualRelation, "individualBIsToBRelationUUID"],
+    ]);
 }
 
 export default IndividualRelationshipType;

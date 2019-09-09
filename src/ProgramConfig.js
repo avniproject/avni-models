@@ -28,6 +28,8 @@ class ProgramConfig extends ReferenceEntity {
         return programConfig;
     }
 
+    static parentAssociations = () => new Map([]);
+
     clone() {
         return super.clone(new ProgramConfig());
     }
