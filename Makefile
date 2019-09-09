@@ -21,7 +21,7 @@ build: check-node-v
 release:
 	git pull --tags
 	git pull --rebase
-	yarn version
+	yarn version --patch
 	@echo "   Now please run \nmake publish"
 
 publish:
