@@ -35,6 +35,7 @@ import SyncTelemetry from "./SyncTelemetry";
 import IdentifierSource from "./IdentifierSource";
 import IdentifierAssignment from "./IdentifierAssignment";
 import RuleFailureTelemetry from "./RuleFailureTelemetry";
+import OrganisationConfig from "./OrganisationConfig";
 
 const refData = (clazz, {res, filter, translated, parent, syncWeight} = {}) => ({
     entityName: clazz.schema.name,
@@ -81,6 +82,7 @@ const formElementGroup = refDataNameTranslated(FormElementGroup, {parent: form, 
 const formElement = refDataNameTranslated(FormElement, {parent: formElementGroup, syncWeight: 5});
 const conceptAnswer = refData(ConceptAnswer, {parent: concept, syncWeight: 4});
 const identifierSource = refData(IdentifierSource, {syncWeight: 0});
+const organisationConfig = refData(OrganisationConfig, {syncWeight: 0});
 const individual = txData(Individual, {syncWeight: 5});
 
 const addressLevel = refDataNameTranslated(AddressLevel, {res: 'locations', syncWeight: 4});
@@ -116,6 +118,7 @@ class EntityMetaData {
             formElementGroup,
             form,
             identifierSource,
+            organisationConfig,
 
             locationMapping,
             addressLevel,

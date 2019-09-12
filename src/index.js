@@ -74,6 +74,7 @@ import WorkItem from './application/WorkItem';
 import Format from "./application/Format";
 import RuleFailureTelemetry from './RuleFailureTelemetry';
 import BeneficiaryModePin from './BeneficiaryModePin';
+import OrganisationConfig from './OrganisationConfig';
 
 export {
     AbstractEncounter,
@@ -154,4 +155,5 @@ export {
 
     RuleFailureTelemetry,
     BeneficiaryModePin,
+    OrganisationConfig,
 }
