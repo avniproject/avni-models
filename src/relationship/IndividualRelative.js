@@ -76,8 +76,6 @@ class IndividualRelative {
             return ValidationResult.failure(IndividualRelative.validationKeys.RELATIVE, 'grandfatherIsYounger');
         } else if (this.relation.name === "grandmother" && !General.dateAIsAfterB(this.individual.dateOfBirth, this.relative.dateOfBirth)) {
             return ValidationResult.failure(IndividualRelative.validationKeys.RELATIVE, 'grandmotherIsYounger');
-        } else {
-            return ValidationResult.successful(IndividualRelative.validationKeys.RELATIVE)
         }
     }
 
@@ -105,7 +103,7 @@ class IndividualRelative {
                 validationResults.push(this._validateRelationship());
             }
         }
-        return validationResults;
+        return _.reject(validationResults, _.isNil);
     }
 
 }
