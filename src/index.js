@@ -75,6 +75,8 @@ import Format from "./application/Format";
 import RuleFailureTelemetry from './RuleFailureTelemetry';
 import BeneficiaryModePin from './BeneficiaryModePin';
 import OrganisationConfig from './OrganisationConfig';
+import PlatformTranslation from "./PlatformTranslation";
+import Translation from "./Translation";
 
 export {
     AbstractEncounter,
@@ -156,4 +158,6 @@ export {
     RuleFailureTelemetry,
     BeneficiaryModePin,
     OrganisationConfig,
+    PlatformTranslation,
+    Translation,
 }
