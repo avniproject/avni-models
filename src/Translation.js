@@ -1,20 +1,21 @@
 import _ from 'lodash';
 
 class Translation {
-    static UUID = '2abd679d-d5a6-4466-be0b-719dcb8a1294';
 
     static schema = {
         name: "Translation",
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',
+            language: 'string',
             translations: "string"
         }
     };
 
     static fromResource(resource) {
         let translation = new Translation();
-        translation.uuid = Translation.UUID;
+        translation.uuid = resource.uuid;
+        translation.language = resource.language;
         translation.translations = _.isNil(resource.translationJson) ? '{}' : JSON.stringify(resource.translationJson);
         return translation;
     }
@@ -26,6 +27,7 @@ class Translation {
     clone() {
         let translation = new Translation();
         translation.uuid = this.uuid;
+        translation.language = this.language;
         translation.translations = this.translations;
     }
 }

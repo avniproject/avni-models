@@ -1,20 +1,21 @@
 import _ from 'lodash';
 
 class PlatformTranslation {
-    static UUID = 'eefe00cb-5dcc-4c17-8c46-6e80d6bde2c1';
 
     static schema = {
         name: "PlatformTranslation",
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',
+            language: 'string',
             platformTranslations: "string"
         }
     };
 
     static fromResource(resource) {
         let platformTranslation = new PlatformTranslation();
-        platformTranslation.uuid = PlatformTranslation.UUID;
+        platformTranslation.uuid = resource.uuid;
+        platformTranslation.language = resource.language;
         if (resource.platform === 'Android') {
             platformTranslation.platformTranslations = _.isNil(resource.translationJson) ? '{}' : JSON.stringify(resource.translationJson);
         }
@@ -28,6 +29,7 @@ class PlatformTranslation {
     clone() {
         let platformTranslation = new PlatformTranslation();
         platformTranslation.uuid = this.uuid;
+        platformTranslation.language = this.language;
         platformTranslation.platformTranslations = this.platformTranslations;
     }
 
