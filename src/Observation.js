@@ -47,9 +47,12 @@ class Observation {
             }), ', ');
         } else if (observation.concept.isDurationConcept()) {
             return _.toString(valueWrapper.toString(i18n));
-        } else {
+        } else if (observation.concept.datatype === Concept.dataType.Text) {
+            return i18n.t(valueWrapper.getValue());
+        }
+        else {
             const unit = _.defaultTo(observation.concept.unit, "");
-            return _.toString(`${i18n.t(valueWrapper.getValue())} ${unit}`);
+            return _.toString(`${valueWrapper.getValue()} ${unit}`);
         }
     }
 
