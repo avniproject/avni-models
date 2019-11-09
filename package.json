@@ -13,6 +13,7 @@
     "test-ci": "jest --verbose --forceExit --maxWorkers=2 --ci",
     "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')",
     "build": "webpack --env dev && webpack -p --env build && npm run test",
+    "build_wo_test": "webpack --env dev && webpack -p --env build",
     "dev": "webpack --progress --colors --watch --env dev"
   },
   "jest": {

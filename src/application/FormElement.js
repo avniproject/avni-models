@@ -22,7 +22,8 @@ class FormElement {
             type: {type: 'string', optional: true},
             formElementGroup: 'FormElementGroup',
             validFormat: {type: 'Format', optional: true},
-            voided: {type: 'bool', default: false}
+            voided: {type: 'bool', default: false},
+            rule: {type: 'string', optional: true}
         }
     };
 
@@ -34,7 +35,7 @@ class FormElement {
         const formElementGroup = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "formElementGroupUUID"), FormElementGroup.schema.name);
         const concept = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "conceptUUID"), Concept.schema.name);
 
-        const formElement = General.assignFields(resource, new FormElement(), ["uuid", "name", "displayOrder", "mandatory", "type", "voided"], []);
+        const formElement = General.assignFields(resource, new FormElement(), ["uuid", "name", "displayOrder", "mandatory", "type", "voided", "rule"], []);
         formElement.formElementGroup = formElementGroup;
         formElement.concept = concept;
 
