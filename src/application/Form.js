@@ -38,7 +38,7 @@ class Form {
     static merge = () => BaseEntity.mergeOn('formElementGroups');
 
     static associateChild(child, childEntityClass, childResource, entityService) {
-        let form = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "formUUID"), Form.schema.name);
+        let form = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "formUUID", Form.schema.name);
         form = General.pick(form, ["uuid"], ["formElementGroups"]);
         if (childEntityClass === FormElementGroup) {
             BaseEntity.addNewChild(child, form.formElementGroups);

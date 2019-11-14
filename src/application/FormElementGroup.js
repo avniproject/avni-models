@@ -37,7 +37,7 @@ class FormElementGroup {
     ]);
 
     static associateChild(child, childEntityClass, childResource, entityService) {
-        let formElementGroup = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "formElementGroupUUID"), FormElementGroup.schema.name);
+        let formElementGroup = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "formElementGroupUUID", FormElementGroup.schema.name);
         formElementGroup = General.pick(formElementGroup, ["uuid"], ["formElements"]);
         if (childEntityClass === FormElement) {
             BaseEntity.addNewChild(child, formElementGroup.formElements);

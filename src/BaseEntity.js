@@ -1,5 +1,6 @@
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
+import ResourceUtil from "./utility/ResourceUtil";
 
 class BaseEntity {
     static fieldKeys = {
@@ -48,6 +49,17 @@ class BaseEntity {
 
     print() {
         return this.toString();
+    }
+
+    static getParentEntity(entityService, childEntityClass, childResource, parentUUIDField, parentSchema) {
+        const childUuid = childResource.uuid;
+        const parentUuid = ResourceUtil.getUUIDFor(childResource, parentUUIDField);
+        const childSchema = childEntityClass.schema.name;
+        const parent = entityService.findByKey("uuid", parentUuid, parentSchema);
+        if (!_.isNil(parent)) {
+            return parent;
+        }
+        throw `[Association failure] ${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`;
     }
 }
 export default BaseEntity;

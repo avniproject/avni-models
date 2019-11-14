@@ -81,7 +81,7 @@ class Family extends BaseEntity {
         BaseEntity.mergeOn(new Map([[ProgramEnrolment, 'enrolments'], [Encounter, "encounters"]]).get(childEntityClass));
 
     static associateChild(child, childEntityClass, childResource, entityService) {
-        var individual = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "individualUUID"), Individual.schema.name);
+        let individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "individualUUID", Individual.schema.name);
         individual = General.pick(individual, ["uuid"], ["enrolments", "encounters"]);
 
         if (childEntityClass === ProgramEnrolment)

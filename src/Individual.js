@@ -148,7 +148,7 @@ class Individual extends BaseEntity {
         ]).get(childEntityClass));
 
     static associateRelationship(child, childEntityClass, childResource, entityService) {
-        var individual = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "individualAUUID"), Individual.schema.name);
+        var individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "individualAUUID", Individual.schema.name);
         individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships"]);
         BaseEntity.addNewChild(child, individual.relationships);
         return individual;
@@ -164,7 +164,7 @@ class Individual extends BaseEntity {
         if (childEntityClass === IndividualRelationship) {
             return Individual.associateRelationship(child, childEntityClass, childResource, entityService);
         }
-        var individual = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "individualUUID"), Individual.schema.name);
+        var individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "individualUUID", Individual.schema.name);
         individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships"]);
 
         if (childEntityClass === ProgramEnrolment)

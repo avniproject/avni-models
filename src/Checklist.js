@@ -50,7 +50,7 @@ class Checklist extends BaseEntity {
     static merge = () => BaseEntity.mergeOn('items');
 
     static associateChild(child, childEntityClass, childResource, entityService) {
-        var checklist = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "checklistUUID"), Checklist.schema.name);
+        let checklist = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "checklistUUID", Checklist.schema.name);
         checklist = General.pick(checklist, ["uuid"], ["items"]);
 
         if (childEntityClass === ChecklistItem)

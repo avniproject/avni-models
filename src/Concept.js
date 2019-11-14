@@ -103,7 +103,7 @@ export default class Concept {
     ]);
 
     static associateChild(child, childEntityClass, childResource, entityService) {
-        let concept = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(childResource, "conceptUUID"), Concept.schema.name);
+        let concept = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "conceptUUID", Concept.schema.name);
         concept = General.pick(concept, ["uuid"], ["answers"]);
         let newAnswers = concept.answers;
         if (childEntityClass !== ConceptAnswer) {

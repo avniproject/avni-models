@@ -59,7 +59,7 @@ class AddressLevel extends BaseEntity {
     }
 
     static associateLocationMapping(locationMapping, locationMappingRes, entityService) {
-        let location = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(locationMappingRes, CHILD_LOCATION_UUID), AddressLevel.schema.name);
+        let location = BaseEntity.getParentEntity(entityService, LocationMapping, locationMappingRes, CHILD_LOCATION_UUID, AddressLevel.schema.name);
         location = General.pick(location, ["uuid"], ["locationMappings"]);
         BaseEntity.addNewChild(locationMapping, location.locationMappings);
         return location;
