@@ -2,7 +2,7 @@
 
 OpenCHS data model to be used by front end clients
 
-CI [![CircleCI](https://circleci.com/gh/OpenCHS/openchs-models.svg?style=svg)](https://circleci.com/gh/OpenCHS/openchs-models)
+CI [![CircleCI](https://circleci.com/gh/avni/avni-models.svg?style=svg)](https://circleci.com/gh/avni/avni-models)
 
 ## Dev flow
 
