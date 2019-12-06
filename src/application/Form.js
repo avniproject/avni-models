@@ -12,7 +12,10 @@ class Form {
             uuid: 'string',
             formType: 'string',
             name: 'string',
-            formElementGroups: {type: 'list', objectType: 'FormElementGroup'}
+            formElementGroups: {type: 'list', objectType: 'FormElementGroup'},
+            decisionRule: {type: 'string', optional: true},
+            visitScheduleRule: {type: 'string', optional: true},
+            validationRule: {type: 'string', optional: true}
         }
     };
 
@@ -30,7 +33,7 @@ class Form {
     }
 
     static fromResource(resource) {
-        return General.assignFields(resource, new Form(), ["uuid", "name", "formType"]);
+        return General.assignFields(resource, new Form(), ["uuid", "name", "formType", "decisionRule", "visitScheduleRule", "validationRule"]);
     }
 
     static childAssociations = () => new Map([[FormElementGroup, "formElementGroups"]]);

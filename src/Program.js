@@ -13,6 +13,9 @@ class Program extends ReferenceEntity {
             displayName: 'string',
             colour: 'string',
             programSubjectLabel: 'string',
+            enrolmentSummaryRule: {type: 'string', optional: true},
+            enrolmentEligibilityCheckRule: {type: 'string', optional: true},
+            checklistsRule: {type: 'string', optional: true}
         }
     };
 
@@ -24,6 +27,9 @@ class Program extends ReferenceEntity {
         program.colour = _.isNil(operationalProgram.colour)? Program.randomColour() : operationalProgram.colour;
         program.displayName = _.isEmpty(program.operationalProgramName) ? program.name : program.operationalProgramName;
         program.programSubjectLabel = operationalProgram.programSubjectLabel || operationalProgram.name || program.name;
+        program.enrolmentSummaryRule = operationalProgram.enrolmentSummaryRule;
+        program.enrolmentEligibilityCheckRule = operationalProgram.enrolmentEligibilityCheckRule;
+        program.checklistsRule = operationalProgram.checklistsRule;
         return program;
     }
 

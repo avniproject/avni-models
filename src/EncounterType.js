@@ -11,7 +11,8 @@ class EncounterType extends ReferenceEntity {
             name: 'string',
             operationalEncounterTypeName: {type: 'string', optional: true},
             displayName: 'string',
-            voided: { type: 'bool', default: false }
+            voided: { type: 'bool', default: false },
+            encounterEligibilityCheckRule: {type: 'string', optional: true}
         }
     };
 
@@ -29,6 +30,7 @@ class EncounterType extends ReferenceEntity {
         encounterType.voided = !!operationalEncounterType.encounterTypeVoided;
         encounterType.operationalEncounterTypeName = operationalEncounterType.name;
         encounterType.displayName = _.isEmpty(encounterType.operationalEncounterTypeName) ? encounterType.name : encounterType.operationalEncounterTypeName;
+        encounterType.encounterEligibilityCheckRule = operationalEncounterType.encounterEligibilityCheckRule;
         return encounterType;
     }
 
