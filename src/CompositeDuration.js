@@ -41,11 +41,15 @@ class CompositeDuration {
     }
 
     get toResource() {
-        return {durations: this.durations.map(d => d.toResource)};
+        const isoCompositeDuration = this.durations.map(d => d.toISO).join("");
+        const firstOccurrenceIndex = isoCompositeDuration.search('T') + 1;
+        return 'P' + isoCompositeDuration.substr(0, firstOccurrenceIndex) + isoCompositeDuration.slice(firstOccurrenceIndex).replace(/T/g, '');
     }
 
     static fromObs(obs) {
-        if (_.isNil(obs.durations)) {
+        if (typeof obs === 'string') {
+            return new CompositeDuration(Duration.fromIsoObs(obs));
+        } else if (_.isNil(obs.durations)) {
             return new CompositeDuration(obs.map(Duration.fromObs));
         }
         return new CompositeDuration(obs.durations.map(Duration.fromObs));

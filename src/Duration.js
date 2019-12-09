@@ -98,13 +98,46 @@ class Duration {
     }
 
     get toResource() {
-        return {_durationValue: this.durationValue, durationUnit: this.durationUnit};
+        return `P${this.toISO}`
+    }
+
+    get toISO() {
+        const timeDurationUnits = ["hours", "minutes", "seconds"];
+        const isoDuration = `${this._durationValue || 0}${isoMap[this.durationUnit]}`;
+        return _.includes(timeDurationUnits, this.durationUnit) ? `T${isoDuration}` : isoDuration;
     }
 
     static fromObs(obs) {
+        if (typeof obs === 'string') {
+            return _.head(Duration.fromIsoObs(obs));
+        }
         return new Duration(obs._durationValue, obs.durationUnit);
     }
 
+    static fromIsoObs(obs) {
+        const iso8601DurationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?T{0,1}(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?/;
+        const matches = obs.match(iso8601DurationRegex);
+        return [
+            {unit: "years", value: matches[2]},
+            {unit: "months", value: matches[3]},
+            {unit: "weeks", value: matches[4]},
+            {unit: "days", value: matches[5]},
+            {unit: "hours", value: matches[6]},
+            {unit: "minutes", value: matches[7]},
+            {unit: "seconds", value: matches[8]},
+        ].filter(v => !_.isEmpty(v.value)).map(opt => new Duration(opt.value, opt.unit));
+    }
+
 }
+
+const isoMap = {
+    "years": "Y",
+    "months": "M",
+    "weeks": "W",
+    "days": "D",
+    "hours": "H",
+    "minutes": "M",
+    "seconds": "S"
+};
 
 export default Duration;
