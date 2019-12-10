@@ -77,6 +77,7 @@ import BeneficiaryModePin from './BeneficiaryModePin';
 import OrganisationConfig from './OrganisationConfig';
 import PlatformTranslation from "./PlatformTranslation";
 import Translation from "./Translation";
+import CustomFilter from './CustomFilter';
 
 export {
     AbstractEncounter,
@@ -160,4 +161,5 @@ export {
     OrganisationConfig,
     PlatformTranslation,
     Translation,
+    CustomFilter,
 }
