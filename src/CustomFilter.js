@@ -3,7 +3,7 @@ class CustomFilter {
     static type = {
         Name: 'Name',
         Age: 'Age',
-        OtherData: 'OtherData',
+        SearchAll: 'SearchAll',
         Gender: 'Gender',
         RegistrationDate: 'RegistrationDate',
         EnrolmentDate: 'EnrolmentDate',
@@ -23,7 +23,7 @@ class CustomFilter {
     static widget = {
         Default: 'Default',
         Range: 'Range',
-        SpecialWidget: 'SpecialWidget'
+        Relative: 'Relative'
     };
 }
 
