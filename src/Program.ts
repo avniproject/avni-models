@@ -1,3 +1,4 @@
+import moment from "moment";
 import ReferenceEntity from "./ReferenceEntity";
 import _ from "lodash";
 import General from "./utility/General";
@@ -18,9 +19,18 @@ class Program extends ReferenceEntity {
             checklistsRule: {type: 'string', optional: true}
         }
     };
+    uuid: string;
+    name: string;
+    operationalProgramName: string;
+    colour: string;
+    displayName: string;
+    programSubjectLabel: string;
+    enrolmentSummaryRule: string;
+    enrolmentEligibilityCheckRule: string;
+    checklistsRule: string;
 
-    static fromResource(operationalProgram) {
-        const program =  new Program();
+    static fromResource(operationalProgram): Program {
+        const program = new Program();
         program.uuid = operationalProgram.programUUID;
         program.name = operationalProgram.programName;
         program.operationalProgramName = operationalProgram.name;

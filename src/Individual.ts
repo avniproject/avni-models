@@ -14,6 +14,7 @@ import ObservationsHolder from "./ObservationsHolder";
 import {findMediaObservations} from './Media';
 import Point from "./geo/Point";
 import SubjectType from './SubjectType';
+import Observation from "./Observation";
 
 class Individual extends BaseEntity {
     static schema = {
@@ -55,6 +56,23 @@ class Individual extends BaseEntity {
         LOWEST_ADDRESS_LEVEL: 'LOWEST_ADDRESS_LEVEL',
         REGISTRATION_LOCATION: 'REGISTRATION_LOCATION'
     };
+
+    subjectType: SubjectType;
+    uuid: string;
+    name: string;
+    registrationDate: Date;
+    gender: Gender;
+    encounters: Encounter[];
+    observations: Observation[];
+    enrolments: ProgramEnrolment[];
+    relationships: IndividualRelationship[];
+    lowestAddressLevel: AddressLevel;
+    voided: boolean;
+    dateOfBirth: Date;
+    registrationLocation: Point;
+    firstName: any;
+    lastName: any;
+    dateOfBirthVerified: any;
 
     static createEmptyInstance() {
         const individual = new Individual();
@@ -141,7 +159,7 @@ class Individual extends BaseEntity {
     }
 
     static merge = (childEntityClass) =>
-        BaseEntity.mergeOn(new Map([
+        BaseEntity.mergeOn(new Map<any,any>([
             [ProgramEnrolment, 'enrolments'],
             [Encounter, "encounters"],
             [IndividualRelationship, 'relationships']
@@ -154,7 +172,7 @@ class Individual extends BaseEntity {
         return individual;
     }
 
-    static childAssociations = () => new Map([
+    static childAssociations = () => new Map<any,any>([
         [IndividualRelationship, 'relationships'],
         [ProgramEnrolment,'enrolments'],
         [Encounter,'encounters'],
@@ -172,7 +190,7 @@ class Individual extends BaseEntity {
         else if (childEntityClass === Encounter)
             BaseEntity.addNewChild(child, individual.encounters);
         else
-            throw `${childEntityClass.name} not support by ${Individual.nameString}`;
+            throw `${childEntityClass.name} not support by ${individual.nameString}`;
 
         return individual;
     }
@@ -206,8 +224,7 @@ class Individual extends BaseEntity {
         return this.getDisplayAge(i18n);
     }
 
-    getAge(asOnDate) {
-        asOnDate = asOnDate || moment();
+    getAge(asOnDate = moment()) {
         if (this.getAgeInYears(asOnDate) > 0) return Duration.inYear(this.getAgeInYears());
         if (this.getAgeInMonths(asOnDate) > 0) return Duration.inMonth(asOnDate.diff(this.dateOfBirth, 'months'));
         return Duration.inYear(0);
@@ -221,7 +238,7 @@ class Individual extends BaseEntity {
         return (asOnDate = moment(), precise = false) => moment(asOnDate).diff(this.dateOfBirth, unit, precise);
     }
 
-    getAgeInMonths(asOnDate, precise) {
+    getAgeInMonths(asOnDate = moment(), precise = false) {
         return this.getAgeIn("months")(asOnDate, precise);
     }
 
@@ -229,7 +246,7 @@ class Individual extends BaseEntity {
         return this.getAgeIn("weeks")(asOnDate, precise);
     }
 
-    getAgeInYears(asOnDate, precise) {
+    getAgeInYears(asOnDate = moment(), precise = false) {
         return this.getAgeIn("years")(asOnDate, precise);
     }
 
@@ -509,7 +526,7 @@ class Individual extends BaseEntity {
     }
 
     getAllScheduledVisits(currentEncounter) {
-        return _.defaults(this.scheduledEncounters(true), [])
+        return _.defaults(this.scheduledEncounters(), [])
             .filter(encounter => encounter.uuid !== currentEncounter.uuid)
             .map(_.identity)
             .map(({uuid, name, encounterType, earliestVisitDateTime, maxVisitDateTime}) => ({

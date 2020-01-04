@@ -49,6 +49,8 @@ class AddressLevel extends BaseEntity {
             titleLineage: {type: 'string', optional: true}
         }
     };
+    uuid;
+    name;
 
     static create({uuid, title, level, typeString, locationMappings = []}) {
         return _.assignIn(new AddressLevel(), {uuid, name: title, type: typeString, level, locationMappings});

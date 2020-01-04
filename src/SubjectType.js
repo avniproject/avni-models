@@ -11,6 +11,7 @@ class SubjectType extends ReferenceEntity {
             voided: { type: 'bool', default: false }
         }
     };
+    uuid;
 
     static create(name) {
         let subjectType = new SubjectType();

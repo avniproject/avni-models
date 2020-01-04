@@ -10,6 +10,8 @@ class Gender extends ReferenceEntity {
             name: "string"
         }
     };
+    name: string;
+    uuid: string;
 
     isMale() {
         return this.name === "Male";

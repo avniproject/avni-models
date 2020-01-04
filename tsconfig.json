@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es5",
+        "moduleResolution": "node",
+        "lib": ["es2015"]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
