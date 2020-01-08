@@ -7,6 +7,7 @@ import SingleCodedValue from "./observation/SingleCodedValue";
 import PrimitiveValue from "./observation/PrimitiveValue";
 import Duration from "./Duration";
 import CompositeDuration from "./CompositeDuration";
+import KeyValue from "./application/KeyValue";
 
 export class ConceptAnswer {
     static schema = {
@@ -61,6 +62,7 @@ export default class Concept {
             lowNormal: {"type": 'double', optional: true},
             hiNormal: {"type": 'double', optional: true},
             unit: {"type": 'string', optional: true},
+            keyValues: {type: 'list', objectType: 'KeyValue'},
             voided: {type: 'bool', default: false}
         }
     };
@@ -84,7 +86,7 @@ export default class Concept {
 
     // static primitiveDataTypes = [Concept.dataType.Boolean, Concept.dataType.Coded, Concept.dataType.Numeric, Concept.dataType.Date, Concept.dataType.Text];
 
-    static fromResource(conceptResource) {
+    static fromResource(conceptResource, entityService) {
         const concept = new Concept();
         concept.name = conceptResource.name;
         concept.uuid = conceptResource.uuid;
@@ -95,6 +97,9 @@ export default class Concept {
         concept.hiNormal = conceptResource.highNormal;
         concept.unit = conceptResource.unit;
         concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
+        //remove orphan keyValues (because KeyValue doesn't have primary key
+        entityService.deleteObjects(conceptResource["uuid"], Concept.schema.name, "keyValues");
+        concept.keyValues = _.map(conceptResource.keyValues, KeyValue.fromResource);
         return concept;
     }
 
@@ -118,7 +123,7 @@ export default class Concept {
 
     static merge = () => BaseEntity.mergeOn('answers');
 
-    static create(name, dataType, uuid = General.randomUUID()) {
+    static create(name, dataType, keyValues, uuid = General.randomUUID()) {
         const concept = new Concept();
         concept.name = name;
         concept.datatype = dataType;
@@ -127,7 +132,7 @@ export default class Concept {
     }
 
     cloneForReference() {
-        const concept = Concept.create(this.name, this.datatype);
+        const concept = Concept.create(this.name, this.datatype, this.keyValues);
         concept.uuid = this.uuid;
         concept.unit = this.unit;
         concept.lowAbsolute = this.lowAbsolute;
@@ -223,6 +228,14 @@ export default class Concept {
 
     _areValidNumbers(...numbers) {
         return _.every(numbers, (value) => value !== null && _.isFinite(value));
+    }
+
+    recordByKey(key) {
+        return _.find(this.keyValues, (keyValue) => keyValue.key === key);
+    }
+
+    recordValueByKey(key) {
+        return _.invoke(_.find(this.keyValues, it => it.key === key), 'getValue');
     }
 
 }

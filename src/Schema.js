@@ -64,7 +64,7 @@ export default {
         ChecklistDetail, ChecklistItemDetail, VideoTelemetric, Video, MediaQueue, Point, SyncTelemetry, IdentifierSource,
         IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin, OrganisationConfig, PlatformTranslation, Translation
     ],
-    schemaVersion: 111,
+    schemaVersion: 112,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
