@@ -98,7 +98,7 @@ export default class Concept {
         concept.unit = conceptResource.unit;
         concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
         //remove orphan keyValues (because KeyValue doesn't have primary key
-        entityService.deleteObjects(conceptResource["uuid"], Concept.schema.name, "keyValues");
+        entityService && entityService.deleteObjects(conceptResource["uuid"], Concept.schema.name, "keyValues");
         concept.keyValues = _.map(conceptResource.keyValues, KeyValue.fromResource);
         return concept;
     }
