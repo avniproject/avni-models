@@ -33,5 +33,6 @@ node_modules
 
 .DS_Store
 
+# Remove generated files
 lib
-
+dist

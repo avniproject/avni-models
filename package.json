@@ -7,14 +7,12 @@
         "type": "git",
         "url": "https://github.com/OpenCHS/openchs-models.git"
     },
-    "main": "lib/openchs-models.js",
+    "main": "dist/index.js",
     "scripts": {
         "test": "jest",
         "test-ci": "jest --verbose --forceExit --maxWorkers=2 --ci",
-        "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')",
-        "build": "webpack --env dev && webpack -p --env build && npm run test",
-        "build:dev": "webpack --env dev",
-        "dev": "webpack --progress --colors --watch --env dev"
+        "build": "babel src --out-dir dist --extensions '.js','.ts'",
+        "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')"
     },
     "jest": {
         "testMatch": [
