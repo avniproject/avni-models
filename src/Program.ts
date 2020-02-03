@@ -16,7 +16,6 @@ class Program extends ReferenceEntity {
             programSubjectLabel: 'string',
             enrolmentSummaryRule: {type: 'string', optional: true},
             enrolmentEligibilityCheckRule: {type: 'string', optional: true},
-            checklistsRule: {type: 'string', optional: true}
         }
     };
     uuid: string;
@@ -27,7 +26,6 @@ class Program extends ReferenceEntity {
     programSubjectLabel: string;
     enrolmentSummaryRule: string;
     enrolmentEligibilityCheckRule: string;
-    checklistsRule: string;
 
     static fromResource(operationalProgram): Program {
         const program = new Program();
@@ -39,7 +37,6 @@ class Program extends ReferenceEntity {
         program.programSubjectLabel = operationalProgram.programSubjectLabel || operationalProgram.name || program.name;
         program.enrolmentSummaryRule = operationalProgram.enrolmentSummaryRule;
         program.enrolmentEligibilityCheckRule = operationalProgram.enrolmentEligibilityCheckRule;
-        program.checklistsRule = operationalProgram.checklistsRule;
         return program;
     }
 
