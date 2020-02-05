@@ -9,7 +9,8 @@ class OrganisationConfig {
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',
-            settings: "string"
+            settings: "string",
+            worklistUpdationRule: "string"
         }
     };
 
@@ -19,6 +20,7 @@ class OrganisationConfig {
         organisationConfig.settings = _.isNil(resource.settings)
             ? OrganisationConfig.DEFAULT_SETTINGS
             : JSON.stringify(resource.settings);
+        organisationConfig.worklistUpdationRule = resource.worklistUpdationRule;
         return organisationConfig;
     }
 
@@ -30,6 +32,7 @@ class OrganisationConfig {
         let organisationConfig = new OrganisationConfig();
         organisationConfig.uuid = this.uuid;
         organisationConfig.settings = this.settings;
+        organisationConfig.worklistUpdationRule = this.worklistUpdationRule;
     }
 }
 
