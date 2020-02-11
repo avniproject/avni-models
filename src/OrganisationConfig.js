@@ -20,7 +20,7 @@ class OrganisationConfig {
         organisationConfig.settings = _.isNil(resource.settings)
             ? OrganisationConfig.DEFAULT_SETTINGS
             : JSON.stringify(resource.settings);
-        organisationConfig.worklistUpdationRule = resource.worklistUpdationRule;
+        organisationConfig.worklistUpdationRule = resource.worklistUpdationRule ? resource.worklistUpdationRule : "";
         return organisationConfig;
     }
 
@@ -32,7 +32,7 @@ class OrganisationConfig {
         let organisationConfig = new OrganisationConfig();
         organisationConfig.uuid = this.uuid;
         organisationConfig.settings = this.settings;
-        organisationConfig.worklistUpdationRule = this.worklistUpdationRule;
+        organisationConfig.worklistUpdationRule = this.worklistUpdationRule ? this.worklistUpdationRule : "";
     }
 }
 
