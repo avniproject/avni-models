@@ -33,7 +33,6 @@ class ProgramEnrolment extends BaseEntity {
             voided: {type: 'bool', default: false}
         }
     };
-    voided;
 
     static createEmptyInstance({individual, program} = {}) {
         const programEnrolment = new ProgramEnrolment();
