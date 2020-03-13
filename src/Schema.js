@@ -52,6 +52,11 @@ import BeneficiaryModePin from "./BeneficiaryModePin";
 import OrganisationConfig from "./OrganisationConfig";
 import PlatformTranslation from "./PlatformTranslation";
 import Translation from "./Translation";
+import Groups from "./Groups";
+import GroupPrivileges from "./GroupPrivileges";
+import MyGroups from "./MyGroups";
+import Privilege from "./Privilege";
+import General from "./utility/General";
 
 export default {
     //order is important, should be arranged according to the dependency
@@ -62,9 +67,10 @@ export default {
         VisitScheduleConfig, ProgramConfig, Family, IndividualRelation, IndividualRelationGenderMapping,
         IndividualRelationshipType, IndividualRelationship, RuleDependency, Rule, ChecklistItemStatus,
         ChecklistDetail, ChecklistItemDetail, VideoTelemetric, Video, MediaQueue, Point, SyncTelemetry, IdentifierSource,
-        IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin, OrganisationConfig, PlatformTranslation, Translation
+        IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin, OrganisationConfig, PlatformTranslation, Translation,
+        Groups, MyGroups, GroupPrivileges, Privilege
     ],
-    schemaVersion: 115,
+    schemaVersion: 116,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
@@ -235,7 +241,7 @@ export default {
             }
         }
         if (oldDB.schemaVersion < 83) {
-            _.forEach([... newDB.objects('Settings')], settings => {
+            _.forEach([...newDB.objects('Settings')], settings => {
                 if (settings.pageSize === 0 || settings.pageSize === undefined || settings.pageSize === null) {
                     settings.pageSize = 100;
                 }
@@ -249,7 +255,7 @@ export default {
         }
         if (oldDB.schemaVersion < 93) {
             const individuals = newDB.objects('Individual');
-            if(individuals.length > 0){
+            if (individuals.length > 0) {
                 const individualSubjectType = SubjectType.create('Individual');
                 //This is the uuid used in server migration to create Individual subjectType
                 individualSubjectType.uuid = '9f2af1f9-e150-4f8e-aad3-40bb7eb05aa3';
@@ -272,25 +278,25 @@ export default {
                 (encounter) => encounter.voided = false);
         }
 
-        if(oldDB.schemaVersion < 96) {
+        if (oldDB.schemaVersion < 96) {
             _.forEach(newDB.objects('UserInfo'),
                 (userInfo) => userInfo.settings = UserInfo.DEFAULT_SETTINGS
             );
         }
 
-        if(oldDB.schemaVersion < 102) {
+        if (oldDB.schemaVersion < 102) {
             const programs = newDB.objects('Program');
             _.forEach(programs, program => {
                 program.programSubjectLabel = program.operationalProgramName || program.name;
             });
         }
-        if(oldDB.schemaVersion < 103) {
+        if (oldDB.schemaVersion < 103) {
             _.forEach(newDB.objects(UserInfo.schema.name), userInfo => {
                 userInfo.username = '';
                 newDB.create(EntityQueue.schema.name, EntityQueue.create(userInfo, UserInfo.schema.name));
             });
         }
-        if(oldDB.schemaVersion < 104) {
+        if (oldDB.schemaVersion < 104) {
             /*
             Assumption: All existing users have just one subject type
             Reason for migration: Server has a mandatory subject type on all form mappings.
@@ -312,15 +318,49 @@ export default {
                 };
             });
         }
-        if (oldDB.schemaVersion < 108 ) {
+        if (oldDB.schemaVersion < 108) {
             _.forEach(newDB.objects(Encounter.schema.name), enc => {
                 enc.cancelObservations = [];
             });
         }
-        if(oldDB.schemaVersion < 109){
+        if (oldDB.schemaVersion < 109) {
             _.forEach(newDB.objects(RuleFailureTelemetry.schema.name), rule => {
                 rule.errorDateTime = new Date();
                 rule.closed = false;
+            });
+        }
+        if (oldDB.schemaVersion < 116) {
+            //this migration creates entry in EntitySyncStatus for all entityType as per the old synced audit so that those entities are not synced again.
+            const olderSubjectTypeEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'Individual');
+            const olderProgramEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'ProgramEnrolment');
+            const olderChecklistEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'ChecklistItem');
+            const olderChecklistItemEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'Checklist');
+            const olderProgramEncounterEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'ProgramEncounter');
+            const olderEncounterEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'Encounter');
+            const olderIndividualRelationshipEntry = newDB.objects(EntitySyncStatus.schema.name).filtered('entityName = $0', 'IndividualRelationship');
+            const subjectType = newDB.objects(SubjectType.schema.name);
+            const program = newDB.objects(Program.schema.name);
+            const formMappings = newDB.objects(FormMapping.schema.name)
+                .filtered('observationsTypeEntityUUID <> null AND voided = false')
+                .filtered(`TRUEPREDICATE DISTINCT(observationsTypeEntityUUID)`);
+            const checklistDetail = newDB.objects(ChecklistDetail.schema.name);
+            _.forEach(subjectType, st => {
+                newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderSubjectTypeEntry[0].entityName, olderSubjectTypeEntry[0].loadedSince, General.randomUUID(), st.uuid), true);
+                newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderIndividualRelationshipEntry[0].entityName, olderIndividualRelationshipEntry[0].loadedSince, General.randomUUID(), st.uuid), true);
+            });
+            _.forEach(program, pt => {
+                newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderProgramEntry[0].entityName, olderProgramEntry[0].loadedSince, General.randomUUID(), pt.uuid), true);
+            });
+            _.forEach(checklistDetail, ct => {
+                newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderChecklistItemEntry[0].entityName, olderChecklistItemEntry[0].loadedSince, General.randomUUID(), ct.uuid), true);
+                newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderChecklistEntry[0].entityName, olderChecklistEntry[0].loadedSince, General.randomUUID(), ct.uuid), true);
+            });
+            _.forEach(formMappings, fm => {
+                if (fm.entityUUID) {
+                    newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderProgramEncounterEntry[0].entityName, olderProgramEncounterEntry[0].loadedSince, General.randomUUID(), fm.observationsTypeEntityUUID), true);
+                } else {
+                    newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderEncounterEntry[0].entityName, olderEncounterEntry[0].loadedSince, General.randomUUID(), fm.observationsTypeEntityUUID), true);
+                }
             });
         }
     }

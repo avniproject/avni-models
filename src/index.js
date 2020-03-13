@@ -78,6 +78,10 @@ import OrganisationConfig from './OrganisationConfig';
 import PlatformTranslation from "./PlatformTranslation";
 import Translation from "./Translation";
 import CustomFilter from './CustomFilter';
+import Groups from "./Groups";
+import GroupPrivileges from "./GroupPrivileges";
+import MyGroups from "./MyGroups";
+import Privilege from "./Privilege";
 
 export {
     AbstractEncounter,
@@ -162,4 +166,8 @@ export {
     PlatformTranslation,
     Translation,
     CustomFilter,
+    Groups,
+    MyGroups,
+    GroupPrivileges,
+    Privilege
 }

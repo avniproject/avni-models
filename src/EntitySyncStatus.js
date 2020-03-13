@@ -7,15 +7,17 @@ class EntitySyncStatus {
         properties: {
             uuid: "string",
             entityName: 'string',
-            loadedSince: 'date'
+            loadedSince: 'date',
+            entityTypeUuid: 'string'
         }
     };
 
-    static create(entityName, date, uuid) {
+    static create(entityName, date, uuid, entityTypeUuid) {
         var entitySyncStatus = new EntitySyncStatus();
         entitySyncStatus.uuid = uuid;
         entitySyncStatus.entityName = entityName;
         entitySyncStatus.loadedSince = date;
+        entitySyncStatus.entityTypeUuid = entityTypeUuid;
         return entitySyncStatus;
     }
 }

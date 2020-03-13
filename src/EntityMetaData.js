@@ -38,6 +38,10 @@ import RuleFailureTelemetry from "./RuleFailureTelemetry";
 import OrganisationConfig from "./OrganisationConfig";
 import PlatformTranslation from "./PlatformTranslation";
 import Translation from "./Translation";
+import MyGroups from "./MyGroups";
+import Groups from "./Groups";
+import GroupPrivileges from "./GroupPrivileges";
+import Privilege from "./Privilege";
 
 const refData = (clazz, {res, filter, translated, parent, syncWeight} = {}) => ({
     entityName: clazz.schema.name,
@@ -51,7 +55,7 @@ const refData = (clazz, {res, filter, translated, parent, syncWeight} = {}) => (
 });
 const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, ({...attrs, translated: true}));
 
-const txData = (clazz, {res, resUrl, parent, apiVersion, syncWeight} = {}) => ({
+const txData = (clazz, {res, resUrl, parent, apiVersion, syncWeight, privilegeParam, privilegeEntity, privilegeName, queryParam} = {}) => ({
     entityName: clazz.schema.name,
     entityClass: clazz,
     resourceName: res || _.camelCase(clazz.schema.name),
@@ -61,13 +65,17 @@ const txData = (clazz, {res, resUrl, parent, apiVersion, syncWeight} = {}) => ({
     parent: parent,
     apiVersion,
     syncWeight: syncWeight,
+    privilegeParam,
+    privilegeEntity,
+    privilegeName,
+    queryParam
 });
 
-const checklistDetail = refData(ChecklistDetail, {syncWeight: 6});
+const checklistDetail = refData(ChecklistDetail, {syncWeight: 1});
 const rule = refData(Rule, {syncWeight: 3});
 const ruleDependency = refData(RuleDependency, {syncWeight: 3});
 const form = refData(Form, {syncWeight: 4});
-const formMapping = refData(FormMapping, {syncWeight: 4});
+const formMapping = refData(FormMapping, {syncWeight: 1});
 const encounterType = refDataNameTranslated(EncounterType, {res: 'operationalEncounterType', syncWeight: 4});
 const program = refDataNameTranslated(Program, {res: 'operationalProgram', syncWeight: 3});
 const programOutcome = refDataNameTranslated(ProgramOutcome, {syncWeight: 3});
@@ -76,33 +84,73 @@ const individualRelation = refDataNameTranslated(IndividualRelation, {syncWeight
 const individualRelationGenderMapping = refDataNameTranslated(IndividualRelationGenderMapping, {syncWeight: 3});
 const individualRelationshipType = refDataNameTranslated(IndividualRelationshipType, {syncWeight: 3});
 const concept = refDataNameTranslated(Concept, {syncWeight: 4});
-const programConfig = refDataNameTranslated(ProgramConfig, {syncWeight: 3});
+const programConfig = refDataNameTranslated(ProgramConfig, {syncWeight: 1});
 const video = refDataNameTranslated(Video, {syncWeight: 0});
 const subjectType = refDataNameTranslated(SubjectType, {res: 'operationalSubjectType', syncWeight: 1});
 const checklistItemDetail = refData(ChecklistItemDetail, {parent: checklistDetail, syncWeight: 3});
 const formElementGroup = refDataNameTranslated(FormElementGroup, {parent: form, syncWeight: 3});
 const formElement = refDataNameTranslated(FormElement, {parent: formElementGroup, syncWeight: 5});
-const conceptAnswer = refData(ConceptAnswer, {parent: concept, syncWeight: 4});
+const conceptAnswer = refData(ConceptAnswer, {parent: concept, syncWeight: 2});
 const identifierSource = refData(IdentifierSource, {syncWeight: 0});
 const organisationConfig = refData(OrganisationConfig, {syncWeight: 0});
 const platformTranslation = refData(PlatformTranslation, {syncWeight: 0});
 const translation = refData(Translation, {syncWeight: 0});
-const individual = txData(Individual, {syncWeight: 5});
+const individual = txData(Individual, {
+    syncWeight: 5,
+    privilegeParam: 'subjectTypeUuid',
+    privilegeEntity: Privilege.privilegeEntityType.subject,
+    privilegeName: Privilege.privilegeName.viewSubject
+});
 
 const addressLevel = refDataNameTranslated(AddressLevel, {res: 'locations', syncWeight: 4});
 const locationMapping = refData(LocationMapping, {parent: addressLevel, syncWeight: 4});
 
-const encounter = txData(Encounter, {parent: individual, syncWeight: 7});
-const programEnrolment = txData(ProgramEnrolment, {parent: individual, syncWeight: 3});
-const programEncounter = txData(ProgramEncounter, {parent: programEnrolment, syncWeight: 5});
-const checklist = txData(Checklist, {res: 'txNewChecklistEntity', parent: programEnrolment, syncWeight: 3});
-const checklistItem = txData(ChecklistItem, {res: 'txNewChecklistItemEntity', parent: checklist, syncWeight: 2});
-const individualRelationship = txData(IndividualRelationship, {parent: individual, syncWeight: 2});
+const encounter = txData(Encounter, {
+    parent: individual, syncWeight: 7,
+    privilegeParam: 'encounterTypeUuid',
+    privilegeEntity: Privilege.privilegeEntityType.encounter,
+    privilegeName: Privilege.privilegeName.viewVisit
+});
+const programEnrolment = txData(ProgramEnrolment, {
+    parent: individual, syncWeight: 5,
+    privilegeParam: 'programUuid',
+    privilegeEntity: Privilege.privilegeEntityType.enrolment,
+    privilegeName: Privilege.privilegeName.viewEnrolmentDetails
+});
+const programEncounter = txData(ProgramEncounter, {
+    parent: programEnrolment, syncWeight: 10,
+    privilegeParam: 'programEncounterTypeUuid',
+    privilegeEntity: Privilege.privilegeEntityType.encounter,
+    privilegeName: Privilege.privilegeName.viewVisit
+});
+const checklist = txData(Checklist, {
+    res: 'txNewChecklistEntity', parent: programEnrolment, syncWeight: 4,
+    privilegeParam: 'checklistDetailUuid',
+    privilegeEntity: Privilege.privilegeEntityType.checklist,
+    privilegeName: Privilege.privilegeName.viewChecklist
+});
+const checklistItem = txData(ChecklistItem, {
+    res: 'txNewChecklistItemEntity', parent: checklist, syncWeight: 5,
+    privilegeParam: 'checklistDetailUuid',
+    privilegeEntity: Privilege.privilegeEntityType.checklist,
+    privilegeName: Privilege.privilegeName.viewChecklist
+});
+const individualRelationship = txData(IndividualRelationship, {
+    parent: individual, syncWeight: 3,
+    privilegeParam: 'subjectTypeUuid',
+    privilegeEntity: Privilege.privilegeEntityType.subject,
+    privilegeName: Privilege.privilegeName.viewSubject
+});
 const videoTelemetric = txData(VideoTelemetric, {res: 'videotelemetric', parent: video, syncWeight: 0});
 const syncTelemetry = txData(SyncTelemetry, {resUrl: 'syncTelemetry', syncWeight: 1});
 const userInfo = txData(UserInfo, {resUrl: 'me', apiVersion: 'v2', syncWeight: 1});
 const identifierAssignment = txData(IdentifierAssignment, {syncWeight: 0});
 const ruleFailureTelemetry = txData(RuleFailureTelemetry, {resUrl: 'ruleFailureTelemetry', syncWeight: 0});
+
+const groups = refData(Groups, {res: 'groups', syncWeight: 0});
+const myGroups = refData(MyGroups, {res: 'myGroups', syncWeight: 0});
+const groupPrivileges = refData(GroupPrivileges, {res: 'groupPrivilege', syncWeight: 0});
+const privilege = refData((Privilege), {res: "privilege", syncWeight: 0});
 
 class EntityMetaData {
     //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
@@ -135,6 +183,10 @@ class EntityMetaData {
             subjectType,
             conceptAnswer,
             concept,
+            myGroups,
+            groupPrivileges,
+            groups,
+            privilege,
 
             videoTelemetric,
             individualRelationship,
