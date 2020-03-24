@@ -8,15 +8,17 @@ class SubjectType extends ReferenceEntity {
         properties: {
             uuid: 'string',
             name: 'string',
-            voided: { type: 'bool', default: false }
+            group: {type: 'bool', default: false},
+            voided: {type: 'bool', default: false}
         }
     };
     uuid;
 
-    static create(name) {
+    static create(name, group = false) {
         let subjectType = new SubjectType();
         subjectType.uuid = General.randomUUID();
         subjectType.name = name;
+        subjectType.group = group;
         return subjectType;
     }
 
@@ -26,6 +28,7 @@ class SubjectType extends ReferenceEntity {
         subjectType.name = operationalSubjectType.name;
         subjectType.uuid = operationalSubjectType.subjectTypeUUID;
         subjectType.voided = !!operationalSubjectType.voided;
+        subjectType.group = operationalSubjectType.group;
         return subjectType;
     }
 
@@ -34,10 +37,11 @@ class SubjectType extends ReferenceEntity {
         cloned.uuid = this.uuid;
         cloned.name = this.name;
         cloned.voided = this.voided;
+        cloned.group = this.group;
         return cloned;
     }
 
-    isIndividual(){
+    isIndividual() {
         return this.name === 'Individual' || this.name === 'Patient';
     }
 
