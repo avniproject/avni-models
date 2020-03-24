@@ -42,6 +42,8 @@ import MyGroups from "./MyGroups";
 import Groups from "./Groups";
 import GroupPrivileges from "./GroupPrivileges";
 import Privilege from "./Privilege";
+import GroupSubject from "./GroupSubject";
+import GroupRole from "./GroupRole";
 
 const refData = (clazz, {res, filter, translated, parent, syncWeight} = {}) => ({
     entityName: clazz.schema.name,
@@ -141,6 +143,12 @@ const individualRelationship = txData(IndividualRelationship, {
     privilegeEntity: Privilege.privilegeEntityType.subject,
     privilegeName: Privilege.privilegeName.viewSubject
 });
+const groupSubject = txData(GroupSubject, {
+    parent: individual, syncWeight: 0,
+    privilegeParam: 'subjectTypeUuid',
+    privilegeEntity: Privilege.privilegeEntityType.subject,
+    privilegeName: Privilege.privilegeName.viewSubject
+});
 const videoTelemetric = txData(VideoTelemetric, {res: 'videotelemetric', parent: video, syncWeight: 0});
 const syncTelemetry = txData(SyncTelemetry, {resUrl: 'syncTelemetry', syncWeight: 1});
 const userInfo = txData(UserInfo, {resUrl: 'me', apiVersion: 'v2', syncWeight: 1});
@@ -151,6 +159,7 @@ const groups = refData(Groups, {res: 'groups', syncWeight: 0});
 const myGroups = refData(MyGroups, {res: 'myGroups', syncWeight: 0});
 const groupPrivileges = refData(GroupPrivileges, {res: 'groupPrivilege', syncWeight: 0});
 const privilege = refData((Privilege), {res: "privilege", syncWeight: 0});
+const groupRole = refData(GroupRole, {res: "groupRole", syncWeight: 0});
 
 class EntityMetaData {
     //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
@@ -180,6 +189,7 @@ class EntityMetaData {
             program,
             programOutcome,
             gender,
+            groupRole,
             subjectType,
             conceptAnswer,
             concept,
@@ -189,6 +199,7 @@ class EntityMetaData {
             privilege,
 
             videoTelemetric,
+            groupSubject,
             individualRelationship,
             checklistItem,
             checklist,

@@ -15,6 +15,7 @@ import {findMediaObservations} from './Media';
 import Point from "./geo/Point";
 import SubjectType from './SubjectType';
 import Observation from "./Observation";
+import GroupSubject from "./GroupSubject";
 
 class Individual extends BaseEntity {
     static schema = {
@@ -36,6 +37,7 @@ class Individual extends BaseEntity {
             encounters: {type: "list", objectType: "Encounter"},
             observations: {type: 'list', objectType: 'Observation'},
             relationships: {type: 'list', objectType: 'IndividualRelationship'},
+            groupSubjects: {type: 'list', objectType: 'GroupSubject'},
             registrationLocation: {type: 'Point', optional: true}
         }
     };
@@ -66,6 +68,7 @@ class Individual extends BaseEntity {
     observations: Observation[];
     enrolments: ProgramEnrolment[];
     relationships: IndividualRelationship[];
+    groupSubjects: GroupSubject[];
     lowestAddressLevel: AddressLevel;
     voided: boolean;
     dateOfBirth: Date;
@@ -84,6 +87,7 @@ class Individual extends BaseEntity {
         individual.encounters = [];
         individual.enrolments = [];
         individual.relationships = [];
+        individual.groupSubjects = [];
         individual.lowestAddressLevel = AddressLevel.create({uuid: "", title: "", level: 0, typeString: ""});
         individual.voided = false;
         return individual;
@@ -162,13 +166,21 @@ class Individual extends BaseEntity {
         BaseEntity.mergeOn(new Map<any,any>([
             [ProgramEnrolment, 'enrolments'],
             [Encounter, "encounters"],
-            [IndividualRelationship, 'relationships']
+            [IndividualRelationship, 'relationships'],
+            [GroupSubject, 'groupSubjects'],
         ]).get(childEntityClass));
 
     static associateRelationship(child, childEntityClass, childResource, entityService) {
         var individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "individualAUUID", Individual.schema.name);
-        individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships"]);
+        individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships", 'groupSubjects']);
         BaseEntity.addNewChild(child, individual.relationships);
+        return individual;
+    }
+
+    static associateGroupSubject(child, childEntityClass, childResource, entityService) {
+        var individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "groupSubjectUUID", Individual.schema.name);
+        individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships", 'groupSubjects']);
+        BaseEntity.addNewChild(child, individual.groupSubjects);
         return individual;
     }
 
@@ -176,14 +188,18 @@ class Individual extends BaseEntity {
         [IndividualRelationship, 'relationships'],
         [ProgramEnrolment,'enrolments'],
         [Encounter,'encounters'],
+        [GroupSubject, 'groupSubjects'],
     ]);
 
     static associateChild(child, childEntityClass, childResource, entityService) {
         if (childEntityClass === IndividualRelationship) {
             return Individual.associateRelationship(child, childEntityClass, childResource, entityService);
         }
+        if(childEntityClass === GroupSubject) {
+            return Individual.associateGroupSubject(child, childEntityClass, childResource, entityService);
+        }
         var individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "individualUUID", Individual.schema.name);
-        individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships"]);
+        individual = General.pick(individual, ["uuid"], ["enrolments", "encounters", "relationships", 'groupSubjects']);
 
         if (childEntityClass === ProgramEnrolment)
             BaseEntity.addNewChild(child, individual.enrolments);
@@ -386,6 +402,7 @@ class Individual extends BaseEntity {
         individual.observations = ObservationsHolder.clone(this.observations);
         individual.registrationLocation = _.isNil(this.registrationLocation) ? null : this.registrationLocation.clone();
         individual.relationships = this.relationships;
+        individual.groupSubjects = this.groupSubjects;
         return individual;
     }
 
@@ -429,6 +446,13 @@ class Individual extends BaseEntity {
         }
     }
 
+    addGroupSubject(groupSubject) {
+        if (!_.some(this.groupSubjects, (x) => x.uuid === groupSubject.uuid)) {
+            this.groupSubjects = _.isEmpty(this.groupSubjects) ? [] : this.groupSubjects;
+            this.groupSubjects.push(groupSubject);
+        }
+    }
+
     findObservation(conceptName) {
         return _.find(this.observations, (observation) => {
             return observation.concept.name === conceptName
@@ -442,6 +466,10 @@ class Individual extends BaseEntity {
 
     getRelationships() {
         return _.filter(this.relationships, (v) => !v.voided);
+    }
+
+    getGroupSubjects() {
+        return _.filter(this.groupSubjects, g => !g.voided);
     }
 
     getRelative(relationName, inverse = false) {
@@ -552,6 +580,7 @@ class Individual extends BaseEntity {
             encounters: this.encounters,
             observations: this.observations,
             relationships: this.relationships,
+            groupSubjects: this.groupSubjects,
             voided: this.voided,
             registrationLocation: this.registrationLocation,
             subjectType: this.subjectType,

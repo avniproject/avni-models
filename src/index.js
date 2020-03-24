@@ -82,6 +82,8 @@ import Groups from "./Groups";
 import GroupPrivileges from "./GroupPrivileges";
 import MyGroups from "./MyGroups";
 import Privilege from "./Privilege";
+import GroupRole from "./GroupRole";
+import GroupSubject from "./GroupSubject";
 
 export {
     AbstractEncounter,
@@ -169,5 +171,7 @@ export {
     Groups,
     MyGroups,
     GroupPrivileges,
-    Privilege
+    Privilege,
+    GroupRole,
+    GroupSubject
 }

@@ -57,6 +57,8 @@ import GroupPrivileges from "./GroupPrivileges";
 import MyGroups from "./MyGroups";
 import Privilege from "./Privilege";
 import General from "./utility/General";
+import GroupRole from "./GroupRole";
+import GroupSubject from "./GroupSubject";
 
 export default {
     //order is important, should be arranged according to the dependency
@@ -68,9 +70,9 @@ export default {
         IndividualRelationshipType, IndividualRelationship, RuleDependency, Rule, ChecklistItemStatus,
         ChecklistDetail, ChecklistItemDetail, VideoTelemetric, Video, MediaQueue, Point, SyncTelemetry, IdentifierSource,
         IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin, OrganisationConfig, PlatformTranslation, Translation,
-        Groups, MyGroups, GroupPrivileges, Privilege
+        Groups, MyGroups, GroupPrivileges, Privilege, GroupRole, GroupSubject
     ],
-    schemaVersion: 116,
+    schemaVersion: 117,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
@@ -361,6 +363,11 @@ export default {
                 } else {
                     newDB.create(EntitySyncStatus.schema.name, EntitySyncStatus.create(olderEncounterEntry[0].entityName, olderEncounterEntry[0].loadedSince, General.randomUUID(), fm.observationsTypeEntityUUID), true);
                 }
+            });
+        }
+        if (oldDB.schemaVersion < 117) {
+            _.forEach(newDB.objects(Individual.schema.name), ind => {
+                ind.groupSubjects = [];
             });
         }
     }
