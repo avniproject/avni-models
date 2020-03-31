@@ -70,6 +70,11 @@ class WorkList {
         this.addWorkItems(new WorkItem(General.randomUUID(), WorkItem.type.CANCELLED_ENCOUNTER, params));
         return this;
     }
+
+    withAddMember(params) {
+        this.addWorkItems(new WorkItem(General.randomUUID(), WorkItem.type.ADD_MEMBER, params));
+        return this;
+    }
 }
 
 export default WorkList;

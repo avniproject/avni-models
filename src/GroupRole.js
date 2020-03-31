@@ -19,6 +19,14 @@ class GroupRole {
         }
     };
 
+    static createEmptyInstance() {
+        const groupRole = new GroupRole();
+        groupRole.uuid = General.randomUUID();
+        groupRole.groupSubjectType = SubjectType.create("");
+        groupRole.memberSubjectType = SubjectType.create("");
+        return groupRole;
+    }
+
     static fromResource(resource, entityService) {
         const groupSubjectType = entityService.findByKey("uuid", resource.groupSubjectTypeUUID, SubjectType.schema.name);
         const memberSubjectType = entityService.findByKey("uuid", resource.memberSubjectTypeUUID, SubjectType.schema.name);

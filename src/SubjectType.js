@@ -49,6 +49,10 @@ class SubjectType extends ReferenceEntity {
         return this.isIndividual() ? 'account-plus' : 'plus-box';
     }
 
+    isGroup() {
+        return this.group;
+    }
+
 }
 
 export default SubjectType;

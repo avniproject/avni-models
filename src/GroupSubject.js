@@ -31,6 +31,25 @@ class GroupSubject extends BaseEntity {
         return resource;
     }
 
+    static createEmptyInstance(uuid) {
+        const groupSubjectEntity = new GroupSubject();
+        groupSubjectEntity.uuid = uuid || General.randomUUID();
+        groupSubjectEntity.groupSubject = Individual.createEmptyInstance();
+        groupSubjectEntity.memberSubject = Individual.createEmptyInstance();
+        groupSubjectEntity.groupRole = GroupRole.createEmptyInstance();
+        return groupSubjectEntity;
+    }
+
+    static create({uuid, groupSubject, memberSubject, groupRole, membershipStartDate, membershipEndDate}) {
+        const groupSubjectEntity = GroupSubject.createEmptyInstance(uuid);
+        groupSubjectEntity.groupSubject = groupSubject;
+        groupSubjectEntity.memberSubject = memberSubject;
+        groupSubjectEntity.groupRole = groupRole;
+        groupSubjectEntity.membershipStartDate = membershipStartDate.value;
+        groupSubjectEntity.membershipEndDate = membershipEndDate.value;
+        return groupSubjectEntity;
+    }
+
     static parentAssociations = () => new Map([
         [Individual, "groupSubjectUUID"],
         [GroupRole, "groupRoleUUID"]

@@ -24,7 +24,10 @@ class Privilege {
         editVisit: 'Edit visit',
         cancelVisit: 'Cancel visit',
         viewChecklist: 'View checklist',
-        editChecklist: 'Edit checklist'
+        editChecklist: 'Edit checklist',
+        addMember: 'Add member',
+        editMember: 'Edit member',
+        removeMember: 'Remove member'
     };
 
     static privilegeEntityType = {

@@ -14,6 +14,7 @@ export default class WorkItem {
         PROGRAM_EXIT: 'PROGRAM_EXIT',
         PROGRAM_ENCOUNTER: 'PROGRAM_ENCOUNTER',
         CANCELLED_ENCOUNTER: 'CANCELLED_ENCOUNTER',
+        ADD_MEMBER: 'ADD_MEMBER',
     };
 
     constructor(id, type, parameters) {
@@ -25,7 +26,7 @@ export default class WorkItem {
 
     validate() {
         assertTrue(WorkItem.type[this.type], 'Work item must be one of WorkItem.type');
-        if (this.type !== WorkItem.type.REGISTRATION) {
+        if (!_.includes([WorkItem.type.REGISTRATION, WorkItem.type.ADD_MEMBER], this.type)) {
             this.ensureFieldExists('subjectUUID');
         }
         if (this.type === WorkItem.type.PROGRAM_ENROLMENT) {
