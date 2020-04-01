@@ -5,7 +5,8 @@ class MyGroups {
         properties: {
             uuid: "string",
             groupUuid: "string",
-            groupName: "string"
+            groupName: "string",
+            voided: {type: 'bool', default: false}
         }
     };
 
@@ -14,6 +15,7 @@ class MyGroups {
         myGroups.uuid = resource.uuid;
         myGroups.groupUuid = resource.groupUuid;
         myGroups.groupName = resource.groupName;
+        myGroups.voided = resource.voided;
         return myGroups;
     }
 }

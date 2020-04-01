@@ -72,7 +72,7 @@ export default {
         IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin, OrganisationConfig, PlatformTranslation, Translation,
         Groups, MyGroups, GroupPrivileges, Privilege, GroupRole, GroupSubject
     ],
-    schemaVersion: 117,
+    schemaVersion: 118,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
