@@ -4,7 +4,8 @@ class Groups {
         primaryKey: "uuid",
         properties: {
             uuid: 'string',
-            name: "string"
+            name: "string",
+            hasAllPrivileges: {type: 'bool', default: false},
         }
     };
 
@@ -12,6 +13,7 @@ class Groups {
         let groups = new Groups();
         groups.uuid = resource.uuid;
         groups.name = resource.name;
+        groups.hasAllPrivileges = resource.hasAllPrivileges;
         return groups;
     }
 }

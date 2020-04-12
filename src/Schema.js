@@ -72,7 +72,7 @@ export default {
         IdentifierAssignment, RuleFailureTelemetry, BeneficiaryModePin, OrganisationConfig, PlatformTranslation, Translation,
         Groups, MyGroups, GroupPrivileges, Privilege, GroupRole, GroupSubject
     ],
-    schemaVersion: 118,
+    schemaVersion: 119,
     migration: function (oldDB, newDB) {
         if (oldDB.schemaVersion < 10) {
             var oldObjects = oldDB.objects('DecisionConfig');
@@ -368,6 +368,11 @@ export default {
         if (oldDB.schemaVersion < 117) {
             _.forEach(newDB.objects(Individual.schema.name), ind => {
                 ind.groupSubjects = [];
+            });
+        }
+        if (oldDB.schemaVersion < 119) {
+            _.forEach(newDB.objects(Groups.schema.name), group => {
+                group.hasAllPrivileges = false;
             });
         }
     }
