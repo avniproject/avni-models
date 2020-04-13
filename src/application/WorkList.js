@@ -75,6 +75,11 @@ class WorkList {
         this.addWorkItems(new WorkItem(General.randomUUID(), WorkItem.type.ADD_MEMBER, params));
         return this;
     }
+
+    withHouseholdRegistration(params) {
+        this.addWorkItems(new WorkItem(General.randomUUID(), WorkItem.type.HOUSEHOLD, params));
+        return this;
+    }
 }
 
 export default WorkList;

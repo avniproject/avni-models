@@ -59,6 +59,10 @@ class IndividualRelative {
 
     }
 
+    isRelationPresent() {
+        return !_.isEmpty(this.relation.uuid);
+    }
+
     _validateRelationship() {
         if (this.relation.name === "son" && !General.dateAIsBeforeB(this.individual.dateOfBirth, this.relative.dateOfBirth)) {
             return ValidationResult.failure(IndividualRelative.validationKeys.RELATIVE, 'sonIsOlder');

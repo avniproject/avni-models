@@ -15,6 +15,7 @@ export default class WorkItem {
         PROGRAM_ENCOUNTER: 'PROGRAM_ENCOUNTER',
         CANCELLED_ENCOUNTER: 'CANCELLED_ENCOUNTER',
         ADD_MEMBER: 'ADD_MEMBER',
+        HOUSEHOLD: 'HOUSEHOLD',
     };
 
     constructor(id, type, parameters) {
@@ -26,7 +27,7 @@ export default class WorkItem {
 
     validate() {
         assertTrue(WorkItem.type[this.type], 'Work item must be one of WorkItem.type');
-        if (!_.includes([WorkItem.type.REGISTRATION, WorkItem.type.ADD_MEMBER], this.type)) {
+        if (!_.includes([WorkItem.type.REGISTRATION, WorkItem.type.ADD_MEMBER, WorkItem.type.HOUSEHOLD], this.type)) {
             this.ensureFieldExists('subjectUUID');
         }
         if (this.type === WorkItem.type.PROGRAM_ENROLMENT) {
@@ -49,5 +50,9 @@ export default class WorkItem {
 
     ensureFieldExists(field) {
         assertTrue(_.get(this.parameters, field), this.fieldMissingError(field));
+    }
+
+    addParams(params) {
+        _.assign(this.parameters, params);
     }
 }

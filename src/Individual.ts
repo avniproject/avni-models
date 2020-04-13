@@ -93,6 +93,12 @@ class Individual extends BaseEntity {
         return individual;
     }
 
+    static createEmptySubjectInstance() {
+        const individual = Individual.createEmptyInstance();
+        individual.gender = null;
+        return individual;
+    }
+
     get toResource() {
         const resource = _.pick(this, ["uuid", "firstName", "lastName", "dateOfBirthVerified", "voided"]);
         resource.dateOfBirth = this.dateOfBirth ? moment(this.dateOfBirth).format('YYYY-MM-DD') : null;
@@ -163,7 +169,7 @@ class Individual extends BaseEntity {
     }
 
     static merge = (childEntityClass) =>
-        BaseEntity.mergeOn(new Map<any,any>([
+        BaseEntity.mergeOn(new Map<any, any>([
             [ProgramEnrolment, 'enrolments'],
             [Encounter, "encounters"],
             [IndividualRelationship, 'relationships'],
@@ -184,10 +190,10 @@ class Individual extends BaseEntity {
         return individual;
     }
 
-    static childAssociations = () => new Map<any,any>([
+    static childAssociations = () => new Map<any, any>([
         [IndividualRelationship, 'relationships'],
-        [ProgramEnrolment,'enrolments'],
-        [Encounter,'encounters'],
+        [ProgramEnrolment, 'enrolments'],
+        [Encounter, 'encounters'],
         [GroupSubject, 'groupSubjects'],
     ]);
 
@@ -195,7 +201,7 @@ class Individual extends BaseEntity {
         if (childEntityClass === IndividualRelationship) {
             return Individual.associateRelationship(child, childEntityClass, childResource, entityService);
         }
-        if(childEntityClass === GroupSubject) {
+        if (childEntityClass === GroupSubject) {
             return Individual.associateGroupSubject(child, childEntityClass, childResource, entityService);
         }
         var individual = BaseEntity.getParentEntity(entityService, childEntityClass, childResource, "individualUUID", Individual.schema.name);
@@ -507,6 +513,18 @@ class Individual extends BaseEntity {
     isIndividual() {
         //TODO this nil check is not required when migration works properly
         return (_.isNil(this.subjectType) || this.subjectType.isIndividual());
+    }
+
+    isHousehold() {
+        return this.subjectType.isHousehold();
+    }
+
+    isGroup() {
+        return this.subjectType.isGroup();
+    }
+
+    getHeadOfHouseholdGroupSubject() {
+        return _.find(this.groupSubjects.filter(({voided}) => !voided), ({groupRole}) => groupRole.isHeadOfHousehold);
     }
 
     userProfileSubtext1(i18n) {

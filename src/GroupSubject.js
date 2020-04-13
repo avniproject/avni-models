@@ -90,6 +90,26 @@ class GroupSubject extends BaseEntity {
         }
     }
 
+    getRelationshipWithHeadOfHousehold() {
+        if (this.groupRole.isHeadOfHousehold) {
+            return 'headOfHousehold';
+        }
+        const headOfHouseholdGroupSubject = this.groupSubject.getHeadOfHouseholdGroupSubject();
+        if (_.isEmpty(headOfHouseholdGroupSubject)) {
+            return 'unavailable';
+        }
+        const relationship = this.memberSubject.relationships.filter(({individualA, individualB, voided}) => (individualA.uuid === headOfHouseholdGroupSubject.memberSubject.uuid ||
+            individualB.uuid === headOfHouseholdGroupSubject.memberSubject.uuid) && !voided);
+        if (relationship.length === 0) {
+            return 'unavailable';
+        }
+        return relationship[0].relationship.individualAIsToBRelation.name;
+    }
+
+    getRole() {
+        return this.groupRole.role;
+    }
+
 }
 
 export default GroupSubject;

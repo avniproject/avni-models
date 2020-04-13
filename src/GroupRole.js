@@ -19,6 +19,19 @@ class GroupRole {
         }
     };
 
+    static householdRoles = {
+        head: 'Head of household',
+        member: 'Member'
+    };
+
+    get isHouseholdMember() {
+        return this.groupSubjectType.isHousehold() && this.role === GroupRole.householdRoles.member;
+    }
+
+    get isHeadOfHousehold() {
+        return this.groupSubjectType.isHousehold() && this.role === GroupRole.householdRoles.head;
+    }
+
     static createEmptyInstance() {
         const groupRole = new GroupRole();
         groupRole.uuid = General.randomUUID();
