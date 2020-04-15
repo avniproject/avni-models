@@ -1,0 +1,9 @@
+{
+    "out": "docs",
+    "excludeExternals": true,
+    "exclude": [
+        "dist/**",
+        "test/**",
+        "**/!(FormElementGroup|FormElement|FormElementStatus|WorkItem|WorkList|WorkLists|Individual|Gender|SubjectType|ProgramEnrolment|ProgramEncounter|AbstractEncounter|Encounter).*"
+    ]
+}

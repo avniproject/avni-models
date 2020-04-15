@@ -12,7 +12,10 @@
         "test": "jest",
         "test-ci": "jest --verbose --forceExit --maxWorkers=2 --ci",
         "build": "babel src --out-dir dist --extensions '.js','.ts' && tsc",
-        "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')"
+        "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')",
+        "doc": "yarn doc:html && open docs/index.html",
+        "doc:html": "typedoc",
+        "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d docs"
     },
     "jest": {
         "testMatch": [
@@ -41,10 +44,12 @@
         "babel-register": "^7.0.0-beta.3",
         "chai": "^4.1.2",
         "cross-env": "^5.2.0",
+        "gh-pages": "^2.2.0",
         "jest": "^24.8.0",
         "jsdom": "15.1.1",
         "jsdom-global": "3.0.2",
         "nyc": "^14.1.1",
+        "typedoc": "^0.17.4",
         "typescript": "^3.7.4",
         "uglifyjs-webpack-plugin": "^2.1.3",
         "webpack": "^4.12.2",

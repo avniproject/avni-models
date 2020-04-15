@@ -36,3 +36,4 @@ node_modules
 # Remove generated files
 lib
 dist
+docs
