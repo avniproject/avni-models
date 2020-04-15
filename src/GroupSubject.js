@@ -112,6 +112,13 @@ class GroupSubject extends BaseEntity {
         return this.groupRole.role;
     }
 
+    getRoleDescription() {
+        if (this.groupSubject.isHousehold()) {
+            return this.getRelationshipWithHeadOfHousehold();
+        }
+        return this.getRole();
+    }
+
 }
 
 export default GroupSubject;
