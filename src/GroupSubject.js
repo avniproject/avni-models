@@ -20,6 +20,8 @@ class GroupSubject extends BaseEntity {
         }
     };
 
+    voided;
+
     get toResource() {
         const resource = _.pick(this, ["uuid"]);
         resource.groupSubjectUUID = this.groupSubject.uuid;

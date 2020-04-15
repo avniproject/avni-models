@@ -34,6 +34,8 @@ class ProgramEnrolment extends BaseEntity {
         }
     };
 
+    voided;
+
     static createEmptyInstance({individual, program} = {}) {
         const programEnrolment = new ProgramEnrolment();
         programEnrolment.uuid = General.randomUUID();

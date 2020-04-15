@@ -11,7 +11,7 @@
     "scripts": {
         "test": "jest",
         "test-ci": "jest --verbose --forceExit --maxWorkers=2 --ci",
-        "build": "babel src --out-dir dist --extensions '.js','.ts'",
+        "build": "babel src --out-dir dist --extensions '.js','.ts' && tsc",
         "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')"
     },
     "jest": {
