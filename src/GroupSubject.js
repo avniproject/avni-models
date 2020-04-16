@@ -92,7 +92,7 @@ class GroupSubject extends BaseEntity {
         }
     }
 
-    getRelationshipWithHeadOfHousehold() {
+    getRelationshipWithHeadOfHousehold(relatives) {
         if (this.groupRole.isHeadOfHousehold) {
             return 'headOfHousehold';
         }
@@ -100,21 +100,20 @@ class GroupSubject extends BaseEntity {
         if (_.isEmpty(headOfHouseholdGroupSubject)) {
             return 'unavailable';
         }
-        const relationship = this.memberSubject.relationships.filter(({individualA, individualB, voided}) => (individualA.uuid === headOfHouseholdGroupSubject.memberSubject.uuid ||
-            individualB.uuid === headOfHouseholdGroupSubject.memberSubject.uuid) && !voided);
-        if (relationship.length === 0) {
+        const subjectRelatives = relatives.filter(({relative}) => relative.uuid === headOfHouseholdGroupSubject.memberSubject.uuid);
+        if (subjectRelatives.length === 0) {
             return 'unavailable';
         }
-        return relationship[0].relationship.individualAIsToBRelation.name;
+        return subjectRelatives[0].relation.name;
     }
 
     getRole() {
         return this.groupRole.role;
     }
 
-    getRoleDescription() {
+    getRoleDescription(relatives) {
         if (this.groupSubject.isHousehold()) {
-            return this.getRelationshipWithHeadOfHousehold();
+            return this.getRelationshipWithHeadOfHousehold(relatives);
         }
         return this.getRole();
     }
