@@ -110,6 +110,10 @@ class IndividualRelative {
         return _.reject(validationResults, _.isNil);
     }
 
+    validateAge() {
+        return this._validateRelationship();
+    }
+
 }
 
 export default IndividualRelative;

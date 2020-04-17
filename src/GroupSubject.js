@@ -100,7 +100,7 @@ class GroupSubject extends BaseEntity {
         if (_.isEmpty(headOfHouseholdGroupSubject)) {
             return 'unavailable';
         }
-        const subjectRelatives = relatives.filter(({relative}) => relative.uuid === headOfHouseholdGroupSubject.memberSubject.uuid);
+        const subjectRelatives = relatives.filter(({relative}) => relative.uuid === this.memberSubject.uuid);
         if (subjectRelatives.length === 0) {
             return 'unavailable';
         }
