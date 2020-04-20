@@ -114,6 +114,15 @@ class IndividualRelative {
         return this._validateRelationship();
     }
 
+    validateSelectedRelation(validRelations, existingRelatives) {
+        const selectedRelation = _.find(validRelations, relation => relation.name === this.relation.name);
+        const validationResult = _.isEmpty(selectedRelation) ? ValidationResult.failure(IndividualRelative.validationKeys.RELATION, 'relativeRelationGenderMismatch') : ValidationResult.successful(IndividualRelative.validationKeys.RELATION);
+        return [...this.validate(existingRelatives), validationResult]
+    }
+
+    relativeAndRelationSelected() {
+        return !_.isEmpty(this.relation.name) && !_.isEmpty(this.relative.name);
+    }
 }
 
 export default IndividualRelative;
