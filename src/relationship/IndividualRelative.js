@@ -91,7 +91,7 @@ class IndividualRelative {
         return this.validateFieldForEmpty(this.relation.name, IndividualRelative.validationKeys.RELATION);
     }
 
-    validate(existingRelatives) {
+    validate(existingRelatives, skipRecordedRelationshipValidation) {
         const validationResults = [];
         validationResults.push(this.validateRelative());
         validationResults.push(this.validateIndividual());
@@ -100,7 +100,7 @@ class IndividualRelative {
             if(_.isNil(this.relative.name)){
                 validationResults.push(new ValidationResult(false, IndividualRelative.validationKeys.RELATIVE, 'selectRelative'));
             }
-            else if (_.some(existingRelatives, (relative) => relative.relative.uuid === this.relative.uuid && relative.relation.uuid === this.relation.uuid)) {
+            else if (!skipRecordedRelationshipValidation && _.some(existingRelatives, (relative) => relative.relative.uuid === this.relative.uuid && relative.relation.uuid === this.relation.uuid)) {
                 validationResults.push(new ValidationResult(false, IndividualRelative.validationKeys.RELATIVE, 'relationshipAlreadyRecorded'));
                 validationResults.push(new ValidationResult(false, IndividualRelative.validationKeys.RELATION, 'relationshipAlreadyRecorded'));
             } else {
@@ -117,7 +117,7 @@ class IndividualRelative {
     validateSelectedRelation(validRelations, existingRelatives) {
         const selectedRelation = _.find(validRelations, relation => relation.name === this.relation.name);
         const validationResult = _.isEmpty(selectedRelation) ? ValidationResult.failure(IndividualRelative.validationKeys.RELATION, 'relativeRelationGenderMismatch') : ValidationResult.successful(IndividualRelative.validationKeys.RELATION);
-        return [...this.validate(existingRelatives), validationResult]
+        return [...this.validate(existingRelatives, true), validationResult]
     }
 
     relativeAndRelationSelected() {
