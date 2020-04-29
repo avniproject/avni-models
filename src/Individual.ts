@@ -313,6 +313,9 @@ class Individual extends BaseEntity {
         if (validationResult.success && General.dateIsAfterToday(this.registrationDate)) {
             return ValidationResult.failure(Individual.validationKeys.REGISTRATION_DATE, 'registrationDateInFuture');
         }
+        if (!moment(this.registrationDate).isValid()) {
+            return ValidationResult.failure(Individual.validationKeys.REGISTRATION_DATE, 'invalidDateFormat');
+        }
         return validationResult;
     }
 

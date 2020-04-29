@@ -107,9 +107,24 @@ class FormElement {
         else if (this.isMultiSelect() && !_.isEmpty(value)) {
             return this._validateMultiSelect(value);
         }
-        else if (this.concept.datatype === Concept.dataType.DateTime
-            && General.hoursAndMinutesOfDateAreZero(value)) {
-          failure.messageKey = "timeValueValidation";
+        else if (this.concept.datatype === Concept.dataType.DateTime) {
+            if (!moment(value).isValid()) {
+                failure.messageKey = "invalidDateTimeFormat";
+            } else if (General.hoursAndMinutesOfDateAreZero(value)) {
+                failure.messageKey = "timeValueValidation";
+            } else {
+                return new ValidationResult(true, this.uuid, null);
+            }
+        }
+        else if (this.concept.datatype === Concept.dataType.Time && !moment(value).isValid()) {
+            failure.messageKey = "invalidTimeFormat";
+        }
+        else if (this.concept.datatype === Concept.dataType.Date && !moment(value).isValid()) {
+            failure.messageKey = "invalidDateFormat";
+        }
+        else if (this.mandatory && this.concept.datatype === Concept.dataType.Duration
+            && _.some(_.map(value.durations, 'durationValue'), (durationValue) => _.isEmpty(durationValue))) {
+            failure.messageKey = "emptyValidationMessage";
         }
         else {
             return new ValidationResult(true, this.uuid, null);
