@@ -16,12 +16,13 @@ class FormElementGroup {
             display: {type: 'string', optional: true},
             formElements: {type: 'list', objectType: 'FormElement'},
             form: 'Form',
-            voided: {type: 'bool', default: false}
+            voided: {type: 'bool', default: false},
+            rule: {type: 'string', optional: true}
         }
     };
 
     static fromResource(resource, entityService) {
-        const formElementGroup = General.assignFields(resource, new FormElementGroup(), ["uuid", "name", "displayOrder", "display", "voided"]);
+        const formElementGroup = General.assignFields(resource, new FormElementGroup(), ["uuid", "name", "displayOrder", "display", "voided", "rule"]);
         formElementGroup.form = entityService.findByKey("uuid", ResourceUtil.getUUIDFor(resource, "formUUID"), Form.schema.name);
         return formElementGroup;
     }
