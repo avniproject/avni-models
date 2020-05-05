@@ -7,6 +7,7 @@ import ValidationResult from "./ValidationResult";
 import KeyValue from "./KeyValue";
 import Format from "./Format"
 import Filter from "./Filter";
+import moment from "moment";
 
 class FormElement {
     static schema = {
