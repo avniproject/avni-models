@@ -1,39 +1,39 @@
 class StaticFormElementGroup {
-    constructor(form) {
-        this.form = form;
-    }
+  constructor(form) {
+    this.form = form;
+  }
 
-    next() {
-        return this.form.firstFormElementGroup;
-    }
+  next() {
+    return this.form.firstFormElementGroup;
+  }
 
-    previous() {
-        return null;
-    }
+  previous() {
+    return null;
+  }
 
-    get isLast() {
-        return true;
-    }
+  get isLast() {
+    return true;
+  }
 
-    get isFirst() {
-        return true;
-    }
+  get isFirst() {
+    return true;
+  }
 
-    validate() {
-        return [];
-    }
+  validate() {
+    return [];
+  }
 
-    get formElementIds() {
-        return [];
-    }
+  get formElementIds() {
+    return [];
+  }
 
-    getFormElements() {
-        return [];
-    }
+  getFormElements() {
+    return [];
+  }
 
-    filterElements(formElementStatuses) {
-        return this.getFormElements();
-    }
+  filterElements(formElementStatuses) {
+    return this.getFormElements();
+  }
 }
 
 export default StaticFormElementGroup;

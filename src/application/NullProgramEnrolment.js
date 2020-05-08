@@ -1,28 +1,28 @@
 class NullProgramEnrolment {
-    constructor(individual) {
-        this.individual = individual;
-        this.program = {uuid: null};
-    }
+  constructor(individual) {
+    this.individual = individual;
+    this.program = { uuid: null };
+  }
 
-    nonVoidedEncounters() {
-        return [];
-    }
+  nonVoidedEncounters() {
+    return [];
+  }
 
-    get isActive() {
-        return false;
-    }
+  get isActive() {
+    return false;
+  }
 
-    get observations() {
-        return [];
-    }
+  get observations() {
+    return [];
+  }
 
-    get encounters() {
-        return [];
-    }
+  get encounters() {
+    return [];
+  }
 
-    get uuid() {
-        return null;
-    }
+  get uuid() {
+    return null;
+  }
 }
 
 export default NullProgramEnrolment;

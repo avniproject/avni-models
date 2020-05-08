@@ -1,25 +1,22 @@
 import General from "./utility/General";
 import _ from "lodash";
 
-
 class RuleFailureTelemetry {
-
-
   static schema = {
     name: "RuleFailureTelemetry",
-    primaryKey: 'uuid',
+    primaryKey: "uuid",
     properties: {
-      uuid: 'string',
-      ruleUuid: 'string',
-      individualUuid: 'string',
-      errorMessage: 'string',
+      uuid: "string",
+      ruleUuid: "string",
+      individualUuid: "string",
+      errorMessage: "string",
       stacktrace: "string",
-      closed: {type: 'bool', default: false},
-      errorDateTime: "date"
-    }
+      closed: { type: "bool", default: false },
+      errorDateTime: "date",
+    },
   };
 
-  static create({ruleUUID, individualUUID, errorMessage, stacktrace}) {
+  static create({ ruleUUID, individualUUID, errorMessage, stacktrace }) {
     const ruleFailureTelemetry = new RuleFailureTelemetry();
     ruleFailureTelemetry.uuid = General.randomUUID();
     ruleFailureTelemetry.closed = false;
@@ -32,7 +29,15 @@ class RuleFailureTelemetry {
   }
 
   get toResource() {
-    return _.pick(this, ["uuid", "ruleUuid", "individualUuid", "errorMessage", "stacktrace", "closed", "errorDateTime"]);
+    return _.pick(this, [
+      "uuid",
+      "ruleUuid",
+      "individualUuid",
+      "errorMessage",
+      "stacktrace",
+      "closed",
+      "errorDateTime",
+    ]);
   }
 
   clone() {

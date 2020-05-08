@@ -15,7 +15,8 @@
         "coverage": "istanbul cover --report lcov _mocha --require $(find ./src/test -name '*Test.js')",
         "doc": "yarn doc:html && open docs/index.html",
         "doc:html": "typedoc",
-        "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d docs"
+        "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d docs",
+        "prettier-all": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
     },
     "jest": {
         "testMatch": [
@@ -49,6 +50,7 @@
         "jsdom": "15.1.1",
         "jsdom-global": "3.0.2",
         "nyc": "^14.1.1",
+        "prettier": "2.0.5",
         "typedoc": "^0.17.4",
         "typescript": "^3.7.4",
         "uglifyjs-webpack-plugin": "^2.1.3",
