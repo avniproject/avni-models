@@ -36,10 +36,7 @@ class Individual extends BaseEntity {
       enrolments: { type: "list", objectType: "ProgramEnrolment" },
       encounters: { type: "list", objectType: "Encounter" },
       observations: { type: "list", objectType: "Observation" },
-      relationships: {
-        type: "list",
-        objectType: "IndividualRelationship",
-      },
+      relationships: { type: "list", objectType: "IndividualRelationship" },
       groupSubjects: { type: "list", objectType: "GroupSubject" },
       registrationLocation: { type: "Point", optional: true },
     },

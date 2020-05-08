@@ -1,75 +1,80 @@
 import BaseEntity from "../BaseEntity";
 import General from "../utility/General";
 import moment from "moment";
-import _ from 'lodash';
+import _ from "lodash";
 
 class VideoTelemetric extends BaseEntity {
-    static schema = {
-        name: "VideoTelemetric",
-        primaryKey: 'uuid',
-        properties: {
-            uuid: 'string',
-            video: 'Video',
-            playerOpenTime: 'date',
-            playerCloseTime: 'date',
-            videoStartTime: 'double',//in seconds
-            videoEndTime: 'double',//in seconds
-        }
-    };
+  static schema = {
+    name: "VideoTelemetric",
+    primaryKey: "uuid",
+    properties: {
+      uuid: "string",
+      video: "Video",
+      playerOpenTime: "date",
+      playerCloseTime: "date",
+      videoStartTime: "double", //in seconds
+      videoEndTime: "double", //in seconds
+    },
+  };
 
-    static create(obj={}) {
-        const {uuid = General.randomUUID()} = obj;
-        return _.assignIn(new VideoTelemetric(), _.pick(obj, [
-            'uuid',
-            'video',
-            'playerOpenTime',
-            'playerCloseTime',
-            'videoStartTime',
-            'videoEndTime',
-        ]), {uuid});
+  static create(obj = {}) {
+    const { uuid = General.randomUUID() } = obj;
+    return _.assignIn(
+      new VideoTelemetric(),
+      _.pick(obj, [
+        "uuid",
+        "video",
+        "playerOpenTime",
+        "playerCloseTime",
+        "videoStartTime",
+        "videoEndTime",
+      ]),
+      { uuid }
+    );
+  }
+
+  static fromResource() {
+    General.logWarn(
+      "This should never be called. The server should always return empty array.\n" +
+        "So, no need to create realm entities."
+    );
+    return VideoTelemetric.create({});
+  }
+
+  cloneForReference() {
+    return VideoTelemetric.create(_.assignIn({}, this));
+  }
+
+  setPlayerOpenTime() {
+    this.playerOpenTime = moment().toDate();
+  }
+
+  setPlayerCloseTime() {
+    this.playerCloseTime = moment().toDate();
+  }
+
+  setOnceVideoStartTime(videoTime) {
+    if (_.isNil(this.videoStartTime)) {
+      this.videoStartTime = this._roundToNearestPoint5(videoTime);
     }
+  }
 
-    static fromResource() {
-        General.logWarn('This should never be called. The server should always return empty array.\n' +
-            'So, no need to create realm entities.');
-        return VideoTelemetric.create({});
-    }
+  setVideoEndTime(videoTime) {
+    this.videoEndTime = this._roundToNearestPoint5(videoTime);
+  }
 
-    cloneForReference() {
-        return VideoTelemetric.create(_.assignIn({}, this));
-    }
+  get toResource() {
+    const resource = _.pick(this, ["uuid", "videoStartTime", "videoEndTime"]);
+    resource.playerOpenTime = General.isoFormat(this.playerOpenTime);
+    resource.playerCloseTime = General.isoFormat(this.playerCloseTime);
+    resource.videoUUID = this.video.uuid;
+    return resource;
+  }
 
-    setPlayerOpenTime() {
-        this.playerOpenTime = moment().toDate();
-    }
-
-    setPlayerCloseTime() {
-        this.playerCloseTime = moment().toDate();
-    }
-
-    setOnceVideoStartTime(videoTime) {
-        if(_.isNil(this.videoStartTime)) {
-            this.videoStartTime = this._roundToNearestPoint5(videoTime);
-        }
-    }
-
-    setVideoEndTime(videoTime) {
-        this.videoEndTime = this._roundToNearestPoint5(videoTime);
-    }
-
-    get toResource() {
-        const resource = _.pick(this, ['uuid', 'videoStartTime', 'videoEndTime']);
-        resource.playerOpenTime = General.isoFormat(this.playerOpenTime);
-        resource.playerCloseTime = General.isoFormat(this.playerCloseTime);
-        resource.videoUUID = this.video.uuid;
-        return resource;
-    }
-
-    //valid outputs 0,0.5,1,1.5,2,2.5,3,3.5...
-    _roundToNearestPoint5(n) {
-        return Math.round(n * 2)/2;
-    }
-
+  //valid outputs 0,0.5,1,1.5,2,2.5,3,3.5...
+  _roundToNearestPoint5(n) {
+    return Math.round(n * 2) / 2;
+  }
 }
 
 export default VideoTelemetric;

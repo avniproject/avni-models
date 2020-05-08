@@ -1,70 +1,75 @@
 import _ from "lodash";
 
 class MultipleCodedValues {
-    constructor(answer) {
-        this.answer = _.isNil(answer) ? [] : answer;
-    }
+  constructor(answer) {
+    this.answer = _.isNil(answer) ? [] : answer;
+  }
 
-    push(answerUUID) {
-        this.answer.push(answerUUID);
-        return this;
-    }
+  push(answerUUID) {
+    this.answer.push(answerUUID);
+    return this;
+  }
 
-    isAnswerAlreadyPresent(conceptUUID) {
-        return _.some(this.answer, (item) => item === conceptUUID);
-    }
+  isAnswerAlreadyPresent(conceptUUID) {
+    return _.some(this.answer, (item) => item === conceptUUID);
+  }
 
-    hasValue(conceptUUID) {
-        return this.isAnswerAlreadyPresent(conceptUUID);
-    }
+  hasValue(conceptUUID) {
+    return this.isAnswerAlreadyPresent(conceptUUID);
+  }
 
-    removeAnswer(conceptUUID) {
-        _.remove(this.answer, (item) => item === conceptUUID);
-    }
+  removeAnswer(conceptUUID) {
+    _.remove(this.answer, (item) => item === conceptUUID);
+  }
 
-    toggleAnswer(answerUUID) {
-        if (this.isAnswerAlreadyPresent(answerUUID)) {
-            this.removeAnswer(answerUUID);
-        } else {
-            this.push(answerUUID);
-        }
+  toggleAnswer(answerUUID) {
+    if (this.isAnswerAlreadyPresent(answerUUID)) {
+      this.removeAnswer(answerUUID);
+    } else {
+      this.push(answerUUID);
     }
+  }
 
-    hasAnyAbnormalAnswer(abnormalAnswerUUIDs){
-        return _.some(this.answer, (item) => {return _.some(abnormalAnswerUUIDs, _.matches(item))});
-    }
+  hasAnyAbnormalAnswer(abnormalAnswerUUIDs) {
+    return _.some(this.answer, (item) => {
+      return _.some(abnormalAnswerUUIDs, _.matches(item));
+    });
+  }
 
-    getValue() {
-        return this.answer;
-    }
+  getValue() {
+    return this.answer;
+  }
 
-    get toResource() {
-        return this.getValue();
-    }
+  get toResource() {
+    return this.getValue();
+  }
 
-    cloneForEdit() {
-        const multipleCodedValues = new MultipleCodedValues();
-        multipleCodedValues.answer = this.answer;
-        return multipleCodedValues;
-    }
+  cloneForEdit() {
+    const multipleCodedValues = new MultipleCodedValues();
+    multipleCodedValues.answer = this.answer;
+    return multipleCodedValues;
+  }
 
-    get isSingleCoded() {
-        return false;
-    }
+  get isSingleCoded() {
+    return false;
+  }
 
-    get isMultipleCoded() {
-        return true;
-    }
+  get isMultipleCoded() {
+    return true;
+  }
 
-    valueAsString(conceptService, I18n) {
-        return _.join(this.getValue().map((value) => {
-            return I18n.t(conceptService.getConceptByUUID(value).name);
-        }), ', ');
-    }
+  valueAsString(conceptService, I18n) {
+    return _.join(
+      this.getValue().map((value) => {
+        return I18n.t(conceptService.getConceptByUUID(value).name);
+      }),
+      ", "
+    );
+  }
 
-    get numberOfAnswers() {
-        return this.answer.length;
-    }
+  get numberOfAnswers() {
+    return this.answer.length;
+  }
 }
 
 export default MultipleCodedValues;
