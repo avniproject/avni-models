@@ -3,15 +3,16 @@ import General from "./utility/General";
 
 class SubjectType extends ReferenceEntity {
   static schema = {
-    name: "SubjectType",
-    primaryKey: "uuid",
+    name: 'SubjectType',
+    primaryKey: 'uuid',
     properties: {
-      uuid: "string",
-      name: "string",
-      group: { type: "bool", default: false },
-      household: { type: "bool", default: false },
-      voided: { type: "bool", default: false },
-    },
+      uuid: 'string',
+      name: 'string',
+      group: {type: 'bool', default: false},
+      household: {type: 'bool', default: false},
+      voided: {type: 'bool', default: false},
+      active: {type: 'bool', default: true}
+    }
   };
   uuid;
 
@@ -32,6 +33,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.voided = !!operationalSubjectType.voided;
     subjectType.group = operationalSubjectType.group;
     subjectType.household = operationalSubjectType.household;
+    subjectType.active = operationalSubjectType.active;
     return subjectType;
   }
 
@@ -42,6 +44,7 @@ class SubjectType extends ReferenceEntity {
     cloned.voided = this.voided;
     cloned.group = this.group;
     cloned.household = this.household;
+    cloned.active = this.active;
     return cloned;
   }
 
