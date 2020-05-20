@@ -1,9 +1,9 @@
 import Settings from "./Settings";
 import LocaleMapping from "./LocaleMapping";
-import Concept, { ConceptAnswer } from "./Concept";
+import Concept, {ConceptAnswer} from "./Concept";
 import Individual from "./Individual";
 import Family from "./Family";
-import AddressLevel, { LocationMapping } from "./AddressLevel";
+import AddressLevel, {LocationMapping} from "./AddressLevel";
 import UserDefinedIndividualProperty from "./UserDefinedIndividualProperty";
 import Gender from "./Gender";
 import EntitySyncStatus from "./EntitySyncStatus";
@@ -125,7 +125,7 @@ export default {
     GroupRole,
     GroupSubject,
   ],
-  schemaVersion: 122,
+  schemaVersion: 123,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -531,6 +531,19 @@ export default {
       _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
         sub.group = false;
         sub.household = false;
+      });
+    }
+
+    if (oldDB.schemaVersion < 123) {
+      _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+        sub.active = true;
+      });
+      _.forEach(newDB.objects(Program.schema.name), (prog) => {
+        prog.voided = false;
+        prog.active = true;
+      });
+      _.forEach(newDB.objects(EncounterType.schema.name), (enc) => {
+        enc.active = true;
       });
     }
   },
