@@ -510,6 +510,7 @@ class Individual extends BaseEntity {
       : this.registrationLocation.clone();
     individual.relationships = this.relationships;
     individual.groupSubjects = this.groupSubjects;
+    individual.encounters = this.encounters;
     return individual;
   }
 
