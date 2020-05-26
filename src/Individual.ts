@@ -93,6 +93,7 @@ class Individual extends BaseEntity {
       title: "",
       level: 0,
       typeString: "",
+      titleLineage: "",
     });
     individual.voided = false;
     return individual;
