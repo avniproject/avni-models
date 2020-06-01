@@ -125,7 +125,7 @@ export default {
     GroupRole,
     GroupSubject,
   ],
-  schemaVersion: 123,
+  schemaVersion: 124,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -544,6 +544,21 @@ export default {
       });
       _.forEach(newDB.objects(EncounterType.schema.name), (enc) => {
         enc.active = true;
+      });
+    }
+
+    if (oldDB.schemaVersion < 124) {
+      _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+        const {group, household, name} = sub;
+        if (household) {
+          sub.type = SubjectType.types.Household;
+        } else if (group) {
+          sub.type = SubjectType.types.Group
+        } else if (_.includes(['Individual', 'Patient'], name)) {
+          sub.type = SubjectType.types.Person
+        } else {
+          sub.type = SubjectType.types.Individual
+        }
       });
     }
   },
