@@ -12,15 +12,15 @@ class PlatformTranslation {
   };
 
   static fromResource(resource) {
-    let platformTranslation = new PlatformTranslation();
-    platformTranslation.uuid = resource.uuid;
-    platformTranslation.language = resource.language;
     if (resource.platform === "Android") {
+      let platformTranslation = new PlatformTranslation();
+      platformTranslation.uuid = resource.uuid;
+      platformTranslation.language = resource.language;
       platformTranslation.platformTranslations = _.isNil(resource.translationJson)
         ? "{}"
         : JSON.stringify(resource.translationJson);
+      return platformTranslation;
     }
-    return platformTranslation;
   }
 
   getTranslations() {
