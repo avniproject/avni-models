@@ -53,12 +53,13 @@ class AddressLevel extends BaseEntity {
       type: { type: "string", optional: true },
       locationMappings: { type: "list", objectType: "LocationMapping" },
       titleLineage: { type: "string", optional: true },
+      voided: { type: "bool", default: false }
     },
   };
   uuid;
   name;
 
-  static create({ uuid, title, level, typeString, locationMappings = [], titleLineage }) {
+  static create({ uuid, title, level, typeString, locationMappings = [], titleLineage, voided }) {
     return _.assignIn(new AddressLevel(), {
       uuid,
       name: title,
@@ -66,6 +67,7 @@ class AddressLevel extends BaseEntity {
       level,
       locationMappings,
       titleLineage,
+      voided,
     });
   }
 
@@ -106,7 +108,7 @@ class AddressLevel extends BaseEntity {
   }
 
   cloneForReference() {
-    return AddressLevel.create(_.assignIn({ title: this.name, typeString: this.type, titleLineage: this.titleLineage }, this));
+    return AddressLevel.create(_.assignIn({ title: this.name, typeString: this.type, titleLineage: this.titleLineage, voided: this.voided }, this));
   }
 
   get translatedFieldValue() {

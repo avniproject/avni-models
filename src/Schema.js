@@ -125,7 +125,7 @@ export default {
     GroupRole,
     GroupSubject,
   ],
-  schemaVersion: 124,
+  schemaVersion: 125,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -559,6 +559,12 @@ export default {
         } else {
           sub.type = SubjectType.types.Individual
         }
+      });
+    }
+
+    if (oldDB.schemaVersion < 125) {
+      _.forEach(newDB.objects(AddressLevel.schema.name), (add) => {
+        add.voided = false
       });
     }
   },
