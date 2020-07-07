@@ -15,13 +15,14 @@ class Video extends BaseEntity {
     },
   };
 
-  static create({ uuid, title, filePath, description, duration }) {
+  static create({ uuid, title, filePath, description, duration, voided }) {
     return _.assignIn(new Video(), {
       uuid,
       title,
       filePath,
       description,
       duration,
+      voided
     });
   }
 

@@ -93,6 +93,8 @@ class Individual extends BaseEntity {
       title: "",
       level: 0,
       typeString: "",
+      titleLineage: "",
+      voided: false,
     });
     individual.voided = false;
     return individual;
@@ -334,7 +336,7 @@ class Individual extends BaseEntity {
   }
 
   get nameString() {
-    return this.isIndividual() ? `${this.firstName} ${this.lastName}` : this.firstName;
+    return this.isPerson() ? `${this.firstName} ${this.lastName}` : this.firstName;
   }
 
   getAgeIn(unit) {
@@ -440,7 +442,7 @@ class Individual extends BaseEntity {
     //validationResults.push(this.validateRegistrationLocation());
     validationResults.push(this.validateFirstName());
 
-    if (this.subjectType.isIndividual()) {
+    if (this.subjectType.isPerson()) {
       validationResults.push(this.validateLastName());
       validationResults.push(this.validateDateOfBirth());
       validationResults.push(this.validateGender());
@@ -516,6 +518,7 @@ class Individual extends BaseEntity {
       : this.registrationLocation.clone();
     individual.relationships = this.relationships;
     individual.groupSubjects = this.groupSubjects;
+    individual.encounters = this.encounters;
     return individual;
   }
 
@@ -628,9 +631,9 @@ class Individual extends BaseEntity {
   }
 
   //TODO use polymorphism to avoid if checks based on this
-  isIndividual() {
+  isPerson() {
     //TODO this nil check is not required when migration works properly
-    return _.isNil(this.subjectType) || this.subjectType.isIndividual();
+    return _.isNil(this.subjectType) || this.subjectType.isPerson();
   }
 
   isHousehold() {
@@ -649,28 +652,28 @@ class Individual extends BaseEntity {
   }
 
   userProfileSubtext1(i18n) {
-    return this.isIndividual() ? i18n.t(this.gender.name) : "";
+    return this.isPerson() ? i18n.t(this.gender.name) : "";
   }
 
   userProfileSubtext2(i18n) {
-    return this.isIndividual() ? this.getDisplayAge(i18n) : "";
+    return this.isPerson() ? this.getDisplayAge(i18n) : "";
   }
 
   icon() {
-    return this.isIndividual() ? "person-pin" : "account-balance";
+    return this.isPerson() ? "person-pin" : "account-balance";
   }
 
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
   detail1(i18n) {
-    return this.isIndividual() ? { label: "Age", value: this.getDisplayAge(i18n) } : {};
+    return this.isPerson() ? { label: "Age", value: this.getDisplayAge(i18n) } : {};
   }
 
   detail2(i18n) {
-    return this.isIndividual() ? { label: "Gender", value: i18n.t(this.gender.name) } : {};
+    return this.isPerson() ? { label: "Gender", value: i18n.t(this.gender.name) } : {};
   }
 
   address(i18n) {
-    return this.isIndividual()
+    return this.isPerson()
       ? { label: "Address", value: i18n.t(this.lowestAddressLevel.name) }
       : {};
   }

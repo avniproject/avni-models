@@ -1,22 +1,23 @@
-import moment from "moment";
 import ReferenceEntity from "./ReferenceEntity";
 import _ from "lodash";
 import General from "./utility/General";
 
 class Program extends ReferenceEntity {
   static schema = {
-    name: "Program",
-    primaryKey: "uuid",
+    name: 'Program',
+    primaryKey: 'uuid',
     properties: {
-      uuid: "string",
-      name: "string",
-      operationalProgramName: { type: "string", optional: true },
-      displayName: "string",
-      colour: "string",
-      programSubjectLabel: "string",
-      enrolmentSummaryRule: { type: "string", optional: true },
-      enrolmentEligibilityCheckRule: { type: "string", optional: true },
-    },
+      uuid: 'string',
+      name: 'string',
+      operationalProgramName: {type: 'string', optional: true},
+      displayName: 'string',
+      colour: 'string',
+      programSubjectLabel: 'string',
+      enrolmentSummaryRule: {type: 'string', optional: true},
+      enrolmentEligibilityCheckRule: {type: 'string', optional: true},
+      voided: {type: 'bool', default: false},
+      active: {type: 'bool', default: true}
+    }
   };
   uuid: string;
   name: string;
@@ -26,6 +27,8 @@ class Program extends ReferenceEntity {
   programSubjectLabel: string;
   enrolmentSummaryRule: string;
   enrolmentEligibilityCheckRule: string;
+  active: boolean;
+  voided: boolean;
 
   static fromResource(operationalProgram): Program {
     const program = new Program();
@@ -42,6 +45,8 @@ class Program extends ReferenceEntity {
       operationalProgram.programSubjectLabel || operationalProgram.name || program.name;
     program.enrolmentSummaryRule = operationalProgram.enrolmentSummaryRule;
     program.enrolmentEligibilityCheckRule = operationalProgram.enrolmentEligibilityCheckRule;
+    program.active = operationalProgram.active;
+    program.voided = operationalProgram.programVoided;
     return program;
   }
 

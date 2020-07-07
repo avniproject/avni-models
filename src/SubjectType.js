@@ -3,24 +3,34 @@ import General from "./utility/General";
 
 class SubjectType extends ReferenceEntity {
   static schema = {
-    name: "SubjectType",
-    primaryKey: "uuid",
+    name: 'SubjectType',
+    primaryKey: 'uuid',
     properties: {
-      uuid: "string",
-      name: "string",
-      group: { type: "bool", default: false },
-      household: { type: "bool", default: false },
-      voided: { type: "bool", default: false },
-    },
+      uuid: 'string',
+      name: 'string',
+      group: {type: 'bool', default: false},
+      household: {type: 'bool', default: false},
+      voided: {type: 'bool', default: false},
+      active: {type: 'bool', default: true},
+      type: 'string'
+    }
   };
   uuid;
 
-  static create(name, group = false, household = false) {
+  static types = {
+    Person: 'Person',
+    Individual: 'Individual',
+    Group: 'Group',
+    Household: 'Household',
+  };
+
+  static create(name, group = false, household = false, type) {
     let subjectType = new SubjectType();
     subjectType.uuid = General.randomUUID();
     subjectType.name = name;
     subjectType.group = group;
     subjectType.household = household;
+    subjectType.type = type;
     return subjectType;
   }
 
@@ -32,6 +42,8 @@ class SubjectType extends ReferenceEntity {
     subjectType.voided = !!operationalSubjectType.voided;
     subjectType.group = operationalSubjectType.group;
     subjectType.household = operationalSubjectType.household;
+    subjectType.active = operationalSubjectType.active;
+    subjectType.type = operationalSubjectType.type;
     return subjectType;
   }
 
@@ -42,15 +54,21 @@ class SubjectType extends ReferenceEntity {
     cloned.voided = this.voided;
     cloned.group = this.group;
     cloned.household = this.household;
+    cloned.active = this.active;
+    cloned.type = this.type;
     return cloned;
   }
 
+  isPerson() {
+    return this.type === SubjectType.types.Person;
+  }
+
   isIndividual() {
-    return this.name === "Individual" || this.name === "Patient";
+    return this.type === SubjectType.types.Individual;
   }
 
   registerIcon() {
-    return this.isIndividual() ? "account-plus" : "plus-box";
+    return this.isPerson() ? "account-plus" : "plus-box";
   }
 
   isGroup() {

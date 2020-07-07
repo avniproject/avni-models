@@ -15,11 +15,9 @@ class PlatformTranslation {
     let platformTranslation = new PlatformTranslation();
     platformTranslation.uuid = resource.uuid;
     platformTranslation.language = resource.language;
-    if (resource.platform === "Android") {
-      platformTranslation.platformTranslations = _.isNil(resource.translationJson)
-        ? "{}"
-        : JSON.stringify(resource.translationJson);
-    }
+    platformTranslation.platformTranslations = _.isNil(resource.translationJson)
+      ? "{}"
+      : JSON.stringify(resource.translationJson);
     return platformTranslation;
   }
 

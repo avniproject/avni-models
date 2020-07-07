@@ -4,16 +4,17 @@ import _ from "lodash";
 
 class EncounterType extends ReferenceEntity {
   static schema = {
-    name: "EncounterType",
-    primaryKey: "uuid",
+    name: 'EncounterType',
+    primaryKey: 'uuid',
     properties: {
-      uuid: "string",
-      name: "string",
-      operationalEncounterTypeName: { type: "string", optional: true },
-      displayName: "string",
-      voided: { type: "bool", default: false },
-      encounterEligibilityCheckRule: { type: "string", optional: true },
-    },
+      uuid: 'string',
+      name: 'string',
+      operationalEncounterTypeName: {type: 'string', optional: true},
+      displayName: 'string',
+      voided: {type: 'bool', default: false},
+      encounterEligibilityCheckRule: {type: 'string', optional: true},
+      active: {type: 'bool', default: true}
+    }
   };
 
   static create(name) {
@@ -29,11 +30,9 @@ class EncounterType extends ReferenceEntity {
     encounterType.uuid = operationalEncounterType.encounterTypeUUID;
     encounterType.voided = !!operationalEncounterType.encounterTypeVoided;
     encounterType.operationalEncounterTypeName = operationalEncounterType.name;
-    encounterType.displayName = _.isEmpty(encounterType.operationalEncounterTypeName)
-      ? encounterType.name
-      : encounterType.operationalEncounterTypeName;
-    encounterType.encounterEligibilityCheckRule =
-      operationalEncounterType.encounterEligibilityCheckRule;
+    encounterType.displayName = _.isEmpty(encounterType.operationalEncounterTypeName) ? encounterType.name : encounterType.operationalEncounterTypeName;
+    encounterType.encounterEligibilityCheckRule = operationalEncounterType.encounterEligibilityCheckRule;
+    encounterType.active = operationalEncounterType.active;
     return encounterType;
   }
 

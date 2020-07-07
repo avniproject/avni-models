@@ -43,6 +43,7 @@ class Family extends BaseEntity {
       title: "",
       level: 0,
       typeString: "",
+      titleLineage: "",
     });
     family.headOfFamily = Individual.createEmptyInstance();
     family.members = [];

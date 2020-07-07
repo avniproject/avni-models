@@ -1,9 +1,9 @@
 import Settings from "./Settings";
 import LocaleMapping from "./LocaleMapping";
-import Concept, { ConceptAnswer } from "./Concept";
+import Concept, {ConceptAnswer} from "./Concept";
 import Individual from "./Individual";
 import Family from "./Family";
-import AddressLevel, { LocationMapping } from "./AddressLevel";
+import AddressLevel, {LocationMapping} from "./AddressLevel";
 import UserDefinedIndividualProperty from "./UserDefinedIndividualProperty";
 import Gender from "./Gender";
 import EntitySyncStatus from "./EntitySyncStatus";
@@ -125,7 +125,7 @@ export default {
     GroupRole,
     GroupSubject,
   ],
-  schemaVersion: 121,
+  schemaVersion: 125,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -531,6 +531,40 @@ export default {
       _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
         sub.group = false;
         sub.household = false;
+      });
+    }
+
+    if (oldDB.schemaVersion < 123) {
+      _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+        sub.active = true;
+      });
+      _.forEach(newDB.objects(Program.schema.name), (prog) => {
+        prog.voided = false;
+        prog.active = true;
+      });
+      _.forEach(newDB.objects(EncounterType.schema.name), (enc) => {
+        enc.active = true;
+      });
+    }
+
+    if (oldDB.schemaVersion < 124) {
+      _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+        const {group, household, name} = sub;
+        if (household) {
+          sub.type = SubjectType.types.Household;
+        } else if (group) {
+          sub.type = SubjectType.types.Group
+        } else if (_.includes(['Individual', 'Patient'], name)) {
+          sub.type = SubjectType.types.Person
+        } else {
+          sub.type = SubjectType.types.Individual
+        }
+      });
+    }
+
+    if (oldDB.schemaVersion < 125) {
+      _.forEach(newDB.objects(AddressLevel.schema.name), (add) => {
+        add.voided = false
       });
     }
   },
