@@ -59,6 +59,7 @@ import Privilege from "./Privilege";
 import General from "./utility/General";
 import GroupRole from "./GroupRole";
 import GroupSubject from "./GroupSubject";
+import DashboardCache from "./DashboardCache";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -124,8 +125,9 @@ export default {
     Privilege,
     GroupRole,
     GroupSubject,
+    DashboardCache,
   ],
-  schemaVersion: 125,
+  schemaVersion: 126,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
