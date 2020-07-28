@@ -6,7 +6,6 @@ import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import Point from "./geo/Point";
 import Individual from "./Individual";
-import moment from "moment";
 
 class ProgramEncounter extends AbstractEncounter {
   static fieldKeys = {
@@ -84,15 +83,6 @@ class ProgramEncounter extends AbstractEncounter {
           "encounterDateInFuture"
         )
       );
-    if (!moment(this.encounterDateTime).isValid()) {
-      validationResults.push(
-        new ValidationResult(
-          false,
-          AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME,
-          "invalidDateFormat"
-        )
-      );
-    }
     return validationResults;
   }
 

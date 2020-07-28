@@ -10,7 +10,7 @@ describe('ProgramEncounterTest', () => {
         programEncounter.encounterDateTime = null;
 
         var validationResults = programEncounter.validate();
-        assert.equal(ValidationResultsInspector.numberOfErrors(validationResults),2);
+        assert.equal(ValidationResultsInspector.numberOfErrors(validationResults),1);
 
         programEncounter.programEnrolment.enrolmentDateTime = new Date(2017, 0, 0, 5);
         programEncounter.encounterDateTime = new Date(2016, 0, 0);
