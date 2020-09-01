@@ -127,7 +127,7 @@ export default {
     GroupSubject,
     DashboardCache,
   ],
-  schemaVersion: 127,
+  schemaVersion: 128,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");

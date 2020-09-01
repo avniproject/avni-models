@@ -12,7 +12,8 @@ class SubjectType extends ReferenceEntity {
       household: {type: 'bool', default: false},
       voided: {type: 'bool', default: false},
       active: {type: 'bool', default: true},
-      type: 'string'
+      type: 'string',
+      subjectSummaryRule: {type: 'string', optional: true},
     }
   };
   uuid;
@@ -44,6 +45,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.household = operationalSubjectType.household;
     subjectType.active = operationalSubjectType.active;
     subjectType.type = operationalSubjectType.type;
+    subjectType.subjectSummaryRule = operationalSubjectType.subjectSummaryRule;
     return subjectType;
   }
 
@@ -56,6 +58,7 @@ class SubjectType extends ReferenceEntity {
     cloned.household = this.household;
     cloned.active = this.active;
     cloned.type = this.type;
+    cloned.subjectSummaryRule = this.subjectSummaryRule;
     return cloned;
   }
 
