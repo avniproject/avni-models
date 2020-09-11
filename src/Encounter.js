@@ -75,6 +75,14 @@ class Encounter extends AbstractEncounter {
           "encounterDateBeforeRegistrationDate"
         )
       );
+    if (!_.isNil(this.encounterDateTime) && G.dateIsAfterToday(this.encounterDateTime))
+      validationResults.push(
+        new ValidationResult(
+          false,
+          AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME,
+          "encounterDateInFuture"
+        )
+      );
     return validationResults;
   }
 
