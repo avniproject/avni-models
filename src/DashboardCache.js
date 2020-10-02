@@ -27,14 +27,12 @@ class DashboardCache {
   static getFilterJSONFromState(state) {
     const filterCache = {
       date: state.date,
-      selectedLocations: state.selectedLocations,
       selectedPrograms: state.selectedPrograms,
       selectedEncounterTypes: state.selectedEncounterTypes,
       selectedGeneralEncounterTypes: state.selectedGeneralEncounterTypes,
       selectedCustomFilters: state.selectedCustomFilters,
       selectedGenders: state.selectedGenders,
       programs: state.programs,
-      addressLevelState: state.addressLevelState,
       individualFilters: state.individualFilters,
       encountersFilters: state.encountersFilters,
       enrolmentFilters: state.enrolmentFilters,
