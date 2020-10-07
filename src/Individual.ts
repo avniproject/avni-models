@@ -95,6 +95,8 @@ class Individual extends BaseEntity {
       typeString: "",
       titleLineage: "",
       voided: false,
+      parentUuid: "",
+      typeUuid: "",
     });
     individual.voided = false;
     return individual;

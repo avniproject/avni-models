@@ -83,9 +83,16 @@ export default class Concept {
     Image: "Image",
     Video: "Video",
     Id: "Id",
+    Location: "Location",
     get Media() {
       return [this.Image, this.Video];
     },
+  };
+
+  static keys = {
+    isWithinCatchment: 'isWithinCatchment',
+    lowestAddressLevelTypeUUIDs: 'lowestAddressLevelTypeUUIDs',
+    highestAddressLevelTypeUUID: 'highestAddressLevelTypeUUID'
   };
 
   // static primitiveDataTypes = [Concept.dataType.Boolean, Concept.dataType.Coded, Concept.dataType.Numeric, Concept.dataType.Date, Concept.dataType.Text];
@@ -137,6 +144,7 @@ export default class Concept {
     concept.name = name;
     concept.datatype = dataType;
     concept.uuid = uuid;
+    concept.keyValues = keyValues;
     return concept;
   }
 

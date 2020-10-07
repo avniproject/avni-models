@@ -53,13 +53,15 @@ class AddressLevel extends BaseEntity {
       type: { type: "string", optional: true },
       locationMappings: { type: "list", objectType: "LocationMapping" },
       titleLineage: { type: "string", optional: true },
-      voided: { type: "bool", default: false }
+      voided: { type: "bool", default: false },
+      parentUuid: {type: "string", optional: true},
+      typeUuid: {type: "string", optional: true}
     },
   };
   uuid;
   name;
 
-  static create({ uuid, title, level, typeString, locationMappings = [], titleLineage, voided }) {
+  static create({ uuid, title, level, typeString, locationMappings = [], titleLineage, voided, parentUuid, typeUuid }) {
     return _.assignIn(new AddressLevel(), {
       uuid,
       name: title,
@@ -68,6 +70,8 @@ class AddressLevel extends BaseEntity {
       locationMappings,
       titleLineage,
       voided,
+      parentUuid,
+      typeUuid
     });
   }
 
