@@ -43,9 +43,13 @@ class Observation {
     } else if (observation.concept.datatype === Concept.dataType.Time) {
       return valueWrapper.asDisplayTime();
     } else if (valueWrapper.isSingleCoded) {
-      return i18n.t(conceptService.getConceptByUUID(valueWrapper.getConceptUUID()).name);
+      //Not returning subject name directly because we need UUID for linking to subject dashboard and more than one
+      //subject can be there with the same name
+      return observation.concept.datatype === Concept.dataType.Subject ? valueWrapper.getConceptUUID() :
+        i18n.t(conceptService.getConceptByUUID(valueWrapper.getConceptUUID()).name);
     } else if (valueWrapper.isMultipleCoded) {
-      return _.join(
+      return observation.concept.datatype === Concept.dataType.Subject ? valueWrapper.getValue().join(",") :
+        _.join(
         valueWrapper.getValue().map((value) => {
           return i18n.t(conceptService.getConceptByUUID(value).name);
         }),

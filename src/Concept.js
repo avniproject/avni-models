@@ -221,7 +221,7 @@ export default class Concept {
   }
 
   getValueWrapperFor(obsValue) {
-    if (this.isCodedConcept()) {
+    if (this.isCodedConcept() || this.isSubjectConcept()) {
       return _.isArray(obsValue)
         ? new MultipleCodedValues(obsValue)
         : new SingleCodedValue(obsValue);
@@ -234,6 +234,10 @@ export default class Concept {
 
   isCodedConcept() {
     return this.datatype === Concept.dataType.Coded;
+  }
+
+  isSubjectConcept() {
+    return this.datatype === Concept.dataType.Subject;
   }
 
   isDurationConcept() {
