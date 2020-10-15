@@ -640,6 +640,10 @@ class Individual extends BaseEntity {
     return this.subjectType.isGroup();
   }
 
+  get subjectTypeName() {
+    return this.subjectType.name;
+  }
+
   getHeadOfHouseholdGroupSubject() {
     return _.find(
       this.groupSubjects.filter(({ voided }) => !voided),

@@ -17,6 +17,7 @@ class SubjectType extends ReferenceEntity {
     }
   };
   uuid;
+  name;
 
   static types = {
     Person: 'Person',
