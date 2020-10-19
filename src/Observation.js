@@ -135,6 +135,13 @@ class Observation {
       return value;
     }
   }
+
+  getMobileNo() {
+    if (this.concept.isMobileNo()) {
+      const obsValue = this.getReadableValue();
+      return obsValue && obsValue.toString();
+    }
+  }
 }
 
 export default Observation;
