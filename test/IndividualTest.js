@@ -4,6 +4,12 @@ import moment from "moment";
 import Individual from "../src/Individual";
 import Program from "../src/Program";
 import ProgramEnrolment from "../src/ProgramEnrolment";
+import ProgramEncounter from "../src/ProgramEncounter";
+import _ from "lodash";
+import EncounterType from "../src/EncounterType";
+import Concept from "../src/Concept";
+import Observation from "../src/Observation";
+import SingleCodedValue from "../src/observation/SingleCodedValue";
 
 let createProgram = function (uuid) {
     const program = new Program();
@@ -92,4 +98,41 @@ describe('IndividualTest', () => {
         fooEnrol3.programExitDateTime = new Date(2003, 2, 2);
         assert.equal(individual.firstActiveOrRecentEnrolment.uuid, 100);
     });
+
+
+  it('return the latest obs value from all encounters', () => {
+    const individual = Individual.createEmptyInstance();
+    let concept = EntityFactory.createConcept("height", Concept.dataType.Coded, "concept-1");
+
+    const firstAnnualVisit = createEncounter(new Date(2018, 0, 11), "Annual Visit");
+    individual.addEncounter(firstAnnualVisit);
+    const obs1 = Observation.create(concept, new SingleCodedValue("answerUUID-1"));
+    firstAnnualVisit.observations.push(obs1);
+
+    const firstVisit = createEncounter(new Date(2018, 2, 11), "Monthly Visit");
+    individual.addEncounter(firstVisit);
+    const obs2 = Observation.create(concept, new SingleCodedValue("answerUUID-2"));
+    firstVisit.observations.push(obs2);
+
+    const secondVisit = createEncounter(new Date(2018, 3, 11), "Monthly Visit");
+    individual.addEncounter(secondVisit);
+    const obs3 = Observation.create(concept, new SingleCodedValue("answerUUID-3"));
+    secondVisit.observations.push(obs3);
+
+    const quarterlyVisit = createEncounter(new Date(2018, 3, 11), "Quarterly Visit");
+    individual.addEncounter(quarterlyVisit);
+
+    assert.equal(individual.findLatestObservationFromEncounters("height", firstVisit), obs2);
+    assert.equal(individual.findLatestObservationFromEncounters("height", secondVisit), obs3);
+    assert.equal(individual.findLatestObservationFromPreviousEncounters("height", firstVisit), obs1);
+    assert.equal(individual.findLatestObservationFromPreviousEncounters("height", secondVisit), obs2);
+    assert.equal(individual.findLastEncounterOfType(secondVisit, ['Monthly Visit']), firstVisit)
+  })
 });
+
+function createEncounter(date, name) {
+  const encounter = ProgramEncounter.createEmptyInstance();
+  encounter.encounterDateTime = date;
+  if (!_.isEmpty(name)) encounter.encounterType = EncounterType.create(name);
+  return encounter;
+}

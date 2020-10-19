@@ -695,6 +695,59 @@ class Individual extends BaseEntity {
     );
   }
 
+  findLastEncounterOfType(currentEncounter, encounterTypes = []) {
+    return this.findNthLastEncounterOfType(currentEncounter, encounterTypes, 0);
+  }
+
+  findNthLastEncounterOfType(currentEncounter, encounterTypes = [], n = 0) {
+    return _.chain(this.getEncounters(false))
+      .filter((enc) => enc.encounterDateTime)
+      .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
+      .filter((enc) =>
+        encounterTypes.some((encounterType) => encounterType === enc.encounterType.name)
+      )
+      .nth(n)
+      .value();
+  }
+
+  _findObservationWithDateFromAllEncounters(conceptName, encounters) {
+    let observation;
+    let encounter;
+    for (let i = 0; i < encounters.length; i++) {
+      encounter = encounters[i];
+      observation = encounters[i].findObservation(conceptName);
+      if (!_.isNil(observation))
+        return { observation: observation, date: encounter.encounterDateTime };
+    }
+    return {};
+  }
+
+  _findObservationFromAllEncounters(conceptName, encounters) {
+    return this._findObservationWithDateFromAllEncounters(
+      conceptName,
+      encounters
+    ).observation;
+  }
+
+  findLatestObservationFromPreviousEncounters(conceptName, currentEncounter) {
+    const encounters = _.chain(this.getEncounters(false))
+      .filter((enc) => enc.encounterDateTime)
+      .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
+      .value();
+    return this._findObservationFromAllEncounters(conceptName, encounters);
+  }
+
+  findLatestObservationFromEncounters(conceptName, currentEncounter) {
+    const previousEncounters = _.chain(this.getEncounters(false))
+      .filter((enc) => enc.encounterDateTime)
+      .filter((enc) =>
+        currentEncounter ? enc.encounterDateTime < currentEncounter.encounterDateTime : true
+      )
+      .value();
+    const encounters = _.chain(currentEncounter).concat(previousEncounters).compact().value();
+    return this._findObservationFromAllEncounters(conceptName, encounters);
+  }
+
   scheduledEncountersOfType(encounterTypeName) {
     return this.scheduledEncounters().filter(
       (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
