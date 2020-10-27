@@ -19,7 +19,7 @@ export class ConceptAnswer {
       answerOrder: "double",
       abnormal: "bool",
       unique: "bool",
-      voided: { type: "bool", default: false },
+      voided: {type: "bool", default: false},
     },
   };
 
@@ -58,14 +58,14 @@ export default class Concept {
       uuid: "string",
       name: "string",
       datatype: "string",
-      answers: { type: "list", objectType: "ConceptAnswer" },
-      lowAbsolute: { type: "double", optional: true },
-      hiAbsolute: { type: "double", optional: true },
-      lowNormal: { type: "double", optional: true },
-      hiNormal: { type: "double", optional: true },
-      unit: { type: "string", optional: true },
-      keyValues: { type: "list", objectType: "KeyValue" },
-      voided: { type: "bool", default: false },
+      answers: {type: "list", objectType: "ConceptAnswer"},
+      lowAbsolute: {type: "double", optional: true},
+      hiAbsolute: {type: "double", optional: true},
+      lowNormal: {type: "double", optional: true},
+      hiNormal: {type: "double", optional: true},
+      unit: {type: "string", optional: true},
+      keyValues: {type: "list", objectType: "KeyValue"},
+      voided: {type: "bool", default: false},
     },
   };
 
@@ -112,7 +112,7 @@ export default class Concept {
     concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
     //remove orphan keyValues (because KeyValue doesn't have primary key
     entityService &&
-      entityService.deleteObjects(conceptResource["uuid"], Concept.schema.name, "keyValues");
+    entityService.deleteObjects(conceptResource["uuid"], Concept.schema.name, "keyValues");
     concept.keyValues = _.map(conceptResource.keyValues, KeyValue.fromResource);
     return concept;
   }
@@ -272,5 +272,10 @@ export default class Concept {
       _.find(this.keyValues, (it) => it.key === key),
       "getValue"
     );
+  }
+
+  isMobileNo() {
+    const keyValue = this.recordValueByKey('primary_contact') || this.recordValueByKey('contact_number');
+    return (keyValue === 'yes');
   }
 }
