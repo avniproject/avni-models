@@ -2,6 +2,7 @@ import _ from "lodash";
 import Concept from "./Concept";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import General from "./utility/General";
+import Displayable from "./Displayable";
 
 class Observation {
   static schema = {
@@ -32,34 +33,45 @@ class Observation {
     }
   }
 
-  static valueAsString(observation, conceptService, i18n) {
+  static valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n}) {
     const valueWrapper = observation.getValueWrapper();
 
     if (
       observation.concept.datatype === Concept.dataType.Date ||
       observation.concept.datatype === Concept.dataType.DateTime
     ) {
-      return valueWrapper.asDisplayDate();
+      return new Displayable(valueWrapper.asDisplayDate(), null);
     } else if (observation.concept.datatype === Concept.dataType.Time) {
-      return valueWrapper.asDisplayTime();
+      return new Displayable(valueWrapper.asDisplayTime(), null);
     } else if (valueWrapper.isSingleCoded) {
-      //Not returning subject name directly because we need UUID for linking to subject dashboard and more than one
-      //subject can be there with the same name
-      return observation.concept.datatype === Concept.dataType.Subject ? valueWrapper.getConceptUUID() :
-        i18n.t(conceptService.getConceptByUUID(valueWrapper.getConceptUUID()).name);
+      if (observation.concept.datatype === Concept.dataType.Subject) {
+        const subject = subjectService.findByUUID(valueWrapper.getValue());
+        return [new Displayable(subject.nameString, subject)];
+      } else {
+        return new Displayable(i18n.t(conceptService.getConceptByUUID(valueWrapper.getConceptUUID()).name), null);
+      }
     } else if (valueWrapper.isMultipleCoded) {
-      return observation.concept.datatype === Concept.dataType.Subject ? valueWrapper.getValue().join(",") :
-        _.join(
-        valueWrapper.getValue().map((value) => {
-          return i18n.t(conceptService.getConceptByUUID(value).name);
-        }),
-        ", "
-      );
+      if (observation.concept.datatype === Concept.dataType.Subject) {
+        return valueWrapper.getValue().map(uuid => {
+          const subject = subjectService.findByUUID(uuid);
+          return new Displayable(subject.nameString, subject);
+        });
+      } else {
+        return new Displayable(_.join(
+          valueWrapper.getValue().map((value) => {
+            return i18n.t(conceptService.getConceptByUUID(value).name);
+          }),
+          ", "
+        ), null);
+      }
     } else if (observation.concept.isDurationConcept()) {
-      return _.toString(valueWrapper.toString(i18n));
+      return new Displayable(_.toString(valueWrapper.toString(i18n)), null);
+    } else if (observation.concept.datatype === Concept.dataType.Location) {
+      const addressLevel = addressLevelService.findByUUID(valueWrapper.getValue());
+      return new Displayable(addressLevel.name, addressLevel);
     } else {
       const unit = _.defaultTo(observation.concept.unit, "");
-      return _.toString(`${valueWrapper.getValue()} ${unit}`);
+      return new Displayable(_.toString(`${valueWrapper.getValue()} ${unit}`), null);
     }
   }
 
