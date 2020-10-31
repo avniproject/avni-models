@@ -717,7 +717,7 @@ class Individual extends BaseEntity {
       encounter = encounters[i];
       observation = encounters[i].findObservation(conceptName);
       if (!_.isNil(observation))
-        return { observation: observation, date: encounter.encounterDateTime };
+        return {observation: observation, date: encounter.encounterDateTime};
     }
     return {};
   }
@@ -775,6 +775,13 @@ class Individual extends BaseEntity {
         return mobileNo;
       }
     }
+  }
+
+  getObservationReadableValue(conceptName) {
+    const observationForConcept = this.findObservation(conceptName);
+    return _.isEmpty(observationForConcept)
+      ? observationForConcept
+      : observationForConcept.getReadableValue();
   }
 
   toJSON() {
