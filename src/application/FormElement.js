@@ -74,6 +74,10 @@ class FormElement {
     this.answersToExclude = answersToExclude;
   }
 
+  set setAnswersToShow(answersToShow) {
+    this.answersToShow = answersToShow;
+  }
+
   recordByKey(key) {
     return _.find(this.keyValues, (keyValue) => keyValue.key === key);
   }
@@ -132,14 +136,18 @@ class FormElement {
 
   getAnswers() {
     const allAnswers = this.concept.getAnswers();
-    const excludedAnswers = this.excludedAnswers().map((conceptName) => ({
-      concept: { name: conceptName },
-    }));
-    return _.differenceBy(
-      allAnswers,
-      excludedAnswers.concat(_.isEmpty(this.answersToExclude) ? [] : this.answersToExclude),
-      (a) => a.concept.name
-    );
+    if (!_.isEmpty(this.answersToShow)) {
+      return _.filter(allAnswers, (allConceptAnswer) => _.find(this.answersToShow, (conceptAnswer => conceptAnswer === allConceptAnswer.name)));
+    } else {
+      const excludedAnswers = this.excludedAnswers().map((conceptName) => ({
+        concept: { name: conceptName },
+      }));
+      return _.differenceBy(
+        allAnswers,
+        excludedAnswers.concat(_.isEmpty(this.answersToExclude) ? [] : this.answersToExclude),
+        (a) => a.concept.name
+      );
+    }
   }
 
   getAnswerWithConceptName(conceptName) {

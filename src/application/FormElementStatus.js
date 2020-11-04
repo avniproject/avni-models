@@ -1,10 +1,11 @@
 class FormElementStatus {
-  constructor(uuid, visibility, value, answersToSkip = [], validationErrors = []) {
+  constructor(uuid, visibility, value, answersToSkip = [], validationErrors = [], answersToShow = []) {
     this.uuid = uuid;
     this.visibility = visibility;
     this.value = value;
     this.answersToSkip = answersToSkip;
     this.validationErrors = validationErrors;
+    this.answersToShow = answersToShow;
   }
 
   _bool(formElementStatus, op) {
@@ -14,6 +15,7 @@ class FormElementStatus {
     oredFormElementStatus.value = this.value;
     oredFormElementStatus.answersToSkip = this.answersToSkip;
     oredFormElementStatus.validationErrors = this.validationErrors;
+    oredFormElementStatus.answersToShow = this.answersToShow;
     return oredFormElementStatus;
   }
 
