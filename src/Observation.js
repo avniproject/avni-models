@@ -71,7 +71,8 @@ class Observation {
       return new Displayable(addressLevel.name, addressLevel);
     } else {
       const unit = _.defaultTo(observation.concept.unit, "");
-      return new Displayable(_.toString(`${valueWrapper.getValue()} ${unit}`), null);
+      const displayValue = unit !== "" ? _.toString(`${valueWrapper.getValue()} ${unit}`) : _.toString(`${valueWrapper.getValue()}`);
+      return new Displayable(displayValue, null);
     }
   }
 
