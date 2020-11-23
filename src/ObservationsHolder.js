@@ -38,6 +38,7 @@ class ObservationsHolder {
         Concept.dataType.Image,
         Concept.dataType.Date,
         Concept.dataType.DateTime,
+        Concept.dataType.Location,
       ].includes(formElement.getType()) &&
       isNil(formElement.durationOptions)
     ) {

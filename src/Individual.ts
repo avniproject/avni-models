@@ -11,7 +11,7 @@ import Duration from "./Duration";
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import ObservationsHolder from "./ObservationsHolder";
-import { findMediaObservations } from "./Media";
+import {findMediaObservations} from "./Media";
 import Point from "./geo/Point";
 import SubjectType from "./SubjectType";
 import Observation from "./Observation";
@@ -26,19 +26,19 @@ class Individual extends BaseEntity {
       subjectType: "SubjectType",
       name: "string",
       firstName: "string",
-      lastName: { type: "string", optional: true },
-      dateOfBirth: { type: "date", optional: true },
-      dateOfBirthVerified: { type: "bool", optional: true },
-      gender: { type: "Gender", optional: true },
+      lastName: {type: "string", optional: true},
+      dateOfBirth: {type: "date", optional: true},
+      dateOfBirthVerified: {type: "bool", optional: true},
+      gender: {type: "Gender", optional: true},
       registrationDate: "date",
       lowestAddressLevel: "AddressLevel",
-      voided: { type: "bool", default: false },
-      enrolments: { type: "list", objectType: "ProgramEnrolment" },
-      encounters: { type: "list", objectType: "Encounter" },
-      observations: { type: "list", objectType: "Observation" },
-      relationships: { type: "list", objectType: "IndividualRelationship" },
-      groupSubjects: { type: "list", objectType: "GroupSubject" },
-      registrationLocation: { type: "Point", optional: true },
+      voided: {type: "bool", default: false},
+      enrolments: {type: "list", objectType: "ProgramEnrolment"},
+      encounters: {type: "list", objectType: "Encounter"},
+      observations: {type: "list", objectType: "Observation"},
+      relationships: {type: "list", objectType: "IndividualRelationship"},
+      groupSubjects: {type: "list", objectType: "GroupSubject"},
+      registrationLocation: {type: "Point", optional: true},
     },
   };
 
@@ -95,6 +95,8 @@ class Individual extends BaseEntity {
       typeString: "",
       titleLineage: "",
       voided: false,
+      parentUuid: "",
+      typeUuid: "",
     });
     individual.voided = false;
     return individual;
@@ -644,10 +646,14 @@ class Individual extends BaseEntity {
     return this.subjectType.isGroup();
   }
 
+  get subjectTypeName() {
+    return this.subjectType.name;
+  }
+
   getHeadOfHouseholdGroupSubject() {
     return _.find(
-      this.groupSubjects.filter(({ voided }) => !voided),
-      ({ groupRole }) => groupRole.isHeadOfHousehold
+      this.groupSubjects.filter(({voided}) => !voided),
+      ({groupRole}) => groupRole.isHeadOfHousehold
     );
   }
 
@@ -665,16 +671,16 @@ class Individual extends BaseEntity {
 
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
   detail1(i18n) {
-    return this.isPerson() ? { label: "Age", value: this.getDisplayAge(i18n) } : {};
+    return this.isPerson() ? {label: "Age", value: this.getDisplayAge(i18n)} : {};
   }
 
   detail2(i18n) {
-    return this.isPerson() ? { label: "Gender", value: i18n.t(this.gender.name) } : {};
+    return this.isPerson() ? {label: "Gender", value: i18n.t(this.gender.name)} : {};
   }
 
   address(i18n) {
     return this.isPerson()
-      ? { label: "Address", value: i18n.t(this.lowestAddressLevel.name) }
+      ? {label: "Address", value: i18n.t(this.lowestAddressLevel.name)}
       : {};
   }
 
@@ -695,6 +701,59 @@ class Individual extends BaseEntity {
     );
   }
 
+  findLastEncounterOfType(currentEncounter, encounterTypes = []) {
+    return this.findNthLastEncounterOfType(currentEncounter, encounterTypes, 0);
+  }
+
+  findNthLastEncounterOfType(currentEncounter, encounterTypes = [], n = 0) {
+    return _.chain(this.getEncounters(false))
+      .filter((enc) => enc.encounterDateTime)
+      .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
+      .filter((enc) =>
+        encounterTypes.some((encounterType) => encounterType === enc.encounterType.name)
+      )
+      .nth(n)
+      .value();
+  }
+
+  _findObservationWithDateFromAllEncounters(conceptName, encounters) {
+    let observation;
+    let encounter;
+    for (let i = 0; i < encounters.length; i++) {
+      encounter = encounters[i];
+      observation = encounters[i].findObservation(conceptName);
+      if (!_.isNil(observation))
+        return {observation: observation, date: encounter.encounterDateTime};
+    }
+    return {};
+  }
+
+  _findObservationFromAllEncounters(conceptName, encounters) {
+    return this._findObservationWithDateFromAllEncounters(
+      conceptName,
+      encounters
+    ).observation;
+  }
+
+  findLatestObservationFromPreviousEncounters(conceptName, currentEncounter) {
+    const encounters = _.chain(this.getEncounters(false))
+      .filter((enc) => enc.encounterDateTime)
+      .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
+      .value();
+    return this._findObservationFromAllEncounters(conceptName, encounters);
+  }
+
+  findLatestObservationFromEncounters(conceptName, currentEncounter) {
+    const previousEncounters = _.chain(this.getEncounters(false))
+      .filter((enc) => enc.encounterDateTime)
+      .filter((enc) =>
+        currentEncounter ? enc.encounterDateTime < currentEncounter.encounterDateTime : true
+      )
+      .value();
+    const encounters = _.chain(currentEncounter).concat(previousEncounters).compact().value();
+    return this._findObservationFromAllEncounters(conceptName, encounters);
+  }
+
   scheduledEncountersOfType(encounterTypeName) {
     return this.scheduledEncounters().filter(
       (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
@@ -705,13 +764,30 @@ class Individual extends BaseEntity {
     return _.defaults(this.scheduledEncounters(), [])
       .filter((encounter) => encounter.uuid !== currentEncounter.uuid)
       .map(_.identity)
-      .map(({ uuid, name, encounterType, earliestVisitDateTime, maxVisitDateTime }) => ({
+      .map(({uuid, name, encounterType, earliestVisitDateTime, maxVisitDateTime}) => ({
         name: name,
         encounterType: encounterType.name,
         earliestDate: earliestVisitDateTime,
         maxDate: maxVisitDateTime,
         uuid: uuid,
       }));
+  }
+
+  getMobileNo() {
+    for (let i = 0; i < this.observations.length; i++) {
+      const observation = this.observations[i];
+      const mobileNo = observation.getMobileNo();
+      if (mobileNo) {
+        return mobileNo;
+      }
+    }
+  }
+
+  getObservationReadableValue(conceptName) {
+    const observationForConcept = this.findObservation(conceptName);
+    return _.isEmpty(observationForConcept)
+      ? observationForConcept
+      : observationForConcept.getReadableValue();
   }
 
   toJSON() {

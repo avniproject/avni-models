@@ -135,6 +135,7 @@ class FormElementGroup {
           formElementStatus.uuid === formElement.uuid &&
           formElementStatus.visibility &&
           (() => {
+            formElement.setAnswersToShow = formElementStatus.answersToShow;
             formElement.answersToSkip = formElementStatus.answersToSkip;
             return true;
           })()

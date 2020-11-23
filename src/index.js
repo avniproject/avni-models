@@ -85,6 +85,7 @@ import Privilege from "./Privilege";
 import GroupRole from "./GroupRole";
 import GroupSubject from "./GroupSubject";
 import DashboardCache from "./DashboardCache";
+import LocationHierarchy from "./LocationHierarchy";
 
 export {
   AbstractEncounter,
@@ -175,4 +176,5 @@ export {
   GroupRole,
   GroupSubject,
   DashboardCache,
+  LocationHierarchy,
 };

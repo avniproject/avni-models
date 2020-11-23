@@ -60,6 +60,7 @@ import General from "./utility/General";
 import GroupRole from "./GroupRole";
 import GroupSubject from "./GroupSubject";
 import DashboardCache from "./DashboardCache";
+import LocationHierarchy from "./LocationHierarchy";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -126,8 +127,9 @@ export default {
     GroupRole,
     GroupSubject,
     DashboardCache,
+    LocationHierarchy
   ],
-  schemaVersion: 126,
+  schemaVersion: 129,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -568,6 +570,25 @@ export default {
       _.forEach(newDB.objects(AddressLevel.schema.name), (add) => {
         add.voided = false
       });
+    }
+
+    if (oldDB.schemaVersion < 129) {
+      _.forEach(newDB.objects(AddressLevel.schema.name), (add) => {
+        const locationMapping = _.head(newDB.objects(LocationMapping.schema.name).filtered("child.uuid = $0", add.uuid));
+        add.parentUuid = locationMapping ? locationMapping.parent.uuid : null;
+      });
+      //reset the AddressLevel sync so that typeUuid start getting sync
+      const addressLevelSyncStatus = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0", "AddressLevel");
+      newDB.create(
+        EntitySyncStatus.schema.name,
+        EntitySyncStatus.create(
+          'AddressLevel',
+          EntitySyncStatus.REALLY_OLD_DATE,
+          addressLevelSyncStatus[0].uuid,
+          ''
+        ),
+        true
+      );
     }
   },
 };

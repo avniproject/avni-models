@@ -19,6 +19,7 @@ class Settings {
       clientId: "string",
       devSkipValidation: { type: "bool", default: false },
       captureLocation: { type: "bool", default: true },
+      userId: {type: "string", optional: true }
     },
   };
 
@@ -33,6 +34,7 @@ class Settings {
     settings.pageSize = this.pageSize;
     settings.devSkipValidation = this.devSkipValidation;
     settings.captureLocation = this.captureLocation;
+    settings.userId = this.userId;
     return settings;
   }
 

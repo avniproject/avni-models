@@ -44,8 +44,9 @@ import GroupPrivileges from "./GroupPrivileges";
 import Privilege from "./Privilege";
 import GroupSubject from "./GroupSubject";
 import GroupRole from "./GroupRole";
+import LocationHierarchy from "./LocationHierarchy";
 
-const refData = (clazz, { res, filter, translated, parent, syncWeight } = {}) => ({
+const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
   entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
@@ -54,6 +55,7 @@ const refData = (clazz, { res, filter, translated, parent, syncWeight } = {}) =>
   resourceSearchFilterURL: filter || "lastModified",
   parent: parent,
   syncWeight: syncWeight,
+  resourceUrl: resUrl,
 });
 const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, { ...attrs, translated: true });
 
@@ -232,11 +234,13 @@ const groupPrivileges = refData(GroupPrivileges, {
 });
 const privilege = refData(Privilege, { res: "privilege", syncWeight: 0 });
 const groupRole = refData(GroupRole, { res: "groupRole", syncWeight: 0 });
+const locationHierarchy = refData(LocationHierarchy, { res: "locations", resUrl: "locationHierarchy", syncWeight: 0 });
 
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
   static model() {
     return [
+      locationHierarchy,
       video,
       checklistItemDetail,
       checklistDetail,
