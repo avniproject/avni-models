@@ -413,12 +413,6 @@ class Individual extends BaseEntity {
         "registrationDateInFuture"
       );
     }
-    if (!moment(this.registrationDate).isValid()) {
-      return ValidationResult.failure(
-        Individual.validationKeys.REGISTRATION_DATE,
-        "invalidDateFormat"
-      );
-    }
     return validationResult;
   }
 
