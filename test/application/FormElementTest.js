@@ -1,6 +1,37 @@
-import {assert} from "chai";
+import { assert } from "chai";
 import EntityFactory from "../EntityFactory";
-import {Concept} from '../../src';
+import { Concept } from "../../src";
+import General from "../../src/utility/General";
+import moment from "moment";
+import Format from "../../src/application/Format";
+
+const createFormElement = (dataType, mandatory) => {
+  const concept = EntityFactory.createConcept("Concept", dataType, General.randomUUID());
+  return EntityFactory.createFormElement("Form Element", mandatory, concept, 1);
+};
+
+const createNumericFormElement = (mandatory, hiAbsolute, lowAbsolute) => {
+  const formElement = createFormElement(Concept.dataType.Numeric, mandatory);
+  formElement.concept.hiAbsolute = hiAbsolute;
+  formElement.concept.lowAbsolute = lowAbsolute;
+  return formElement;
+};
+
+const createTextFormElement = (mandatory, regex, descriptionKey) => {
+  const formElement = createFormElement(Concept.dataType.Text, mandatory);
+  formElement.validFormat = Format.fromResource({regex, descriptionKey});
+  return formElement;
+};
+
+const assertSuccess = result => {
+  assert.isTrue(result.success);
+  assert.equal(result.messageKey, null);
+}
+
+const assertFailure = (result, expectedMessageKey) => {
+  assert.isFalse(result.success);
+  assert.equal(result.messageKey, expectedMessageKey);
+}
 
 describe("FormElementTest", () => {
     describe("Form Element Type Test", () => {
@@ -43,4 +74,213 @@ describe("FormElementTest", () => {
             assert.equal("SingleSelect", formElementType);
         });
     });
+
+    describe("FormElement.validate Numeric Concept", () => {
+      let dataType = Concept.dataType.Numeric;
+
+      it("should return success true if passed valid value on mandatory element", () => {
+        const mandatory = true;
+        assertSuccess(createFormElement(dataType, mandatory).validate(5.5));
+      });
+
+      it("should return success false if passed invalid value on mandatory element", () => {
+        const mandatory = true;
+        assertFailure(createFormElement(dataType, mandatory).validate("abc"), "numericValueValidation");
+      });
+
+      it("should return success false if passed empty or null value on mandatory element", () => {
+        const mandatory = true;
+        assertFailure(createFormElement(dataType, mandatory).validate(""), "emptyValidationMessage");
+        assertFailure(createFormElement(dataType, mandatory).validate(null), "emptyValidationMessage");
+      });
+
+      it("should return success false if passed value fails low or high absolute check on mandatory element", () => {
+        const mandatory = true;
+        assertFailure(createNumericFormElement(mandatory, 5, 5).validate(3), "numberBelowLowAbsolute");
+        assertFailure(createNumericFormElement(mandatory, 5, 5).validate(6), "numberAboveHiAbsolute");
+      });
+
+      it("should return success true if passed valid value on non mandatory element", () => {
+        const mandatory = false;
+        assertSuccess(createFormElement(dataType, mandatory).validate(5.5));
+      });
+
+      it("should return success false if passed invalid value on non mandatory element", () => {
+        const mandatory = false;
+        assertFailure(createFormElement(dataType, mandatory).validate("abc"), "numericValueValidation");
+      });
+
+      it("should return success true if passed empty or null on non mandatory element", () => {
+        const mandatory = false;
+        assertSuccess(createFormElement(dataType, mandatory).validate(null));
+      });
+    });
+
+  describe("FormElement.validate Date Concept", () => {
+    let dataType = Concept.dataType.Date;
+
+    it("should return success true if passed valid value on mandatory element", () => {
+      const mandatory = true;
+      assertSuccess(createFormElement(dataType, mandatory).validate("2020-02-29"));
+      assertSuccess(createFormElement(dataType, mandatory).validate("2020-12-31"));
+      assertSuccess(createFormElement(dataType, mandatory).validate("2020-1-1"));
+    });
+
+    it("should return success false if passed invalid value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createFormElement(dataType, mandatory).validate("2020-02-30"), "invalidDateFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate("2019-02-29"), "invalidDateFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate("2019-13-01"), "invalidDateFormat");
+    });
+
+    it("should return success false if passed empty or null value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createFormElement(dataType, mandatory).validate(""), "emptyValidationMessage");
+      assertFailure(createFormElement(dataType, mandatory).validate(null), "emptyValidationMessage");
+    });
+
+    it("should return success true if passed valid value on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createFormElement(dataType, mandatory).validate("2020-02-29"));
+    });
+
+    it("should return success false if passed invalid value on non mandatory element", () => {
+      const mandatory = false;
+      assertFailure(createFormElement(dataType, mandatory).validate("2020-02-30"), "invalidDateFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate("2019-02-29"), "invalidDateFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate("2019-13-01"), "invalidDateFormat");
+    });
+
+    it("should return success true if passed empty or null on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createFormElement(dataType, mandatory).validate(null));
+    });
+
+  });
+
+  describe("FormElement.validate DateTime Concept", () => {
+    let dataType = Concept.dataType.DateTime;
+
+    it("should return success true if passed valid value on mandatory element", () => {
+      const mandatory = true;
+      assertSuccess(createFormElement(dataType, mandatory).validate(new Date("2020-02-29 12:00")));
+      assertSuccess(createFormElement(dataType, mandatory).validate(new Date("2020-02-29 23:59")));
+    });
+
+    it("should return success false if passed invalid value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-01-01 24:52")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-01-01 12:95")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-25-30 01:53")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(Date.parse("foo")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-01-01 00:00")), "timeValueValidation");
+    });
+
+    it("should return success false if passed empty or null value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createFormElement(dataType, mandatory).validate(""), "emptyValidationMessage");
+      assertFailure(createFormElement(dataType, mandatory).validate(null), "emptyValidationMessage");
+    });
+
+    it("should return success true if passed valid value on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createFormElement(dataType, mandatory).validate(new Date("2020-02-29 12:00")));
+      assertSuccess(createFormElement(dataType, mandatory).validate(new Date("2020-02-29 23:59")));
+    });
+
+    it("should return success false if passed invalid value on non mandatory element", () => {
+      const mandatory = false;
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-01-01 24:52")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-01-01 12:95")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-25-30 01:53")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(Date.parse("foo")), "invalidDateTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate(new Date("2020-01-01 00:00")), "timeValueValidation");
+    });
+
+    it("should return success true if passed empty or null on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createFormElement(dataType, mandatory).validate(null));
+    });
+  });
+
+  describe("FormElement.validate Time Concept", () => {
+    let dataType = Concept.dataType.Time;
+
+    it("should return success true if passed valid value on mandatory element", () => {
+      const mandatory = true;
+      assertSuccess(createFormElement(dataType, mandatory).validate("23:59"));
+      assertSuccess(createFormElement(dataType, mandatory).validate("0:00"));
+    });
+
+    it("should return success false if passed invalid value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createFormElement(dataType,  mandatory).validate("24:20"), "invalidTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate("28:00"), "invalidTimeFormat");
+    });
+
+    it("should return success false if passed empty or null value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createFormElement(dataType, mandatory).validate(""), "emptyValidationMessage");
+      assertFailure(createFormElement(dataType, mandatory).validate(null), "emptyValidationMessage");
+      assertFailure(createFormElement(dataType, mandatory).validate(undefined), "emptyValidationMessage");
+    });
+
+    it("should return success true if passed valid value on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createFormElement(dataType, mandatory).validate("23:59"));
+      assertSuccess(createFormElement(dataType, mandatory).validate("0:00"));
+    });
+
+    it("should return success false if passed invalid value on non mandatory element", () => {
+      const mandatory = false;
+      assertFailure(createFormElement(dataType,  mandatory).validate("24:20"), "invalidTimeFormat");
+      assertFailure(createFormElement(dataType, mandatory).validate("28:00"), "invalidTimeFormat");
+    });
+
+    it("should return success true if passed empty or null value on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createFormElement(dataType, mandatory).validate(""));
+      assertSuccess(createFormElement(dataType, mandatory).validate(null));
+      assertSuccess(createFormElement(dataType, mandatory).validate(undefined));
+    });
+  });
+
+  describe("FormElement.validate Text Concept", () => {
+    let dataType = Concept.dataType.Text;
+
+    it("should return success true if passed valid value on mandatory element", () => {
+      const mandatory = true;
+      assertSuccess(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate("9919999199"));
+    });
+
+    it("should return success false if passed invalid value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate("991999919"), "Require 10 digits");
+    });
+
+    it("should return success false if passed empty or null value on mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate(""), "emptyValidationMessage");
+      assertFailure(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate(null), "emptyValidationMessage");
+      assertFailure(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate(undefined), "emptyValidationMessage");
+    });
+
+    it("should return success true if passed valid value on non mandatory element", () => {
+      const mandatory = true;
+      assertSuccess(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate("9919999199"));
+    });
+
+    it("should return success false if passed invalid value on non mandatory element", () => {
+      const mandatory = true;
+      assertFailure(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate("991999919"), "Require 10 digits");
+    });
+
+    it("should return success true if passed empty or null value on non mandatory element", () => {
+      const mandatory = false;
+      assertSuccess(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate(""));
+      assertSuccess(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate(null));
+      assertSuccess(createTextFormElement(mandatory, "^\\d{10}$", "Require 10 digits").validate(undefined));
+    });
+  });
+
 });

@@ -7,6 +7,7 @@ import ValidationResult from "./ValidationResult";
 import KeyValue from "./KeyValue";
 import Format from "./Format";
 import Filter from "./Filter";
+import moment from "moment";
 
 class FormElement {
   static schema = {
@@ -123,11 +124,28 @@ class FormElement {
       failure.messageKey = this.validFormat.descriptionKey;
     } else if (this.isMultiSelect() && !_.isEmpty(value)) {
       return this._validateMultiSelect(value);
+    } else if (this.concept.datatype === Concept.dataType.DateTime &&
+      ((!this.mandatory && !_.isNil(value)) || (this.mandatory))) {
+      if (!moment(value).isValid()) {
+        failure.messageKey = "invalidDateTimeFormat";
+      } else if (General.hoursAndMinutesOfDateAreZero(value)) {
+        failure.messageKey = "timeValueValidation";
+      } else {
+        return new ValidationResult(true, this.uuid, null);
+      }
+    } else if (this.concept.datatype === Concept.dataType.Time && !moment(value, 'HH:mm').isValid() &&
+      ((!this.mandatory && !_.isEmpty(value)) || (this.mandatory))) {
+      failure.messageKey = "invalidTimeFormat";
+
+    } else if (this.concept.datatype === Concept.dataType.Date && !moment(value).isValid() &&
+      ((!this.mandatory && !_.isEmpty(value)) || (this.mandatory))) {
+      failure.messageKey = "invalidDateFormat";
     } else if (
-      this.concept.datatype === Concept.dataType.DateTime &&
-      General.hoursAndMinutesOfDateAreZero(value)
+      this.mandatory &&
+      this.concept.datatype === Concept.dataType.Duration &&
+      _.some(_.map(value.durations, "durationValue"), (durationValue) => _.isEmpty(durationValue))
     ) {
-      failure.messageKey = "timeValueValidation";
+      failure.messageKey = "emptyValidationMessage";
     } else {
       return new ValidationResult(true, this.uuid, null);
     }
