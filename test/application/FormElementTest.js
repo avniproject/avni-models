@@ -154,6 +154,7 @@ describe("FormElementTest", () => {
     it("should return success true if passed empty or null on non mandatory element", () => {
       const mandatory = false;
       assertSuccess(createFormElement(dataType, mandatory).validate(null));
+      assertSuccess(createFormElement(dataType, mandatory).validate(undefined));
     });
 
   });
@@ -239,7 +240,6 @@ describe("FormElementTest", () => {
 
     it("should return success true if passed empty or null value on non mandatory element", () => {
       const mandatory = false;
-      assertSuccess(createFormElement(dataType, mandatory).validate(""));
       assertSuccess(createFormElement(dataType, mandatory).validate(null));
       assertSuccess(createFormElement(dataType, mandatory).validate(undefined));
     });

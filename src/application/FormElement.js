@@ -134,11 +134,11 @@ class FormElement {
         return new ValidationResult(true, this.uuid, null);
       }
     } else if (this.concept.datatype === Concept.dataType.Time && !moment(value, 'HH:mm').isValid() &&
-      ((!this.mandatory && !_.isEmpty(value)) || (this.mandatory))) {
+      ((!this.mandatory && !_.isNil(value)) || (this.mandatory))) {
       failure.messageKey = "invalidTimeFormat";
 
     } else if (this.concept.datatype === Concept.dataType.Date && !moment(value).isValid() &&
-      ((!this.mandatory && !_.isEmpty(value)) || (this.mandatory))) {
+      ((!this.mandatory && !_.isNil(value)) || (this.mandatory))) {
       failure.messageKey = "invalidDateFormat";
     } else if (
       this.mandatory &&
