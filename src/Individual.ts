@@ -377,6 +377,8 @@ class Individual extends BaseEntity {
   validateDateOfBirth() {
     if (_.isNil(this.dateOfBirth)) {
       return ValidationResult.failure(Individual.validationKeys.DOB, "emptyValidationMessage");
+    } else if (!moment(this.dateOfBirth).isValid()) {
+      return ValidationResult.failure(Individual.validationKeys.DOB, "invalidDateFormat");
     } else if (this.getAgeInYears() > 120) {
       return ValidationResult.failure(Individual.validationKeys.DOB, "ageTooHigh");
     } else if (this.isRegistrationBeforeDateOfBirth) {
@@ -401,6 +403,12 @@ class Individual extends BaseEntity {
       this.registrationDate,
       Individual.validationKeys.REGISTRATION_DATE
     );
+    if (validationResult.success && !moment(this.registrationDate).isValid()) {
+      return ValidationResult.failure(
+        Individual.validationKeys.REGISTRATION_DATE,
+        "invalidDateFormat"
+      );
+    }
     if (validationResult.success && this.isRegistrationBeforeDateOfBirth) {
       return ValidationResult.failure(
         Individual.validationKeys.REGISTRATION_DATE,

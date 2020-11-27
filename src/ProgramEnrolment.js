@@ -203,6 +203,9 @@ class ProgramEnrolment extends BaseEntity {
         ProgramEnrolment.validationKeys.ENROLMENT_DATE
       )
     );
+    if (!moment(this.enrolmentDateTime).isValid()) {
+      validationResults.push(ValidationResult.failure(ProgramEnrolment.validationKeys.ENROLMENT_DATE, "invalidDateFormat"))
+    }
     if (
       !_.isNil(this.enrolmentDateTime) &&
       General.dateAIsBeforeB(this.enrolmentDateTime, this.individual.registrationDate)
@@ -233,6 +236,9 @@ class ProgramEnrolment extends BaseEntity {
         ProgramEnrolment.validationKeys.EXIT_DATE
       )
     );
+    if (!moment(this.programExitDateTime).isValid()) {
+      validationResults.push(ValidationResult.failure(ProgramEnrolment.validationKeys.EXIT_DATE, "invalidDateFormat"))
+    }
     if (
       !_.isNil(this.programExitDateTime) &&
       General.dateAIsBeforeB(this.programExitDateTime, this.enrolmentDateTime)
