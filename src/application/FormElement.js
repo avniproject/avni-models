@@ -208,6 +208,11 @@ class FormElement {
     return _.isNil(datePickerMode) ? null : datePickerMode.getValue();
   }
 
+  get timePickerMode() {
+    const timePickerMode = this.recordByKey("timePickerMode");
+    return _.isNil(timePickerMode) ? null : timePickerMode.getValue();
+  }
+
   matches(elementNameOrUUID) {
     return this.name === elementNameOrUUID || this.uuid === elementNameOrUUID;
   }
