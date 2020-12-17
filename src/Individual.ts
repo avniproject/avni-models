@@ -523,6 +523,7 @@ class Individual extends BaseEntity {
     individual.relationships = this.relationships;
     individual.groupSubjects = this.groupSubjects;
     individual.encounters = this.encounters;
+    individual.enrolments = this.enrolments;
     return individual;
   }
 
