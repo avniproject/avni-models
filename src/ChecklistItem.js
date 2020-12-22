@@ -76,6 +76,10 @@ class ChecklistItem {
     return checklistItem;
   }
 
+  cloneForEdit() {
+    return this.clone();
+  }
+
   validate() {
     return null;
   }
