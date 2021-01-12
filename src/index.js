@@ -86,6 +86,9 @@ import GroupRole from "./GroupRole";
 import GroupSubject from "./GroupSubject";
 import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
+import ReportCard from "./ReportCard";
+import Dashboard from "./Dashboard";
+import DashboardCardMapping from "./DashboardCardMapping";
 
 export {
   AbstractEncounter,
@@ -177,4 +180,7 @@ export {
   GroupSubject,
   DashboardCache,
   LocationHierarchy,
+  ReportCard,
+  Dashboard,
+  DashboardCardMapping,
 };

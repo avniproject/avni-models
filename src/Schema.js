@@ -61,6 +61,9 @@ import GroupRole from "./GroupRole";
 import GroupSubject from "./GroupSubject";
 import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
+import ReportCard from "./ReportCard";
+import Dashboard from "./Dashboard";
+import DashboardCardMapping from "./DashboardCardMapping";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -127,9 +130,12 @@ export default {
     GroupRole,
     GroupSubject,
     DashboardCache,
-    LocationHierarchy
+    LocationHierarchy,
+    ReportCard,
+    Dashboard,
+    DashboardCardMapping,
   ],
-  schemaVersion: 129,
+  schemaVersion: 130,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");

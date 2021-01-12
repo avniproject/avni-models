@@ -45,6 +45,9 @@ import Privilege from "./Privilege";
 import GroupSubject from "./GroupSubject";
 import GroupRole from "./GroupRole";
 import LocationHierarchy from "./LocationHierarchy";
+import ReportCard from "./ReportCard";
+import Dashboard from "./Dashboard";
+import DashboardCardMapping from "./DashboardCardMapping";
 
 const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -235,11 +238,17 @@ const groupPrivileges = refData(GroupPrivileges, {
 const privilege = refData(Privilege, { res: "privilege", syncWeight: 0 });
 const groupRole = refData(GroupRole, { res: "groupRole", syncWeight: 0 });
 const locationHierarchy = refData(LocationHierarchy, { res: "locations", resUrl: "locationHierarchy", syncWeight: 0 });
+const reportCard = refData(ReportCard, { res: "card", syncWeight: 0 });
+const dashboard = refData(Dashboard, { res: "dashboard", syncWeight: 0 });
+const dashboardCardMapping = refData(DashboardCardMapping, { res: "dashboardCardMapping", syncWeight: 0 });
 
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
   static model() {
     return [
+      dashboardCardMapping,
+      dashboard,
+      reportCard,
       locationHierarchy,
       video,
       checklistItemDetail,
