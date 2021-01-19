@@ -16,6 +16,7 @@ class SyncTelemetry extends BaseEntity {
       syncStartTime: "date",
       syncEndTime: "date?",
       entityStatus: "string",
+      deviceInfo: "string",
     },
   };
 
@@ -55,6 +56,10 @@ class SyncTelemetry extends BaseEntity {
     return JSON.parse(this.entityStatus);
   }
 
+  getDeviceInfo() {
+    return JSON.parse(this.deviceInfo);
+  }
+
   get toResource() {
     const resource = _.pick(this, [
       "uuid",
@@ -66,6 +71,7 @@ class SyncTelemetry extends BaseEntity {
       "deviceName",
     ]);
     resource.entityStatus = this.getEntityStatus();
+    resource.deviceInfo = this.getDeviceInfo();
     return resource;
   }
 
@@ -80,6 +86,7 @@ class SyncTelemetry extends BaseEntity {
     syncTelemetry.appVersion = this.appVersion;
     syncTelemetry.androidVersion = this.androidVersion;
     syncTelemetry.deviceName = this.deviceName;
+    syncTelemetry.deviceInfo = this.deviceInfo;
     return syncTelemetry;
   }
 }

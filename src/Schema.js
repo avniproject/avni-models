@@ -135,7 +135,7 @@ export default {
     Dashboard,
     DashboardCardMapping,
   ],
-  schemaVersion: 130,
+  schemaVersion: 131,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
