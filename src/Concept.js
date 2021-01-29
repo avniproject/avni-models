@@ -255,6 +255,10 @@ export default class Concept {
     }).filter((ans) => !ans.voided);
   }
 
+  getAnswerWithConceptName(answerName) {
+    return _.find(this.getAnswers(), answer =>  answer.concept.name === answerName);
+  }
+
   get translatedFieldValue() {
     return this.name;
   }

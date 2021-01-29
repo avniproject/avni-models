@@ -71,14 +71,30 @@ class ObservationsHolder {
   }
 
   addOrUpdatePrimitiveObs(concept, value) {
-    const observation = this.getObservation(concept);
-    if (!_.isEmpty(observation)) {
-      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
-    }
+    this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
       this.observations.push(
         Observation.create(concept, new PrimitiveValue(value, concept.datatype))
       );
+    }
+  }
+
+  _removeExistingObs(concept) {
+    const observation = this.getObservation(concept);
+    if (!_.isEmpty(observation)) {
+      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+    }
+  }
+
+  addOrUpdateCodedObs(concept, value, isSingleSelect) {
+    this._removeExistingObs(concept);
+    const getConceptUUID = (conceptAnswer) => conceptAnswer ? conceptAnswer.concept.uuid : undefined;
+    if (!_.isEmpty(value)) {
+      const answerUUID = isSingleSelect
+          ? getConceptUUID(concept.getAnswerWithConceptName(value))
+          : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
+      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID) : new MultipleCodedValues(answerUUID));
+      this.observations.push(observation);
     }
   }
 
@@ -95,13 +111,16 @@ class ObservationsHolder {
     );
   }
 
-  updatePrimitiveObs(applicableFormElements, formElementStatuses) {
+  updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
     applicableFormElements.forEach((fe) => {
       let value = _.find(formElementStatuses, (formElementStatus) => {
         return fe.uuid === formElementStatus.uuid;
       }).value;
       if (!_.isNil(value)) {
-        this.addOrUpdatePrimitiveObs(fe.concept, value);
+        const concept = fe.concept;
+        concept.isCodedConcept()
+            ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
+            : this.addOrUpdatePrimitiveObs(concept, value);
       }
     });
   }
