@@ -1,8 +1,9 @@
 import General from "../utility/General";
-import ResourceUtil from "../utility/ResourceUtil";
 import BaseEntity from "../BaseEntity";
 import FormElementGroup from "./FormElementGroup";
 import _ from "lodash";
+import FormMapping from "./FormMapping";
+import DraftSubject from "../draft/DraftSubject";
 
 class Form {
   static schema = {
@@ -33,7 +34,10 @@ class Form {
     return this;
   }
 
-  static fromResource(resource) {
+  static fromResource(resource, entityService) {
+    if (resource.formType === this.formTypes.IndividualProfile) {
+      this.deleteOutOfSyncDrafts(entityService, resource.uuid);
+    }
     return General.assignFields(resource, new Form(), [
       "uuid",
       "name",
@@ -43,6 +47,15 @@ class Form {
       "validationRule",
       "checklistsRule",
     ]);
+  }
+
+  static deleteOutOfSyncDrafts(entityService, formUUID) {
+    const formMappings = entityService.findAllByCriteria(`form.uuid = '${formUUID}'`, FormMapping.schema.name);
+    _.forEach(formMappings, ({subjectType}) => {
+      const outOfSyncDrafts = entityService.findAll(DraftSubject.schema.name)
+          .filtered(`subjectType = $0`, subjectType);
+      entityService.deleteAll(outOfSyncDrafts);
+    })
   }
 
   static childAssociations = () => new Map([[FormElementGroup, "formElementGroups"]]);
