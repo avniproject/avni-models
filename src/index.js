@@ -89,6 +89,7 @@ import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
 import DashboardCardMapping from "./DashboardCardMapping";
+import DraftSubject from './draft/DraftSubject';
 
 export {
   AbstractEncounter,
@@ -183,4 +184,5 @@ export {
   ReportCard,
   Dashboard,
   DashboardCardMapping,
+  DraftSubject
 };

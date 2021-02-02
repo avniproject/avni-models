@@ -64,6 +64,7 @@ import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
 import DashboardCardMapping from "./DashboardCardMapping";
+import DraftSubject from './draft/DraftSubject';
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -134,8 +135,9 @@ export default {
     ReportCard,
     Dashboard,
     DashboardCardMapping,
+    DraftSubject
   ],
-  schemaVersion: 131,
+  schemaVersion: 132,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
