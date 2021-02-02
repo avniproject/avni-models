@@ -682,9 +682,7 @@ class Individual extends BaseEntity {
   }
 
   address(i18n) {
-    return this.isPerson()
-      ? {label: "Address", value: i18n.t(this.lowestAddressLevel.name)}
-      : {};
+    return {label: "Address", value: i18n.t(this.lowestAddressLevel.name)};
   }
 
   _getEncounters(removeCancelledEncounters) {
