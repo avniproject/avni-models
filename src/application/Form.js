@@ -4,6 +4,8 @@ import FormElementGroup from "./FormElementGroup";
 import _ from "lodash";
 import FormMapping from "./FormMapping";
 import DraftSubject from "../draft/DraftSubject";
+import EntitySyncStatus from "../EntitySyncStatus";
+import moment from "moment";
 
 class Form {
   static schema = {
@@ -35,7 +37,9 @@ class Form {
   }
 
   static fromResource(resource, entityService) {
-    if (resource.formType === this.formTypes.IndividualProfile) {
+    const formSyncStatus = entityService.findByCriteria(`entityName = 'Form'`, EntitySyncStatus.schema.name);
+    if (resource.formType === this.formTypes.IndividualProfile && formSyncStatus
+        && moment(formSyncStatus.loadedSince).isBefore(moment(resource.lastModifiedDateTime))) {
       this.deleteOutOfSyncDrafts(entityService, resource.uuid);
     }
     return General.assignFields(resource, new Form(), [
