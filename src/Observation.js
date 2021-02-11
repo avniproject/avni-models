@@ -69,6 +69,8 @@ class Observation {
     } else if (observation.concept.datatype === Concept.dataType.Location) {
       const addressLevel = addressLevelService.findByUUID(valueWrapper.getValue());
       return new Displayable(addressLevel.name, addressLevel);
+    } else if (observation.concept.isPhoneNumberConcept()) {
+      return new Displayable(_.toString(valueWrapper.toString()), null);
     } else {
       const unit = _.defaultTo(observation.concept.unit, "");
       const displayValue = unit !== "" ? _.toString(`${valueWrapper.getValue()} ${unit}`) : _.toString(`${valueWrapper.getValue()}`);
@@ -101,6 +103,8 @@ class Observation {
       let valueParsed = JSON.parse(this.valueJSON);
       if (this.concept.isDurationConcept()) {
         valueParsed = valueParsed.durations;
+      } else if (this.concept.isPhoneNumberConcept()) {
+        return this.concept.getValueWrapperFor(valueParsed);
       } else {
         valueParsed = valueParsed.answer;
       }
@@ -154,6 +158,14 @@ class Observation {
       const obsValue = this.getReadableValue();
       return obsValue && obsValue.toString();
     }
+  }
+
+  isPhoneNumberVerificationRequired(filteredFormElements) {
+    const formElement = _.find(filteredFormElements, fe => fe.concept.uuid === this.concept.uuid);
+    return !_.isEmpty(formElement) &&
+        this.concept.datatype === Concept.dataType.PhoneNumber &&
+        this.concept.recordValueByKey('verifyPhoneNumber') &&
+        !this.getValueWrapper().verified
   }
 }
 

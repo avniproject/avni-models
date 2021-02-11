@@ -1,10 +1,11 @@
-import _, { isNil } from "lodash";
+import _, {isNil} from "lodash";
 import Observation from "./Observation";
 import PrimitiveValue from "./observation/PrimitiveValue";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import MultipleCodedValues from "./observation/MultipleCodedValues";
 import Concept from "./Concept";
 import CompositeDuration from "./CompositeDuration";
+import PhoneNumber from "./PhoneNumber";
 
 class ObservationsHolder {
   constructor(observations) {
@@ -67,6 +68,10 @@ class ObservationsHolder {
         );
         this.observations.push(observation);
       }
+    }
+    if (formElement.getType() === Concept.dataType.PhoneNumber) {
+      const observation = Observation.create(formElement.concept, PhoneNumber.fromObs(value));
+      this.observations.push(observation);
     }
   }
 
@@ -159,6 +164,17 @@ class ObservationsHolder {
       if (duration.isEmpty) return null;
     }
     observation = Observation.create(concept, duration);
+    this.observations.push(observation);
+    return observation;
+  }
+
+  updatePhoneNumberValue(concept, phoneNumber, verified = false) {
+    let observation = this.getObservation(concept);
+    if (!_.isEmpty(observation)) {
+      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+      if (_.isEmpty(phoneNumber)) return null;
+    }
+    observation = Observation.create(concept, new PhoneNumber(phoneNumber, verified));
     this.observations.push(observation);
     return observation;
   }

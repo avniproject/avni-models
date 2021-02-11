@@ -8,6 +8,7 @@ import PrimitiveValue from "./observation/PrimitiveValue";
 import Duration from "./Duration";
 import CompositeDuration from "./CompositeDuration";
 import KeyValue from "./application/KeyValue";
+import PhoneNumber from "./PhoneNumber";
 
 export class ConceptAnswer {
   static schema = {
@@ -85,6 +86,7 @@ export default class Concept {
     Id: "Id",
     Location: "Location",
     Subject: "Subject",
+    PhoneNumber: "PhoneNumber",
     get Media() {
       return [this.Image, this.Video];
     },
@@ -223,10 +225,12 @@ export default class Concept {
   getValueWrapperFor(obsValue) {
     if (this.isCodedConcept() || this.isSubjectConcept()) {
       return _.isArray(obsValue)
-        ? new MultipleCodedValues(obsValue)
-        : new SingleCodedValue(obsValue);
+          ? new MultipleCodedValues(obsValue)
+          : new SingleCodedValue(obsValue);
     } else if (this.isDurationConcept()) {
       return CompositeDuration.fromObs(obsValue);
+    } else if (this.isPhoneNumberConcept()) {
+        return PhoneNumber.fromObs(obsValue);
     } else {
       return new PrimitiveValue(obsValue, this.datatype);
     }
@@ -242,6 +246,10 @@ export default class Concept {
 
   isDurationConcept() {
     return this.datatype === Concept.dataType.Duration;
+  }
+
+  isPhoneNumberConcept() {
+    return this.datatype === Concept.dataType.PhoneNumber;
   }
 
   getAnswers() {

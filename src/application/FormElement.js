@@ -146,6 +146,11 @@ class FormElement {
       _.some(_.map(value.durations, "durationValue"), (durationValue) => _.isEmpty(durationValue))
     ) {
       failure.messageKey = "emptyValidationMessage";
+    } else if (
+        this.concept.datatype === Concept.dataType.PhoneNumber &&
+        !_.isEmpty(value) && !(/^[0-9]{10}$/.test(value))
+    ) {
+      failure.messageKey = "invalidPhoneNumber";
     } else {
       return new ValidationResult(true, this.uuid, null);
     }

@@ -90,6 +90,7 @@ import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
 import DashboardCardMapping from "./DashboardCardMapping";
 import DraftSubject from './draft/DraftSubject';
+import PhoneNumber from "./PhoneNumber";
 
 export {
   AbstractEncounter,
@@ -184,5 +185,6 @@ export {
   ReportCard,
   Dashboard,
   DashboardCardMapping,
-  DraftSubject
+  DraftSubject,
+  PhoneNumber
 };
