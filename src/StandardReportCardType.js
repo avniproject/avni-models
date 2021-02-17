@@ -1,10 +1,10 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 
-class Dashboard extends BaseEntity {
+class StandardReportCardType extends BaseEntity {
 
     static schema = {
-        name: "Dashboard",
+        name: "StandardReportCardType",
         primaryKey: "uuid",
         properties: {
             uuid: "string",
@@ -14,10 +14,17 @@ class Dashboard extends BaseEntity {
         },
     };
 
+    static type = {
+        PendingApproval: "Pending approval",
+        Approved: "Approved",
+        Rejected: "Rejected",
+    };
+
     static fromResource(resource) {
-        return General.assignFields(resource, new Dashboard(),
+        return General.assignFields(resource, new StandardReportCardType(),
             ["uuid", "name", "description", "voided"]);
     }
+
 }
 
-export default Dashboard;
+export default StandardReportCardType;

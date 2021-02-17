@@ -16,6 +16,7 @@ import Point from "./geo/Point";
 import SubjectType from "./SubjectType";
 import Observation from "./Observation";
 import GroupSubject from "./GroupSubject";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class Individual extends BaseEntity {
   static schema = {
@@ -39,6 +40,7 @@ class Individual extends BaseEntity {
       relationships: {type: "list", objectType: "IndividualRelationship"},
       groupSubjects: {type: "list", objectType: "GroupSubject"},
       registrationLocation: {type: "Point", optional: true},
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
 
@@ -76,6 +78,7 @@ class Individual extends BaseEntity {
   firstName: any;
   lastName: any;
   dateOfBirthVerified: any;
+  latestEntityApprovalStatus: EntityApprovalStatus;
 
   static createEmptyInstance() {
     const individual = new Individual();
@@ -524,6 +527,7 @@ class Individual extends BaseEntity {
     individual.groupSubjects = this.groupSubjects;
     individual.encounters = this.encounters;
     individual.enrolments = this.enrolments;
+    individual.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return individual;
   }
 
@@ -808,6 +812,7 @@ class Individual extends BaseEntity {
       voided: this.voided,
       registrationLocation: this.registrationLocation,
       subjectType: this.subjectType,
+      latestEntityApprovalStatus: this.latestEntityApprovalStatus,
     };
   }
 }

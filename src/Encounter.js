@@ -6,6 +6,7 @@ import ValidationResult from "./application/ValidationResult";
 import G from "./utility/General";
 import EncounterType from "./EncounterType";
 import Point from "./geo/Point";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class Encounter extends AbstractEncounter {
   static schema = {
@@ -25,6 +26,7 @@ class Encounter extends AbstractEncounter {
       cancelObservations: { type: "list", objectType: "Observation" },
       cancelLocation: { type: "Point", optional: true },
       voided: { type: "bool", default: false },
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
 

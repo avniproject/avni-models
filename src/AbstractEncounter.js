@@ -81,6 +81,7 @@ class AbstractEncounter extends BaseEntity {
       ? null
       : this.encounterLocation.clone();
     encounter.cancelLocation = _.isNil(this.cancelLocation) ? null : this.cancelLocation.clone();
+    encounter.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return encounter;
   }
 

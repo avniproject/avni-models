@@ -65,6 +65,9 @@ import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
 import DashboardCardMapping from "./DashboardCardMapping";
 import DraftSubject from './draft/DraftSubject';
+import StandardReportCardType from "./StandardReportCardType";
+import ApprovalStatus from "./ApprovalStatus";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -135,9 +138,12 @@ export default {
     ReportCard,
     Dashboard,
     DashboardCardMapping,
-    DraftSubject
+    DraftSubject,
+    StandardReportCardType,
+    ApprovalStatus,
+    EntityApprovalStatus
   ],
-  schemaVersion: 132,
+  schemaVersion: 133,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -597,6 +603,12 @@ export default {
         ),
         true
       );
+    }
+
+    if (oldDB.schemaVersion < 133) {
+      _.forEach(newDB.objects(ReportCard.schema.name), (reportCard) => {
+        reportCard.standardReportCardType = null;
+      })
     }
   },
 };
