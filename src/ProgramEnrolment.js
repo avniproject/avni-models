@@ -603,6 +603,18 @@ class ProgramEnrolment extends BaseEntity {
     );
   }
 
+  getName() {
+    return "ProgramEnrolment";
+  }
+
+  getEntityTypeName() {
+    return this.program.name;
+  }
+
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,

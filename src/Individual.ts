@@ -795,6 +795,22 @@ class Individual extends BaseEntity {
       : observationForConcept.getReadableValue();
   }
 
+  get individual() {
+    return this;
+  }
+
+  getEntityTypeName() {
+    return this.subjectTypeName;
+  }
+
+    getName() {
+        return 'Registration';
+    }
+
+    isRejectedEntity() {
+        return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+    }
+
   toJSON() {
     return {
       uuid: this.uuid,

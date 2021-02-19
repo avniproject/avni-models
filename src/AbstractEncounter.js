@@ -211,6 +211,14 @@ class AbstractEncounter extends BaseEntity {
     );
   }
 
+  getEntityTypeName() {
+    return this.encounterType.name;
+  }
+
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+  }
+
   get subjectType() {
     return _.get(
       this,

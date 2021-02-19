@@ -233,6 +233,22 @@ class ChecklistItem {
       return observation.concept.name === conceptName;
     });
   }
+
+  get individual() {
+    return this.checklist.programEnrolment.individual;
+  }
+
+  getName() {
+    return "ChecklistItem";
+  }
+
+  getEntityTypeName() {
+    return this.checklist.detail.name;
+  }
+
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+  }
 }
 
 export default ChecklistItem;
