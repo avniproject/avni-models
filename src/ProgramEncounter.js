@@ -6,6 +6,7 @@ import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import Point from "./geo/Point";
 import Individual from "./Individual";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class ProgramEncounter extends AbstractEncounter {
   static fieldKeys = {
@@ -35,6 +36,7 @@ class ProgramEncounter extends AbstractEncounter {
       encounterLocation: { type: "Point", optional: true },
       cancelLocation: { type: "Point", optional: true },
       voided: { type: "bool", default: false },
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
 
@@ -132,6 +134,7 @@ class ProgramEncounter extends AbstractEncounter {
       programEnrolmentUUID: this.programEnrolment.uuid,
       observations: this.observations,
       voided: this.voided,
+      latestEntityApprovalStatus: this.latestEntityApprovalStatus,
     };
   }
 }

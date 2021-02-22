@@ -91,6 +91,9 @@ import Dashboard from "./Dashboard";
 import DashboardCardMapping from "./DashboardCardMapping";
 import DraftSubject from './draft/DraftSubject';
 import PhoneNumber from "./PhoneNumber";
+import EntityApprovalStatus from "./EntityApprovalStatus";
+import ApprovalStatus from "./ApprovalStatus";
+import StandardReportCardType from "./StandardReportCardType";
 
 export {
   AbstractEncounter,
@@ -186,5 +189,8 @@ export {
   Dashboard,
   DashboardCardMapping,
   DraftSubject,
-  PhoneNumber
+  PhoneNumber,
+  EntityApprovalStatus,
+  ApprovalStatus,
+  StandardReportCardType,
 };

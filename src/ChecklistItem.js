@@ -6,6 +6,7 @@ import ChecklistItemStatus from "./ChecklistItemStatus";
 import ObservationsHolder from "./ObservationsHolder";
 import ChecklistItemDetail from "./ChecklistItemDetail";
 import moment from "moment";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class ChecklistItem {
   static schema = {
@@ -17,6 +18,7 @@ class ChecklistItem {
       completionDate: { type: "date", optional: true },
       observations: { type: "list", objectType: "Observation" },
       checklist: "Checklist",
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
 
@@ -73,6 +75,7 @@ class ChecklistItem {
     checklistItem.completionDate = this.completionDate;
     checklistItem.checklist = this.checklist;
     checklistItem.observations = ObservationsHolder.clone(this.observations);
+    checklistItem.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return checklistItem;
   }
 
@@ -229,6 +232,22 @@ class ChecklistItem {
     return _.find(this.observations, (observation) => {
       return observation.concept.name === conceptName;
     });
+  }
+
+  get individual() {
+    return this.checklist.programEnrolment.individual;
+  }
+
+  getName() {
+    return "ChecklistItem";
+  }
+
+  getEntityTypeName() {
+    return this.checklist.detail.name;
+  }
+
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 }
 

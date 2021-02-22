@@ -12,6 +12,7 @@ import ValidationResult from "./application/ValidationResult";
 import Checklist from "./Checklist";
 import { findMediaObservations } from "./Media";
 import Point from "./geo/Point";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class ProgramEnrolment extends BaseEntity {
   static schema = {
@@ -31,6 +32,7 @@ class ProgramEnrolment extends BaseEntity {
       enrolmentLocation: { type: "Point", optional: true },
       exitLocation: { type: "Point", optional: true },
       voided: { type: "bool", default: false },
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
 
@@ -185,6 +187,7 @@ class ProgramEnrolment extends BaseEntity {
       : this.enrolmentLocation.clone();
     programEnrolment.exitLocation = _.isNil(this.exitLocation) ? null : this.exitLocation.clone();
     programEnrolment.voided = this.voided;
+    programEnrolment.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return programEnrolment;
   }
 
@@ -600,6 +603,18 @@ class ProgramEnrolment extends BaseEntity {
     );
   }
 
+  getName() {
+    return "ProgramEnrolment";
+  }
+
+  getEntityTypeName() {
+    return this.program.name;
+  }
+
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,
@@ -613,6 +628,7 @@ class ProgramEnrolment extends BaseEntity {
       checklists: this.checklists,
       individualUUID: this.individual.uuid,
       voided: this.voided,
+      latestEntityApprovalStatus: this.latestEntityApprovalStatus,
     };
   }
 }

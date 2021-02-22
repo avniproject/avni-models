@@ -81,6 +81,7 @@ class AbstractEncounter extends BaseEntity {
       ? null
       : this.encounterLocation.clone();
     encounter.cancelLocation = _.isNil(this.cancelLocation) ? null : this.cancelLocation.clone();
+    encounter.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return encounter;
   }
 
@@ -208,6 +209,14 @@ class AbstractEncounter extends BaseEntity {
       originalValue,
       newValue
     );
+  }
+
+  getEntityTypeName() {
+    return this.encounterType.name;
+  }
+
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
   get subjectType() {
