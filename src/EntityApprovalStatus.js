@@ -7,6 +7,7 @@ import ProgramEnrolment from "./ProgramEnrolment";
 import Encounter from "./Encounter";
 import ProgramEncounter from "./ProgramEncounter";
 import ChecklistItem from "./ChecklistItem";
+import _ from 'lodash';
 
 class EntityApprovalStatus extends BaseEntity {
 
@@ -47,6 +48,18 @@ class EntityApprovalStatus extends BaseEntity {
         return resource;
     }
 
+    get isPending() {
+        return this.approvalStatus.isPending;
+    }
+
+    get isApproved() {
+        return this.approvalStatus.isApproved;
+    }
+
+    get isRejected() {
+        return this.approvalStatus.isRejected;
+    }
+
     static fromResource(resource, entityService) {
         const entityApprovalStatus = General.assignFields(resource, new EntityApprovalStatus(),
             ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided"],
@@ -72,14 +85,18 @@ class EntityApprovalStatus extends BaseEntity {
         return entityApprovalStatus;
     }
 
+    static getSchemaEntityTypeList() {
+        return [
+            {schema: Individual.schema.name, entityType: EntityApprovalStatus.entityType.Subject},
+            {schema: ProgramEnrolment.schema.name, entityType: EntityApprovalStatus.entityType.ProgramEnrolment},
+            {schema: Encounter.schema.name, entityType: EntityApprovalStatus.entityType.Encounter},
+            {schema: ProgramEncounter.schema.name, entityType: EntityApprovalStatus.entityType.ProgramEncounter},
+            {schema: ChecklistItem.schema.name, entityType: EntityApprovalStatus.entityType.ChecklistItem}
+        ];
+    }
+
     static getLatestApprovalStatusByEntity(entityApprovalStatuses, entityService) {
-        const entityTypeToSchemaMap = {
-            'Subject': Individual.schema.name,
-            'ProgramEnrolment': ProgramEnrolment.schema.name,
-            'Encounter': Encounter.schema.name,
-            'ProgramEncounter': ProgramEncounter.schema.name,
-            'ChecklistItem': ChecklistItem.schema.name
-        };
+        const getSchema = (passedEntityType) => _.get(_.find(EntityApprovalStatus.getSchemaEntityTypeList(), ({entityType}) => entityType === passedEntityType), 'schema');
         const maxEntityApprovalStatusesPerEntity = _.chain(entityApprovalStatuses)
             .filter(({voided}) => !voided)
             .groupBy(({entityType, entityUUID}) => `${entityType}(${entityUUID})`)
@@ -87,24 +104,12 @@ class EntityApprovalStatus extends BaseEntity {
             .map(groupedEntities => _.maxBy(groupedEntities, 'statusDateTime'))
             .value();
         return _.map(maxEntityApprovalStatusesPerEntity, entityApprovalStatus => {
-            const schema = entityTypeToSchemaMap[entityApprovalStatus.entityType];
+            const schema = getSchema(entityApprovalStatus.entityType);
             const existingEntity = entityService.findByUUID(entityApprovalStatus.entityUUID, schema);
             let entity = General.pick(existingEntity, ["uuid", "latestEntityApprovalStatus"]);
             entity.latestEntityApprovalStatus = _.maxBy([entity.latestEntityApprovalStatus, entityApprovalStatus], 'statusDateTime');
             return ({schema, entity});
         });
-    }
-
-    get isPending() {
-        return this.approvalStatus.isPending;
-    }
-
-    get isApproved() {
-        return this.approvalStatus.isApproved;
-    }
-
-    get isRejected() {
-        return this.approvalStatus.isRejected;
     }
 
 }
