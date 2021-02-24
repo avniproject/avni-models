@@ -51,6 +51,7 @@ import DashboardCardMapping from "./DashboardCardMapping";
 import StandardReportCardType from "./StandardReportCardType";
 import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import GroupDashboard from "./GroupDashboard";
 
 const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -246,12 +247,14 @@ const dashboard = refData(Dashboard, { res: "dashboard", syncWeight: 0 });
 const dashboardCardMapping = refData(DashboardCardMapping, { res: "dashboardCardMapping", syncWeight: 0 });
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
+const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
 const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 0 });
 
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
   static model() {
     return [
+      groupDashboard,
       approvalStatus,
       dashboardCardMapping,
       dashboard,

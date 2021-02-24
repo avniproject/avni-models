@@ -68,6 +68,7 @@ import DraftSubject from './draft/DraftSubject';
 import StandardReportCardType from "./StandardReportCardType";
 import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import GroupDashboard from "./GroupDashboard";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -141,9 +142,10 @@ export default {
     DraftSubject,
     StandardReportCardType,
     ApprovalStatus,
-    EntityApprovalStatus
+    EntityApprovalStatus,
+    GroupDashboard
   ],
-  schemaVersion: 133,
+  schemaVersion: 134,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");

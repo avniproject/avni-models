@@ -94,6 +94,7 @@ import PhoneNumber from "./PhoneNumber";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import ApprovalStatus from "./ApprovalStatus";
 import StandardReportCardType from "./StandardReportCardType";
+import GroupDashboard from "./GroupDashboard";
 
 export {
   AbstractEncounter,
@@ -193,4 +194,5 @@ export {
   EntityApprovalStatus,
   ApprovalStatus,
   StandardReportCardType,
+  GroupDashboard,
 };
