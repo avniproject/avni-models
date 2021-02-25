@@ -35,13 +35,9 @@ class Privilege {
     editMember: "Edit member",
     removeMember: "Remove member",
     approveSubject: "Approve Subject",
-    rejectSubject: "Reject Subject",
     approveEnrolment: "Approve Enrolment",
-    rejectEnrolment: "Reject Enrolment",
     approveEncounter: "Approve Encounter",
-    rejectEncounter: "Reject Encounter",
     approveChecklistItem: "Approve ChecklistItem",
-    rejectChecklistItem: "Reject ChecklistItem",
   };
 
   static privilegeEntityType = {
@@ -65,35 +61,30 @@ class Privilege {
     {
       schema: Individual.schema.name,
       approvedPrivilegeName: Privilege.privilegeName.approveSubject,
-      rejectedPrivilegeName: Privilege.privilegeName.rejectSubject,
       editPrivilegeName: Privilege.privilegeName.editSubject,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.subjectType.uuid}'`
     },
     {
       schema: Encounter.schema.name,
       approvedPrivilegeName: Privilege.privilegeName.approveEncounter,
-      rejectedPrivilegeName: Privilege.privilegeName.rejectEncounter,
       editPrivilegeName: Privilege.privilegeName.editVisit,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.individual.subjectType.uuid}' and encounterTypeUuid = '${entity.encounterType.uuid}'`
     },
     {
       schema: ProgramEnrolment.schema.name,
       approvedPrivilegeName: Privilege.privilegeName.approveEnrolment,
-      rejectedPrivilegeName: Privilege.privilegeName.rejectEnrolment,
       editPrivilegeName: Privilege.privilegeName.editEnrolmentDetails,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.individual.subjectType.uuid}' and programUuid = '${entity.program.uuid}'`
     },
     {
       schema: ProgramEncounter.schema.name,
       approvedPrivilegeName: Privilege.privilegeName.approveEncounter,
-      rejectedPrivilegeName: Privilege.privilegeName.rejectEncounter,
       editPrivilegeName: Privilege.privilegeName.editVisit,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.programEnrolment.individual.subjectType.uuid}' and programUuid = '${entity.programEnrolment.program.uuid}' and programEncounterTypeUuid = '${entity.encounterType.uuid}'`
     },
     {
       schema: ChecklistItem.schema.name,
       approvedPrivilegeName: Privilege.privilegeName.approveChecklistItem,
-      rejectedPrivilegeName: Privilege.privilegeName.rejectChecklistItem,
       editPrivilegeName: Privilege.privilegeName.editChecklist,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.programEnrolment.individual.subjectType.uuid}' and checklistDetailUuid = '${entity.checklist.detail.uuid}'`
     }
