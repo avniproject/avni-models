@@ -26,6 +26,28 @@ class StandardReportCardType extends BaseEntity {
         Total: "Total"
     };
 
+    get iconName() {
+        const typeIcon = {
+            [StandardReportCardType.type.Approved]: 'check-circle',
+            [StandardReportCardType.type.Rejected]: 'cancel',
+            [StandardReportCardType.type.PendingApproval]: 'av-timer',
+        };
+        return typeIcon[this.name];
+    }
+
+    get cardColor() {
+        const typeCardColor = {
+            [StandardReportCardType.type.Approved]: '#00897b',
+            [StandardReportCardType.type.Rejected]: '#bf360c',
+            [StandardReportCardType.type.PendingApproval]: '#6a1b9a',
+        };
+        return typeCardColor[this.name];
+    }
+
+    get textColor() {
+        return this.isApprovalType() ? '#ffffff' : 'rgba(0, 0, 0, 0.87)'
+    }
+
     static fromResource(resource) {
         return General.assignFields(resource, new StandardReportCardType(),
             ["uuid", "name", "description", "voided"]);

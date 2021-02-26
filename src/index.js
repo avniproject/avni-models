@@ -88,13 +88,14 @@ import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
-import DashboardCardMapping from "./DashboardCardMapping";
+import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import DraftSubject from './draft/DraftSubject';
 import PhoneNumber from "./PhoneNumber";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import ApprovalStatus from "./ApprovalStatus";
 import StandardReportCardType from "./StandardReportCardType";
 import GroupDashboard from "./GroupDashboard";
+import DashboardSection from "./DashboardSection";
 
 export {
   AbstractEncounter,
@@ -188,11 +189,12 @@ export {
   LocationHierarchy,
   ReportCard,
   Dashboard,
-  DashboardCardMapping,
+  DashboardSectionCardMapping,
   DraftSubject,
   PhoneNumber,
   EntityApprovalStatus,
   ApprovalStatus,
   StandardReportCardType,
   GroupDashboard,
+  DashboardSection,
 };

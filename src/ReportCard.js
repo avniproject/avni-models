@@ -19,6 +19,19 @@ class ReportCard extends BaseEntity {
         },
     };
 
+    get iconName() {
+        //TODO: right now not syncing the icon name uploaded from app designer.
+        return _.isNil(this.standardReportCardType) ? null : this.standardReportCardType.iconName;
+    }
+
+    get cardColor() {
+        return _.isNil(this.standardReportCardType) ? this.color : this.standardReportCardType.cardColor;
+    }
+
+    get textColor() {
+        return _.isNil(this.standardReportCardType) ? '#ffffff' : this.standardReportCardType.textColor;
+    }
+
     static fromResource(resource, entityService) {
         const reportCard = General.assignFields(resource, new ReportCard(),
             ["uuid", "name", "query", "description", "colour", "voided"]);

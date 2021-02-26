@@ -47,11 +47,12 @@ import GroupRole from "./GroupRole";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
-import DashboardCardMapping from "./DashboardCardMapping";
+import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import StandardReportCardType from "./StandardReportCardType";
 import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import GroupDashboard from "./GroupDashboard";
+import DashboardSection from "./DashboardSection";
 
 const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -244,7 +245,8 @@ const groupRole = refData(GroupRole, { res: "groupRole", syncWeight: 0 });
 const locationHierarchy = refData(LocationHierarchy, { res: "locations", resUrl: "locationHierarchy", syncWeight: 0 });
 const reportCard = refData(ReportCard, { res: "card", syncWeight: 0 });
 const dashboard = refData(Dashboard, { res: "dashboard", syncWeight: 0 });
-const dashboardCardMapping = refData(DashboardCardMapping, { res: "dashboardCardMapping", syncWeight: 0 });
+const dashboardSection = refData(DashboardSection, { res: "dashboardSection", syncWeight: 0 });
+const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: "dashboardSectionCardMapping", syncWeight: 0 });
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
@@ -256,7 +258,8 @@ class EntityMetaData {
     return [
       groupDashboard,
       approvalStatus,
-      dashboardCardMapping,
+      dashboardSectionCardMapping,
+      dashboardSection,
       dashboard,
       reportCard,
       standardReportCardType,

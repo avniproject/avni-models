@@ -63,12 +63,13 @@ import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
-import DashboardCardMapping from "./DashboardCardMapping";
+import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import DraftSubject from './draft/DraftSubject';
 import StandardReportCardType from "./StandardReportCardType";
 import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import GroupDashboard from "./GroupDashboard";
+import DashboardSection from "./DashboardSection";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -138,14 +139,15 @@ export default {
     LocationHierarchy,
     ReportCard,
     Dashboard,
-    DashboardCardMapping,
+    DashboardSectionCardMapping,
     DraftSubject,
     StandardReportCardType,
     ApprovalStatus,
     EntityApprovalStatus,
-    GroupDashboard
+    GroupDashboard,
+    DashboardSection
   ],
-  schemaVersion: 134,
+  schemaVersion: 135,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -612,5 +614,11 @@ export default {
         reportCard.standardReportCardType = null;
       })
     }
+
+    if (oldDB.schemaVersion < 135) {
+      const dashboardCardMappings = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = 'DashboardCardMapping'");
+      _.forEach(dashboardCardMappings, dcm => newDB.delete(dcm));
+    }
+
   },
 };
