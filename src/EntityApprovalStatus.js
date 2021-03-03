@@ -98,7 +98,7 @@ class EntityApprovalStatus extends BaseEntity {
     static getLatestApprovalStatusByEntity(entityApprovalStatuses, entityService) {
         const getSchema = (passedEntityType) => _.get(_.find(EntityApprovalStatus.getSchemaEntityTypeList(), ({entityType}) => entityType === passedEntityType), 'schema');
         const maxEntityApprovalStatusesPerEntity = _.chain(entityApprovalStatuses)
-            .filter(({voided}) => !voided)
+            .filter(({entityType, entityUUID}) => !_.isEmpty(entityService.findByUUID(entityUUID, getSchema(entityType))))
             .groupBy(({entityType, entityUUID}) => `${entityType}(${entityUUID})`)
             .values()
             .map(groupedEntities => _.maxBy(groupedEntities, 'statusDateTime'))
