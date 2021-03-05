@@ -165,7 +165,7 @@ class Observation {
     return !_.isEmpty(formElement) &&
         this.concept.datatype === Concept.dataType.PhoneNumber &&
         this.concept.recordValueByKey('verifyPhoneNumber') &&
-        !this.getValueWrapper().verified
+        this.getValueWrapper().isVerificationRequired()
   }
 }
 

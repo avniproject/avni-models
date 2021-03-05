@@ -1,7 +1,8 @@
 class PhoneNumber {
-    constructor(phoneNumber, verified = false) {
+    constructor(phoneNumber, verified = false, skipVerification = false) {
         this.phoneNumber = phoneNumber;
         this.verified = verified;
+        this.skipVerification = skipVerification;
     }
 
     get toResource() {
@@ -9,7 +10,7 @@ class PhoneNumber {
     }
 
     static fromObs(obs) {
-        return new PhoneNumber(obs.phoneNumber, obs.verified);
+        return new PhoneNumber(obs.phoneNumber, obs.verified, obs.skipVerification);
     }
 
     getValue() {
@@ -21,11 +22,15 @@ class PhoneNumber {
     }
 
     cloneForEdit() {
-        return new PhoneNumber(this.phoneNumber, this.verified);
+        return new PhoneNumber(this.phoneNumber, this.verified, this.skipVerification);
     }
 
     toString() {
         return this.phoneNumber;
+    }
+
+    isVerificationRequired() {
+        return !this.skipVerification && !this.isVerified();
     }
 }
 

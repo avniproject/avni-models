@@ -168,13 +168,13 @@ class ObservationsHolder {
     return observation;
   }
 
-  updatePhoneNumberValue(concept, phoneNumber, verified = false) {
+  updatePhoneNumberValue(concept, phoneNumber, verified = false, skipVerification = false) {
     let observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
       _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
       if (_.isEmpty(phoneNumber)) return null;
     }
-    observation = Observation.create(concept, new PhoneNumber(phoneNumber, verified));
+    observation = Observation.create(concept, new PhoneNumber(phoneNumber, verified, skipVerification));
     this.observations.push(observation);
     return observation;
   }
