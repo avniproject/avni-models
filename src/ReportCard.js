@@ -25,7 +25,7 @@ class ReportCard extends BaseEntity {
     }
 
     get cardColor() {
-        return _.isNil(this.standardReportCardType) ? this.color : this.standardReportCardType.cardColor;
+        return _.isNil(this.standardReportCardType) ? this.colour : this.standardReportCardType.cardColor;
     }
 
     get textColor() {
