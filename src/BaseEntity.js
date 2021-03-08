@@ -1,6 +1,8 @@
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import ResourceUtil from "./utility/ResourceUtil";
+import SyncError from "./error/SyncError";
+import {ErrorCodes} from "./error/ErrorCodes";
 
 class BaseEntity {
   static fieldKeys = {
@@ -71,7 +73,7 @@ class BaseEntity {
     if (!_.isNil(parent)) {
       return parent;
     }
-    throw `[Association failure] ${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`;
+    throw new SyncError(ErrorCodes.associationFailure, `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
   }
 }
 export default BaseEntity;

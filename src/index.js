@@ -96,6 +96,7 @@ import ApprovalStatus from "./ApprovalStatus";
 import StandardReportCardType from "./StandardReportCardType";
 import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
+import SyncError from "./error/SyncError";
 
 export {
   AbstractEncounter,
@@ -197,4 +198,5 @@ export {
   StandardReportCardType,
   GroupDashboard,
   DashboardSection,
+  SyncError,
 };
