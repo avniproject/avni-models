@@ -73,7 +73,8 @@ class BaseEntity {
     if (!_.isNil(parent)) {
       return parent;
     }
-    throw new SyncError(ErrorCodes.associationFailure, `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
+    const errorCodeKey = `${childSchema}-${parentSchema}-Association`;
+    throw new SyncError(ErrorCodes[errorCodeKey], `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
   }
 }
 export default BaseEntity;
