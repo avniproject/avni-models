@@ -97,6 +97,7 @@ import StandardReportCardType from "./StandardReportCardType";
 import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
 import SyncError from "./error/SyncError";
+import News from "./News";
 
 export {
   AbstractEncounter,
@@ -199,4 +200,5 @@ export {
   GroupDashboard,
   DashboardSection,
   SyncError,
+  News,
 };

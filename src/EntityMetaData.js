@@ -53,6 +53,7 @@ import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
+import News from "./News";
 
 const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -251,6 +252,7 @@ const standardReportCardType = refData(StandardReportCardType, { res: "standardR
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
 const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 0 });
+const news = txData(News, { syncWeight: 0 });
 
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
@@ -297,6 +299,7 @@ class EntityMetaData {
       groups,
       privilege,
 
+      news,
       videoTelemetric,
       groupSubject,
       entityApprovalStatus,

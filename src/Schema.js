@@ -70,6 +70,7 @@ import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
+import News from "./News";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -145,9 +146,10 @@ export default {
     ApprovalStatus,
     EntityApprovalStatus,
     GroupDashboard,
-    DashboardSection
+    DashboardSection,
+    News
   ],
-  schemaVersion: 135,
+  schemaVersion: 136,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
