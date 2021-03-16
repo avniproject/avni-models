@@ -196,7 +196,7 @@ const checklist = txData(Checklist, {
 const checklistItem = txData(ChecklistItem, {
   res: "txNewChecklistItemEntity",
   parent: checklist,
-  syncWeight: 5,
+  syncWeight: 4,
   privilegeParam: "checklistDetailUuid",
   privilegeEntity: Privilege.privilegeEntityType.checklist,
   privilegeName: Privilege.privilegeName.viewChecklist,
