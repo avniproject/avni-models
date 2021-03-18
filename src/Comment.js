@@ -1,0 +1,98 @@
+import BaseEntity from "./BaseEntity";
+import General from "./utility/General";
+import Individual from "./Individual";
+import _ from "lodash";
+import ResourceUtil from "./utility/ResourceUtil";
+
+
+class Comment extends BaseEntity {
+
+    static schema = {
+        name: "Comment",
+        primaryKey: "uuid",
+        properties: {
+            uuid: "string",
+            text: "string",
+            subject: "Individual",
+            displayUsername: "string",
+            createdDateTime: "date",
+            lastModifiedDateTime: "date",
+            voided: {type: "bool", default: false},
+        },
+    };
+
+    get toResource() {
+        const resource = _.pick(this, [
+            "uuid",
+            "text",
+            "voided"
+        ]);
+        resource["subjectUUID"] = this.subject.uuid;
+        return resource;
+    }
+
+    static fromResource(resource, entityService) {
+        const comment = General.assignFields(resource, new Comment(),
+            ["uuid", "text", "displayUsername", "voided"]
+            , ["createdDateTime", "lastModifiedDateTime"]);
+        comment.subject = entityService.findByKey(
+            "uuid",
+            ResourceUtil.getUUIDFor(resource, "individualUUID"),
+            Individual.schema.name
+        );
+        return comment;
+    }
+
+    static createEmptyInstance(uuid) {
+        const comment = new Comment();
+        comment.uuid = uuid || General.randomUUID();
+        comment.text = "";
+        comment.displayUsername = "";
+        comment.subject = Individual.createEmptyInstance();
+        return comment;
+    }
+
+    static create({uuid, text, displayUsername, subject}) {
+        const comment = Comment.createEmptyInstance(uuid);
+        comment.text = text;
+        comment.displayUsername = displayUsername;
+        comment.subject = subject;
+        comment.lastModifiedDateTime = new Date();
+        comment.createdDateTime = new Date();
+        return comment;
+    }
+
+    editComment(text) {
+        const comment = this.cloneForEdit();
+        comment.text = text;
+        comment.lastModifiedDateTime = new Date();
+        return comment;
+    }
+
+
+    cloneForEdit() {
+        const comment = new Comment();
+        comment.uuid = this.uuid;
+        comment.text = this.text;
+        comment.subject = this.subject;
+        comment.displayUsername = this.displayUsername;
+        comment.createdDateTime = this.createdDateTime;
+        comment.lastModifiedDateTime = this.lastModifiedDateTime;
+        comment.voided = this.voided;
+        return comment;
+    }
+
+    toJSON() {
+        return {
+            uuid: this.uuid,
+            text: this.text,
+            subject: this.subject,
+            displayUsername: this.displayUsername,
+            createdDateTime: this.createdDateTime,
+            lastModifiedDateTime: this.lastModifiedDateTime,
+            voided: this.voided,
+        };
+    }
+}
+
+export default Comment

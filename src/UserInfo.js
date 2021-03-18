@@ -12,6 +12,7 @@ class UserInfo {
       username: "string",
       organisationName: "string",
       settings: "string",
+      name: {type:"string", optional:true}
     },
   };
 
@@ -23,6 +24,7 @@ class UserInfo {
     userInfo.settings = _.isNil(resource.settings)
       ? UserInfo.DEFAULT_SETTINGS
       : JSON.stringify(resource.settings);
+    userInfo.name = resource.name;
     return userInfo;
   }
 
@@ -32,6 +34,10 @@ class UserInfo {
 
   getSettings() {
     return JSON.parse(this.settings);
+  }
+
+  getDisplayUsername() {
+    return _.isNil(this.name) ? this.username : this.name;
   }
 
   get toResource() {
@@ -46,6 +52,7 @@ class UserInfo {
     userInfo.uuid = this.uuid;
     userInfo.organisationName = this.organisationName;
     userInfo.settings = this.settings;
+    userInfo.name = this.name;
     return userInfo;
   }
 

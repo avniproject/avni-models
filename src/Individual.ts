@@ -17,6 +17,7 @@ import SubjectType from "./SubjectType";
 import Observation from "./Observation";
 import GroupSubject from "./GroupSubject";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import Comment from "./Comment";
 
 class Individual extends BaseEntity {
   static schema = {
@@ -41,6 +42,7 @@ class Individual extends BaseEntity {
       groupSubjects: {type: "list", objectType: "GroupSubject"},
       registrationLocation: {type: "Point", optional: true},
       latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
+      comments: {type: "list", objectType: "Comment"},
     },
   };
 
@@ -79,6 +81,7 @@ class Individual extends BaseEntity {
   lastName: any;
   dateOfBirthVerified: any;
   latestEntityApprovalStatus: EntityApprovalStatus;
+  comments: Comment[];
 
   static createEmptyInstance() {
     const individual = new Individual();
@@ -102,6 +105,7 @@ class Individual extends BaseEntity {
       typeUuid: "",
     });
     individual.voided = false;
+    individual.comments = [];
     return individual;
   }
 
@@ -220,6 +224,7 @@ class Individual extends BaseEntity {
         [Encounter, "encounters"],
         [IndividualRelationship, "relationships"],
         [GroupSubject, "groupSubjects"],
+        [Comment, "comments"],
       ]).get(childEntityClass)
     );
 
@@ -234,7 +239,7 @@ class Individual extends BaseEntity {
     individual = General.pick(
       individual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments"]
     );
     BaseEntity.addNewChild(child, individual.relationships);
     return individual;
@@ -251,7 +256,7 @@ class Individual extends BaseEntity {
     individual = General.pick(
       individual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments"]
     );
     BaseEntity.addNewChild(child, individual.groupSubjects);
     return individual;
@@ -263,6 +268,7 @@ class Individual extends BaseEntity {
       [ProgramEnrolment, "enrolments"],
       [Encounter, "encounters"],
       [GroupSubject, "groupSubjects"],
+      [Comment, "comments"],
     ]);
 
   static associateChild(child, childEntityClass, childResource, entityService) {
@@ -292,11 +298,12 @@ class Individual extends BaseEntity {
     individual = General.pick(
       individual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments"]
     );
 
     if (childEntityClass === ProgramEnrolment) BaseEntity.addNewChild(child, individual.enrolments);
     else if (childEntityClass === Encounter) BaseEntity.addNewChild(child, individual.encounters);
+    else if (childEntityClass === Comment) BaseEntity.addNewChild(child, individual.comments);
     else throw `${childEntityClass.name} not support by ${individual.nameString}`;
 
     return individual;
@@ -528,6 +535,7 @@ class Individual extends BaseEntity {
     individual.encounters = this.encounters;
     individual.enrolments = this.enrolments;
     individual.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
+    individual.comments = this.comments;
     return individual;
   }
 
@@ -575,6 +583,13 @@ class Individual extends BaseEntity {
     if (!_.some(this.groupSubjects, (x) => x.uuid === groupSubject.uuid)) {
       this.groupSubjects = _.isEmpty(this.groupSubjects) ? [] : this.groupSubjects;
       this.groupSubjects.push(groupSubject);
+    }
+  }
+
+  addComment(comment) {
+    if (!_.some(this.comments, (x) => x.uuid === comment.uuid)) {
+      this.comments = _.isEmpty(this.comments) ? [] : this.comments;
+      this.comments.push(comment);
     }
   }
 
@@ -845,6 +860,7 @@ class Individual extends BaseEntity {
       registrationLocation: this.registrationLocation,
       subjectType: this.subjectType,
       latestEntityApprovalStatus: this.latestEntityApprovalStatus,
+      comments: this.comments,
     };
   }
 }

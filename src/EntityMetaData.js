@@ -1,6 +1,6 @@
-import Concept, { ConceptAnswer } from "./Concept";
+import Concept, {ConceptAnswer} from "./Concept";
 import Gender from "./Gender";
-import AddressLevel, { LocationMapping } from "./AddressLevel";
+import AddressLevel, {LocationMapping} from "./AddressLevel";
 import Individual from "./Individual";
 import AllSchema from "./Schema";
 import _ from "lodash";
@@ -54,6 +54,7 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
 import News from "./News";
+import Comment from "./Comment";
 
 const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -253,6 +254,13 @@ const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeig
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
 const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 0 });
 const news = txData(News, { syncWeight: 0 });
+const comment = txData(Comment, {
+  parent: individual,
+  syncWeight: 0,
+  privilegeParam: "subjectTypeUuid",
+  privilegeEntity: Privilege.privilegeEntityType.subject,
+  privilegeName: Privilege.privilegeName.viewSubject,
+});
 
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
@@ -302,6 +310,7 @@ class EntityMetaData {
       news,
       videoTelemetric,
       groupSubject,
+      comment,
       entityApprovalStatus,
       individualRelationship,
       checklistItem,
