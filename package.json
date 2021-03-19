@@ -1,7 +1,7 @@
 {
     "name": "openchs-models",
     "description": "OpenCHS data model to be used by front end clients",
-    "version": "0.2.81",
+    "version": "0.2.82",
     "private": false,
     "repository": {
         "type": "git",
