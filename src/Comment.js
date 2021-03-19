@@ -15,6 +15,7 @@ class Comment extends BaseEntity {
             text: "string",
             subject: "Individual",
             displayUsername: "string",
+            createdByUsername: "string",
             createdDateTime: "date",
             lastModifiedDateTime: "date",
             voided: {type: "bool", default: false},
@@ -35,6 +36,7 @@ class Comment extends BaseEntity {
         const comment = General.assignFields(resource, new Comment(),
             ["uuid", "text", "displayUsername", "voided"]
             , ["createdDateTime", "lastModifiedDateTime"]);
+        comment.createdByUsername = resource["createdBy"];
         comment.subject = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "individualUUID"),
@@ -48,14 +50,16 @@ class Comment extends BaseEntity {
         comment.uuid = uuid || General.randomUUID();
         comment.text = "";
         comment.displayUsername = "";
+        comment.createdByUsername = "";
         comment.subject = Individual.createEmptyInstance();
         return comment;
     }
 
-    static create({uuid, text, displayUsername, subject}) {
+    static create({uuid, text, displayUsername, createdByUsername, subject}) {
         const comment = Comment.createEmptyInstance(uuid);
         comment.text = text;
         comment.displayUsername = displayUsername;
+        comment.createdByUsername = createdByUsername;
         comment.subject = subject;
         comment.lastModifiedDateTime = new Date();
         comment.createdDateTime = new Date();
@@ -76,6 +80,7 @@ class Comment extends BaseEntity {
         comment.text = this.text;
         comment.subject = this.subject;
         comment.displayUsername = this.displayUsername;
+        comment.createdByUsername = this.createdByUsername;
         comment.createdDateTime = this.createdDateTime;
         comment.lastModifiedDateTime = this.lastModifiedDateTime;
         comment.voided = this.voided;
@@ -88,6 +93,7 @@ class Comment extends BaseEntity {
             text: this.text,
             subject: this.subject,
             displayUsername: this.displayUsername,
+            createdByUsername: this.createdByUsername,
             createdDateTime: this.createdDateTime,
             lastModifiedDateTime: this.lastModifiedDateTime,
             voided: this.voided,

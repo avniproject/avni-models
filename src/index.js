@@ -98,6 +98,7 @@ import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
 import SyncError from "./error/SyncError";
 import News from "./News";
+import Comment from "./Comment";
 
 export {
   AbstractEncounter,
@@ -201,4 +202,5 @@ export {
   DashboardSection,
   SyncError,
   News,
+  Comment,
 };
