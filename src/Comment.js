@@ -55,24 +55,15 @@ class Comment extends BaseEntity {
         return comment;
     }
 
-    static create({uuid, text, displayUsername, createdByUsername, subject}) {
-        const comment = Comment.createEmptyInstance(uuid);
-        comment.text = text;
-        comment.displayUsername = displayUsername;
-        comment.createdByUsername = createdByUsername;
-        comment.subject = subject;
-        comment.lastModifiedDateTime = new Date();
-        comment.createdDateTime = new Date();
-        return comment;
-    }
-
     editComment(text) {
         const comment = this.cloneForEdit();
         comment.text = text;
-        comment.lastModifiedDateTime = new Date();
         return comment;
     }
 
+    isEmpty() {
+        return _.isEmpty(this.text);
+    }
 
     cloneForEdit() {
         const comment = new Comment();
