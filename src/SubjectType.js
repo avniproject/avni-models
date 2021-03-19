@@ -18,6 +18,8 @@ class SubjectType extends ReferenceEntity {
   };
   uuid;
   name;
+  //This property is right now used only in web-app, adding it this way for the clone().
+  allowEmptyLocation;
 
   static types = {
     Person: 'Person',
@@ -60,6 +62,7 @@ class SubjectType extends ReferenceEntity {
     cloned.active = this.active;
     cloned.type = this.type;
     cloned.subjectSummaryRule = this.subjectSummaryRule;
+    cloned.allowEmptyLocation = this.allowEmptyLocation;
     return cloned;
   }
 

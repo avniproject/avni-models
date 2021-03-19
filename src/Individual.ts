@@ -451,8 +451,10 @@ class Individual extends BaseEntity {
 
   validate() {
     const validationResults = [];
+    if (!this.subjectType.allowEmptyLocation) {
+      validationResults.push(this.validateAddress());
+    }
     validationResults.push(this.validateRegistrationDate());
-    validationResults.push(this.validateAddress());
     //validationResults.push(this.validateRegistrationLocation());
     validationResults.push(this.validateFirstName());
 
