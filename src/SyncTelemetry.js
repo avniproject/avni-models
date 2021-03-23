@@ -57,7 +57,7 @@ class SyncTelemetry extends BaseEntity {
   }
 
   getDeviceInfo() {
-    return JSON.parse(this.deviceInfo);
+    return this.deviceInfo === ''? {}: JSON.parse(this.deviceInfo);
   }
 
   get toResource() {
