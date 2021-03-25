@@ -54,6 +54,7 @@ class Individual extends BaseEntity {
     REGISTRATION_DATE: "REGISTRATION_DATE",
     LOWEST_ADDRESS_LEVEL: "LOWEST_ADDRESS_LEVEL",
     REGISTRATION_LOCATION: "REGISTRATION_LOCATION",
+    NAME: "NAME",
   };
 
   static nonIndividualValidationKeys = {
@@ -61,6 +62,7 @@ class Individual extends BaseEntity {
     REGISTRATION_DATE: "REGISTRATION_DATE",
     LOWEST_ADDRESS_LEVEL: "LOWEST_ADDRESS_LEVEL",
     REGISTRATION_LOCATION: "REGISTRATION_LOCATION",
+    NAME: "NAME",
   };
 
   subjectType: SubjectType;
@@ -434,12 +436,24 @@ class Individual extends BaseEntity {
     return validationResult;
   }
 
+  validateName(value, validationKey, validFormat) {
+    const failure = new ValidationResult(false, validationKey);
+    if (_.isEmpty(value)) {
+      failure.messageKey = "emptyValidationMessage";
+    } else if (!_.isEmpty(validFormat) && !validFormat.valid(value)) {
+      failure.messageKey = validFormat.descriptionKey;
+    } else {
+      return new ValidationResult(true, validationKey, null);
+    }
+    return failure;
+  }
+
   validateFirstName() {
-    return this.validateFieldForEmpty(this.firstName, Individual.validationKeys.FIRST_NAME);
+    return this.validateName(this.firstName, Individual.validationKeys.FIRST_NAME, this.subjectType.validFirstNameFormat);
   }
 
   validateLastName() {
-    return this.validateFieldForEmpty(this.lastName, Individual.validationKeys.LAST_NAME);
+    return this.validateName(this.lastName, Individual.validationKeys.LAST_NAME, this.subjectType.validLastNameFormat);
   }
 
   validateRegistrationLocation() {
@@ -668,6 +682,10 @@ class Individual extends BaseEntity {
 
   isGroup() {
     return this.subjectType.isGroup();
+  }
+
+  isUniqueName() {
+    return !!this.subjectType.uniqueName;
   }
 
   get subjectTypeName() {

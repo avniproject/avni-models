@@ -1,5 +1,6 @@
 import ReferenceEntity from "./ReferenceEntity";
 import General from "./utility/General";
+import Format from "./application/Format";
 
 class SubjectType extends ReferenceEntity {
   static schema = {
@@ -14,12 +15,18 @@ class SubjectType extends ReferenceEntity {
       active: {type: 'bool', default: true},
       type: 'string',
       subjectSummaryRule: {type: 'string', optional: true},
+      uniqueName: {type: 'bool', default: false},
+      validFirstNameFormat: { type: "Format", optional: true },
+      validLastNameFormat: { type: "Format", optional: true },
     }
   };
   uuid;
   name;
   //This property is right now used only in web-app, adding it this way for the clone().
   allowEmptyLocation;
+  uniqueName;
+  validFirstNameFormat;
+  validLastNameFormat;
 
   static types = {
     Person: 'Person',
@@ -49,6 +56,9 @@ class SubjectType extends ReferenceEntity {
     subjectType.active = operationalSubjectType.active;
     subjectType.type = operationalSubjectType.type;
     subjectType.subjectSummaryRule = operationalSubjectType.subjectSummaryRule;
+    subjectType.uniqueName = operationalSubjectType.uniqueName;
+    subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);
+    subjectType.validLastNameFormat = Format.fromResource(operationalSubjectType["validLastNameFormat"]);
     return subjectType;
   }
 
@@ -63,6 +73,9 @@ class SubjectType extends ReferenceEntity {
     cloned.type = this.type;
     cloned.subjectSummaryRule = this.subjectSummaryRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
+    cloned.uniqueName = this.uniqueName;
+    cloned.validFirstNameFormat = this.validFirstNameFormat;
+    cloned.validLastNameFormat = this.validLastNameFormat;
     return cloned;
   }
 

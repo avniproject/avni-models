@@ -218,6 +218,10 @@ class FormElement {
     return _.isNil(timePickerMode) ? null : timePickerMode.getValue();
   }
 
+  get isUnique() {
+    return !!this.recordByKey("unique");
+  }
+
   matches(elementNameOrUUID) {
     return this.name === elementNameOrUUID || this.uuid === elementNameOrUUID;
   }
