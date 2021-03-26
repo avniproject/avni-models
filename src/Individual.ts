@@ -353,6 +353,17 @@ class Individual extends BaseEntity {
     return this.isPerson() ? `${this.firstName} ${this.lastName}` : this.firstName;
   }
 
+  //TODO: this will be fixed later where we specify the option to create a template to display another unique field along with the name
+  get nameStringWithUniqueAttribute() {
+    if (this.subjectType.name === 'Farmer') {
+      const mobileNumber = this.getObservationReadableValue('Mobile Number');
+      const numberToDisplay = mobileNumber ? `(${mobileNumber})` : '';
+      return `${this.nameString} ${numberToDisplay}`
+    } else {
+      return this.nameString;
+    }
+  }
+
   getAgeIn(unit) {
     return (asOnDate = moment(), precise = false) =>
       moment(asOnDate).diff(this.dateOfBirth, unit, precise);
