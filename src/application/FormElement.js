@@ -219,7 +219,8 @@ class FormElement {
   }
 
   get isUnique() {
-    return !!this.recordByKey("unique");
+    const unique = this.recordByKey("unique");
+    return _.isNil(unique) ? false : unique.getValue();
   }
 
   matches(elementNameOrUUID) {
