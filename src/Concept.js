@@ -87,6 +87,7 @@ export default class Concept {
     Location: "Location",
     Subject: "Subject",
     PhoneNumber: "PhoneNumber",
+    GroupAffiliation: "GroupAffiliation",
     get Media() {
       return [this.Image, this.Video];
     },

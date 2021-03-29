@@ -106,7 +106,7 @@ class FormElement {
 
   validate(value) {
     const failure = new ValidationResult(false, this.uuid);
-    if (this.mandatory && _.isEmpty(_.toString(value))) {
+    if (this.mandatory && _.isEmpty(_.toString(value)) && this.concept.datatype !== Concept.dataType.GroupAffiliation) {
       failure.messageKey = "emptyValidationMessage";
     } else if (this.concept.datatype === Concept.dataType.Numeric && isNaN(value)) {
       failure.messageKey = "numericValueValidation";
@@ -187,6 +187,8 @@ class FormElement {
     FalseValue: "FalseValue",
     ExcludedAnswers: "ExcludedAnswers",
     IdSourceUUID: "IdSourceUUID",
+    groupSubjectTypeUUID: "groupSubjectTypeUUID",
+    groupSubjectRoleUUID: "groupSubjectRoleUUID",
   };
 
   static values = {
