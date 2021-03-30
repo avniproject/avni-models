@@ -16,6 +16,7 @@ export default class WorkItem {
     CANCELLED_ENCOUNTER: "CANCELLED_ENCOUNTER",
     ADD_MEMBER: "ADD_MEMBER",
     HOUSEHOLD: "HOUSEHOLD",
+    REMOVE_MEMBER: "REMOVE_MEMBER",
   };
 
   constructor(id, type, parameters) {
@@ -43,6 +44,9 @@ export default class WorkItem {
     }
     if (this.type === WorkItem.type.ENCOUNTER) {
       this.ensureFieldExists("encounterType");
+    }
+    if (this.type === WorkItem.type.REMOVE_MEMBER) {
+      this.ensureFieldExists("groupSubjectUUID");
     }
   }
 
