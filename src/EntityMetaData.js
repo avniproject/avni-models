@@ -55,6 +55,7 @@ import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
 import News from "./News";
 import Comment from "./Comment";
+import CommentThread from "./CommentThread";
 
 const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -181,7 +182,7 @@ const programEnrolment = txData(ProgramEnrolment, {
 });
 const programEncounter = txData(ProgramEncounter, {
   parent: programEnrolment,
-  syncWeight: 10,
+  syncWeight: 9,
   privilegeParam: "programEncounterTypeUuid",
   privilegeEntity: Privilege.privilegeEntityType.encounter,
   privilegeName: Privilege.privilegeName.viewVisit,
@@ -189,7 +190,7 @@ const programEncounter = txData(ProgramEncounter, {
 const checklist = txData(Checklist, {
   res: "txNewChecklistEntity",
   parent: programEnrolment,
-  syncWeight: 4,
+  syncWeight: 3,
   privilegeParam: "checklistDetailUuid",
   privilegeEntity: Privilege.privilegeEntityType.checklist,
   privilegeName: Privilege.privilegeName.viewChecklist,
@@ -197,14 +198,14 @@ const checklist = txData(Checklist, {
 const checklistItem = txData(ChecklistItem, {
   res: "txNewChecklistItemEntity",
   parent: checklist,
-  syncWeight: 4,
+  syncWeight: 3,
   privilegeParam: "checklistDetailUuid",
   privilegeEntity: Privilege.privilegeEntityType.checklist,
   privilegeName: Privilege.privilegeName.viewChecklist,
 });
 const individualRelationship = txData(IndividualRelationship, {
   parent: individual,
-  syncWeight: 3,
+  syncWeight: 2,
   privilegeParam: "subjectTypeUuid",
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
@@ -252,11 +253,17 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: 
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
-const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 0 });
+const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
 const news = txData(News, { syncWeight: 0 });
 const comment = txData(Comment, {
   parent: individual,
-  syncWeight: 0,
+  syncWeight: 1,
+  privilegeParam: "subjectTypeUuid",
+  privilegeEntity: Privilege.privilegeEntityType.subject,
+  privilegeName: Privilege.privilegeName.viewSubject,
+});
+const commentThread = txData(CommentThread, {
+  syncWeight: 1,
   privilegeParam: "subjectTypeUuid",
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
@@ -311,6 +318,7 @@ class EntityMetaData {
       videoTelemetric,
       groupSubject,
       comment,
+      commentThread,
       entityApprovalStatus,
       individualRelationship,
       checklistItem,

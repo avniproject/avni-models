@@ -99,6 +99,7 @@ import DashboardSection from "./DashboardSection";
 import SyncError from "./error/SyncError";
 import News from "./News";
 import Comment from "./Comment";
+import CommentThread from "./CommentThread";
 
 export {
   AbstractEncounter,
@@ -203,4 +204,5 @@ export {
   SyncError,
   News,
   Comment,
+  CommentThread,
 };

@@ -3,6 +3,7 @@ import General from "./utility/General";
 import Individual from "./Individual";
 import _ from "lodash";
 import ResourceUtil from "./utility/ResourceUtil";
+import CommentThread from "./CommentThread";
 
 
 class Comment extends BaseEntity {
@@ -18,6 +19,7 @@ class Comment extends BaseEntity {
             createdByUsername: "string",
             createdDateTime: "date",
             lastModifiedDateTime: "date",
+            commentThread: "CommentThread",
             voided: {type: "bool", default: false},
         },
     };
@@ -29,6 +31,7 @@ class Comment extends BaseEntity {
             "voided"
         ]);
         resource["subjectUUID"] = this.subject.uuid;
+        resource["commentThreadUUID"] = this.commentThread.uuid;
         return resource;
     }
 
@@ -42,6 +45,11 @@ class Comment extends BaseEntity {
             ResourceUtil.getUUIDFor(resource, "individualUUID"),
             Individual.schema.name
         );
+        comment.commentThread = entityService.findByKey(
+            "uuid",
+            ResourceUtil.getUUIDFor(resource, "commentThreadUUID"),
+            CommentThread.schema.name
+        );
         return comment;
     }
 
@@ -52,6 +60,7 @@ class Comment extends BaseEntity {
         comment.displayUsername = "";
         comment.createdByUsername = "";
         comment.subject = Individual.createEmptyInstance();
+        comment.commentThread = CommentThread.createEmptyInstance();
         return comment;
     }
 
@@ -74,6 +83,7 @@ class Comment extends BaseEntity {
         comment.createdByUsername = this.createdByUsername;
         comment.createdDateTime = this.createdDateTime;
         comment.lastModifiedDateTime = this.lastModifiedDateTime;
+        comment.commentThread = this.commentThread.cloneForEdit();
         comment.voided = this.voided;
         return comment;
     }

@@ -72,6 +72,7 @@ import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
 import News from "./News";
 import Comment from "./Comment";
+import CommentThread from "./CommentThread";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -149,9 +150,10 @@ export default {
     GroupDashboard,
     DashboardSection,
     News,
-    Comment
+    Comment,
+    CommentThread
   ],
-  schemaVersion: 138,
+  schemaVersion: 139,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
