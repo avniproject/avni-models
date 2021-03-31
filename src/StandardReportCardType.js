@@ -23,7 +23,8 @@ class StandardReportCardType extends BaseEntity {
         LatestRegistrations: "Last 24 hours registrations",
         LatestEnrolments: "Last 24 hours enrolments",
         LatestVisits: "Last 24 hours visits",
-        Total: "Total"
+        Total: "Total",
+        Comments: "Comments",
     };
 
     get iconName() {
@@ -31,6 +32,7 @@ class StandardReportCardType extends BaseEntity {
             [StandardReportCardType.type.Approved]: 'check-circle',
             [StandardReportCardType.type.Rejected]: 'cancel',
             [StandardReportCardType.type.PendingApproval]: 'av-timer',
+            [StandardReportCardType.type.Comments]: 'message',
         };
         return typeIcon[this.name];
     }
@@ -40,12 +42,13 @@ class StandardReportCardType extends BaseEntity {
             [StandardReportCardType.type.Approved]: '#00897b',
             [StandardReportCardType.type.Rejected]: '#bf360c',
             [StandardReportCardType.type.PendingApproval]: '#6a1b9a',
+            [StandardReportCardType.type.Comments]: '#3949ab',
         };
         return typeCardColor[this.name];
     }
 
     get textColor() {
-        return this.isApprovalType() ? '#ffffff' : 'rgba(0, 0, 0, 0.87)'
+        return this.isApprovalType() || this.isCommentType() ? '#ffffff' : 'rgba(0, 0, 0, 0.87)'
     }
 
     static fromResource(resource) {
@@ -63,6 +66,10 @@ class StandardReportCardType extends BaseEntity {
 
     isApprovalType() {
         return _.includes(this.approvalTypes(), this.name);
+    }
+
+    isCommentType() {
+        return this.name === StandardReportCardType.type.Comments;
     }
 
     isDefaultType() {
