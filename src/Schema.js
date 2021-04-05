@@ -153,7 +153,7 @@ export default {
     Comment,
     CommentThread
   ],
-  schemaVersion: 139,
+  schemaVersion: 140,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
