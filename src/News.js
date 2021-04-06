@@ -1,5 +1,6 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
+import moment from "moment";
 
 
 class News extends BaseEntity {
@@ -16,16 +17,26 @@ class News extends BaseEntity {
             contentHtml: {type: "string", optional: true},
             voided: {type: "bool", default: false},
             read: {type: "bool", default: false},
+            lastModifiedDateTime: "date",
         }
     };
 
-    static fromResource(resource) {
-        return General.assignFields(
+    static fromResource(resource, entityService) {
+        const news = General.assignFields(
             resource,
             new News(),
             ["uuid", "title", "heroImage", "content", "contentHtml", "voided"],
-            ["publishedDate"]
+            ["publishedDate", "lastModifiedDateTime"]
         );
+        const olderNews = entityService.findByKey(
+            "uuid",
+            news.uuid,
+            News.schema.name
+        );
+        if (olderNews && moment(news.lastModifiedDateTime).isAfter(olderNews.lastModifiedDateTime)) {
+            news.read = false;
+        }
+        return news;
     }
 
     markRead() {

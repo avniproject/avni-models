@@ -153,7 +153,7 @@ export default {
     Comment,
     CommentThread
   ],
-  schemaVersion: 140,
+  schemaVersion: 141,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -624,6 +624,12 @@ export default {
     if (oldDB.schemaVersion < 135) {
       const dashboardCardMappings = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = 'DashboardCardMapping'");
       _.forEach(dashboardCardMappings, dcm => newDB.delete(dcm));
+    }
+
+    if (oldDB.schemaVersion < 141) {
+      _.forEach(newDB.objects(News.schema.name), news => {
+        news.lastModifiedDateTime = news.publishedDate
+      });
     }
 
   },
