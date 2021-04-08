@@ -105,6 +105,7 @@ class Individual extends BaseEntity {
       voided: false,
       parentUuid: "",
       typeUuid: "",
+      locationProperties: []
     });
     individual.voided = false;
     individual.comments = [];

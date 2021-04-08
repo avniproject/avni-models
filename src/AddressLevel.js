@@ -50,10 +50,11 @@ class AddressLevel extends BaseEntity {
       uuid: "string",
       name: "string",
       level: "double",
-      type: { type: "string", optional: true },
-      locationMappings: { type: "list", objectType: "LocationMapping" },
-      titleLineage: { type: "string", optional: true },
-      voided: { type: "bool", default: false },
+      type: {type: "string", optional: true},
+      locationMappings: {type: "list", objectType: "LocationMapping"},
+      locationProperties: {type: "list", objectType: "Observation"},
+      titleLineage: {type: "string", optional: true},
+      voided: {type: "bool", default: false},
       parentUuid: {type: "string", optional: true},
       typeUuid: {type: "string", optional: true}
     },
@@ -61,8 +62,8 @@ class AddressLevel extends BaseEntity {
   uuid;
   name;
 
-  static create({ uuid, title, level, typeString, locationMappings = [], titleLineage, voided, parentUuid, typeUuid }) {
-    return _.assignIn(new AddressLevel(), {
+  static create({uuid, title, level, typeString, locationMappings = [], titleLineage, voided, parentUuid, typeUuid, locationProperties}, entityService) {
+    const addressLevel = _.assignIn(new AddressLevel(), {
       uuid,
       name: title,
       type: typeString,
@@ -73,10 +74,11 @@ class AddressLevel extends BaseEntity {
       parentUuid,
       typeUuid
     });
+    return General.assignObsFields({locationProperties}, addressLevel, ['locationProperties'], entityService);
   }
 
-  static fromResource(resource) {
-    return AddressLevel.create(resource);
+  static fromResource(resource, entityService) {
+    return AddressLevel.create(resource, entityService);
   }
 
   static associateLocationMapping(locationMapping, locationMappingRes, entityService) {
@@ -112,7 +114,12 @@ class AddressLevel extends BaseEntity {
   }
 
   cloneForReference() {
-    return AddressLevel.create(_.assignIn({ title: this.name, typeString: this.type, titleLineage: this.titleLineage, voided: this.voided }, this));
+    return AddressLevel.create(_.assignIn({
+      title: this.name,
+      typeString: this.type,
+      titleLineage: this.titleLineage,
+      voided: this.voided
+    }, this));
   }
 
   get translatedFieldValue() {

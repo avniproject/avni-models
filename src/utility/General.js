@@ -79,7 +79,7 @@ class General {
   }
 
   static toISOFormatTime(hour, minute) {
-    return moment({ hour: hour, minute: minute }).format("HH:mm");
+    return moment({hour: hour, minute: minute}).format("HH:mm");
   }
 
   static toDisplayTime(isoFormatTime) {
@@ -132,7 +132,7 @@ class General {
     dest,
     directCopyFields,
     dateFields,
-    observationFields,
+    observationFields = [],
     entityService
   ) {
     if (!_.isNil(directCopyFields)) {
@@ -141,20 +141,24 @@ class General {
       });
     }
     General.assignDateFields(dateFields, source, dest);
-    if (!_.isNil(observationFields)) {
-      observationFields.forEach((observationField) => {
-        const observations = [];
-        if (!_.isNil(source[observationField])) {
-          _.toPairs(source[observationField]).forEach(([conceptUUID, value]) => {
-            const observation = new Observation();
-            observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
-            observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
-            observations.push(observation);
-          });
-        }
-        dest[observationField] = observations;
-      });
-    }
+    General.assignObsFields(source, dest, observationFields, entityService);
+
+    return dest;
+  }
+
+  static assignObsFields(source, dest, observationFields = [], entityService) {
+    observationFields.forEach((observationField) => {
+      const observations = [];
+      if (!_.isNil(source[observationField])) {
+        _.toPairs(source[observationField]).forEach(([conceptUUID, value]) => {
+          const observation = new Observation();
+          observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
+          observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
+          observations.push(observation);
+        });
+      }
+      dest[observationField] = observations;
+    });
 
     return dest;
   }
