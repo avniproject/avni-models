@@ -19,6 +19,7 @@ class FormMapping {
       entityUUID: { type: "string", optional: true },
       observationsTypeEntityUUID: { type: "string", optional: true },
       voided: { type: "bool", default: false },
+      enableApproval: { type: "bool", default: false },
     },
   };
 
@@ -43,7 +44,7 @@ class FormMapping {
       SubjectType.schema.name
     );
 
-    const formMapping = General.assignFields(resource, new FormMapping(), ["uuid", "voided"]);
+    const formMapping = General.assignFields(resource, new FormMapping(), ["uuid", "voided", "enableApproval"]);
     formMapping.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
     formMapping.observationsTypeEntityUUID = ResourceUtil.getUUIDFor(
       resource,
