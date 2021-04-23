@@ -37,6 +37,7 @@ class ObservationsHolder {
         Concept.dataType.Id,
         Concept.dataType.Video,
         Concept.dataType.Image,
+        Concept.dataType.Audio,
         Concept.dataType.Date,
         Concept.dataType.DateTime,
         Concept.dataType.Location,

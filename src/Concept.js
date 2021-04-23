@@ -83,13 +83,14 @@ export default class Concept {
     NA: "NA",
     Image: "Image",
     Video: "Video",
+    Audio: "Audio",
     Id: "Id",
     Location: "Location",
     Subject: "Subject",
     PhoneNumber: "PhoneNumber",
     GroupAffiliation: "GroupAffiliation",
     get Media() {
-      return [this.Image, this.Video];
+      return [this.Image, this.Video, this.Audio];
     },
   };
 
