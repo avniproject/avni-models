@@ -100,6 +100,7 @@ import SyncError from "./error/SyncError";
 import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
+import {ErrorCodes} from "./error/ErrorCodes";
 
 export {
   AbstractEncounter,
@@ -205,4 +206,5 @@ export {
   News,
   Comment,
   CommentThread,
+  ErrorCodes,
 };
