@@ -71,12 +71,12 @@ class IndividualRelative {
 
   _validateRelationship() {
     if (
-      this.relation.name === "son" &&
+      _.toLower(this.relation.name) === "son" &&
       !General.dateAIsBeforeB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(IndividualRelative.validationKeys.RELATIVE, "sonIsOlder");
     } else if (
-      this.relation.name === "daughter" &&
+        _.toLower(this.relation.name) === "daughter" &&
       !General.dateAIsBeforeB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
@@ -84,7 +84,7 @@ class IndividualRelative {
         "daughterIsOlder"
       );
     } else if (
-      this.relation.name === "father" &&
+        _.toLower(this.relation.name) === "father" &&
       !General.dateAIsAfterB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
@@ -92,7 +92,7 @@ class IndividualRelative {
         "fatherIsYounger"
       );
     } else if (
-      this.relation.name === "mother" &&
+        _.toLower(this.relation.name) === "mother" &&
       !General.dateAIsAfterB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
@@ -101,7 +101,7 @@ class IndividualRelative {
       );
     }
     if (
-      this.relation.name === "grandson" &&
+        _.toLower(this.relation.name) === "grandson" &&
       !General.dateAIsBeforeB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
@@ -109,7 +109,7 @@ class IndividualRelative {
         "grandsonIsOlder"
       );
     } else if (
-      this.relation.name === "granddaughter" &&
+        _.toLower(this.relation.name) === "granddaughter" &&
       !General.dateAIsBeforeB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
@@ -117,7 +117,7 @@ class IndividualRelative {
         "granddaughterIsOlder"
       );
     } else if (
-      this.relation.name === "grandfather" &&
+        _.toLower(this.relation.name) === "grandfather" &&
       !General.dateAIsAfterB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
@@ -125,7 +125,7 @@ class IndividualRelative {
         "grandfatherIsYounger"
       );
     } else if (
-      this.relation.name === "grandmother" &&
+        _.toLower(this.relation.name) === "grandmother" &&
       !General.dateAIsAfterB(this.individual.dateOfBirth, this.relative.dateOfBirth)
     ) {
       return ValidationResult.failure(
