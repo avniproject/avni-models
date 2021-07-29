@@ -73,6 +73,7 @@ import DashboardSection from "./DashboardSection";
 import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
+import Extension from "./Extension";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -151,9 +152,10 @@ export default {
     DashboardSection,
     News,
     Comment,
-    CommentThread
+    CommentThread,
+    Extension
   ],
-  schemaVersion: 143,
+  schemaVersion: 144,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -631,6 +633,5 @@ export default {
         news.lastModifiedDateTime = news.publishedDate
       });
     }
-
   },
 };

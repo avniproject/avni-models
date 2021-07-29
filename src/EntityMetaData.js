@@ -56,14 +56,15 @@ import DashboardSection from "./DashboardSection";
 import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
+import Extension from "./Extension";
 
-const refData = (clazz, { res, filter, translated, parent, syncWeight, resUrl } = {}) => ({
+const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
   entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
   type: "reference",
   nameTranslated: translated || false,
-  resourceSearchFilterURL: filter || "lastModified",
+  resourceSearchFilterURL: filter,
   parent: parent,
   syncWeight: syncWeight,
   resourceUrl: resUrl,
@@ -244,6 +245,7 @@ const groupPrivileges = refData(GroupPrivileges, {
   syncWeight: 0,
 });
 const privilege = refData(Privilege, { res: "privilege", syncWeight: 0 });
+const extension = refData(Extension, { res: "extension", syncWeight: 0, filter: '' });
 const groupRole = refData(GroupRole, { res: "groupRole", syncWeight: 0 });
 const locationHierarchy = refData(LocationHierarchy, { res: "locations", resUrl: "locationHierarchy", syncWeight: 0 });
 const reportCard = refData(ReportCard, { res: "card", syncWeight: 0 });
@@ -328,6 +330,7 @@ class EntityMetaData {
       programEncounter,
       programEnrolment,
       individual,
+      extension,
       userInfo,
       syncTelemetry,
       ruleFailureTelemetry,
