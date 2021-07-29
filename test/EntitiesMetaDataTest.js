@@ -6,16 +6,16 @@ import Individual from "../src/Individual";
 describe('EntitiesMetaDataTest', () => {
     it('entitiesLoadedFromServer', () => {
         var entitiesLoadedFromServer = EntityMetaData.entitiesLoadedFromServer();
-        console.log(entitiesLoadedFromServer);
         assert.notIncludeMembers(entitiesLoadedFromServer, [Settings, Individual]);
     });
 
   describe('model', function () {
-    it('should load an empty resourceSearchFilterURL for Extension', () => {
+    it('should load correct values for extensions', () => {
       const model = EntityMetaData.model();
-      const extensionModel = model.find(item => item.resourceName === 'extension');
+      const extensionModel = model.find(item => item.entityName === 'Extension');
       expect(extensionModel).toBeDefined();
       expect(extensionModel.resourceSearchFilterURL).toBe('');
+      expect(extensionModel.resourceName).toBe('extensions');
     });
   });
 });

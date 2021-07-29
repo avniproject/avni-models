@@ -245,7 +245,7 @@ const groupPrivileges = refData(GroupPrivileges, {
   syncWeight: 0,
 });
 const privilege = refData(Privilege, { res: "privilege", syncWeight: 0 });
-const extension = refData(Extension, { res: "extension", syncWeight: 0, filter: '' });
+const extension = refData(Extension, { res: "extensions", syncWeight: 0, filter: '' });
 const groupRole = refData(GroupRole, { res: "groupRole", syncWeight: 0 });
 const locationHierarchy = refData(LocationHierarchy, { res: "locations", resUrl: "locationHierarchy", syncWeight: 0 });
 const reportCard = refData(ReportCard, { res: "card", syncWeight: 0 });
