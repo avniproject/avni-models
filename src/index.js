@@ -101,6 +101,7 @@ import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
 import {ErrorCodes} from "./error/ErrorCodes";
+import Extension from "./Extension";
 
 export {
   AbstractEncounter,
@@ -207,4 +208,5 @@ export {
   Comment,
   CommentThread,
   ErrorCodes,
+  Extension
 };
