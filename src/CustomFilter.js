@@ -10,6 +10,7 @@ class CustomFilter {
     EncounterDate: "EncounterDate",
     Address: "Address",
     Concept: "Concept",
+    GroupSubject: "GroupSubject",
   };
 
   static scope = {
