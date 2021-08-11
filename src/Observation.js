@@ -103,7 +103,7 @@ class Observation {
       let valueParsed = JSON.parse(this.valueJSON);
       if (this.concept.isDurationConcept()) {
         valueParsed = valueParsed.durations;
-      } else if (this.concept.isPhoneNumberConcept()) {
+      } else if (this.concept.isPhoneNumberConcept() || this.concept.isIdConcept()) {
         return this.concept.getValueWrapperFor(valueParsed);
       } else {
         valueParsed = valueParsed.answer;

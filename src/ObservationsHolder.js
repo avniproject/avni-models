@@ -6,6 +6,7 @@ import MultipleCodedValues from "./observation/MultipleCodedValues";
 import Concept from "./Concept";
 import CompositeDuration from "./CompositeDuration";
 import PhoneNumber from "./PhoneNumber";
+import Identifier from "./Identifier";
 
 class ObservationsHolder {
   constructor(observations) {
@@ -27,6 +28,7 @@ class ObservationsHolder {
   }
 
   updateObs(formElement, value) {
+    const currentValue = this.getObservation(formElement.concept);
     _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
 
     if (
@@ -34,7 +36,6 @@ class ObservationsHolder {
         Concept.dataType.Text,
         Concept.dataType.Time,
         Concept.dataType.Numeric,
-        Concept.dataType.Id,
         Concept.dataType.Video,
         Concept.dataType.Image,
         Concept.dataType.Audio,
@@ -46,6 +47,13 @@ class ObservationsHolder {
     ) {
       this.addOrUpdatePrimitiveObs(formElement.concept, value);
     }
+
+    if (formElement.getType() === Concept.dataType.Id) {
+      if (!_.isEmpty(value)) {
+        this.observations.push(Observation.create(formElement.concept, Identifier.fromObs({...currentValue, value})));
+      }
+    }
+
     if (formElement.isSingleSelect()) {
       if (!_.isEmpty(value)) {
         const observation = Observation.create(formElement.concept, new SingleCodedValue(value));
@@ -77,11 +85,16 @@ class ObservationsHolder {
   }
 
   addOrUpdatePrimitiveObs(concept, value) {
+    const currentValue = this.findObservation(concept).getValueWrapper();
     this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
-      this.observations.push(
-        Observation.create(concept, new PrimitiveValue(value, concept.datatype))
-      );
+      if (concept.isIdConcept()) {
+        this.observations.push(Observation.create(concept, Identifier.fromObs({...currentValue, value})));
+      } else {
+        this.observations.push(
+          Observation.create(concept, new PrimitiveValue(value, concept.datatype))
+        );
+      }
     }
   }
 
@@ -203,8 +216,12 @@ class ObservationsHolder {
     let observation = this.getObservation(concept);
     let valueWrapper = concept.getValueWrapperFor(value);
 
-    if (observation) observation.setValue(valueWrapper);
-    else this.observations.push(Observation.create(concept, valueWrapper));
+    if (observation) {
+      observation.setValue(valueWrapper);
+    }
+    else {
+      this.observations.push(Observation.create(concept, valueWrapper));
+    }
   }
 
   updateObservationBasedOnValue(oldValue, newValue) {

@@ -9,6 +9,7 @@ import Duration from "./Duration";
 import CompositeDuration from "./CompositeDuration";
 import KeyValue from "./application/KeyValue";
 import PhoneNumber from "./PhoneNumber";
+import Identifier from "./Identifier";
 
 export class ConceptAnswer {
   static schema = {
@@ -229,29 +230,41 @@ export default class Concept {
       return _.isArray(obsValue)
           ? new MultipleCodedValues(obsValue)
           : new SingleCodedValue(obsValue);
-    } else if (this.isDurationConcept()) {
-      return CompositeDuration.fromObs(obsValue);
-    } else if (this.isPhoneNumberConcept()) {
-        return PhoneNumber.fromObs(obsValue);
-    } else {
-      return new PrimitiveValue(obsValue, this.datatype);
     }
+    if (this.isDurationConcept()) {
+      return CompositeDuration.fromObs(obsValue);
+    }
+    if (this.isPhoneNumberConcept()) {
+        return PhoneNumber.fromObs(obsValue);
+    }
+    if (this.isIdConcept()) {
+      return Identifier.fromObs(obsValue);
+    }
+    return new PrimitiveValue(obsValue, this.datatype);
+  }
+
+  isType(type) {
+    return this.datatype === type;
   }
 
   isCodedConcept() {
-    return this.datatype === Concept.dataType.Coded;
+    return this.isType(Concept.dataType.Coded);
   }
 
   isSubjectConcept() {
-    return this.datatype === Concept.dataType.Subject;
+    return this.isType(Concept.dataType.Subject);
   }
 
   isDurationConcept() {
-    return this.datatype === Concept.dataType.Duration;
+    return this.isType(Concept.dataType.Duration);
   }
 
   isPhoneNumberConcept() {
-    return this.datatype === Concept.dataType.PhoneNumber;
+    return this.isType(Concept.dataType.PhoneNumber);
+  }
+
+  isIdConcept() {
+    return this.isType(Concept.dataType.Id);
   }
 
   getAnswers() {

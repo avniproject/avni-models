@@ -5,7 +5,6 @@ import AbstractEncounter from "./AbstractEncounter";
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import Point from "./geo/Point";
-import Individual from "./Individual";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class ProgramEncounter extends AbstractEncounter {
