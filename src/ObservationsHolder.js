@@ -85,7 +85,8 @@ class ObservationsHolder {
   }
 
   addOrUpdatePrimitiveObs(concept, value) {
-    const currentValue = this.findObservation(concept).getValueWrapper();
+    let currentObservation = this.findObservation(concept);
+    const currentValue = currentObservation && currentObservation.getValueWrapper() || {};
     this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
       if (concept.isIdConcept()) {
