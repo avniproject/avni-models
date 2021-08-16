@@ -43,6 +43,7 @@ class Individual extends BaseEntity {
       registrationLocation: {type: "Point", optional: true},
       latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
       comments: {type: "list", objectType: "Comment"},
+      groups: {type: "list", objectType: "GroupSubject"},
     },
   };
 
@@ -75,6 +76,8 @@ class Individual extends BaseEntity {
   enrolments: ProgramEnrolment[];
   relationships: IndividualRelationship[];
   groupSubjects: GroupSubject[];
+  groups: GroupSubject[];
+  affiliatedGroups: GroupSubject[];
   lowestAddressLevel: AddressLevel;
   voided: boolean;
   dateOfBirth: Date;
@@ -96,6 +99,7 @@ class Individual extends BaseEntity {
     individual.enrolments = [];
     individual.relationships = [];
     individual.groupSubjects = [];
+    individual.groups = [];
     individual.lowestAddressLevel = AddressLevel.create({
       uuid: "",
       title: "",
@@ -226,10 +230,17 @@ class Individual extends BaseEntity {
         [ProgramEnrolment, "enrolments"],
         [Encounter, "encounters"],
         [IndividualRelationship, "relationships"],
-        [GroupSubject, "groupSubjects"],
         [Comment, "comments"],
       ]).get(childEntityClass)
     );
+
+  static mergeMultipleParents = (childEntityClass, entities) => {
+    if (childEntityClass === GroupSubject) {
+      const individual = _.head(entities);
+      const key = individual.subjectType.group ? 'groupSubjects' : 'groups';
+      return BaseEntity.mergeOn(key)(entities);
+    }
+  };
 
   static associateRelationship(child, childEntityClass, childResource, entityService) {
     var individual = BaseEntity.getParentEntity(
@@ -242,27 +253,23 @@ class Individual extends BaseEntity {
     individual = General.pick(
       individual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects", "comments"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups"]
     );
     BaseEntity.addNewChild(child, individual.relationships);
     return individual;
   }
 
   static associateGroupSubject(child, childEntityClass, childResource, entityService) {
-    var individual = BaseEntity.getParentEntity(
-      entityService,
-      childEntityClass,
-      childResource,
-      "groupSubjectUUID",
-      Individual.schema.name
-    );
-    individual = General.pick(
-      individual,
-      ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects", "comments"]
-    );
-    BaseEntity.addNewChild(child, individual.groupSubjects);
-    return individual;
+    const getParentByUUID = (parentUUIDField) => BaseEntity.getParentEntity(entityService, childEntityClass, childResource, parentUUIDField, Individual.schema.name);
+    const copyFieldsForSubject = (subject) => General.pick(subject, ["uuid", "subjectType"], ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups"]);
+    var groupSubject = getParentByUUID("groupSubjectUUID");
+    var memberSubject = getParentByUUID("memberSubjectUUID");
+    groupSubject = copyFieldsForSubject(groupSubject);
+    memberSubject = copyFieldsForSubject(memberSubject);
+
+    BaseEntity.addNewChild(child, groupSubject.groupSubjects);
+    BaseEntity.addNewChild(child, memberSubject.groups);
+    return [groupSubject, memberSubject];
   }
 
   static childAssociations = () =>
@@ -274,17 +281,20 @@ class Individual extends BaseEntity {
       [Comment, "comments"],
     ]);
 
+  static associateChildToMultipleParents(child, childEntityClass, childResource, entityService) {
+    if (childEntityClass === GroupSubject) {
+      return Individual.associateGroupSubject(
+          child,
+          childEntityClass,
+          childResource,
+          entityService
+      );
+    }
+  }
+
   static associateChild(child, childEntityClass, childResource, entityService) {
     if (childEntityClass === IndividualRelationship) {
       return Individual.associateRelationship(
-        child,
-        childEntityClass,
-        childResource,
-        entityService
-      );
-    }
-    if (childEntityClass === GroupSubject) {
-      return Individual.associateGroupSubject(
         child,
         childEntityClass,
         childResource,
@@ -301,7 +311,7 @@ class Individual extends BaseEntity {
     individual = General.pick(
       individual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects", "comments"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups"]
     );
 
     if (childEntityClass === ProgramEnrolment) BaseEntity.addNewChild(child, individual.enrolments);
@@ -560,6 +570,8 @@ class Individual extends BaseEntity {
       : this.registrationLocation.clone();
     individual.relationships = this.relationships;
     individual.groupSubjects = this.groupSubjects;
+    individual.groups = this.groups;
+    individual.affiliatedGroups = this.affiliatedGroups;
     individual.encounters = this.encounters;
     individual.enrolments = this.enrolments;
     individual.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
@@ -614,6 +626,17 @@ class Individual extends BaseEntity {
     }
   }
 
+  addGroup(groupSubject) {
+    if (!_.some(this.groups, (x) => x.uuid === groupSubject.uuid)) {
+      this.groups = _.isEmpty(this.groups) ? [] : this.groups;
+      this.groups.push(groupSubject);
+    }
+  }
+
+  addAffiliatedGroups(groupSubjects = []) {
+    this.affiliatedGroups = groupSubjects;
+  }
+
   addComment(comment) {
     if (!_.some(this.comments, (x) => x.uuid === comment.uuid)) {
       this.comments = _.isEmpty(this.comments) ? [] : this.comments;
@@ -640,6 +663,10 @@ class Individual extends BaseEntity {
 
   getGroupSubjects() {
     return _.filter(this.groupSubjects, (g) => !g.voided);
+  }
+
+  getGroups() {
+    return _.filter(this.groups, (g) => !g.voided);
   }
 
   getRelative(relationName, inverse = false) {
@@ -888,6 +915,7 @@ class Individual extends BaseEntity {
       observations: this.observations,
       relationships: this.relationships,
       groupSubjects: this.groupSubjects,
+      groups: this.groups,
       voided: this.voided,
       registrationLocation: this.registrationLocation,
       subjectType: this.subjectType,

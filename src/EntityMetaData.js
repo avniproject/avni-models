@@ -83,6 +83,7 @@ const txData = (
     privilegeEntity,
     privilegeName,
     queryParam,
+    hasMoreThanOneAssociation
   } = {}
 ) => ({
   entityName: clazz.schema.name,
@@ -98,6 +99,7 @@ const txData = (
   privilegeEntity,
   privilegeName,
   queryParam,
+  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation
 });
 
 const checklistDetail = refData(ChecklistDetail, { syncWeight: 1 });
@@ -217,6 +219,7 @@ const groupSubject = txData(GroupSubject, {
   privilegeParam: "subjectTypeUuid",
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
+  hasMoreThanOneAssociation: true,
 });
 const videoTelemetric = txData(VideoTelemetric, {
   res: "videotelemetric",

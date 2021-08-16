@@ -59,12 +59,6 @@ class GroupSubject extends BaseEntity {
     return groupSubjectEntity;
   }
 
-  static parentAssociations = () =>
-    new Map([
-      [Individual, "groupSubjectUUID"],
-      [GroupRole, "groupRoleUUID"],
-    ]);
-
   static fromResource(resource, entityService) {
     const groupSubject = entityService.findByKey(
       "uuid",

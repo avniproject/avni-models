@@ -155,7 +155,7 @@ export default {
     CommentThread,
     Extension
   ],
-  schemaVersion: 144,
+  schemaVersion: 145,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -631,6 +631,13 @@ export default {
     if (oldDB.schemaVersion < 141) {
       _.forEach(newDB.objects(News.schema.name), news => {
         news.lastModifiedDateTime = news.publishedDate
+      });
+    }
+
+    if(oldDB.schemaVersion < 145) {
+      _.forEach(newDB.objects(Individual.schema.name), individual => {
+        const groups = newDB.objects(GroupSubject.schema.name).filtered("memberSubject.uuid = $0", individual.uuid).map(_.identity);
+        individual.groups = groups;
       });
     }
   },
