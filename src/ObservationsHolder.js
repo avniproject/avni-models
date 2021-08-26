@@ -42,6 +42,7 @@ class ObservationsHolder {
         Concept.dataType.Date,
         Concept.dataType.DateTime,
         Concept.dataType.Location,
+        Concept.dataType.File,
       ].includes(formElement.getType()) &&
       isNil(formElement.durationOptions)
     ) {

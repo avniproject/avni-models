@@ -90,8 +90,9 @@ export default class Concept {
     Subject: "Subject",
     PhoneNumber: "PhoneNumber",
     GroupAffiliation: "GroupAffiliation",
+    File: "File",
     get Media() {
-      return [this.Image, this.Video, this.Audio];
+      return [this.Image, this.Video, this.Audio, this.File];
     },
   };
 

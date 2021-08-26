@@ -102,6 +102,7 @@ import Comment from "./Comment";
 import CommentThread from "./CommentThread";
 import {ErrorCodes} from "./error/ErrorCodes";
 import Extension from "./Extension";
+import FileFormat from "./FileFormat";
 
 export {
   AbstractEncounter,
@@ -208,5 +209,6 @@ export {
   Comment,
   CommentThread,
   ErrorCodes,
-  Extension
+  Extension,
+  FileFormat
 };
