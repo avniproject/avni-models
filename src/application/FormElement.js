@@ -189,6 +189,8 @@ class FormElement {
     IdSourceUUID: "IdSourceUUID",
     groupSubjectTypeUUID: "groupSubjectTypeUUID",
     groupSubjectRoleUUID: "groupSubjectRoleUUID",
+    allowedTypes: "allowedTypes",
+    allowedMaxSize: "allowedMaxSize",
   };
 
   static values = {
@@ -267,6 +269,18 @@ class FormElement {
       return firstUniqueAnswer;
     }
   }
+
+  get allowedTypes() {
+    const allowedTypes = this.recordByKey(FormElement.keys.allowedTypes);
+    return _.isNil(allowedTypes) ? [] : allowedTypes.getValue();
+  }
+
+  get allowedMaxSize() {
+    const oneMBInBytes = 1000000;
+    const allowedMaxSize = this.recordByKey(FormElement.keys.allowedMaxSize);
+    return _.isNil(allowedMaxSize) ? oneMBInBytes : _.toNumber(allowedMaxSize.getValue()) * oneMBInBytes;
+  }
+
 }
 
 export default FormElement;
