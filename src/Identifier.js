@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 class Identifier {
   constructor(value, uuid) {
     this.value = value;
