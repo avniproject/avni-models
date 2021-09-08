@@ -18,10 +18,12 @@ class SubjectType extends ReferenceEntity {
       uniqueName: {type: 'bool', default: false},
       validFirstNameFormat: { type: "Format", optional: true },
       validLastNameFormat: { type: "Format", optional: true },
+      iconFileS3Key: {type: "string", optional: true},
     }
   };
   uuid;
   name;
+  iconFileS3Key;
   //This property is right now used only in web-app, adding it this way for the clone().
   allowEmptyLocation;
   uniqueName;
@@ -59,6 +61,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.uniqueName = operationalSubjectType.uniqueName;
     subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);
     subjectType.validLastNameFormat = Format.fromResource(operationalSubjectType["validLastNameFormat"]);
+    subjectType.iconFileS3Key = operationalSubjectType.iconFileS3Key;
     return subjectType;
   }
 
@@ -76,6 +79,7 @@ class SubjectType extends ReferenceEntity {
     cloned.uniqueName = this.uniqueName;
     cloned.validFirstNameFormat = this.validFirstNameFormat;
     cloned.validLastNameFormat = this.validLastNameFormat;
+    cloned.iconFileS3Key = this.iconFileS3Key;
     return cloned;
   }
 

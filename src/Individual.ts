@@ -766,6 +766,10 @@ class Individual extends BaseEntity {
     return this.isPerson() ? "person-pin" : "account-balance";
   }
 
+  isIconSetup() {
+    return !_.isNil(this.subjectType.iconFileS3Key);
+  }
+
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
   detail1(i18n) {
     return this.isPerson() ? {label: "Age", value: this.getDisplayAge(i18n)} : {};
