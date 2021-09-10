@@ -746,30 +746,6 @@ class Individual extends BaseEntity {
     return this.isPerson() ? this.getDisplayAge(i18n) : "";
   }
 
-  //changing the return type to add the type because all icons are not present in MaterialIcons
-  icon() {
-    const iconForSubjectType = this._getIconBySubjectTypeName();
-    return !_.isEmpty(iconForSubjectType) ? iconForSubjectType : {name : this._defaultIcon(), type : "MaterialIcons"};
-  }
-
-  //TODO: we'll remove this once we play upload icon for subject type story
-  _getIconBySubjectTypeName() {
-    const subjectIconByName = {
-            'Farmer': {name: 'person', type: 'MaterialIcons'},
-            'Excavating Machine': {name: 'excavator', type: 'MaterialCommunityIcons'},
-            'Work Order': {name: 'file-contract', type: 'FontAwesome5'}
-    };
-    return subjectIconByName[this.subjectTypeName];
-  }
-
-  _defaultIcon() {
-    return this.isPerson() ? "person-pin" : "account-balance";
-  }
-
-  isIconSetup() {
-    return !_.isNil(this.subjectType.iconFileS3Key);
-  }
-
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
   detail1(i18n) {
     return this.isPerson() ? {label: "Age", value: this.getDisplayAge(i18n)} : {};

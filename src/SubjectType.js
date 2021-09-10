@@ -102,6 +102,10 @@ class SubjectType extends ReferenceEntity {
   isHousehold() {
     return this.household;
   }
+
+  isIconSetup() {
+    return !_.isNil(this.iconFileS3Key);
+  }
 }
 
 export default SubjectType;
