@@ -173,6 +173,10 @@ class FormElement {
     }
   }
 
+  getApplicableAnswerConceptUUIDs() {
+    return _.map(this.getAnswers(), ca => ca.concept.uuid);
+  }
+
   getAnswerWithConceptName(conceptName) {
     return _.find(this.concept.getAnswers(), (answer) => answer.concept.name === conceptName);
   }

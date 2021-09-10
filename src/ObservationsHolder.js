@@ -125,11 +125,28 @@ class ObservationsHolder {
       applicableFormElements,
       (fe) => fe.uuid
     );
+    applicableFormElements.forEach((fe) => {
+      if (fe.concept.isCodedConcept() && (!_.isEmpty(fe.answersToShow) || !_.isEmpty(fe.answersToExclude))) {
+        this.removeNonApplicableAnswers(fe, fe.isSingleSelect());
+      }
+    });
     return _.flatten(
       inApplicableFormElements.map((fe) =>
         _.remove(this.observations, (obs) => obs.concept.uuid === fe.concept.uuid)
       )
     );
+  }
+
+  removeNonApplicableAnswers(fe, isSingleSelect) {
+    const observation = this.getObservation(fe.concept);
+    if (!_.isEmpty(observation)) {
+      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+      const applicableConceptAnswerUUIDs = fe.getApplicableAnswerConceptUUIDs();
+      const applicableAnswers = _.filter(_.flatten([observation.getValue()]), value => _.includes(applicableConceptAnswerUUIDs, value));
+      const newValue = isSingleSelect ? new SingleCodedValue(_.head(applicableAnswers)) : new MultipleCodedValues(applicableAnswers);
+      const newObservation = Observation.create(observation.concept, newValue);
+      this.observations.push(newObservation);
+    }
   }
 
   updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
