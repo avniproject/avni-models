@@ -16,6 +16,7 @@ class SyncTelemetry extends BaseEntity {
       syncStartTime: "date",
       syncEndTime: "date?",
       entityStatus: "string",
+      syncSource: 'string?',
       deviceInfo: "string",
     },
   };
@@ -70,6 +71,7 @@ class SyncTelemetry extends BaseEntity {
       "appVersion",
       "androidVersion",
       "deviceName",
+      "syncSource"
     ]);
     resource.entityStatus = this.getEntityStatus();
     resource.deviceInfo = this.getDeviceInfo();
@@ -88,6 +90,7 @@ class SyncTelemetry extends BaseEntity {
     syncTelemetry.androidVersion = this.androidVersion;
     syncTelemetry.deviceName = this.deviceName;
     syncTelemetry.deviceInfo = this.deviceInfo;
+    syncTelemetry.syncSource = this.syncSource;
     return syncTelemetry;
   }
 }
