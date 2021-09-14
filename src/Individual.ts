@@ -263,13 +263,21 @@ class Individual extends BaseEntity {
     const getParentByUUID = (parentUUIDField) => BaseEntity.getParentEntity(entityService, childEntityClass, childResource, parentUUIDField, Individual.schema.name);
     const copyFieldsForSubject = (subject) => General.pick(subject, ["uuid", "subjectType"], ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups"]);
     var groupSubject = getParentByUUID("groupSubjectUUID");
-    var memberSubject = getParentByUUID("memberSubjectUUID");
     groupSubject = copyFieldsForSubject(groupSubject);
-    memberSubject = copyFieldsForSubject(memberSubject);
-
     BaseEntity.addNewChild(child, groupSubject.groupSubjects);
-    BaseEntity.addNewChild(child, memberSubject.groups);
-    return [groupSubject, memberSubject];
+    //Don't associate voided member subjects if not found in the catchment
+    try {
+      var memberSubject = getParentByUUID("memberSubjectUUID");
+      memberSubject = copyFieldsForSubject(memberSubject);
+      BaseEntity.addNewChild(child, memberSubject.groups);
+      return [groupSubject, memberSubject];
+    } catch (e) {
+      if (!childResource.voided) {
+        throw e
+      } else {
+        return [groupSubject];
+      }
+    }
   }
 
   static childAssociations = () =>
