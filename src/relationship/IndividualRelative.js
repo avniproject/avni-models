@@ -208,7 +208,7 @@ class IndividualRelative {
   }
 
   relativeAndRelationSelected() {
-    return !_.isEmpty(this.relation.name) && !_.isEmpty(this.relative.name);
+    return !_.isEmpty(this.relation.name) && !_.isEmpty(this.relative.name) && !_.isEmpty(this.relative.gender);
   }
 }
 
