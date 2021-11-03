@@ -57,6 +57,7 @@ import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
 import Extension from "./Extension";
+import SubjectMigration from "./SubjectMigration";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -155,6 +156,14 @@ const platformTranslation = refData(PlatformTranslation, { syncWeight: 0 });
 const translation = refData(Translation, { syncWeight: 0 });
 const individual = txData(Individual, {
   syncWeight: 5,
+  privilegeParam: "subjectTypeUuid",
+  privilegeEntity: Privilege.privilegeEntityType.subject,
+  privilegeName: Privilege.privilegeName.viewSubject,
+});
+
+const subjectMigration = txData(SubjectMigration, {
+  res: "subjectMigrations",
+  syncWeight: 0,
   privilegeParam: "subjectTypeUuid",
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
@@ -319,6 +328,7 @@ class EntityMetaData {
       groups,
       privilege,
 
+      subjectMigration,
       news,
       videoTelemetric,
       groupSubject,

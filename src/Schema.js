@@ -74,6 +74,7 @@ import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
 import Extension from "./Extension";
+import SubjectMigration from "./SubjectMigration";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -153,9 +154,10 @@ export default {
     News,
     Comment,
     CommentThread,
-    Extension
+    Extension,
+    SubjectMigration,
   ],
-  schemaVersion: 147,
+  schemaVersion: 148,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
