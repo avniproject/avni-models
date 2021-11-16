@@ -195,6 +195,7 @@ class FormElement {
     groupSubjectRoleUUID: "groupSubjectRoleUUID",
     allowedTypes: "allowedTypes",
     allowedMaxSize: "allowedMaxSize",
+    isAttendance: "isAttendance"
   };
 
   static values = {
