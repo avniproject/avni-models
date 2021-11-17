@@ -196,7 +196,7 @@ class FormElement {
     allowedTypes: "allowedTypes",
     allowedMaxSize: "allowedMaxSize",
     displayAllGroupMembers: "displayAllGroupMembers",
-    allOptions: "allOptions",
+    searchOptions: "searchOptions",
   };
 
   static values = {
