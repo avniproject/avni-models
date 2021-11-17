@@ -195,7 +195,8 @@ class FormElement {
     groupSubjectRoleUUID: "groupSubjectRoleUUID",
     allowedTypes: "allowedTypes",
     allowedMaxSize: "allowedMaxSize",
-    isAttendance: "isAttendance"
+    displayAllGroupMembers: "displayAllGroupMembers",
+    allOptions: "allOptions",
   };
 
   static values = {
