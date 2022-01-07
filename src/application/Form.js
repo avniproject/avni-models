@@ -164,6 +164,35 @@ class Form {
     return orderedObservations.concat(extraObs);
   }
 
+  sectionWiseOrderedObservations(observations) {
+    const sections = [];
+    const allObservations = [];
+    const orderedFEG = _.sortBy(this.formElementGroups, ({displayOrder}) => displayOrder);
+    _.forEach(orderedFEG, feg => {
+      const conceptOrdering = _.sortBy(feg.getFormElements(), (fe) => fe.displayOrder).map((fe) => fe.concept);
+      const fegObs = [];
+      _.forEach(conceptOrdering, concept => {
+        const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
+        if (!_.isNil(foundObs)) fegObs.push(foundObs);
+      });
+      if (!_.isEmpty(fegObs)) {
+        sections.push({groupName: feg.name, groupUUID: feg.uuid, observations: fegObs});
+        allObservations.push(...fegObs);
+      }
+    });
+    const decisionObs = observations.filter((obs) =>
+        _.isNil(allObservations.find((oobs) => oobs.concept.uuid === obs.concept.uuid))
+    );
+    if(!_.isEmpty(decisionObs))
+      sections.push({groupName: 'decisions', groupUUID: null, observations: decisionObs});
+    return sections;
+  }
+
+  getFormElementGroupOrder(groupUUID) {
+    const orderedFEG = _.sortBy(this.formElementGroups, ({displayOrder}) => displayOrder);
+    return _.findIndex(orderedFEG, ({uuid}) => uuid === groupUUID) + 1;
+  }
+
   static formTypes = {
     IndividualProfile: "IndividualProfile",
     Encounter: "Encounter",
