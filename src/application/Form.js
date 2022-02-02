@@ -189,7 +189,7 @@ class Form {
   }
 
   getFormElementGroupOrder(groupUUID) {
-    const orderedFEG = _.sortBy(this.formElementGroups, ({displayOrder}) => displayOrder);
+    const orderedFEG = _.sortBy(this.nonVoidedFormElementGroups(), ({displayOrder}) => displayOrder);
     return _.findIndex(orderedFEG, ({uuid}) => uuid === groupUUID) + 1;
   }
 
