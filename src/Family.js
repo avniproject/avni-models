@@ -182,14 +182,14 @@ class Family extends BaseEntity {
     return family;
   }
 
-  findObservation(conceptName) {
+  findObservation(conceptNameOrUuid) {
     return _.find(this.observations, (observation) => {
-      return observation.concept.name === conceptName;
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
   }
 
-  getObservationValue(conceptName) {
-    const observationForConcept = this.findObservation(conceptName);
+  getObservationValue(conceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getValue();

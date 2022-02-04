@@ -181,6 +181,10 @@ class FormElement {
     return _.find(this.concept.getAnswers(), (answer) => answer.concept.name === conceptName);
   }
 
+  getAnswerWithConceptUuid(conceptUuid) {
+    return _.find(this.concept.getAnswers(), (answer) => answer.concept.uuid === conceptUuid);
+  }
+
   getRawAnswers() {
     return this.concept.getAnswers();
   }

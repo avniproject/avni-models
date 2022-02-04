@@ -125,34 +125,34 @@ class AbstractEncounter extends BaseEntity {
     };
   }
 
-  findObservation(conceptName) {
+  findObservation(conceptNameOrUuid) {
     return _.find(this.observations, (observation) => {
-      return observation.concept.name === conceptName;
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
   }
 
-  findCancelEncounterObservation(conceptName) {
+  findCancelEncounterObservation(conceptNameOrUuid) {
     return _.find(this.cancelObservations, (observation) => {
-      return observation.concept.name === conceptName;
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
   }
 
-  findCancelEncounterObservationReadableValue(conceptName) {
-    const observationForConcept = this.findCancelEncounterObservation(conceptName);
+  findCancelEncounterObservationReadableValue(conceptNameOrUuid) {
+    const observationForConcept = this.findCancelEncounterObservation(conceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getReadableValue();
   }
 
-  getObservationValue(conceptName) {
-    const observationForConcept = this.findObservation(conceptName);
+  getObservationValue(conceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getValue();
   }
 
-  getObservationReadableValue(conceptName) {
-    const observationForConcept = this.findObservation(conceptName);
+  getObservationReadableValue(conceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getReadableValue();
@@ -189,8 +189,8 @@ class AbstractEncounter extends BaseEntity {
     return _.isNil(this.encounterDateTime) && _.isNil(this.cancelDateTime);
   }
 
-  hasObservation(conceptName) {
-    return !_.isNil(this.getObservationValue(conceptName));
+  hasObservation(conceptNameOrUuid) {
+    return !_.isNil(this.getObservationValue(conceptNameOrUuid));
   }
 
   findMediaObservations() {

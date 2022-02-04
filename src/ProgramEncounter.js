@@ -103,19 +103,19 @@ class ProgramEncounter extends AbstractEncounter {
     return "ProgramEncounter";
   }
 
-  findObservationInEntireEnrolment(conceptName) {
-    return this.programEnrolment.findObservationInEntireEnrolment(conceptName);
+  findObservationInEntireEnrolment(conceptNameOrUuid) {
+    return this.programEnrolment.findObservationInEntireEnrolment(conceptNameOrUuid);
   }
 
-  findLatestObservationInEntireEnrolment(conceptName, currentEncounter) {
+  findLatestObservationInEntireEnrolment(conceptNameOrUuid, currentEncounter) {
     return this.programEnrolment.findLatestObservationInEntireEnrolment(
-      conceptName,
+      conceptNameOrUuid,
       currentEncounter
     );
   }
 
-  observationExistsInEntireEnrolment(conceptName) {
-    return !_.isNil(this.programEnrolment.findObservationInEntireEnrolment(conceptName));
+  observationExistsInEntireEnrolment(conceptNameOrUuid) {
+    return !_.isNil(this.programEnrolment.findObservationInEntireEnrolment(conceptNameOrUuid));
   }
 
   get individual() {

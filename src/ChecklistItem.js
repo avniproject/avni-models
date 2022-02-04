@@ -228,9 +228,9 @@ class ChecklistItem {
     return `ChecklistItem{uuid=${this.uuid}}`;
   }
 
-  findObservation(conceptName) {
+  findObservation(conceptNameOrUuid) {
     return _.find(this.observations, (observation) => {
-      return observation.concept.name === conceptName;
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
   }
 

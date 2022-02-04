@@ -222,8 +222,8 @@ export default class Concept {
     return conceptAnswer;
   }
 
-  getPossibleAnswerConcept(name) {
-    return _.find(this.answers, (conceptAnswer) => conceptAnswer.concept.name === name);
+  getPossibleAnswerConcept(nameOrUuid) {
+    return _.find(this.answers, (conceptAnswer) => conceptAnswer.concept.name === nameOrUuid || conceptAnswer.concept.uuid === nameOrUuid);
   }
 
   getValueWrapperFor(obsValue) {
@@ -281,6 +281,10 @@ export default class Concept {
 
   getAnswerWithConceptName(answerName) {
     return _.find(this.getAnswers(), answer =>  answer.concept.name === answerName);
+  }
+
+  getAnswerWithConceptUuid(answerConceptUuid) {
+    return _.find(this.getAnswers(), answer =>  answer.concept.uuid === answerConceptUuid);
   }
 
   get translatedFieldValue() {

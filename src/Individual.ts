@@ -148,15 +148,15 @@ class Individual extends BaseEntity {
     return resource;
   }
 
-  findObservationAcrossAllEnrolments(conceptName) {
+  findObservationAcrossAllEnrolments(conceptNameOrUuid) {
     return this.nonVoidedEnrolments().find(
-      (enrolment) => enrolment.findLatestObservationInEntireEnrolment(conceptName) !== undefined
+      (enrolment) => enrolment.findLatestObservationInEntireEnrolment(conceptNameOrUuid) !== undefined
     );
   }
 
-  observationExistsAcrossAllEnrolments(conceptName) {
+  observationExistsAcrossAllEnrolments(conceptNameOrUuid) {
     return this.nonVoidedEnrolments().find(
-      (enrolment) => enrolment.findLatestObservationInEntireEnrolment(conceptName) !== undefined
+      (enrolment) => enrolment.findLatestObservationInEntireEnrolment(conceptNameOrUuid) !== undefined
     );
   }
 
@@ -652,14 +652,14 @@ class Individual extends BaseEntity {
     }
   }
 
-  findObservation(conceptName) {
+  findObservation(conceptNameOrUuid) {
     return _.find(this.observations, (observation) => {
-      return observation.concept.name === conceptName;
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
   }
 
-  getObservationValue(conceptName) {
-    const observationForConcept = this.findObservation(conceptName);
+  getObservationValue(conceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getValue();
@@ -799,34 +799,34 @@ class Individual extends BaseEntity {
       .value();
   }
 
-  _findObservationWithDateFromAllEncounters(conceptName, encounters) {
+  _findObservationWithDateFromAllEncounters(conceptNameOrUuid, encounters) {
     let observation;
     let encounter;
     for (let i = 0; i < encounters.length; i++) {
       encounter = encounters[i];
-      observation = encounters[i].findObservation(conceptName);
+      observation = encounters[i].findObservation(conceptNameOrUuid);
       if (!_.isNil(observation))
         return {observation: observation, date: encounter.encounterDateTime};
     }
     return {};
   }
 
-  _findObservationFromAllEncounters(conceptName, encounters) {
+  _findObservationFromAllEncounters(conceptNameOrUuid, encounters) {
     return this._findObservationWithDateFromAllEncounters(
-      conceptName,
+        conceptNameOrUuid,
       encounters
     ).observation;
   }
 
-  findLatestObservationFromPreviousEncounters(conceptName, currentEncounter) {
+  findLatestObservationFromPreviousEncounters(conceptNameOrUuid, currentEncounter) {
     const encounters = _.chain(this.getEncounters(false))
       .filter((enc) => enc.encounterDateTime)
       .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
       .value();
-    return this._findObservationFromAllEncounters(conceptName, encounters);
+    return this._findObservationFromAllEncounters(conceptNameOrUuid, encounters);
   }
 
-  findLatestObservationFromEncounters(conceptName, currentEncounter) {
+  findLatestObservationFromEncounters(conceptNameOrUuid, currentEncounter) {
     const previousEncounters = _.chain(this.getEncounters(false))
       .filter((enc) => enc.encounterDateTime)
       .filter((enc) =>
@@ -834,7 +834,7 @@ class Individual extends BaseEntity {
       )
       .value();
     const encounters = _.chain(currentEncounter).concat(previousEncounters).compact().value();
-    return this._findObservationFromAllEncounters(conceptName, encounters);
+    return this._findObservationFromAllEncounters(conceptNameOrUuid, encounters);
   }
 
   scheduledEncountersOfType(encounterTypeName) {
@@ -866,8 +866,8 @@ class Individual extends BaseEntity {
     }
   }
 
-  getObservationReadableValue(conceptName) {
-    const observationForConcept = this.findObservation(conceptName);
+  getObservationReadableValue(conceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getReadableValue();
