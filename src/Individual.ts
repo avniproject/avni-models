@@ -784,6 +784,11 @@ class Individual extends BaseEntity {
     );
   }
 
+  findObservationInLastEncounter(conceptNameOrUuid, currentEncounter) {
+    const lastEncounter = this.findLastEncounterOfType(currentEncounter, _.get(currentEncounter, 'encounterType'));
+    return lastEncounter ? lastEncounter.findObservation(conceptNameOrUuid) : null;
+  }
+
   findLastEncounterOfType(currentEncounter, encounterTypes = []) {
     return this.findNthLastEncounterOfType(currentEncounter, encounterTypes, 0);
   }
