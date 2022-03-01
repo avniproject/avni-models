@@ -193,6 +193,18 @@ class Form {
     return _.findIndex(orderedFEG, ({uuid}) => uuid === groupUUID) + 1;
   }
 
+  getMandatoryConcepts() {
+    const mandatoryConcepts = [];
+    _.forEach(this.nonVoidedFormElementGroups(), feg => {
+      _.forEach(feg.nonVoidedFormElements(), fe => {
+        if(fe.mandatory) {
+          mandatoryConcepts.push(fe.concept);
+        }
+      })
+    });
+    return mandatoryConcepts;
+  }
+
   static formTypes = {
     IndividualProfile: "IndividualProfile",
     Encounter: "Encounter",
