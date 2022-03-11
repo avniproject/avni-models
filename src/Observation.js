@@ -71,6 +71,10 @@ class Observation {
       return new Displayable(addressLevel.name, addressLevel);
     } else if (observation.concept.isPhoneNumberConcept()) {
       return new Displayable(_.toString(valueWrapper.toString()), null);
+    } else if (observation.concept.isQuestionGroup()) {
+      const groupObservations = valueWrapper.getValue();
+      const groupQuestionValues = _.map(groupObservations, obs => ({[obs.concept.name] : obs.getReadableValue()}));
+      return new Displayable(JSON.stringify(groupQuestionValues), null);
     } else {
       const unit = _.defaultTo(observation.concept.unit, "");
       const displayValue = unit !== "" ? _.toString(`${valueWrapper.getValue()} ${unit}`) : _.toString(`${valueWrapper.getValue()}`);
@@ -103,7 +107,7 @@ class Observation {
       let valueParsed = JSON.parse(this.valueJSON);
       if (this.concept.isDurationConcept()) {
         valueParsed = valueParsed.durations;
-      } else if (this.concept.isPhoneNumberConcept() || this.concept.isIdConcept()) {
+      } else if (this.concept.isPhoneNumberConcept() || this.concept.isIdConcept() || this.concept.isQuestionGroup()) {
         return this.concept.getValueWrapperFor(valueParsed);
       } else {
         valueParsed = valueParsed.answer;
@@ -148,6 +152,8 @@ class Observation {
               return answerConcept.name;
             });
         }
+      } else if(this.concept.isQuestionGroup()) {
+        return _.map(value, obs => ({[obs.concept.name] : obs.getReadableValue()}))
       }
       return value;
     }

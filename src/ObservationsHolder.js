@@ -7,6 +7,7 @@ import Concept from "./Concept";
 import CompositeDuration from "./CompositeDuration";
 import PhoneNumber from "./PhoneNumber";
 import Identifier from "./Identifier";
+import QuestionGroup from "./observation/QuestionGroup";
 
 class ObservationsHolder {
   constructor(observations) {
@@ -31,21 +32,7 @@ class ObservationsHolder {
     const currentValue = this.getObservation(formElement.concept);
     _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
 
-    if (
-      [
-        Concept.dataType.Text,
-        Concept.dataType.Time,
-        Concept.dataType.Numeric,
-        Concept.dataType.Video,
-        Concept.dataType.Image,
-        Concept.dataType.Audio,
-        Concept.dataType.Date,
-        Concept.dataType.DateTime,
-        Concept.dataType.Location,
-        Concept.dataType.File,
-      ].includes(formElement.getType()) &&
-      isNil(formElement.durationOptions)
-    ) {
+    if (formElement.concept.isPrimitive() && isNil(formElement.durationOptions)) {
       this.addOrUpdatePrimitiveObs(formElement.concept, value);
     }
 
@@ -210,6 +197,34 @@ class ObservationsHolder {
     observation = Observation.create(concept, new PhoneNumber(phoneNumber, verified, skipVerification));
     this.observations.push(observation);
     return observation;
+  }
+
+  updateGroupQuestion(parentConcept, childConcept, value, childFormElement) {
+    const parentObservation = this.getObservation(parentConcept);
+    const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
+    if (!_.isEmpty(_.toString(value)) && childConcept.isPrimitive() && _.isNil(childFormElement.durationOptions)) {
+      childObservations.removeExistingObs(childConcept);
+      const observation = Observation.create(childConcept, new PrimitiveValue(value, childConcept.datatype));
+      childObservations.addObservation(observation);
+    }
+    if (childConcept.isCodedConcept()) {
+      let observation = childObservations.getObservation(childConcept);
+      const isSingleSelect = childFormElement.isSingleSelect();
+      if (_.isEmpty(observation)) {
+        observation = Observation.create(childConcept,
+            isSingleSelect ? new SingleCodedValue(value) : new MultipleCodedValues().push(value));
+        childObservations.addObservation(observation);
+      } else {
+        isSingleSelect ? observation.toggleSingleSelectAnswer(value) : observation.toggleMultiSelectAnswer(value);
+        if (observation.hasNoAnswer()) {
+          childObservations.removeExistingObs(childConcept);
+        }
+      }
+    }
+    this._removeExistingObs(parentConcept);
+    if (!childObservations.isEmpty()) {
+      this.observations.push(Observation.create(parentConcept, childObservations));
+    }
   }
 
   toggleMultiSelectAnswer(concept, answerUUID) {

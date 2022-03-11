@@ -10,6 +10,7 @@ import CompositeDuration from "./CompositeDuration";
 import KeyValue from "./application/KeyValue";
 import PhoneNumber from "./PhoneNumber";
 import Identifier from "./Identifier";
+import QuestionGroup from "./observation/QuestionGroup";
 
 export class ConceptAnswer {
   static schema = {
@@ -90,6 +91,7 @@ export default class Concept {
     Subject: "Subject",
     PhoneNumber: "PhoneNumber",
     GroupAffiliation: "GroupAffiliation",
+    QuestionGroup: "QuestionGroup",
     File: "File",
     get Media() {
       return [this.Image, this.Video, this.Audio, this.File];
@@ -241,6 +243,9 @@ export default class Concept {
     if (this.isIdConcept()) {
       return Identifier.fromObs(obsValue);
     }
+    if (this.isQuestionGroup()) {
+        return QuestionGroup.fromObs(obsValue);
+    }
     return new PrimitiveValue(obsValue, this.datatype);
   }
 
@@ -266,6 +271,25 @@ export default class Concept {
 
   isIdConcept() {
     return this.isType(Concept.dataType.Id);
+  }
+
+  isQuestionGroup() {
+    return this.isType(Concept.dataType.QuestionGroup);
+  }
+
+  isPrimitive() {
+    return [
+      Concept.dataType.Text,
+      Concept.dataType.Time,
+      Concept.dataType.Numeric,
+      Concept.dataType.Video,
+      Concept.dataType.Image,
+      Concept.dataType.Audio,
+      Concept.dataType.Date,
+      Concept.dataType.DateTime,
+      Concept.dataType.Location,
+      Concept.dataType.File,
+    ].includes(this.datatype)
   }
 
   getAnswers() {

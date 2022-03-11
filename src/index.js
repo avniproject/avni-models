@@ -104,6 +104,7 @@ import {ErrorCodes} from "./error/ErrorCodes";
 import Extension from "./Extension";
 import FileFormat from "./FileFormat";
 import SubjectMigration from "./SubjectMigration";
+import QuestionGroup from './observation/QuestionGroup';
 
 export {
   AbstractEncounter,
@@ -213,4 +214,5 @@ export {
   Extension,
   FileFormat,
   SubjectMigration,
+  QuestionGroup,
 };

@@ -3,6 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import Observation from "../Observation";
 import Concept from "../Concept";
+import QuestionGroup from "../observation/QuestionGroup";
 
 var currentLogLevel;
 
@@ -152,8 +153,14 @@ class General {
       if (!_.isNil(source[observationField])) {
         _.toPairs(source[observationField]).forEach(([conceptUUID, value]) => {
           const observation = new Observation();
-          observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
-          observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
+          const concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
+          observation.concept = concept;
+          if (concept.isQuestionGroup()) {
+            const groupObservations = this.createQuestionGroupObservations(value, entityService);
+            observation.valueJSON = JSON.stringify(new QuestionGroup(groupObservations));
+          } else {
+            observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
+          }
           observations.push(observation);
         });
       }
@@ -161,6 +168,15 @@ class General {
     });
 
     return dest;
+  }
+
+  static createQuestionGroupObservations(keyValues, entityService) {
+    return _.map(_.toPairs(keyValues), ([conceptUUID, value]) => {
+      const observation = new Observation();
+      observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
+      observation.valueJSON = observation.concept.getValueWrapperFor(value);
+      return observation;
+    })
   }
 
   static pick(from, attributes, listAttributes) {

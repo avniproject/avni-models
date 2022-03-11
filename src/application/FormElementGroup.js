@@ -4,6 +4,7 @@ import Form from "./Form";
 import BaseEntity from "../BaseEntity";
 import FormElement from "./FormElement";
 import _ from "lodash";
+import QuestionGroup from "../observation/QuestionGroup";
 
 class FormElementGroup {
   static schema = {
@@ -89,13 +90,23 @@ class FormElementGroup {
   validate(observationHolder, filteredFormElements) {
     const validationResults = [];
     filteredFormElements.forEach((formElement) => {
-      const observation = observationHolder.findObservation(formElement.concept);
-      const validationResult = formElement.validate(
-        _.isNil(observation) ? null : observation.getValue()
-      );
-      validationResults.push(validationResult);
+      if (formElement.isQuestionGroup()) {
+        const parentFormElement = _.find(filteredFormElements, fe => fe.uuid === formElement.groupUuid);
+        const parentObservation = observationHolder.findObservation(parentFormElement.concept);
+        const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
+        this.validateFormElement(formElement, childObservations.findObservation(formElement.concept), validationResults);
+      } else {
+        this.validateFormElement(formElement, observationHolder.findObservation(formElement.concept), validationResults);
+      }
     });
     return validationResults;
+  }
+
+  validateFormElement(formElement, observation, validationResults) {
+    const validationResult = formElement.validate(
+        _.isNil(observation) ? null : observation.getValue()
+    );
+    validationResults.push(validationResult);
   }
 
   get formElementIds() {

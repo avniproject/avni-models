@@ -25,6 +25,7 @@ class FormElement {
       validFormat: { type: "Format", optional: true },
       voided: { type: "bool", default: false },
       rule: { type: "string", optional: true },
+      groupUuid: { type: "string", optional: true },
     },
   };
 
@@ -49,6 +50,7 @@ class FormElement {
       []
     );
     formElement.formElementGroup = formElementGroup;
+    formElement.groupUuid = ResourceUtil.getUUIDFor(resource, "groupQuestionUUID");
     formElement.concept = concept;
 
     //remove orphan keyValues (because KeyValue doesn't have primary key
@@ -241,6 +243,10 @@ class FormElement {
     return this.name === elementNameOrUUID || this.uuid === elementNameOrUUID;
   }
 
+  isQuestionGroup() {
+    return !_.isNil(this.groupUuid);
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,
@@ -250,6 +256,7 @@ class FormElement {
       keyValues: this.keyValues,
       concept: this.concept,
       formElementGroupUUID: this.formElementGroup.uuid,
+      groupUuid: this.groupUuid,
     };
   }
 
