@@ -6,6 +6,7 @@ import FormMapping from "./FormMapping";
 import DraftSubject from "../draft/DraftSubject";
 import EntitySyncStatus from "../EntitySyncStatus";
 import moment from "moment";
+import QuestionGroup from "../observation/QuestionGroup";
 
 class Form {
   static schema = {
@@ -151,15 +152,13 @@ class Form {
 
   orderObservations(observations) {
     const orderedObservations = [];
-    const conceptOrdering = _.sortBy(this.formElementGroups, (feg) => feg.displayOrder).map((feg) =>
-      _.sortBy(feg.getFormElements(), (fe) => fe.displayOrder).map((fe) => fe.concept)
-    );
-    _.flatten(conceptOrdering).map((concept) => {
-      const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
-      if (!_.isNil(foundObs)) orderedObservations.push(foundObs);
+    const formElementOrdering = _.sortBy(this.formElementGroups, (feg) => feg.displayOrder).map((feg) =>
+        _.sortBy(feg.getFormElements(), (fe) => fe.displayOrder));
+    _.flatten(formElementOrdering).map((formElement) => {
+      this.addSortedObservations(formElement, observations, orderedObservations);
     });
     const extraObs = observations.filter((obs) =>
-      _.isNil(orderedObservations.find((oobs) => oobs.concept.uuid === obs.concept.uuid))
+        _.isNil(orderedObservations.find((oobs) => oobs.concept.uuid === obs.concept.uuid))
     );
     return orderedObservations.concat(extraObs);
   }
@@ -169,11 +168,10 @@ class Form {
     const allObservations = [];
     const orderedFEG = _.sortBy(this.formElementGroups, ({displayOrder}) => displayOrder);
     _.forEach(orderedFEG, feg => {
-      const conceptOrdering = _.sortBy(feg.getFormElements(), (fe) => fe.displayOrder).map((fe) => fe.concept);
+      const formElementOrdering = _.sortBy(feg.getFormElements(), (fe) => fe.displayOrder);
       const fegObs = [];
-      _.forEach(conceptOrdering, concept => {
-        const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
-        if (!_.isNil(foundObs)) fegObs.push(foundObs);
+      _.forEach(formElementOrdering, formElement => {
+        this.addSortedObservations(formElement, observations, fegObs);
       });
       if (!_.isEmpty(fegObs)) {
         sections.push({groupName: feg.name, groupUUID: feg.uuid, observations: fegObs});
@@ -186,6 +184,19 @@ class Form {
     if(!_.isEmpty(decisionObs))
       sections.push({groupName: 'decisions', groupUUID: null, observations: decisionObs});
     return sections;
+  }
+
+  addSortedObservations(formElement, observations, orderedObservations) {
+    const concept = formElement.concept;
+    const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
+    if (!_.isNil(foundObs) && concept.isQuestionGroup()) {
+      const clonedObs = foundObs.cloneForEdit();
+      const sortedChildObs = this.orderObservations(clonedObs.getValueWrapper().getValue());
+      clonedObs.valueJSON = JSON.stringify(new QuestionGroup(sortedChildObs));
+      if (!_.isEmpty(sortedChildObs)) orderedObservations.push(clonedObs);
+    } else {
+      if (!_.isNil(foundObs)) orderedObservations.push(foundObs);
+    }
   }
 
   getFormElementGroupOrder(groupUUID) {
