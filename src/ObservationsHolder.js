@@ -202,10 +202,12 @@ class ObservationsHolder {
   updateGroupQuestion(parentConcept, childConcept, value, childFormElement) {
     const parentObservation = this.getObservation(parentConcept);
     const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
-    if (!_.isEmpty(_.toString(value)) && childConcept.isPrimitive() && _.isNil(childFormElement.durationOptions)) {
+    if (childConcept.isPrimitive() && _.isNil(childFormElement.durationOptions)) {
       childObservations.removeExistingObs(childConcept);
-      const observation = Observation.create(childConcept, new PrimitiveValue(value, childConcept.datatype));
-      childObservations.addObservation(observation);
+      if (!_.isEmpty(_.toString(value))) {
+        const observation = Observation.create(childConcept, new PrimitiveValue(value, childConcept.datatype));
+        childObservations.addObservation(observation);
+      }
     }
     if (childConcept.isCodedConcept()) {
       let observation = childObservations.getObservation(childConcept);
