@@ -125,10 +125,17 @@ class AbstractEncounter extends BaseEntity {
     };
   }
 
-  findObservation(conceptNameOrUuid) {
-    return _.find(this.observations, (observation) => {
+  findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+    return _.find(observations, (observation) => {
       return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
+  }
+
+  findGroupedObservation(parentConceptNameOrUuid) {
+    const groupedObservations =_.find(this.observations, (observation) =>
+        (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+    return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
   }
 
   findCancelEncounterObservation(conceptNameOrUuid) {
@@ -144,15 +151,15 @@ class AbstractEncounter extends BaseEntity {
       : observationForConcept.getReadableValue();
   }
 
-  getObservationValue(conceptNameOrUuid) {
-    const observationForConcept = this.findObservation(conceptNameOrUuid);
+  getObservationValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getValue();
   }
 
-  getObservationReadableValue(conceptNameOrUuid) {
-    const observationForConcept = this.findObservation(conceptNameOrUuid);
+  getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getReadableValue();

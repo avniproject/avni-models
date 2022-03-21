@@ -351,7 +351,7 @@ class ProgramEnrolment extends BaseEntity {
         };
   }
 
-  findObservationInEntireEnrolment(conceptNameOrUuid, currentEncounter, latest = false) {
+  findObservationInEntireEnrolment(conceptNameOrUuid, currentEncounter, latest = false, parentConceptNameOrUuid) {
     let encounters = _.chain(this.getEncounters())
       .filter((enc) => (currentEncounter ? enc.uuid !== currentEncounter.uuid : true))
       .concat(currentEncounter)
@@ -360,7 +360,7 @@ class ProgramEnrolment extends BaseEntity {
       .value();
     encounters = latest ? _.reverse(encounters) : encounters;
 
-    return this._findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, true);
+    return this._findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, true, parentConceptNameOrUuid);
   }
 
   observationExistsInEntireEnrolment(conceptNameOrUuid, currentEncounter) {
@@ -384,12 +384,12 @@ class ProgramEnrolment extends BaseEntity {
     return this._findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, checkInEnrolment);
   }
 
-  findLatestObservationFromPreviousEncounters(conceptNameOrUuid, currentEncounter) {
+  findLatestObservationFromPreviousEncounters(conceptNameOrUuid, currentEncounter, parentConceptNameOrUuid) {
     const encounters = _.chain(this.getEncounters())
       .filter((enc) => enc.encounterDateTime)
       .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
       .value();
-    return this._findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, false);
+    return this._findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, false, parentConceptNameOrUuid);
   }
 
   findLatestPreviousEncounterWithValueForConcept(currentEncounter, conceptNameOrUuid, valueConceptName) {
@@ -405,26 +405,26 @@ class ProgramEnrolment extends BaseEntity {
     return null;
   }
 
-  _encounterHasObsForConcept(encounter, conceptNameOrUuid) {
-    const observation = encounter.getObservationValue(conceptNameOrUuid);
+  _encounterHasObsForConcept(encounter, conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observation = encounter.getObservationValue(conceptNameOrUuid, parentConceptNameOrUuid);
     return !_.isNil(observation);
   }
 
-  findLatestPreviousEncounterWithObservationForConcept(currentEncounter, conceptNameOrUuid) {
+  findLatestPreviousEncounterWithObservationForConcept(currentEncounter, conceptNameOrUuid, parentConceptNameOrUuid) {
     const encounters = _.chain(this.getEncounters())
       .filter((enc) => enc.encounterDateTime)
       .filter((enc) => enc.encounterDateTime < currentEncounter.encounterDateTime)
       .value();
 
     for (let i = 0; i < encounters.length; i++) {
-      if (this._encounterHasObsForConcept(encounters[i], conceptNameOrUuid)) return encounters[i];
+      if (this._encounterHasObsForConcept(encounters[i], conceptNameOrUuid, parentConceptNameOrUuid)) return encounters[i];
     }
     return null;
   }
 
-  findObservationInLastEncounter(conceptNameOrUuid, currentEncounter) {
+  findObservationInLastEncounter(conceptNameOrUuid, currentEncounter, parentConceptNameOrUuid) {
     const lastEncounter = this.findLastEncounterOfType(currentEncounter, _.get(currentEncounter, 'encounterType'));
-    return lastEncounter ? lastEncounter.findObservation(conceptNameOrUuid) : null;
+    return lastEncounter ? lastEncounter.findObservation(conceptNameOrUuid, parentConceptNameOrUuid) : null;
   }
 
   findLastEncounterOfType(currentEncounter, encounterTypes = []) {
@@ -453,27 +453,28 @@ class ProgramEnrolment extends BaseEntity {
     return observation.getValueWrapper().hasValue(answerUuid);
   }
 
-  _findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, checkInEnrolment = true) {
+  _findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, checkInEnrolment = true, parentConceptNameOrUuid) {
     return this._findObservationWithDateFromEntireEnrolment(
         conceptNameOrUuid,
       encounters,
-      checkInEnrolment
+      checkInEnrolment,
+      parentConceptNameOrUuid
     ).observation;
   }
 
-  _findObservationWithDateFromEntireEnrolment(conceptNameOrUuid, encounters, checkInEnrolment = true) {
+  _findObservationWithDateFromEntireEnrolment(conceptNameOrUuid, encounters, checkInEnrolment = true, parentConceptNameOrUuid) {
     let observation;
     let encounter;
     for (let i = 0; i < encounters.length; i++) {
       encounter = encounters[i];
-      observation = encounters[i].findObservation(conceptNameOrUuid);
+      observation = encounters[i].findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
       if (!_.isNil(observation))
         return { observation: observation, date: encounter.encounterDateTime };
     }
 
     if (checkInEnrolment)
       return {
-        observation: this.findObservation(conceptNameOrUuid),
+        observation: this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid),
         date: this.enrolmentDateTime,
       };
     return {};
@@ -484,10 +485,17 @@ class ProgramEnrolment extends BaseEntity {
     return obs ? obs.getReadableValue() : undefined;
   }
 
-  findObservation(conceptNameOrUuid) {
-    return _.find(this.observations, (observation) => {
+  findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+    return _.find(observations, (observation) => {
       return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
+  }
+
+  findGroupedObservation(parentConceptNameOrUuid) {
+    const groupedObservations =_.find(this.observations, (observation) =>
+        (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+    return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
   }
 
   findExitObservation(conceptNameOrUuid) {
@@ -578,13 +586,13 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   //get has been taken by the prototype
-  getObservationValue(conceptNameOrUuid) {
-    const observationValue = this.findObservation(conceptNameOrUuid);
+  getObservationValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationValue = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
     return _.isEmpty(observationValue) ? undefined : observationValue.getValue();
   }
 
-  getObservationReadableValue(conceptNameOrUuid) {
-    const observationValue = this.findObservation(conceptNameOrUuid);
+  getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationValue = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
     return _.isNil(observationValue) ? undefined : observationValue.getReadableValue();
   }
 

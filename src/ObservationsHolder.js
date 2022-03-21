@@ -117,11 +117,17 @@ class ObservationsHolder {
         this.removeNonApplicableAnswers(fe, fe.isSingleSelect());
       }
     });
-    return _.flatten(
-      inApplicableFormElements.map((fe) =>
-        _.remove(this.observations, (obs) => obs.concept.uuid === fe.concept.uuid)
-      )
-    );
+    return _.flatten(inApplicableFormElements.map(fe => this._removeObs(fe, allFormElements)));
+  }
+
+  _removeObs(formElement, allFormElements) {
+    if (formElement.isQuestionGroup()) {
+      const parentFormElement = _.find(allFormElements, ({uuid}) => formElement.groupUuid === uuid);
+      const parentObservation = this.getObservation(parentFormElement.concept);
+      return _.isNil(parentObservation) ? [] : parentObservation.getValueWrapper().removeExistingObs(formElement.concept);
+    } else {
+      return _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid)
+    }
   }
 
   removeNonApplicableAnswers(fe, isSingleSelect) {
@@ -143,9 +149,14 @@ class ObservationsHolder {
       }).value;
       if (!_.isNil(value)) {
         const concept = fe.concept;
-        concept.isCodedConcept()
-            ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
-            : this.addOrUpdatePrimitiveObs(concept, value);
+        if (fe.isQuestionGroup()) {
+          const parentFormElement = _.find(applicableFormElements, ({uuid}) => fe.groupUuid === uuid);
+          this.updateGroupQuestion(_.get(parentFormElement, 'concept'), concept, value, fe);
+        } else {
+          concept.isCodedConcept()
+              ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
+              : this.addOrUpdatePrimitiveObs(concept, value);
+        }
       }
     });
   }

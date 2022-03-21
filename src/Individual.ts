@@ -375,7 +375,7 @@ class Individual extends BaseEntity {
   //TODO: this will be fixed later where we specify the option to create a template to display another unique field along with the name
   get nameStringWithUniqueAttribute() {
     if (this.subjectType.name === 'Farmer') {
-      const mobileNumber = this.getObservationReadableValue('Mobile Number');
+      const mobileNumber = this.getObservationReadableValue('Mobile Number', null);
       const numberToDisplay = mobileNumber ? `(${mobileNumber})` : '';
       return `${this.nameString} ${numberToDisplay}`
     } else {
@@ -652,14 +652,21 @@ class Individual extends BaseEntity {
     }
   }
 
-  findObservation(conceptNameOrUuid) {
-    return _.find(this.observations, (observation) => {
+  findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+    return _.find(observations, (observation) => {
       return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
     });
   }
 
-  getObservationValue(conceptNameOrUuid) {
-    const observationForConcept = this.findObservation(conceptNameOrUuid);
+  findGroupedObservation(parentConceptNameOrUuid) {
+    const groupedObservations =_.find(this.observations, (observation) =>
+      (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+    return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
+  }
+
+  getObservationValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getValue();
@@ -871,8 +878,8 @@ class Individual extends BaseEntity {
     }
   }
 
-  getObservationReadableValue(conceptNameOrUuid) {
-    const observationForConcept = this.findObservation(conceptNameOrUuid);
+  getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
     return _.isEmpty(observationForConcept)
       ? observationForConcept
       : observationForConcept.getReadableValue();

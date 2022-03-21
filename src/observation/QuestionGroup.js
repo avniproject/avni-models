@@ -59,7 +59,7 @@ class QuestionGroup {
     }
 
     removeExistingObs(concept) {
-        _.remove(this.groupObservations, obs => obs.concept.uuid === concept.uuid);
+        return _.remove(this.groupObservations, obs => obs.concept.uuid === concept.uuid);
     }
 
     getValueForConcept(concept) {
