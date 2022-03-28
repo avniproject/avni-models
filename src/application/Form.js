@@ -192,7 +192,8 @@ class Form {
     if (!_.isNil(foundObs) && concept.isQuestionGroup()) {
       const clonedObs = foundObs.cloneForEdit();
       const sortedChildObs = this.orderObservations(clonedObs.getValueWrapper().getValue());
-      clonedObs.valueJSON = JSON.stringify(new QuestionGroup(sortedChildObs));
+      const uniqueObs = _.uniqBy(sortedChildObs, obs => obs.concept.uuid);
+      clonedObs.valueJSON = JSON.stringify(new QuestionGroup(uniqueObs));
       if (!_.isEmpty(sortedChildObs)) orderedObservations.push(clonedObs);
     } else {
       if (!_.isNil(foundObs)) orderedObservations.push(foundObs);
