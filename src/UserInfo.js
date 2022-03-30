@@ -12,7 +12,8 @@ class UserInfo {
       username: "string",
       organisationName: "string",
       settings: "string",
-      name: {type:"string", optional:true}
+      name: {type:"string", optional:true},
+      syncSettings: {type:"string", optional:true},
     },
   };
 
@@ -25,6 +26,7 @@ class UserInfo {
       ? UserInfo.DEFAULT_SETTINGS
       : JSON.stringify(resource.settings);
     userInfo.name = resource.name;
+    userInfo.syncSettings = _.isNil(resource.syncSettings) ? '{}' : JSON.stringify(resource.syncSettings);
     return userInfo;
   }
 
@@ -34,6 +36,10 @@ class UserInfo {
 
   getSettings() {
     return JSON.parse(this.settings);
+  }
+
+  getSyncSettings() {
+    return JSON.parse(this.syncSettings);
   }
 
   getDisplayUsername() {
@@ -52,6 +58,7 @@ class UserInfo {
     userInfo.uuid = this.uuid;
     userInfo.organisationName = this.organisationName;
     userInfo.settings = this.settings;
+    userInfo.syncSettings = this.syncSettings;
     userInfo.name = this.name;
     return userInfo;
   }
@@ -59,6 +66,7 @@ class UserInfo {
   static createEmptyInstance() {
     const userInfo = new UserInfo();
     userInfo.settings = UserInfo.DEFAULT_SETTINGS;
+    userInfo.syncSettings = '{}';
     return userInfo;
   }
 }

@@ -1,6 +1,7 @@
 import ReferenceEntity from "./ReferenceEntity";
 import General from "./utility/General";
 import Format from "./application/Format";
+import ResourceUtil from "./utility/ResourceUtil";
 
 class SubjectType extends ReferenceEntity {
   static schema = {
@@ -19,6 +20,8 @@ class SubjectType extends ReferenceEntity {
       validFirstNameFormat: { type: "Format", optional: true },
       validLastNameFormat: { type: "Format", optional: true },
       iconFileS3Key: {type: "string", optional: true},
+      syncRegistrationConcept1: {type: "string", optional: true},
+      syncRegistrationConcept2: {type: "string", optional: true},
     }
   };
   uuid;
@@ -62,6 +65,8 @@ class SubjectType extends ReferenceEntity {
     subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);
     subjectType.validLastNameFormat = Format.fromResource(operationalSubjectType["validLastNameFormat"]);
     subjectType.iconFileS3Key = operationalSubjectType.iconFileS3Key;
+    subjectType.syncRegistrationConcept1 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept1');
+    subjectType.syncRegistrationConcept2 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept2');
     return subjectType;
   }
 
@@ -80,6 +85,8 @@ class SubjectType extends ReferenceEntity {
     cloned.validFirstNameFormat = this.validFirstNameFormat;
     cloned.validLastNameFormat = this.validLastNameFormat;
     cloned.iconFileS3Key = this.iconFileS3Key;
+    cloned.syncRegistrationConcept1 = this.syncRegistrationConcept1;
+    cloned.syncRegistrationConcept2 = this.syncRegistrationConcept2;
     return cloned;
   }
 
