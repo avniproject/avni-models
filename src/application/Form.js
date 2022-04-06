@@ -186,14 +186,27 @@ class Form {
     return sections;
   }
 
+  orderQuestionGroupObservations(observations, groupUuid) {
+    const childFormElements = [];
+    const orderedChildObs = [];
+    _.forEach(this.formElementGroups, feg => _.forEach(feg.getFormElements(), fe => {
+          if (fe.groupUuid === groupUuid) {
+            childFormElements.push(fe)
+          }
+        })
+    );
+    const orderedFormElements = _.sortBy(childFormElements, fe => fe.displayOrder);
+    _.forEach(orderedFormElements, (formElement) => this.addSortedObservations(formElement, observations, orderedChildObs));
+    return orderedChildObs;
+  }
+
   addSortedObservations(formElement, observations, orderedObservations) {
     const concept = formElement.concept;
     const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
     if (!_.isNil(foundObs) && concept.isQuestionGroup()) {
       const clonedObs = foundObs.cloneForEdit();
-      const sortedChildObs = this.orderObservations(clonedObs.getValueWrapper().getValue());
-      const uniqueObs = _.uniqBy(sortedChildObs, obs => obs.concept.uuid);
-      clonedObs.valueJSON = JSON.stringify(new QuestionGroup(uniqueObs));
+      const sortedChildObs = this.orderQuestionGroupObservations(clonedObs.getValueWrapper().getValue(), formElement.uuid);
+      clonedObs.valueJSON = JSON.stringify(new QuestionGroup(sortedChildObs));
       if (!_.isEmpty(sortedChildObs)) orderedObservations.push(clonedObs);
     } else {
       if (!_.isNil(foundObs)) orderedObservations.push(foundObs);
