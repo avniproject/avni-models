@@ -29,6 +29,7 @@ class SubjectType extends ReferenceEntity {
   iconFileS3Key;
   //This property is right now used only in web-app, adding it this way for the clone().
   allowEmptyLocation;
+  allowProfilePicture;
   uniqueName;
   validFirstNameFormat;
   validLastNameFormat;
@@ -81,6 +82,7 @@ class SubjectType extends ReferenceEntity {
     cloned.type = this.type;
     cloned.subjectSummaryRule = this.subjectSummaryRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
+    cloned.allowProfilePicture = this.allowProfilePicture;
     cloned.uniqueName = this.uniqueName;
     cloned.validFirstNameFormat = this.validFirstNameFormat;
     cloned.validLastNameFormat = this.validLastNameFormat;

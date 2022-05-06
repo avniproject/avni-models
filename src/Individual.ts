@@ -29,6 +29,7 @@ class Individual extends BaseEntity {
       name: "string",
       firstName: "string",
       lastName: {type: "string", optional: true},
+      profilePicture: {type: "string", optional: true},
       dateOfBirth: {type: "date", optional: true},
       dateOfBirthVerified: {type: "bool", optional: true},
       gender: {type: "Gender", optional: true},
@@ -52,6 +53,7 @@ class Individual extends BaseEntity {
     GENDER: "GENDER",
     FIRST_NAME: "FIRST_NAME",
     LAST_NAME: "LAST_NAME",
+    PROFILE_PICTURE: "PROFILE_PICTURE",
     REGISTRATION_DATE: "REGISTRATION_DATE",
     LOWEST_ADDRESS_LEVEL: "LOWEST_ADDRESS_LEVEL",
     REGISTRATION_LOCATION: "REGISTRATION_LOCATION",
@@ -84,6 +86,7 @@ class Individual extends BaseEntity {
   registrationLocation: Point;
   firstName: any;
   lastName: any;
+  profilePicture: any;
   dateOfBirthVerified: any;
   latestEntityApprovalStatus: EntityApprovalStatus;
   comments: Comment[];
@@ -127,6 +130,7 @@ class Individual extends BaseEntity {
       "uuid",
       "firstName",
       "lastName",
+      "profilePicture",
       "dateOfBirthVerified",
       "voided",
     ]);
@@ -164,6 +168,7 @@ class Individual extends BaseEntity {
     uuid,
     firstName,
     lastName,
+    profilePicture,
     dateOfBirth,
     dateOfBirthVerified,
     gender,
@@ -174,6 +179,7 @@ class Individual extends BaseEntity {
     individual.uuid = uuid;
     individual.firstName = firstName;
     individual.lastName = lastName;
+    individual.profilePicture = profilePicture;
     individual.subjectType = subjectType;
     individual.name = individual.nameString;
     individual.dateOfBirth = dateOfBirth;
@@ -202,7 +208,7 @@ class Individual extends BaseEntity {
     const individual = General.assignFields(
       individualResource,
       new Individual(),
-      ["uuid", "firstName", "lastName", "dateOfBirthVerified", "voided"],
+      ["uuid", "firstName", "lastName", "profilePicture", "dateOfBirthVerified", "voided"],
       ["dateOfBirth", "registrationDate"],
       ["observations"],
       entityService
@@ -486,6 +492,13 @@ class Individual extends BaseEntity {
     return this.validateName(this.lastName, Individual.validationKeys.LAST_NAME, this.subjectType.validLastNameFormat);
   }
 
+  validateProfilePicture() {
+    return this.validateFieldForEmpty(
+      this.profilePicture,
+      Individual.validationKeys.PROFILE_PICTURE
+    );
+  }
+
   validateRegistrationLocation() {
     return this.validateFieldForNull(
       this.registrationLocation,
@@ -564,6 +577,7 @@ class Individual extends BaseEntity {
     individual.name = this.name;
     individual.firstName = this.firstName;
     individual.lastName = this.lastName;
+    individual.profilePicture = this.profilePicture;
     individual.dateOfBirth = this.dateOfBirth;
     individual.registrationDate = this.registrationDate;
     individual.dateOfBirthVerified = this.dateOfBirthVerified;
@@ -593,6 +607,7 @@ class Individual extends BaseEntity {
     individual.name = this.name;
     individual.firstName = this.firstName;
     individual.lastName = this.lastName;
+    individual.profilePicture = this.profilePicture;
     individual.dateOfBirth = this.dateOfBirth;
     individual.gender = _.isNil(this.gender) ? null : this.gender.clone();
     return individual;
@@ -906,6 +921,7 @@ class Individual extends BaseEntity {
       uuid: this.uuid,
       firstName: this.firstName,
       lastName: this.lastName,
+      profilePicture: this.profilePicture,
       enrolments: this.enrolments,
       dateOfBirth: this.dateOfBirth,
       gender: this.gender,

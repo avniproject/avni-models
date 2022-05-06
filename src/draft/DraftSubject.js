@@ -11,6 +11,7 @@ class DraftSubject {
             subjectType: "SubjectType",
             firstName: "string",
             lastName: {type: "string", optional: true},
+            profilePicture: {type: "string", optional: true},
             dateOfBirth: {type: "date", optional: true},
             dateOfBirthVerified: {type: "bool", optional: true},
             gender: {type: "Gender", optional: true},
@@ -30,6 +31,7 @@ class DraftSubject {
         draftSubject.subjectType = subject.subjectType;
         draftSubject.firstName = subject.firstName;
         draftSubject.lastName = subject.lastName;
+        draftSubject.profilePicture = subject.profilePicture;
         draftSubject.dateOfBirth = subject.dateOfBirth;
         draftSubject.registrationDate = subject.registrationDate;
         draftSubject.dateOfBirthVerified = subject.dateOfBirthVerified;
@@ -48,6 +50,7 @@ class DraftSubject {
         individual.subjectType = this.subjectType.clone();
         individual.firstName = this.firstName;
         individual.lastName = this.lastName;
+        individual.profilePicture = this.profilePicture;
         individual.dateOfBirth = this.dateOfBirth;
         individual.registrationDate = this.registrationDate;
         individual.dateOfBirthVerified = this.dateOfBirthVerified;
