@@ -22,6 +22,7 @@ class SubjectType extends ReferenceEntity {
       iconFileS3Key: {type: "string", optional: true},
       syncRegistrationConcept1: {type: "string", optional: true},
       syncRegistrationConcept2: {type: "string", optional: true},
+      nameHelpText: {type: "string", optional: true},
     }
   };
   uuid;
@@ -67,6 +68,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.iconFileS3Key = operationalSubjectType.iconFileS3Key;
     subjectType.syncRegistrationConcept1 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept1');
     subjectType.syncRegistrationConcept2 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept2');
+    subjectType.nameHelpText = ResourceUtil.getUUIDFor(operationalSubjectType, 'nameHelpText');
     return subjectType;
   }
 
@@ -87,6 +89,7 @@ class SubjectType extends ReferenceEntity {
     cloned.iconFileS3Key = this.iconFileS3Key;
     cloned.syncRegistrationConcept1 = this.syncRegistrationConcept1;
     cloned.syncRegistrationConcept2 = this.syncRegistrationConcept2;
+    cloned.nameHelpText = this.nameHelpText;
     return cloned;
   }
 
