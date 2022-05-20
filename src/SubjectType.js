@@ -22,6 +22,7 @@ class SubjectType extends ReferenceEntity {
       iconFileS3Key: {type: "string", optional: true},
       syncRegistrationConcept1: {type: "string", optional: true},
       syncRegistrationConcept2: {type: "string", optional: true},
+      allowProfilePicture: {type: 'bool', default: false},
     }
   };
   uuid;
@@ -63,6 +64,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.type = operationalSubjectType.type;
     subjectType.subjectSummaryRule = operationalSubjectType.subjectSummaryRule;
     subjectType.uniqueName = operationalSubjectType.uniqueName;
+    subjectType.allowProfilePicture = operationalSubjectType.allowProfilePicture;
     subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);
     subjectType.validLastNameFormat = Format.fromResource(operationalSubjectType["validLastNameFormat"]);
     subjectType.iconFileS3Key = operationalSubjectType.iconFileS3Key;

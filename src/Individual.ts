@@ -168,12 +168,12 @@ class Individual extends BaseEntity {
     uuid,
     firstName,
     lastName,
-    profilePicture,
     dateOfBirth,
     dateOfBirthVerified,
     gender,
     lowestAddressLevel,
-    subjectType
+    subjectType,
+    profilePicture
   ) {
     const individual = new Individual();
     individual.uuid = uuid;
@@ -492,13 +492,6 @@ class Individual extends BaseEntity {
     return this.validateName(this.lastName, Individual.validationKeys.LAST_NAME, this.subjectType.validLastNameFormat);
   }
 
-  validateProfilePicture() {
-    return this.validateFieldForEmpty(
-      this.profilePicture,
-      Individual.validationKeys.PROFILE_PICTURE
-    );
-  }
-
   validateRegistrationLocation() {
     return this.validateFieldForNull(
       this.registrationLocation,
@@ -726,6 +719,14 @@ class Individual extends BaseEntity {
 
   get chronologicalEnrolments() {
     return _.sortBy(this.nonVoidedEnrolments(), (enrolment) => enrolment.encounterDateTime);
+  }
+
+  getProfilePicture() {
+    return this.profilePicture;
+  }
+
+  updateProfilePicture(newValue) {
+    this.profilePicture = newValue;
   }
 
   findMediaObservations() {

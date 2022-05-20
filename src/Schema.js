@@ -157,7 +157,7 @@ export default {
     Extension,
     SubjectMigration,
   ],
-  schemaVersion: 150,
+  schemaVersion: 151,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -640,6 +640,15 @@ export default {
       _.forEach(newDB.objects(Individual.schema.name), individual => {
         const groups = newDB.objects(GroupSubject.schema.name).filtered("memberSubject.uuid = $0", individual.uuid).map(_.identity);
         individual.groups = groups;
+      });
+    }
+
+    if (oldDB.schemaVersion < 151) {
+      _.forEach(newDB.objects(MediaQueue.schema.name), mediaQueueItem => {
+        mediaQueueItem.entityTargetField = "observations";
+      });
+      _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+        sub.allowProfilePicture = false;
       });
     }
   },
