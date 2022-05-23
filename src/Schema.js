@@ -157,7 +157,7 @@ export default {
     Extension,
     SubjectMigration,
   ],
-  schemaVersion: 151,
+  schemaVersion: 152,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
@@ -643,7 +643,7 @@ export default {
       });
     }
 
-    if (oldDB.schemaVersion < 151) {
+    if (oldDB.schemaVersion < 152) {
       _.forEach(newDB.objects(MediaQueue.schema.name), mediaQueueItem => {
         mediaQueueItem.entityTargetField = "observations";
       });
