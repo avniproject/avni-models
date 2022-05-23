@@ -52,7 +52,8 @@ class Family extends BaseEntity {
   }
 
   get toResource() {
-    const resource = _.pick(this, ["uuid", "firstName", "lastName", "dateOfBirthVerified"]);
+    const resource = _.pick(this, ["uuid", "firstName", "lastName",
+      "profilePicture", "dateOfBirthVerified"]);
     resource.dateOfBirth = moment(this.dateOfBirth).format("YYYY-MM-DD");
     resource.registrationDate = moment(this.registrationDate).format("YYYY-MM-DD");
     resource["genderUUID"] = this.gender.uuid;
@@ -81,7 +82,7 @@ class Family extends BaseEntity {
     const individual = General.assignFields(
       individualResource,
       new Individual(),
-      ["uuid", "firstName", "lastName", "dateOfBirthVerified"],
+      ["uuid", "firstName", "lastName", "profilePicture", "dateOfBirthVerified"],
       ["dateOfBirth", "registrationDate"],
       ["observations"],
       entityService

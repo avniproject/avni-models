@@ -642,5 +642,14 @@ export default {
         individual.groups = groups;
       });
     }
+
+    if (oldDB.schemaVersion < 151) {
+      _.forEach(newDB.objects(MediaQueue.schema.name), mediaQueueItem => {
+        mediaQueueItem.entityTargetField = "observations";
+      });
+      _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+        sub.allowProfilePicture = false;
+      });
+    }
   },
 };

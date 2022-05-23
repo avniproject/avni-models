@@ -8,16 +8,18 @@ class MediaQueue {
       uuid: "string",
       entityUUID: "string",
       entityName: "string",
+      entityTargetField: "string",
       fileName: "string",
       type: "string",
     },
   };
 
-  static create(entityUUID, entityName, fileName, type, uuid = General.randomUUID()) {
+  static create(entityUUID, entityName, fileName, type, entityTargetField, uuid = General.randomUUID()) {
     var mediaQueue = new MediaQueue();
     mediaQueue.entityUUID = entityUUID;
     mediaQueue.uuid = uuid;
     mediaQueue.entityName = entityName;
+    mediaQueue.entityTargetField = entityTargetField;
     mediaQueue.fileName = fileName;
     mediaQueue.type = type;
     return mediaQueue;
@@ -28,6 +30,7 @@ class MediaQueue {
     mediaQueueItem.uuid = this.uuid;
     mediaQueueItem.entityUUID = this.entityUUID;
     mediaQueueItem.entityName = this.entityName;
+    mediaQueueItem.entityTargetField = this.entityTargetField;
     mediaQueueItem.fileName = this.fileName;
     mediaQueueItem.type = this.type;
     return mediaQueueItem;
