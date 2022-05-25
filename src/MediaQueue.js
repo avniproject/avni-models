@@ -11,10 +11,11 @@ class MediaQueue {
       entityTargetField: "string",
       fileName: "string",
       type: "string",
+      conceptUUID: {type: "string", optional: true},
     },
   };
 
-  static create(entityUUID, entityName, fileName, type, entityTargetField, uuid = General.randomUUID()) {
+  static create(entityUUID, entityName, fileName, type, entityTargetField, conceptUUID, uuid = General.randomUUID()) {
     var mediaQueue = new MediaQueue();
     mediaQueue.entityUUID = entityUUID;
     mediaQueue.uuid = uuid;
@@ -22,6 +23,7 @@ class MediaQueue {
     mediaQueue.entityTargetField = entityTargetField;
     mediaQueue.fileName = fileName;
     mediaQueue.type = type;
+    mediaQueue.conceptUUID = conceptUUID;
     return mediaQueue;
   }
 
@@ -33,6 +35,7 @@ class MediaQueue {
     mediaQueueItem.entityTargetField = this.entityTargetField;
     mediaQueueItem.fileName = this.fileName;
     mediaQueueItem.type = this.type;
+    mediaQueueItem.conceptUUID = this.conceptUUID;
     return mediaQueueItem;
   }
 }

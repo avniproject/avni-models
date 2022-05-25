@@ -157,7 +157,7 @@ export default {
     Extension,
     SubjectMigration,
   ],
-  schemaVersion: 152,
+  schemaVersion: 153,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");

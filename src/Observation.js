@@ -47,6 +47,8 @@ class Observation {
       if (observation.concept.datatype === Concept.dataType.Subject) {
         const subject = subjectService.findByUUID(valueWrapper.getValue());
         return [new Displayable(subject.nameStringWithUniqueAttribute, subject)];
+      } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
+        return new Displayable(valueWrapper.getValue(), null);
       } else {
         return new Displayable(i18n.t(conceptService.getConceptByUUID(valueWrapper.getConceptUUID()).name), null);
       }
@@ -56,6 +58,8 @@ class Observation {
           const subject = subjectService.findByUUID(uuid);
           return new Displayable(subject.nameStringWithUniqueAttribute, subject);
         });
+      } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
+        return new Displayable(valueWrapper.getValue(), null);
       } else {
         return new Displayable(_.join(
           valueWrapper.getValue().map((value) => {

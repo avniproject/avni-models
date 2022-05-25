@@ -229,7 +229,7 @@ export default class Concept {
   }
 
   getValueWrapperFor(obsValue) {
-    if (this.isCodedConcept() || this.isSubjectConcept()) {
+    if (this.isCodedConcept() || this.isSubjectConcept() || this.isMediaConcept()) {
       return _.isArray(obsValue)
           ? new MultipleCodedValues(obsValue)
           : new SingleCodedValue(obsValue);
@@ -261,6 +261,10 @@ export default class Concept {
     return this.isType(Concept.dataType.Subject);
   }
 
+  isMediaConcept() {
+    return _.includes([Concept.dataType.Image, Concept.dataType.Video, Concept.dataType.File], this.datatype);
+  }
+
   isDurationConcept() {
     return this.isType(Concept.dataType.Duration);
   }
@@ -282,13 +286,10 @@ export default class Concept {
       Concept.dataType.Text,
       Concept.dataType.Time,
       Concept.dataType.Numeric,
-      Concept.dataType.Video,
-      Concept.dataType.Image,
       Concept.dataType.Audio,
       Concept.dataType.Date,
       Concept.dataType.DateTime,
       Concept.dataType.Location,
-      Concept.dataType.File,
     ].includes(this.datatype)
   }
 

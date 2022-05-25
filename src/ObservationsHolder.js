@@ -8,6 +8,7 @@ import CompositeDuration from "./CompositeDuration";
 import PhoneNumber from "./PhoneNumber";
 import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
+import General from "./utility/General";
 
 class ObservationsHolder {
   constructor(observations) {
@@ -276,6 +277,41 @@ class ObservationsHolder {
     if (observation) {
       observation.setValue(observation.concept.getValueWrapperFor(newValue));
     }
+  }
+
+  replaceMediaObservation(oldValue, newValue, conceptUUID) {
+    if (_.isNil(conceptUUID)) {
+      return this.updateObservationBasedOnValue(oldValue, newValue);
+    }
+    const observation = _.find(this.observations, (observation) => observation.concept.uuid === conceptUUID);
+    if (observation) {
+      const valueWrapper = observation.getValueWrapper();
+      if (valueWrapper.isMultipleCoded) {
+        const answers = valueWrapper.getValue();
+        const oldValueIndex = _.indexOf(answers, oldValue);
+        const newAnswers = _.reject(answers, answer => answer === oldValue);
+        newAnswers.splice(oldValueIndex, 0, newValue);
+        observation.valueJSON = new MultipleCodedValues(newAnswers);
+      } else {
+        observation.valueJSON = new SingleCodedValue(newValue);
+      }
+    }
+  }
+
+  migrateMultiSelectMediaObservations(form) {
+    _.forEach(form.nonVoidedFormElementGroups(), feg => {
+      _.forEach(feg.getFormElements(), fe => {
+        const concept = fe.concept;
+        const observation = this.getObservation(concept);
+        if (_.includes(Concept.dataType.Media, fe.getType()) && observation && fe.isMultiSelect()) {
+          const valueWrapper = observation.getValueWrapper();
+          if (!_.isArray(valueWrapper.getValue())) {
+            General.logDebug("ObservationHolder", `Found string value ${valueWrapper.getValue()} for multi select media element, doing migration`);
+            observation.valueJSON = new MultipleCodedValues([valueWrapper.getValue()]);
+          }
+        }
+      })
+    })
   }
 
   toString(I18n) {
