@@ -230,6 +230,11 @@ class AbstractEncounter extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
+  getEncounterLabel(identifier) {
+    return identifier === 'Encounter date' ? General.toDisplayDate(encounter.encounterDateTime) :
+        this.getObservationReadableValue(identifier);
+  }
+
   get subjectType() {
     return _.get(
       this,

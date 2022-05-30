@@ -33,7 +33,7 @@ class Observation {
     }
   }
 
-  static valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n}) {
+  static valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n, encounterService}) {
     const valueWrapper = observation.getValueWrapper();
 
     if (
@@ -47,6 +47,10 @@ class Observation {
       if (observation.concept.datatype === Concept.dataType.Subject) {
         const subject = subjectService.findByUUID(valueWrapper.getValue());
         return [new Displayable(subject.nameStringWithUniqueAttribute, subject)];
+      } else if (observation.concept.datatype === Concept.dataType.Encounter) {
+        const encounter = encounterService.findByUUID(valueWrapper.getValue());
+        const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
+        return [new Displayable(encounter.getEncounterLabel(identifier), encounter)];
       } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
         return new Displayable(valueWrapper.getValue(), null);
       } else {
@@ -57,6 +61,12 @@ class Observation {
         return valueWrapper.getValue().map(uuid => {
           const subject = subjectService.findByUUID(uuid);
           return new Displayable(subject.nameStringWithUniqueAttribute, subject);
+        });
+      } else if (observation.concept.datatype === Concept.dataType.Encounter) {
+        return valueWrapper.getValue().map(uuid => {
+          const encounter = encounterService.findByUUID(uuid);
+          const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
+          return new Displayable(encounter.getEncounterLabel(identifier), encounter);
         });
       } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
         return new Displayable(valueWrapper.getValue(), null);

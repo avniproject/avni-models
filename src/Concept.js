@@ -93,6 +93,7 @@ export default class Concept {
     GroupAffiliation: "GroupAffiliation",
     QuestionGroup: "QuestionGroup",
     File: "File",
+    Encounter: "Encounter",
     get Media() {
       return [this.Image, this.Video, this.Audio, this.File];
     },
@@ -103,6 +104,13 @@ export default class Concept {
     lowestAddressLevelTypeUUIDs: 'lowestAddressLevelTypeUUIDs',
     highestAddressLevelTypeUUID: 'highestAddressLevelTypeUUID',
     subjectTypeUUID: 'subjectTypeUUID',
+    encounterTypeUUID: 'encounterTypeUUID',
+    encounterScope: 'encounterScope',
+    encounterIdentifier: 'encounterIdentifier'
+  };
+
+  static encounterScopes = {
+    withinSubject: 'Within Subject',
   };
 
   // static primitiveDataTypes = [Concept.dataType.Boolean, Concept.dataType.Coded, Concept.dataType.Numeric, Concept.dataType.Date, Concept.dataType.Text];
@@ -229,7 +237,7 @@ export default class Concept {
   }
 
   getValueWrapperFor(obsValue) {
-    if (this.isCodedConcept() || this.isSubjectConcept() || this.isMediaConcept()) {
+    if (this.isSelectConcept()) {
       return _.isArray(obsValue)
           ? new MultipleCodedValues(obsValue)
           : new SingleCodedValue(obsValue);
@@ -261,8 +269,16 @@ export default class Concept {
     return this.isType(Concept.dataType.Subject);
   }
 
+  isEncounterConcept() {
+    return this.isType(Concept.dataType.Encounter);
+  }
+
   isMediaConcept() {
     return _.includes([Concept.dataType.Image, Concept.dataType.Video, Concept.dataType.File], this.datatype);
+  }
+
+  isSelectConcept() {
+    return this.isCodedConcept() || this.isSubjectConcept() || this.isEncounterConcept() || this.isMediaConcept();
   }
 
   isDurationConcept() {
