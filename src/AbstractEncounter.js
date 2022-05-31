@@ -5,7 +5,7 @@ import EncounterType from "./EncounterType";
 import ObservationsHolder from "./ObservationsHolder";
 import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
-import { findMediaObservations } from "./Media";
+import {findMediaObservations} from "./Media";
 import Point from "./geo/Point";
 import moment from "moment";
 
@@ -230,9 +230,15 @@ class AbstractEncounter extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
-  getEncounterLabel(identifier) {
-    return identifier === 'Encounter date' ? General.toDisplayDate(encounter.encounterDateTime) :
-        this.getObservationReadableValue(identifier);
+  getEncounterLabel(templateString) {
+    const conceptPattern = /{.*?}/g;
+    let identifierTemplateString = templateString;
+    _.forEach(templateString.match(conceptPattern), identifier => {
+      const value = identifier === '{Date}' ? General.toDisplayDate(this.encounterDateTime) :
+          this.getObservationReadableValue(identifier.replace(/[{}]/g, ''));
+      identifierTemplateString = identifierTemplateString.replace(identifier, value);
+    });
+    return identifierTemplateString;
   }
 
   get subjectType() {

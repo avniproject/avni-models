@@ -63,9 +63,9 @@ class Observation {
           return new Displayable(subject.nameStringWithUniqueAttribute, subject);
         });
       } else if (observation.concept.datatype === Concept.dataType.Encounter) {
+        const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
         return valueWrapper.getValue().map(uuid => {
           const encounter = encounterService.findByUUID(uuid);
-          const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
           return new Displayable(encounter.getEncounterLabel(identifier), encounter);
         });
       } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
