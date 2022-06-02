@@ -105,6 +105,7 @@ import Extension from "./Extension";
 import FileFormat from "./FileFormat";
 import SubjectMigration from "./SubjectMigration";
 import QuestionGroup from './observation/QuestionGroup';
+import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 
 export {
   AbstractEncounter,
@@ -215,4 +216,5 @@ export {
   FileFormat,
   SubjectMigration,
   QuestionGroup,
+  RepeatableQuestionGroup,
 };

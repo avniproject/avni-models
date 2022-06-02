@@ -5,6 +5,8 @@ import BaseEntity from "../BaseEntity";
 import FormElement from "./FormElement";
 import _ from "lodash";
 import QuestionGroup from "../observation/QuestionGroup";
+import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
+import ValidationResult from "./ValidationResult";
 
 class FormElementGroup {
   static schema = {
@@ -90,16 +92,36 @@ class FormElementGroup {
   validate(observationHolder, filteredFormElements) {
     const validationResults = [];
     filteredFormElements.forEach((formElement) => {
-      if (formElement.isQuestionGroup()) {
-        const parentFormElement = _.find(filteredFormElements, fe => fe.uuid === formElement.groupUuid);
-        const parentObservation = observationHolder.findObservation(parentFormElement.concept);
-        const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
-        this.validateFormElement(formElement, childObservations.findObservation(formElement.concept), validationResults);
-      } else {
+      if (formElement.concept.isQuestionGroup()) {
+        const childFormElements = _.filter(filteredFormElements, fe => fe.groupUuid === formElement.uuid);
+        const observations = observationHolder.findObservation(formElement.concept);
+        if (formElement.repeatable) {
+          const repeatableQuestionGroup = _.isEmpty(observations) ? new RepeatableQuestionGroup() : observations.getValueWrapper();
+          const groupValidationResults = [];
+          _.forEach(repeatableQuestionGroup.getAllQuestionGroupObservations(), questionGroup => {
+            const childValidations = [];
+            this.validateQuestionGroup(questionGroup, childFormElements, childValidations);
+            groupValidationResults.push(childValidations);
+          });
+          const isSuccess = _.every(groupValidationResults, childValidations => _.every(childValidations, ({success}) => success));
+          const validationResult = new ValidationResult(isSuccess, formElement.uuid);
+          validationResult.groupValidations = groupValidationResults;
+          validationResults.push(validationResult);
+        } else {
+          const questionGroup = _.isEmpty(observations) ? new QuestionGroup() : observations.getValueWrapper();
+          this.validateQuestionGroup(questionGroup, childFormElements, validationResults);
+        }
+      } else if (!formElement.isQuestionGroup()) {
         this.validateFormElement(formElement, observationHolder.findObservation(formElement.concept), validationResults);
       }
     });
     return validationResults;
+  }
+
+  validateQuestionGroup(questionGroup, childFormElements, validationResults) {
+    _.forEach(childFormElements, formElement =>
+        this.validateFormElement(formElement, questionGroup.findObservation(formElement.concept), validationResults)
+    );
   }
 
   validateFormElement(formElement, observation, validationResults) {

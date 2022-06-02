@@ -7,6 +7,7 @@ class ValidationResult {
     this.formIdentifier = formIdentifier;
     this.messageKey = messageKey;
     this.extra = extra;
+    this.groupValidations = []
   }
 
   static successful(formIdentifier) {

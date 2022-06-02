@@ -7,6 +7,7 @@ import DraftSubject from "../draft/DraftSubject";
 import EntitySyncStatus from "../EntitySyncStatus";
 import moment from "moment";
 import QuestionGroup from "../observation/QuestionGroup";
+import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
 
 class Form {
   static schema = {
@@ -205,8 +206,11 @@ class Form {
     const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
     if (!_.isNil(foundObs) && concept.isQuestionGroup()) {
       const clonedObs = foundObs.cloneForEdit();
-      const sortedChildObs = this.orderQuestionGroupObservations(clonedObs.getValueWrapper().getValue(), formElement.uuid);
-      clonedObs.valueJSON = JSON.stringify(new QuestionGroup(sortedChildObs));
+      const valueWrapper = clonedObs.getValueWrapper();
+      const isRepeatable = valueWrapper.isRepeatable();
+      const sortedChildObs = isRepeatable ? _.flatMap(valueWrapper.getValue(), questionGroup => new QuestionGroup(this.orderQuestionGroupObservations(questionGroup.getValue(), formElement.uuid))) :
+          this.orderQuestionGroupObservations(valueWrapper.getValue(), formElement.uuid);
+      clonedObs.valueJSON = JSON.stringify(isRepeatable ? new RepeatableQuestionGroup(sortedChildObs) : new QuestionGroup(sortedChildObs));
       if (!_.isEmpty(sortedChildObs)) orderedObservations.push(clonedObs);
     } else {
       if (!_.isNil(foundObs)) orderedObservations.push(foundObs);

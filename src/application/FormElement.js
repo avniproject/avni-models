@@ -224,6 +224,11 @@ class FormElement {
     return _.isNil(editable) ? true : editable.getValue();
   }
 
+  get repeatable() {
+    const repeatable = this.recordByKey("repeatable");
+    return _.isNil(repeatable) ? false : repeatable.getValue();
+  }
+
   get datePickerMode() {
     const datePickerMode = this.recordByKey("datePickerMode");
     return _.isNil(datePickerMode) ? null : datePickerMode.getValue();

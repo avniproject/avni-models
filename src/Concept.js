@@ -11,6 +11,7 @@ import KeyValue from "./application/KeyValue";
 import PhoneNumber from "./PhoneNumber";
 import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
+import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 
 export class ConceptAnswer {
   static schema = {
@@ -252,7 +253,9 @@ export default class Concept {
       return Identifier.fromObs(obsValue);
     }
     if (this.isQuestionGroup()) {
-        return QuestionGroup.fromObs(obsValue);
+      return 'repeatableObservations' in obsValue
+          ? RepeatableQuestionGroup.fromObs(obsValue)
+          : QuestionGroup.fromObs(obsValue)
     }
     return new PrimitiveValue(obsValue, this.datatype);
   }

@@ -9,7 +9,12 @@ class QuestionGroup {
     }
 
     get toResource() {
-        return _.map(this.groupObservations, obs => obs.toResource);
+        const resource = {};
+        _.forEach(this.groupObservations, obs => {
+            const {conceptUUID, value} = obs.toResource;
+            _.assign(resource, {[conceptUUID]: value})
+        });
+        return resource;
     }
 
     static fromObs({groupObservations}) {
@@ -42,6 +47,10 @@ class QuestionGroup {
 
     getValue() {
         return this.groupObservations;
+    }
+
+    isRepeatable() {
+        return false;
     }
 
     findObservation(concept) {

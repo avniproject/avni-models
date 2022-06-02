@@ -9,6 +9,7 @@ import PhoneNumber from "./PhoneNumber";
 import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
 import General from "./utility/General";
+import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 
 class ObservationsHolder {
   constructor(observations) {
@@ -152,7 +153,7 @@ class ObservationsHolder {
         const concept = fe.concept;
         if (fe.isQuestionGroup()) {
           const parentFormElement = _.find(applicableFormElements, ({uuid}) => fe.groupUuid === uuid);
-          this.updateGroupQuestion(_.get(parentFormElement, 'concept'), concept, value, fe);
+          this.updateGroupQuestion(parentFormElement, fe, value);
         } else {
           concept.isCodedConcept()
               ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
@@ -211,9 +212,19 @@ class ObservationsHolder {
     return observation;
   }
 
-  updateGroupQuestion(parentConcept, childConcept, value, childFormElement) {
+  updateGroupQuestion(parentFormElement, childFormElement, value) {
+    const parentConcept = parentFormElement.concept;
     const parentObservation = this.getObservation(parentConcept);
     const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
+    this.updateChildObservations(childFormElement, childObservations, value);
+    this._removeExistingObs(parentConcept);
+    if (!childObservations.isEmpty()) {
+      this.observations.push(Observation.create(parentConcept, childObservations));
+    }
+  }
+
+  updateChildObservations(childFormElement, childObservations, value) {
+    const childConcept = childFormElement.concept;
     if (childConcept.isPrimitive() && _.isNil(childFormElement.durationOptions)) {
       childObservations.removeExistingObs(childConcept);
       if (!_.isEmpty(_.toString(value))) {
@@ -235,9 +246,25 @@ class ObservationsHolder {
         }
       }
     }
+  }
+
+  updateRepeatableGroupQuestion(index, parentFormElement, childFormElement, value, action) {
+    const parentConcept = parentFormElement.concept;
+    const observations = this.getObservation(parentConcept);
+    const repeatableObservations = _.isEmpty(observations) ? new RepeatableQuestionGroup() : observations.getValueWrapper();
+    if (action === RepeatableQuestionGroup.actions.add) {
+      repeatableObservations.addQuestionGroup();
+      return
+    } else if (action === RepeatableQuestionGroup.actions.remove) {
+      repeatableObservations.removeQuestionGroup(index);
+      return
+    }
+    const childObservations = repeatableObservations.getGroupObservationAtIndex(index);
+    this.updateChildObservations(childFormElement, childObservations, value);
+    repeatableObservations.updateGroupObservationsAtIndex(childObservations, index);
     this._removeExistingObs(parentConcept);
-    if (!childObservations.isEmpty()) {
-      this.observations.push(Observation.create(parentConcept, childObservations));
+    if (!repeatableObservations.isEmpty()) {
+      this.observations.push(Observation.create(parentConcept, repeatableObservations));
     }
   }
 
