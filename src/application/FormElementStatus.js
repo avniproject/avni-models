@@ -16,7 +16,12 @@ class FormElementStatus {
     oredFormElementStatus.answersToSkip = this.answersToSkip;
     oredFormElementStatus.validationErrors = this.validationErrors;
     oredFormElementStatus.answersToShow = this.answersToShow;
+    oredFormElementStatus.questionGroupIndex = this.questionGroupIndex;
     return oredFormElementStatus;
+  }
+
+  addQuestionGroupInformation(questionGroupIndex) {
+    this.questionGroupIndex = questionGroupIndex;
   }
 
   or(formElementStatus) {

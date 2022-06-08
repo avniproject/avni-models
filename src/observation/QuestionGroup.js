@@ -59,6 +59,15 @@ class QuestionGroup {
         });
     }
 
+    findObservationByConceptUUID(conceptNameOrUUID) {
+        return _.find(this.groupObservations, (obs) => obs.concept.uuid === conceptNameOrUUID ||
+            obs.concept.name === conceptNameOrUUID)
+    }
+
+    getGroupObservationAtIndex(index) {
+        return this;
+    }
+
     getObservation(concept) {
         return this.findObservation(concept);
     }
@@ -83,6 +92,10 @@ class QuestionGroup {
 
     isEmpty() {
         return _.isEmpty(this.groupObservations);
+    }
+
+    size() {
+        return 1;
     }
 }
 

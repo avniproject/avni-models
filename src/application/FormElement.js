@@ -303,6 +303,27 @@ class FormElement {
     return _.isNil(allowedMaxSize) ? oneMBInBytes : _.toNumber(allowedMaxSize.getValue()) * oneMBInBytes;
   }
 
+  getParentFormElement() {
+      return _.find(this.formElementGroup.getFormElements(), fe => fe.uuid === this.groupUuid)
+  }
+
+  clone() {
+    const formElement = new FormElement();
+    formElement.uuid = this.uuid;
+    formElement.name = this.name;
+    formElement.displayOrder = this.displayOrder;
+    formElement.mandatory = this.mandatory;
+    formElement.keyValues = this.keyValues;
+    formElement.concept = this.concept;
+    formElement.type = this.type;
+    formElement.formElementGroup = this.formElementGroup;
+    formElement.validFormat = this.validFormat;
+    formElement.voided = this.voided;
+    formElement.rule = this.rule;
+    formElement.groupUuid = this.groupUuid;
+    return formElement;
+  }
+
 }
 
 export default FormElement;

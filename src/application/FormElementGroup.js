@@ -98,9 +98,9 @@ class FormElementGroup {
         if (formElement.repeatable) {
           const repeatableQuestionGroup = _.isEmpty(observations) ? new RepeatableQuestionGroup() : observations.getValueWrapper();
           const groupValidationResults = [];
-          _.forEach(repeatableQuestionGroup.getAllQuestionGroupObservations(), questionGroup => {
+          _.forEach(repeatableQuestionGroup.getAllQuestionGroupObservations(), (questionGroup, index) => {
             const childValidations = [];
-            this.validateQuestionGroup(questionGroup, childFormElements, childValidations);
+            this.validateQuestionGroup(questionGroup, childFormElements, childValidations, index);
             groupValidationResults.push(childValidations);
           });
           const isSuccess = _.every(groupValidationResults, childValidations => _.every(childValidations, ({success}) => success));
@@ -109,7 +109,7 @@ class FormElementGroup {
           validationResults.push(validationResult);
         } else {
           const questionGroup = _.isEmpty(observations) ? new QuestionGroup() : observations.getValueWrapper();
-          this.validateQuestionGroup(questionGroup, childFormElements, validationResults);
+          this.validateQuestionGroup(questionGroup, childFormElements, validationResults, 0);
         }
       } else if (!formElement.isQuestionGroup()) {
         this.validateFormElement(formElement, observationHolder.findObservation(formElement.concept), validationResults);
@@ -118,10 +118,11 @@ class FormElementGroup {
     return validationResults;
   }
 
-  validateQuestionGroup(questionGroup, childFormElements, validationResults) {
-    _.forEach(childFormElements, formElement =>
-        this.validateFormElement(formElement, questionGroup.findObservation(formElement.concept), validationResults)
-    );
+  validateQuestionGroup(questionGroup, childFormElements, validationResults, questionGroupIndex) {
+    _.filter(childFormElements, fe => _.isNil(fe.questionGroupIndex) || fe.questionGroupIndex === questionGroupIndex)
+        .forEach(formElement => {
+          return this.validateFormElement(formElement, questionGroup.findObservation(formElement.concept), validationResults);
+        })
   }
 
   validateFormElement(formElement, observation, validationResults) {
@@ -161,20 +162,20 @@ class FormElementGroup {
   }
 
   filterElements(formElementStatuses) {
-    let filtered = _.filter(this.getFormElements(), (formElement) =>
-      _.some(
-        formElementStatuses,
-        (formElementStatus) =>
-          formElementStatus.uuid === formElement.uuid &&
-          formElementStatus.visibility &&
-          (() => {
-            formElement.setAnswersToShow = formElementStatus.answersToShow;
-            formElement.answersToSkip = formElementStatus.answersToSkip;
-            return true;
-          })()
-      )
-    );
-    return FormElementGroup._sortedFormElements(filtered);
+    const filteredFormElements = [];
+    const allFormElements = this.getFormElements();
+    _.forEach(formElementStatuses, ({questionGroupIndex, uuid, visibility, answersToShow, answersToSkip}) => {
+      const formElement = _.find(allFormElements, fe => fe.uuid === uuid);
+      if (visibility && formElement) {
+        //clone is required to assign different questionGroupIndex to the same form element
+        const newFormElement = formElement.clone();
+        newFormElement.setAnswersToShow = answersToShow;
+        newFormElement.answersToSkip = answersToSkip;
+        newFormElement.questionGroupIndex = questionGroupIndex;
+        filteredFormElements.push(newFormElement);
+      }
+    });
+    return FormElementGroup._sortedFormElements(filteredFormElements);
   }
 
   toJSON() {

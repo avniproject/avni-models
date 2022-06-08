@@ -109,31 +109,70 @@ class ObservationsHolder {
   }
 
   removeNonApplicableObs(allFormElements, applicableFormElements) {
-    const inApplicableFormElements = _.differenceBy(
-      allFormElements,
-      applicableFormElements,
-      (fe) => fe.uuid
+    const formElementsIncludingRepeatableElements = [];
+    _.forEach(allFormElements, fe => {
+      if (fe.concept.isQuestionGroup()) {
+        const observations = this.findObservation(fe.concept);
+        const questionGroupObs = observations && observations.getValueWrapper();
+        const size = questionGroupObs ? questionGroupObs.size() : 1;
+        const childFormElements = _.filter(allFormElements, ({groupUuid}) => groupUuid === fe.uuid);
+        _.forEach(childFormElements, cfe => {
+          _.range(size).forEach(questionGroupIndex => {
+            const newFormElement = cfe.clone();
+            newFormElement.questionGroupIndex = _.isEmpty(cfe.rule) ? undefined : questionGroupIndex;
+            formElementsIncludingRepeatableElements.push(newFormElement);
+          })
+        })
+      } else if(_.isNil(fe.groupUuid)) {
+        formElementsIncludingRepeatableElements.push(fe);
+      }
+    });
+    const inApplicableFormElements = _.differenceWith(
+        formElementsIncludingRepeatableElements,
+        applicableFormElements,
+        (a, b) => a.uuid === b.uuid && a.questionGroupIndex === b.questionGroupIndex
     );
     applicableFormElements.forEach((fe) => {
       if (fe.concept.isCodedConcept() && (!_.isEmpty(fe.answersToShow) || !_.isEmpty(fe.answersToExclude))) {
-        this.removeNonApplicableAnswers(fe, fe.isSingleSelect());
+        fe.isQuestionGroup() ?
+            this.removeNonApplicableAnswersFromQuestionGroup(fe, fe.isSingleSelect(), allFormElements) :
+            this.removeNonApplicableAnswers(fe, fe.isSingleSelect(), this.getObservation(fe.concept));
       }
     });
-    return _.flatten(inApplicableFormElements.map(fe => this._removeObs(fe, allFormElements)));
+    return _.flatten(inApplicableFormElements.map(fe => this._removeObs(fe))).filter(obs => !_.isEmpty(obs));
   }
 
-  _removeObs(formElement, allFormElements) {
+  removeNonApplicableAnswersFromQuestionGroup(fe, isSingleSelect, allFormElements) {
+    const questionGroup = this.getQuestionGroups(fe);
+    const questionGroupObservation = questionGroup && questionGroup.getGroupObservationAtIndex(fe.questionGroupIndex);
+    const observation = questionGroupObservation && questionGroupObservation.getObservation(fe.concept);
+    if (!_.isEmpty(observation)) {
+      questionGroupObservation.removeExistingObs(fe.concept);
+      const applicableConceptAnswerUUIDs = fe.getApplicableAnswerConceptUUIDs();
+      const applicableAnswers = _.filter(_.flatten([observation.getValue()]), value => _.includes(applicableConceptAnswerUUIDs, value));
+      const newValue = isSingleSelect ? new SingleCodedValue(_.head(applicableAnswers)) : new MultipleCodedValues(applicableAnswers);
+      const newObservation = Observation.create(observation.concept, newValue);
+      questionGroupObservation.addObservation(newObservation);
+    }
+  }
+
+  _removeObs(formElement) {
     if (formElement.isQuestionGroup()) {
-      const parentFormElement = _.find(allFormElements, ({uuid}) => formElement.groupUuid === uuid);
-      const parentObservation = this.getObservation(parentFormElement.concept);
-      return _.isNil(parentObservation) ? [] : parentObservation.getValueWrapper().removeExistingObs(formElement.concept);
+      const questionGroup = this.getQuestionGroups(formElement);
+      const questionGroupObservation = questionGroup && questionGroup.getGroupObservationAtIndex(formElement.questionGroupIndex);
+      return questionGroupObservation && questionGroupObservation.removeExistingObs(formElement.concept);
     } else {
       return _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid)
     }
   }
 
-  removeNonApplicableAnswers(fe, isSingleSelect) {
-    const observation = this.getObservation(fe.concept);
+  getQuestionGroups(formElement) {
+    const parentFormElement = formElement.getParentFormElement();
+    const questionGroupObservations = this.getObservation(parentFormElement.concept);
+    return questionGroupObservations && questionGroupObservations.getValueWrapper();
+  }
+
+  removeNonApplicableAnswers(fe, isSingleSelect, observation) {
     if (!_.isEmpty(observation)) {
       _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
       const applicableConceptAnswerUUIDs = fe.getApplicableAnswerConceptUUIDs();
