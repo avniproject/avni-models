@@ -184,6 +184,11 @@ class ObservationsHolder {
   }
 
   updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
+    const updateQuestionGroupObs = (parentFormElement, questionGroupIndex, fe, value) => {
+      parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
+          this.updateGroupQuestion(parentFormElement, fe, value);
+    };
+
     applicableFormElements.forEach((fe) => {
       const formElementStatus = _.find(formElementStatuses, (formElementStatus) => {
         return (fe.uuid === formElementStatus.uuid) && (_.isNil(fe.questionGroupIndex) || fe.questionGroupIndex === formElementStatus.questionGroupIndex);
@@ -193,8 +198,29 @@ class ObservationsHolder {
         const concept = fe.concept;
         if (fe.isQuestionGroup()) {
           const parentFormElement = _.find(applicableFormElements, ({uuid}) => fe.groupUuid === uuid);
-          parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
-              this.updateGroupQuestion(parentFormElement, fe, value);
+          updateQuestionGroupObs(parentFormElement, questionGroupIndex, fe, value);
+        } else if (concept.isQuestionGroup() && _.isArray(value)) {
+          const observation = this.findObservation(concept);
+          const questionGroup = observation && observation.getValueWrapper();
+          const size = questionGroup ? questionGroup.size() : 0;
+          if (size >= value.length) {
+            // Don't populate the values if already done. This will allow users to edit the prepopulated values.
+            // This check is added to make sure user can update the group values.
+            return;
+          }
+          _.forEach(value, (questionGroupValue, index) => {
+            if (fe.repeatable && (size < (index + 1))) {
+              this.updateRepeatableGroupQuestion(index, fe, null, null, 'add');
+            }
+            _.forEach(questionGroupValue, (answerValue, conceptUUID) => {
+              const childFormElement = _.find(fe.formElementGroup.getFormElements(), ({concept}) => concept.uuid === conceptUUID);
+              if (childFormElement.concept.isCodedConcept() && childFormElement.isMultiSelect() && _.isArray(answerValue)) {
+                _.forEach(answerValue, v => updateQuestionGroupObs(fe, index, childFormElement, v))
+              } else {
+                updateQuestionGroupObs(fe, index, childFormElement, answerValue)
+              }
+            })
+          })
         } else {
           concept.isCodedConcept()
               ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
