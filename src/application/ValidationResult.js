@@ -2,12 +2,16 @@ import _ from "lodash";
 import BaseEntity from "../BaseEntity";
 
 class ValidationResult {
-  constructor(success, formIdentifier, messageKey, extra) {
+  constructor(success, formIdentifier, messageKey, extra, questionGroupIndex) {
     this.success = success;
     this.formIdentifier = formIdentifier;
     this.messageKey = messageKey;
     this.extra = extra;
-    this.groupValidations = []
+    this.questionGroupIndex = questionGroupIndex;
+  }
+
+  addQuestionGroupIndex(index) {
+    this.questionGroupIndex = index;
   }
 
   static successful(formIdentifier) {
@@ -32,7 +36,8 @@ class ValidationResult {
       validationResult.success,
       validationResult.formIdentifier,
       validationResult.messageKey,
-      validationResult.extra
+      validationResult.extra,
+      validationResult.questionGroupIndex
     );
   }
 

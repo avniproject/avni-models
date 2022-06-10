@@ -185,14 +185,16 @@ class ObservationsHolder {
 
   updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
     applicableFormElements.forEach((fe) => {
-      let value = _.find(formElementStatuses, (formElementStatus) => {
-        return fe.uuid === formElementStatus.uuid;
-      }).value;
+      const formElementStatus = _.find(formElementStatuses, (formElementStatus) => {
+        return (fe.uuid === formElementStatus.uuid) && (_.isNil(fe.questionGroupIndex) || fe.questionGroupIndex === formElementStatus.questionGroupIndex);
+      });
+      const {value, questionGroupIndex} = formElementStatus;
       if (!_.isNil(value)) {
         const concept = fe.concept;
         if (fe.isQuestionGroup()) {
           const parentFormElement = _.find(applicableFormElements, ({uuid}) => fe.groupUuid === uuid);
-          this.updateGroupQuestion(parentFormElement, fe, value);
+          parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
+              this.updateGroupQuestion(parentFormElement, fe, value);
         } else {
           concept.isCodedConcept()
               ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())

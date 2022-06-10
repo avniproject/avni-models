@@ -6,7 +6,6 @@ import FormElement from "./FormElement";
 import _ from "lodash";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
-import ValidationResult from "./ValidationResult";
 
 class FormElementGroup {
   static schema = {
@@ -97,16 +96,9 @@ class FormElementGroup {
         const observations = observationHolder.findObservation(formElement.concept);
         if (formElement.repeatable) {
           const repeatableQuestionGroup = _.isEmpty(observations) ? new RepeatableQuestionGroup() : observations.getValueWrapper();
-          const groupValidationResults = [];
           _.forEach(repeatableQuestionGroup.getAllQuestionGroupObservations(), (questionGroup, index) => {
-            const childValidations = [];
-            this.validateQuestionGroup(questionGroup, childFormElements, childValidations, index);
-            groupValidationResults.push(childValidations);
+            this.validateQuestionGroup(questionGroup, childFormElements, validationResults, index);
           });
-          const isSuccess = _.every(groupValidationResults, childValidations => _.every(childValidations, ({success}) => success));
-          const validationResult = new ValidationResult(isSuccess, formElement.uuid);
-          validationResult.groupValidations = groupValidationResults;
-          validationResults.push(validationResult);
         } else {
           const questionGroup = _.isEmpty(observations) ? new QuestionGroup() : observations.getValueWrapper();
           this.validateQuestionGroup(questionGroup, childFormElements, validationResults, 0);
@@ -121,14 +113,15 @@ class FormElementGroup {
   validateQuestionGroup(questionGroup, childFormElements, validationResults, questionGroupIndex) {
     _.filter(childFormElements, fe => _.isNil(fe.questionGroupIndex) || fe.questionGroupIndex === questionGroupIndex)
         .forEach(formElement => {
-          return this.validateFormElement(formElement, questionGroup.findObservation(formElement.concept), validationResults);
+          return this.validateFormElement(formElement, questionGroup.findObservation(formElement.concept), validationResults, questionGroupIndex)
         })
   }
 
-  validateFormElement(formElement, observation, validationResults) {
+  validateFormElement(formElement, observation, validationResults, questionGroupIndex) {
     const validationResult = formElement.validate(
         _.isNil(observation) ? null : observation.getValue()
     );
+    validationResult.addQuestionGroupIndex(questionGroupIndex);
     validationResults.push(validationResult);
   }
 

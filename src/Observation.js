@@ -147,7 +147,8 @@ class Observation {
   }
 
   getReadableValue() {
-    let value = this.getValue();
+    const valueWrapper = this.getValueWrapper();
+    let value = valueWrapper.getValue();
     if (!_.isNil(value)) {
       if (this.concept.isCodedConcept()) {
         switch (typeof value) {
@@ -167,7 +168,7 @@ class Observation {
             });
         }
       } else if(this.concept.isQuestionGroup()) {
-        return _.map(value, obs => ({[obs.concept.name] : obs.getReadableValue()}))
+        return valueWrapper.isRepeatable() ? _.map(value, qg => qg.getReadableValue()) : valueWrapper.getReadableValue();
       }
       return value;
     }

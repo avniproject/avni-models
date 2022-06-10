@@ -24,6 +24,12 @@ class RepeatableQuestionGroup {
         return this.repeatableObservations;
     }
 
+    getReadableValue() {
+        return _.map(this.repeatableObservations, questionGroup => {
+            return questionGroup.getReadableValue();
+        })
+    }
+
     isRepeatable() {
         return true;
     }

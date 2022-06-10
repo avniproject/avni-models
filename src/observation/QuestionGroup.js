@@ -49,6 +49,12 @@ class QuestionGroup {
         return this.groupObservations;
     }
 
+    getReadableValue() {
+        return _.map(this.groupObservations, obs => {
+            return ({[obs.concept.name]: obs.getReadableValue()});
+        })
+    }
+
     isRepeatable() {
         return false;
     }
