@@ -299,7 +299,7 @@ class ObservationsHolder {
         childObservations.addObservation(observation);
       }
     }
-    if (childConcept.isCodedConcept()) {
+    if (childConcept.isCodedConcept() || childConcept.isMediaConcept()) {
       let observation = childObservations.getObservation(childConcept);
       const isSingleSelect = childFormElement.isSingleSelect();
       if (_.isEmpty(observation)) {
