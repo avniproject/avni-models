@@ -58,6 +58,7 @@ import Comment from "./Comment";
 import CommentThread from "./CommentThread";
 import Extension from "./Extension";
 import SubjectMigration from "./SubjectMigration";
+import ResetSync from "./ResetSync";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -167,6 +168,11 @@ const subjectMigration = txData(SubjectMigration, {
   privilegeParam: "subjectTypeUuid",
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
+});
+
+const resetSync = txData(ResetSync, {
+  res: "resetSyncs",
+  syncWeight: 0,
 });
 
 const addressLevel = refDataNameTranslated(AddressLevel, {
@@ -328,6 +334,7 @@ class EntityMetaData {
       groups,
       privilege,
 
+      resetSync,
       subjectMigration,
       news,
       videoTelemetric,

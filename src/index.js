@@ -106,6 +106,7 @@ import FileFormat from "./FileFormat";
 import SubjectMigration from "./SubjectMigration";
 import QuestionGroup from './observation/QuestionGroup';
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
+import ResetSync from "./ResetSync";
 
 export {
   AbstractEncounter,
@@ -217,4 +218,5 @@ export {
   SubjectMigration,
   QuestionGroup,
   RepeatableQuestionGroup,
+  ResetSync,
 };
