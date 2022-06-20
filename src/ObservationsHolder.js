@@ -128,7 +128,7 @@ class ObservationsHolder {
         _.forEach(childFormElements, cfe => {
           _.range(size).forEach(questionGroupIndex => {
             const newFormElement = cfe.clone();
-            newFormElement.questionGroupIndex = _.isEmpty(cfe.rule) ? undefined : questionGroupIndex;
+            newFormElement.questionGroupIndex = questionGroupIndex;
             formElementsIncludingRepeatableElements.push(newFormElement);
           })
         })
