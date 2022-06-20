@@ -22,7 +22,9 @@ class QuestionGroup {
             const observation = new Observation();
             observation.concept = QuestionGroup.constructConceptModel(concept);
             const value = valueJSON.answer || valueJSON.value;
-            observation.valueJSON = observation.concept.getValueWrapperFor(value);
+            const valueToPass = _.includes([Concept.dataType.Duration, Concept.dataType.PhoneNumber, Concept.dataType.Id], concept.datatype) ?
+                valueJSON : value;
+            observation.valueJSON = observation.concept.getValueWrapperFor(valueToPass);
             return observation;
         });
         return new QuestionGroup(newObs);

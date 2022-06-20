@@ -1,3 +1,5 @@
+import {get} from 'lodash';
+
 class PhoneNumber {
     constructor(phoneNumber, verified = false, skipVerification = false) {
         this.phoneNumber = phoneNumber;
@@ -10,7 +12,9 @@ class PhoneNumber {
     }
 
     static fromObs(obs) {
-        return new PhoneNumber(obs.phoneNumber, obs.verified, obs.skipVerification);
+        return get(obs, 'phoneNumber', null) ?
+            new PhoneNumber(obs.phoneNumber, obs.verified, obs.skipVerification) :
+            null;
     }
 
     getValue() {

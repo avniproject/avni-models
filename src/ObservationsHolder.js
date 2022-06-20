@@ -22,6 +22,15 @@ class ObservationsHolder {
     });
   }
 
+  findQuestionGroupObservation(concept, parentFormElement, questionGroupIndex) {
+    const observations = this.findObservation(parentFormElement.concept);
+    const groupObservations = observations && observations.getValueWrapper();
+    if (parentFormElement.repeatable) {
+      return groupObservations && groupObservations.getGroupObservationAtIndex(questionGroupIndex).getObservation(concept);
+    }
+    return groupObservations && groupObservations.getObservation(concept);
+  }
+
   getObservation(concept) {
     return this.findObservation(concept);
   }
@@ -279,20 +288,20 @@ class ObservationsHolder {
     return observation;
   }
 
-  updateGroupQuestion(parentFormElement, childFormElement, value) {
+  updateGroupQuestion(parentFormElement, childFormElement, value, verified = false, skipVerification = false) {
     const parentConcept = parentFormElement.concept;
     const parentObservation = this.getObservation(parentConcept);
     const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
-    this.updateChildObservations(childFormElement, childObservations, value);
+    this.updateChildObservations(childFormElement, childObservations, value, verified, skipVerification);
     this._removeExistingObs(parentConcept);
     if (!childObservations.isEmpty()) {
       this.observations.push(Observation.create(parentConcept, childObservations));
     }
   }
 
-  updateChildObservations(childFormElement, childObservations, value) {
+  updateChildObservations(childFormElement, childObservations, value, verified = false, skipVerification = false) {
     const childConcept = childFormElement.concept;
-    if (childConcept.isPrimitive() && _.isNil(childFormElement.durationOptions)) {
+    if (childConcept.isPrimitive()) {
       childObservations.removeExistingObs(childConcept);
       if (!_.isEmpty(_.toString(value))) {
         const observation = Observation.create(childConcept, new PrimitiveValue(value, childConcept.datatype));
@@ -313,9 +322,23 @@ class ObservationsHolder {
         }
       }
     }
+    if (childFormElement.getType() === Concept.dataType.Duration && !isNil(childFormElement.durationOptions)) {
+      childObservations.removeExistingObs(childConcept);
+      if (!_.isEmpty(value) && !_.isEmpty(value.durations)) {
+        const observation = Observation.create(childFormElement.concept, CompositeDuration.fromObs(value));
+        childObservations.addObservation(observation);
+      }
+    }
+    if (childFormElement.getType() === Concept.dataType.PhoneNumber) {
+      childObservations.removeExistingObs(childConcept);
+      if (!_.isEmpty(value)) {
+        const observation = Observation.create(childFormElement.concept, new PhoneNumber(value, verified, skipVerification));
+        childObservations.addObservation(observation);
+      }
+    }
   }
 
-  updateRepeatableGroupQuestion(index, parentFormElement, childFormElement, value, action) {
+  updateRepeatableGroupQuestion(index, parentFormElement, childFormElement, value, action, verified = false, skipVerification = false) {
     const parentConcept = parentFormElement.concept;
     const observations = this.getObservation(parentConcept);
     const repeatableObservations = _.isEmpty(observations) ? new RepeatableQuestionGroup() : observations.getValueWrapper();
@@ -327,7 +350,7 @@ class ObservationsHolder {
       return
     }
     const childObservations = repeatableObservations.getGroupObservationAtIndex(index);
-    this.updateChildObservations(childFormElement, childObservations, value);
+    this.updateChildObservations(childFormElement, childObservations, value, verified, skipVerification);
     repeatableObservations.updateGroupObservationsAtIndex(childObservations, index);
     this._removeExistingObs(parentConcept);
     if (!repeatableObservations.isEmpty()) {
