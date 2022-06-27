@@ -59,6 +59,8 @@ import CommentThread from "./CommentThread";
 import Extension from "./Extension";
 import SubjectMigration from "./SubjectMigration";
 import ResetSync from "./ResetSync";
+import Documentation from "./Documentation";
+import DocumentationItem from "./DocumentationItem";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -275,6 +277,9 @@ const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeig
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
 const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
 const news = txData(News, { syncWeight: 0 });
+const documentation = refData(Documentation, {res: 'documentations', syncWeight: 0});
+const documentationItem = refData(DocumentationItem, {res: 'documentationItems', parent: documentation, syncWeight: 0});
+
 const comment = txData(Comment, {
   parent: individual,
   syncWeight: 1,
@@ -314,6 +319,8 @@ class EntityMetaData {
       formElement,
       formElementGroup,
       form,
+      documentationItem,
+      documentation,
       identifierSource,
       organisationConfig,
       platformTranslation,

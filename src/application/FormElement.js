@@ -8,6 +8,7 @@ import KeyValue from "./KeyValue";
 import Format from "./Format";
 import Filter from "./Filter";
 import moment from "moment";
+import Documentation from "../Documentation";
 
 class FormElement {
   static schema = {
@@ -26,6 +27,7 @@ class FormElement {
       voided: { type: "bool", default: false },
       rule: { type: "string", optional: true },
       groupUuid: { type: "string", optional: true },
+      documentation: { type: "Documentation", optional: true },
     },
   };
 
@@ -51,6 +53,11 @@ class FormElement {
     );
     formElement.formElementGroup = formElementGroup;
     formElement.groupUuid = ResourceUtil.getUUIDFor(resource, "groupQuestionUUID");
+    formElement.documentation = entityService.findByKey(
+        "uuid",
+        ResourceUtil.getUUIDFor(resource, "documentationUUID"),
+        Documentation.schema.name
+    );
     formElement.concept = concept;
 
     //remove orphan keyValues (because KeyValue doesn't have primary key
@@ -262,6 +269,7 @@ class FormElement {
       concept: this.concept,
       formElementGroupUUID: this.formElementGroup.uuid,
       groupUuid: this.groupUuid,
+      documentation: this.documentation,
     };
   }
 
@@ -321,6 +329,7 @@ class FormElement {
     formElement.voided = this.voided;
     formElement.rule = this.rule;
     formElement.groupUuid = this.groupUuid;
+    formElement.documentation = this.documentation;
     return formElement;
   }
 

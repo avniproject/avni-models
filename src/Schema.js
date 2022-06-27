@@ -76,6 +76,8 @@ import CommentThread from "./CommentThread";
 import Extension from "./Extension";
 import SubjectMigration from "./SubjectMigration";
 import ResetSync from "./ResetSync";
+import Documentation from "./Documentation";
+import DocumentationItem from "./DocumentationItem";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -158,8 +160,10 @@ export default {
     Extension,
     SubjectMigration,
     ResetSync,
+    Documentation,
+    DocumentationItem,
   ],
-  schemaVersion: 154,
+  schemaVersion: 155,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
