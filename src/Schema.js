@@ -163,7 +163,7 @@ export default {
     Documentation,
     DocumentationItem,
   ],
-  schemaVersion: 155,
+  schemaVersion: 156,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");
