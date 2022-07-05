@@ -22,6 +22,7 @@ class FormElementGroup {
       rule: { type: "string", optional: true },
       startTime: {type: 'int', optional: true},
       stayTime: {type: 'int', optional: true},
+      timed: { type: "bool", default: false },
     },
   };
 
@@ -34,7 +35,8 @@ class FormElementGroup {
       "voided",
       "rule",
       "startTime",
-      "stayTime"
+      "stayTime",
+      "timed"
     ]);
     formElementGroup.form = entityService.findByKey(
       "uuid",
@@ -184,7 +186,8 @@ class FormElementGroup {
       formElements: this.formElements,
       formUUID: this.form.uuid,
       startTime: this.startTime,
-      stayTime: this.stayTime
+      stayTime: this.stayTime,
+      timed: this.timed,
     };
   }
 }
