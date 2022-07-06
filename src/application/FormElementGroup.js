@@ -23,6 +23,8 @@ class FormElementGroup {
       startTime: {type: 'int', optional: true},
       stayTime: {type: 'int', optional: true},
       timed: { type: "bool", default: false },
+      textColour: { type: "string", optional: true },
+      backgroundColour: { type: "string", optional: true },
     },
   };
 
@@ -36,7 +38,9 @@ class FormElementGroup {
       "rule",
       "startTime",
       "stayTime",
-      "timed"
+      "timed",
+      "textColour",
+      "backgroundColour"
     ]);
     formElementGroup.form = entityService.findByKey(
       "uuid",
@@ -85,6 +89,20 @@ class FormElementGroup {
 
   get isFirst() {
     return this.displayOrder === 1;
+  }
+
+  get styles() {
+    const style = {};
+    if (!_.isEmpty(this.backgroundColour)) {
+      style['backgroundColor'] = this.backgroundColour
+    }
+    if (!_.isEmpty(this.textColour)) {
+      style['color'] = this.textColour;
+    }
+    if (!_.isEmpty(style)) {
+      style['paddingHorizontal'] = 5;
+    }
+    return style;
   }
 
   getFormElementsOfType(type) {
@@ -188,6 +206,8 @@ class FormElementGroup {
       startTime: this.startTime,
       stayTime: this.stayTime,
       timed: this.timed,
+      textColour: this.textColour,
+      backgroundColour: this.backgroundColour,
     };
   }
 }

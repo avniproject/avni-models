@@ -175,7 +175,7 @@ class Form {
         this.addSortedObservations(formElement, observations, fegObs);
       });
       if (!_.isEmpty(fegObs)) {
-        sections.push({groupName: feg.name, groupUUID: feg.uuid, observations: fegObs});
+        sections.push({groupName: feg.name, groupUUID: feg.uuid, observations: fegObs, groupStyles: feg.styles});
         allObservations.push(...fegObs);
       }
     });
@@ -183,7 +183,7 @@ class Form {
         _.isNil(allObservations.find((oobs) => oobs.concept.uuid === obs.concept.uuid))
     );
     if(!_.isEmpty(decisionObs))
-      sections.push({groupName: 'decisions', groupUUID: null, observations: decisionObs});
+      sections.push({groupName: 'decisions', groupUUID: null, observations: decisionObs, groupStyles: {}});
     return sections;
   }
 
@@ -211,9 +211,15 @@ class Form {
       const sortedChildObs = isRepeatable ? _.flatMap(valueWrapper.getValue(), questionGroup => new QuestionGroup(this.orderQuestionGroupObservations(questionGroup.getValue(), formElement.uuid))) :
           this.orderQuestionGroupObservations(valueWrapper.getValue(), formElement.uuid);
       clonedObs.valueJSON = JSON.stringify(isRepeatable ? new RepeatableQuestionGroup(sortedChildObs) : new QuestionGroup(sortedChildObs));
-      if (!_.isEmpty(sortedChildObs)) orderedObservations.push(clonedObs);
+      if (!_.isEmpty(sortedChildObs)) {
+          clonedObs.styles = formElement.styles;
+          orderedObservations.push(clonedObs);
+      }
     } else {
-      if (!_.isNil(foundObs)) orderedObservations.push(foundObs);
+      if (!_.isNil(foundObs)) {
+          foundObs.styles = formElement.styles;
+          orderedObservations.push(foundObs);
+      }
     }
   }
 

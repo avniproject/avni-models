@@ -251,6 +251,22 @@ class FormElement {
     return _.isNil(unique) ? false : unique.getValue();
   }
 
+  get styles() {
+    const style = {};
+    const backgroundColour = this.recordValueByKey("backgroundColour");
+    const textColour = this.recordValueByKey("textColour");
+    if (!_.isEmpty(backgroundColour)) {
+      style['backgroundColor'] = backgroundColour
+    }
+    if (!_.isEmpty(textColour)) {
+      style['color'] = textColour;
+    }
+    if (!_.isEmpty(style)) {
+      style['paddingHorizontal'] = 5;
+    }
+    return style;
+  }
+
   matches(elementNameOrUUID) {
     return this.name === elementNameOrUUID || this.uuid === elementNameOrUUID;
   }
