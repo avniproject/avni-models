@@ -18,11 +18,13 @@ class SubjectType extends ReferenceEntity {
       subjectSummaryRule: {type: 'string', optional: true},
       uniqueName: {type: 'bool', default: false},
       validFirstNameFormat: { type: "Format", optional: true },
+      validMiddleNameFormat: { type: "Format", optional: true },
       validLastNameFormat: { type: "Format", optional: true },
       iconFileS3Key: {type: "string", optional: true},
       syncRegistrationConcept1: {type: "string", optional: true},
       syncRegistrationConcept2: {type: "string", optional: true},
       allowProfilePicture: {type: 'bool', default: false},
+      allowMiddleName: {type: 'bool', default: false},
       nameHelpText: {type: "string", optional: true},
     }
   };
@@ -34,6 +36,7 @@ class SubjectType extends ReferenceEntity {
   allowProfilePicture;
   uniqueName;
   validFirstNameFormat;
+  validMiddleNameFormat;
   validLastNameFormat;
 
   static types = {
@@ -65,8 +68,10 @@ class SubjectType extends ReferenceEntity {
     subjectType.type = operationalSubjectType.type;
     subjectType.subjectSummaryRule = operationalSubjectType.subjectSummaryRule;
     subjectType.uniqueName = operationalSubjectType.uniqueName;
+    subjectType.allowMiddleName = operationalSubjectType.allowMiddleName;
     subjectType.allowProfilePicture = operationalSubjectType.allowProfilePicture;
     subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);
+    subjectType.validMiddleNameFormat = Format.fromResource(operationalSubjectType["validMiddleNameFormat"]);
     subjectType.validLastNameFormat = Format.fromResource(operationalSubjectType["validLastNameFormat"]);
     subjectType.iconFileS3Key = operationalSubjectType.iconFileS3Key;
     subjectType.syncRegistrationConcept1 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept1');
@@ -86,9 +91,11 @@ class SubjectType extends ReferenceEntity {
     cloned.type = this.type;
     cloned.subjectSummaryRule = this.subjectSummaryRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
+    cloned.allowMiddleName = this.allowMiddleName;
     cloned.allowProfilePicture = this.allowProfilePicture;
     cloned.uniqueName = this.uniqueName;
     cloned.validFirstNameFormat = this.validFirstNameFormat;
+    cloned.validMiddleNameFormat = this.validMiddleNameFormat;
     cloned.validLastNameFormat = this.validLastNameFormat;
     cloned.iconFileS3Key = this.iconFileS3Key;
     cloned.syncRegistrationConcept1 = this.syncRegistrationConcept1;

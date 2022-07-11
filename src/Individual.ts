@@ -28,6 +28,7 @@ class Individual extends BaseEntity {
       subjectType: "SubjectType",
       name: "string",
       firstName: "string",
+      middleName: {type: "string", optional: true},
       lastName: {type: "string", optional: true},
       profilePicture: {type: "string", optional: true},
       dateOfBirth: {type: "date", optional: true},
@@ -52,6 +53,7 @@ class Individual extends BaseEntity {
     DOB: "DOB",
     GENDER: "GENDER",
     FIRST_NAME: "FIRST_NAME",
+    MIDDLE_NAME: "MIDDLE_NAME",
     LAST_NAME: "LAST_NAME",
     PROFILE_PICTURE: "PROFILE_PICTURE",
     REGISTRATION_DATE: "REGISTRATION_DATE",
@@ -85,6 +87,7 @@ class Individual extends BaseEntity {
   dateOfBirth: Date;
   registrationLocation: Point;
   firstName: any;
+  middleName: any;
   lastName: any;
   profilePicture: any;
   dateOfBirthVerified: any;
@@ -129,6 +132,7 @@ class Individual extends BaseEntity {
     const resource = _.pick(this, [
       "uuid",
       "firstName",
+      "middleName",
       "lastName",
       "profilePicture",
       "dateOfBirthVerified",
@@ -208,7 +212,7 @@ class Individual extends BaseEntity {
     const individual = General.assignFields(
       individualResource,
       new Individual(),
-      ["uuid", "firstName", "lastName", "profilePicture", "dateOfBirthVerified", "voided"],
+      ["uuid", "firstName", "middleName", "lastName", "profilePicture", "dateOfBirthVerified", "voided"],
       ["dateOfBirth", "registrationDate"],
       ["observations"],
       entityService
@@ -488,6 +492,10 @@ class Individual extends BaseEntity {
     return this.validateName(this.firstName, Individual.validationKeys.FIRST_NAME, this.subjectType.validFirstNameFormat);
   }
 
+  validateMiddleName() {
+    return this.validateName(this.middleName, Individual.validationKeys.MIDDLE_NAME, this.subjectType.validMiddleNameFormat);
+  }
+
   validateLastName() {
     return this.validateName(this.lastName, Individual.validationKeys.LAST_NAME, this.subjectType.validLastNameFormat);
   }
@@ -569,6 +577,7 @@ class Individual extends BaseEntity {
     individual.subjectType = this.subjectType.clone();
     individual.name = this.name;
     individual.firstName = this.firstName;
+    individual.middleName = this.middleName;
     individual.lastName = this.lastName;
     individual.profilePicture = this.profilePicture;
     individual.dateOfBirth = this.dateOfBirth;
@@ -599,6 +608,7 @@ class Individual extends BaseEntity {
     individual.uuid = this.uuid;
     individual.name = this.name;
     individual.firstName = this.firstName;
+    individual.middleName = this.middleName;
     individual.lastName = this.lastName;
     individual.profilePicture = this.profilePicture;
     individual.dateOfBirth = this.dateOfBirth;
@@ -925,6 +935,7 @@ class Individual extends BaseEntity {
     return {
       uuid: this.uuid,
       firstName: this.firstName,
+      middleName: this.middleName,
       lastName: this.lastName,
       profilePicture: this.profilePicture,
       enrolments: this.enrolments,
