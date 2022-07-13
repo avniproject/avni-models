@@ -35,6 +35,7 @@ class SubjectType extends ReferenceEntity {
   allowEmptyLocation;
   allowProfilePicture;
   uniqueName;
+  allowMiddleName;
   validFirstNameFormat;
   validMiddleNameFormat;
   validLastNameFormat;
