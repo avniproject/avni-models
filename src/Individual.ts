@@ -490,15 +490,17 @@ class Individual extends BaseEntity {
   }
 
   validateName(value, validationKey, validFormat, mandatory = true) {
-    const failure = new ValidationResult(false, validationKey);
-    if (_.isEmpty(value) && mandatory) {
-      failure.messageKey = "emptyValidationMessage";
-    } else if (!_.isEmpty(validFormat) && !validFormat.valid(value)) {
-      failure.messageKey = validFormat.descriptionKey;
+    const validationResult = new ValidationResult(false, validationKey);
+    if (_.isEmpty(value) && !mandatory) {
+      return new ValidationResult(true, validationKey, null);
+    } else if (_.isEmpty(value)) {
+      validationResult.messageKey = "emptyValidationMessage";
+    } else if (!_.isNil(validFormat) && !validFormat.valid(value)) {
+      validationResult.messageKey = validFormat.descriptionKey;
     } else {
       return new ValidationResult(true, validationKey, null);
     }
-    return failure;
+    return validationResult;
   }
 
   validateFirstName() {
