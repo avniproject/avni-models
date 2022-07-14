@@ -128,6 +128,12 @@ describe('IndividualTest', () => {
     assert.equal(individual.findLatestObservationFromPreviousEncounters("height", secondVisit), obs2);
     assert.equal(individual.findLastEncounterOfType(secondVisit, ['Monthly Visit']), firstVisit)
   })
+
+  it('should get full name', function () {
+    assert.equal(Individual.getFullName({firstName: 'F', middleName: 'M', lastName: 'L'}), 'F M L');
+    assert.equal(Individual.getFullName({firstName: 'F', lastName: 'L'}), 'F L');
+    assert.equal(Individual.getFullName({firstName: 'F'}), 'F');
+  });
 });
 
 function createEncounter(date, name) {

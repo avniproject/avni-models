@@ -387,7 +387,12 @@ class Individual extends BaseEntity {
   }
 
   get nameString() {
-    return this.isPerson() ? `${this.firstName} ${this.middleName ? this.middleName : ''} ${this.lastName}` : this.firstName;
+    return this.isPerson() ? Individual.getFullName(this) : this.firstName;
+  }
+
+  static getFullName(obj) {
+    let name = `${obj.firstName} ${obj.middleName ? obj.middleName : ''}`.trim();
+    return `${name} ${obj.lastName ? obj.lastName : ''}`.trim();
   }
 
   //TODO: this will be fixed later where we specify the option to create a template to display another unique field along with the name
