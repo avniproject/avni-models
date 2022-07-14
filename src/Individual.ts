@@ -193,6 +193,9 @@ class Individual extends BaseEntity {
     return individual;
   }
 
+  static directCopyFields = ["uuid", "firstName", "middleName", "lastName", "profilePicture", "dateOfBirthVerified", "voided"];
+  static dateFields = ["dateOfBirth", "registrationDate"];
+
   static fromResource(individualResource, entityService) {
     const addressLevel = entityService.findByKey(
       "uuid",
@@ -212,14 +215,14 @@ class Individual extends BaseEntity {
     const individual = General.assignFields(
       individualResource,
       new Individual(),
-      ["uuid", "firstName", "middleName", "lastName", "profilePicture", "dateOfBirthVerified", "voided"],
-      ["dateOfBirth", "registrationDate"],
+      this.directCopyFields,
+      this.dateFields,
       ["observations"],
       entityService
     );
     individual.gender = gender;
     individual.lowestAddressLevel = addressLevel;
-    individual.name = `${individual.firstName} ${individual.middleName ? individual.middleName : ''} ${individual.lastName}`;
+    individual.name = individual.nameString;
     if (!_.isNil(individualResource.registrationLocation))
       individual.registrationLocation = Point.fromResource(individualResource.registrationLocation);
     individual.subjectType = subjectType;
@@ -302,10 +305,10 @@ class Individual extends BaseEntity {
   static associateChildToMultipleParents(child, childEntityClass, childResource, entityService) {
     if (childEntityClass === GroupSubject) {
       return Individual.associateGroupSubject(
-          child,
-          childEntityClass,
-          childResource,
-          entityService
+        child,
+        childEntityClass,
+        childResource,
+        entityService
       );
     }
   }
@@ -685,7 +688,7 @@ class Individual extends BaseEntity {
   }
 
   findGroupedObservation(parentConceptNameOrUuid) {
-    const groupedObservations =_.find(this.observations, (observation) =>
+    const groupedObservations = _.find(this.observations, (observation) =>
       (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
     return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
   }
@@ -862,7 +865,7 @@ class Individual extends BaseEntity {
 
   _findObservationFromAllEncounters(conceptNameOrUuid, encounters) {
     return this._findObservationWithDateFromAllEncounters(
-        conceptNameOrUuid,
+      conceptNameOrUuid,
       encounters
     ).observation;
   }
@@ -930,13 +933,13 @@ class Individual extends BaseEntity {
     return this.subjectTypeName;
   }
 
-    getName() {
-        return 'Registration';
-    }
+  getName() {
+    return 'Registration';
+  }
 
-    isRejectedEntity() {
-        return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
-    }
+  isRejectedEntity() {
+    return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+  }
 
   toJSON() {
     return {
