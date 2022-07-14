@@ -219,7 +219,7 @@ class Individual extends BaseEntity {
     );
     individual.gender = gender;
     individual.lowestAddressLevel = addressLevel;
-    individual.name = `${individual.firstName} ${individual.lastName}`;
+    individual.name = `${individual.firstName} ${individual.middleName ? individual.middleName : ''} ${individual.lastName}`;
     if (!_.isNil(individualResource.registrationLocation))
       individual.registrationLocation = Point.fromResource(individualResource.registrationLocation);
     individual.subjectType = subjectType;
@@ -345,6 +345,11 @@ class Individual extends BaseEntity {
     this.name = this.nameString;
   }
 
+  setMiddleName(middleName) {
+    this.middleName = middleName;
+    this.name = this.nameString;
+  }
+
   setLastName(lastName) {
     this.lastName = lastName;
     this.name = this.nameString;
@@ -379,7 +384,7 @@ class Individual extends BaseEntity {
   }
 
   get nameString() {
-    return this.isPerson() ? `${this.firstName} ${this.lastName}` : this.firstName;
+    return this.isPerson() ? `${this.firstName} ${this.middleName ? this.middleName : ''} ${this.lastName}` : this.firstName;
   }
 
   //TODO: this will be fixed later where we specify the option to create a template to display another unique field along with the name
@@ -476,9 +481,9 @@ class Individual extends BaseEntity {
     return validationResult;
   }
 
-  validateName(value, validationKey, validFormat) {
+  validateName(value, validationKey, validFormat, mandatory = true) {
     const failure = new ValidationResult(false, validationKey);
-    if (_.isEmpty(value)) {
+    if (_.isEmpty(value) && mandatory) {
       failure.messageKey = "emptyValidationMessage";
     } else if (!_.isEmpty(validFormat) && !validFormat.valid(value)) {
       failure.messageKey = validFormat.descriptionKey;
@@ -493,7 +498,8 @@ class Individual extends BaseEntity {
   }
 
   validateMiddleName() {
-    return this.validateName(this.middleName, Individual.validationKeys.MIDDLE_NAME, this.subjectType.validMiddleNameFormat);
+    if (this.subjectType.allowMiddleName)
+      return this.validateName(this.middleName, Individual.validationKeys.MIDDLE_NAME, this.subjectType.validMiddleNameFormat, false);
   }
 
   validateLastName() {
@@ -517,6 +523,7 @@ class Individual extends BaseEntity {
     validationResults.push(this.validateFirstName());
 
     if (this.subjectType.isPerson()) {
+      validationResults.push(this.validateMiddleName());
       validationResults.push(this.validateLastName());
       validationResults.push(this.validateDateOfBirth());
       validationResults.push(this.validateGender());
