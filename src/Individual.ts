@@ -508,8 +508,7 @@ class Individual extends BaseEntity {
   }
 
   validateMiddleName() {
-    if (this.subjectType.allowMiddleName)
-      return this.validateName(this.middleName, Individual.validationKeys.MIDDLE_NAME, this.subjectType.validMiddleNameFormat, false);
+    return this.validateName(this.middleName, Individual.validationKeys.MIDDLE_NAME, this.subjectType.validMiddleNameFormat, false);
   }
 
   validateLastName() {
@@ -533,7 +532,8 @@ class Individual extends BaseEntity {
     validationResults.push(this.validateFirstName());
 
     if (this.subjectType.isPerson()) {
-      validationResults.push(this.validateMiddleName());
+      if (this.subjectType.allowMiddleName)
+        validationResults.push(this.validateMiddleName());
       validationResults.push(this.validateLastName());
       validationResults.push(this.validateDateOfBirth());
       validationResults.push(this.validateGender());
