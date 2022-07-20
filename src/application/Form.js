@@ -22,6 +22,7 @@ class Form {
       visitScheduleRule: { type: "string", optional: true },
       validationRule: { type: "string", optional: true },
       checklistsRule: { type: "string", optional: true },
+      taskScheduleRule: { type: "string", optional: true },
     },
   };
 
@@ -52,6 +53,7 @@ class Form {
       "visitScheduleRule",
       "validationRule",
       "checklistsRule",
+      "taskScheduleRule"
     ]);
   }
 

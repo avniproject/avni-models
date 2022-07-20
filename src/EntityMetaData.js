@@ -61,6 +61,10 @@ import SubjectMigration from "./SubjectMigration";
 import ResetSync from "./ResetSync";
 import Documentation from "./Documentation";
 import DocumentationItem from "./DocumentationItem";
+import Task from "./task/Task";
+import TaskType from "./task/TaskType";
+import TaskStatus from "./task/TaskStatus";
+import TaskUnAssignment from "./task/TaskUnAssignment";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -293,6 +297,10 @@ const commentThread = txData(CommentThread, {
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
 });
+const task = txData(Task, {res: 'tasks', syncWeight: 0 });
+const taskType = refData(TaskType, { res: 'taskType', syncWeight: 0 });
+const taskStatus = refData(TaskStatus, { res: 'taskStatus', syncWeight: 0 });
+const taskUnAssigment = txData(TaskUnAssignment, { res: 'taskUnAssignments', syncWeight: 0 });
 
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
@@ -328,6 +336,8 @@ class EntityMetaData {
 
       locationMapping,
       addressLevel,
+      taskStatus,
+      taskType,
       encounterType,
       program,
       programOutcome,
@@ -343,6 +353,8 @@ class EntityMetaData {
 
       resetSync,
       subjectMigration,
+      taskUnAssigment,
+      task,
       news,
       videoTelemetric,
       groupSubject,

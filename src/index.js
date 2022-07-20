@@ -109,6 +109,10 @@ import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 import ResetSync from "./ResetSync";
 import Documentation from "./Documentation";
 import DocumentationItem from "./DocumentationItem";
+import Task from "./task/Task";
+import TaskStatus from "./task/TaskStatus";
+import TaskType from "./task/TaskType";
+import TaskUnAssignment from "./task/TaskUnAssignment";
 
 export {
   AbstractEncounter,
@@ -223,4 +227,8 @@ export {
   ResetSync,
   Documentation,
   DocumentationItem,
+  Task,
+  TaskStatus,
+  TaskType,
+  TaskUnAssignment,
 };
