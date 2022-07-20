@@ -1,7 +1,7 @@
 import {BaseEntity} from "../index";
 import General from "../utility/General";
 import Concept from "../Concept";
-import {map} from 'lodash';
+import {map, isNil} from 'lodash';
 
 class TaskType extends BaseEntity {
     static schema = {
@@ -31,7 +31,7 @@ class TaskType extends BaseEntity {
         const taskType = General.assignFields(resource, new TaskType(), ['uuid', 'name', 'type', 'voided']);
         taskType.metadataSearchFields = map(resource.metadataSearchFields,
             name => entityService.findByKey("name", name, Concept.schema.name)
-        );
+        ).filter(concept => !isNil(concept));
         return taskType;
     }
 
