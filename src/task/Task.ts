@@ -1,4 +1,3 @@
-import {BaseEntity} from "../index";
 import TaskType from "./TaskType";
 import TaskStatus from "./TaskStatus";
 import Observation from "../Observation";
@@ -8,6 +7,7 @@ import ResourceUtil from "../utility/ResourceUtil";
 import ObservationsHolder from "../ObservationsHolder";
 import moment from "moment";
 import _ from 'lodash';
+import BaseEntity from "../BaseEntity";
 
 class Task extends BaseEntity {
     static schema = {

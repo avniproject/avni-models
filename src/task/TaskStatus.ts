@@ -1,7 +1,7 @@
-import {BaseEntity} from "../index";
 import TaskType from "./TaskType";
 import General from "../utility/General";
 import ResourceUtil from "../utility/ResourceUtil";
+import BaseEntity from "../BaseEntity";
 
 class TaskStatus extends BaseEntity {
 

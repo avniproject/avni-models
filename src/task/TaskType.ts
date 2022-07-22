@@ -1,7 +1,7 @@
-import {BaseEntity} from "../index";
 import General from "../utility/General";
 import Concept from "../Concept";
 import {isNil, map} from 'lodash';
+import BaseEntity from "../BaseEntity";
 
 class TaskType extends BaseEntity {
     static schema = {
