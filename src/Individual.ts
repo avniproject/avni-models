@@ -948,6 +948,13 @@ class Individual extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
+  getMobileNumber() {
+    const mobileNumberObs = _.find(this.observations, obs => obs.concept.isMobileNo());
+    if (!_.isNil(mobileNumberObs)) {
+        return mobileNumberObs.getReadableValue();
+    }
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,

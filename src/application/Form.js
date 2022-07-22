@@ -251,6 +251,7 @@ class Form {
     ProgramEncounterCancellation: "ProgramEncounterCancellation",
     ChecklistItem: "ChecklistItem",
     IndividualEncounterCancellation: "IndividualEncounterCancellation",
+    Task: "Task"
   };
 }
 

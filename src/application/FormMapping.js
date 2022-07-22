@@ -7,6 +7,7 @@ import Encounter from "../Encounter";
 import ProgramEnrolment from "../ProgramEnrolment";
 import ProgramEncounter from "../ProgramEncounter";
 import ChecklistItem from "../ChecklistItem";
+import TaskType from "../task/TaskType";
 
 class FormMapping {
   static schema = {
@@ -15,11 +16,12 @@ class FormMapping {
     properties: {
       uuid: "string",
       form: "Form",
-      subjectType: "SubjectType",
+      subjectType: {type: "SubjectType", optional: true},
       entityUUID: { type: "string", optional: true },
       observationsTypeEntityUUID: { type: "string", optional: true },
       voided: { type: "bool", default: false },
       enableApproval: { type: "bool", default: false },
+      taskType: {type: "TaskType", optional: true}
     },
   };
 
@@ -43,7 +45,11 @@ class FormMapping {
       ResourceUtil.getUUIDFor(resource, "subjectTypeUUID"),
       SubjectType.schema.name
     );
-
+    const taskType = entityService.findByKey(
+        "uuid",
+        ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
+        TaskType.schema.name
+    );
     const formMapping = General.assignFields(resource, new FormMapping(), ["uuid", "voided", "enableApproval"]);
     formMapping.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
     formMapping.observationsTypeEntityUUID = ResourceUtil.getUUIDFor(
@@ -52,6 +58,7 @@ class FormMapping {
     );
     formMapping.form = form;
     formMapping.subjectType = subjectType;
+    formMapping.taskType = taskType;
 
     return formMapping;
   }

@@ -188,6 +188,10 @@ class Observation {
         this.concept.recordValueByKey('verifyPhoneNumber') &&
         this.getValueWrapper().isVerificationRequired()
   }
+
+  isMobileNumberObs() {
+    return this.concept.isMobileNo();
+  }
 }
 
 export default Observation;

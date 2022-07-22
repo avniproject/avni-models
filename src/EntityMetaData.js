@@ -297,7 +297,7 @@ const commentThread = txData(CommentThread, {
   privilegeEntity: Privilege.privilegeEntityType.subject,
   privilegeName: Privilege.privilegeName.viewSubject,
 });
-const task = txData(Task, {res: 'tasks', syncWeight: 0 });
+const task = txData(Task, {syncWeight: 0 });
 const taskType = refData(TaskType, { res: 'taskType', syncWeight: 0 });
 const taskStatus = refData(TaskStatus, { res: 'taskStatus', syncWeight: 0 });
 const taskUnAssigment = txData(TaskUnAssignment, { res: 'taskUnAssignments', syncWeight: 0 });

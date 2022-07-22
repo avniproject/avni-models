@@ -27,16 +27,27 @@ class TaskStatus extends BaseEntity {
         const taskStatus = General.assignFields(
             resource,
             new TaskStatus(),
-            ['uuid', 'name', 'voided', 'isTerminal'],
+            ['uuid', 'name', 'voided'],
             [],
             [],
             entityService
         );
+        taskStatus.isTerminal = resource.terminal;
         taskStatus.taskType = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
             TaskType.schema.name
         );
+        return taskStatus;
+    }
+
+    clone() {
+        const taskStatus = new TaskStatus();
+        taskStatus.uuid = this.uuid;
+        taskStatus.name = this.name;
+        taskStatus.isTerminal = this.isTerminal;
+        taskStatus.taskType = this.taskType.clone();
+        taskStatus.voided = this.voided;
         return taskStatus;
     }
 
