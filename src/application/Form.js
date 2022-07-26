@@ -20,10 +20,9 @@ class Form {
       formElementGroups: { type: "list", objectType: "FormElementGroup" },
       decisionRule: { type: "string", optional: true },
       visitScheduleRule: { type: "string", optional: true },
-      taskScheduleRule: { type: "string", optional: true },
       validationRule: { type: "string", optional: true },
       checklistsRule: { type: "string", optional: true },
-      taskScheduleRule: { type: "string", optional: true },
+      taskScheduleRule: { type: "string", optional: true }
     },
   };
 
