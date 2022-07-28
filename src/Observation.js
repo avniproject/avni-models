@@ -50,7 +50,7 @@ class Observation {
       } else if (observation.concept.datatype === Concept.dataType.Encounter) {
         const encounter = encounterService.findByUUID(valueWrapper.getValue());
         const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
-        return [new Displayable(encounter.getEncounterLabel(identifier), encounter)];
+        return [new Displayable(encounter.getEncounterLabel(identifier, {conceptService, subjectService, addressLevelService, i18n, encounterService}), encounter)];
       } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
         return new Displayable(valueWrapper.getValue(), null);
       } else {
@@ -66,7 +66,7 @@ class Observation {
         const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
         return valueWrapper.getValue().map(uuid => {
           const encounter = encounterService.findByUUID(uuid);
-          return new Displayable(encounter.getEncounterLabel(identifier), encounter);
+          return new Displayable(encounter.getEncounterLabel(identifier, {conceptService, subjectService, addressLevelService, i18n, encounterService}), encounter);
         });
       } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
         return new Displayable(valueWrapper.getValue(), null);
@@ -169,6 +169,9 @@ class Observation {
         }
       } else if(this.concept.isQuestionGroup()) {
         return valueWrapper.isRepeatable() ? _.map(value, qg => qg.getReadableValue()) : valueWrapper.getReadableValue();
+      } else if(this.concept.isLocationConcept()) {
+        Location
+
       }
       return value;
     }

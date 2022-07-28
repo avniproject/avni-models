@@ -8,6 +8,7 @@ import ResourceUtil from "./utility/ResourceUtil";
 import {findMediaObservations} from "./Media";
 import Point from "./geo/Point";
 import moment from "moment";
+import Observation from "./Observation";
 
 class AbstractEncounter extends BaseEntity {
   static fieldKeys = {
@@ -230,16 +231,23 @@ class AbstractEncounter extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
-  getEncounterLabel(templateString) {
+  getEncounterLabel(templateString, { conceptService, subjectService, addressLevelService, i18n, encounterService}) {
     const conceptPattern = /{.*?}/g;
     let identifierTemplateString = templateString;
     _.forEach(templateString.match(conceptPattern), identifier => {
       const value = identifier === '{Date}' ? General.toDisplayDate(this.encounterDateTime) :
-          this.getObservationReadableValue(identifier.replace(/[{}]/g, ''));
+          this.getValueForDisplay(identifier.replace(/[{}]/g, ''), { conceptService, subjectService, addressLevelService, i18n, encounterService});
       identifierTemplateString = identifierTemplateString.replace(identifier, value);
     });
     return identifierTemplateString;
   }
+
+  getValueForDisplay(conceptName, { conceptService, subjectService, addressLevelService, i18n, encounterService}) {
+    const observation = this.findObservation(conceptName);
+    const displayValue = Observation.valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n, encounterService} );
+    return displayValue.displayValue;
+  }
+
 
   get subjectType() {
     return _.get(
