@@ -169,9 +169,6 @@ class Observation {
         }
       } else if(this.concept.isQuestionGroup()) {
         return valueWrapper.isRepeatable() ? _.map(value, qg => qg.getReadableValue()) : valueWrapper.getReadableValue();
-      } else if(this.concept.isLocationConcept()) {
-        Location
-
       }
       return value;
     }
