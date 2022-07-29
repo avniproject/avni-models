@@ -244,9 +244,7 @@ class AbstractEncounter extends BaseEntity {
 
   getValueForDisplay(conceptName, { conceptService, subjectService, addressLevelService, i18n, encounterService}) {
     const observation = this.findObservation(conceptName);
-    if( _.isNil(observation())) {
-      return ""
-    }
+    if( _.isNil(observation)) return "";
     const displayValue = Observation.valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n, encounterService} );
     return displayValue.displayValue;
   }
