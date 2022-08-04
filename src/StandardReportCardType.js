@@ -1,5 +1,6 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
+import TaskType from "./task/TaskType";
 
 class StandardReportCardType extends BaseEntity {
 
@@ -25,7 +26,8 @@ class StandardReportCardType extends BaseEntity {
         LatestVisits: "Last 24 hours visits",
         Total: "Total",
         Comments: "Comments",
-        Tasks: "Tasks",
+        CallTasks: "Call tasks",
+        OpenSubjectTasks: "Open subject tasks",
     };
 
     get iconName() {
@@ -34,7 +36,8 @@ class StandardReportCardType extends BaseEntity {
             [StandardReportCardType.type.Rejected]: 'cancel',
             [StandardReportCardType.type.PendingApproval]: 'av-timer',
             [StandardReportCardType.type.Comments]: 'message',
-            [StandardReportCardType.type.Tasks]: 'sticky-note-2',
+            [StandardReportCardType.type.CallTasks]: 'call',
+            [StandardReportCardType.type.OpenSubjectTasks]: 'sticky-note-2',
         };
         return typeIcon[this.name];
     }
@@ -45,7 +48,8 @@ class StandardReportCardType extends BaseEntity {
             [StandardReportCardType.type.Rejected]: '#bf360c',
             [StandardReportCardType.type.PendingApproval]: '#6a1b9a',
             [StandardReportCardType.type.Comments]: '#3949ab',
-            [StandardReportCardType.type.Tasks]: '#3949ab',
+            [StandardReportCardType.type.CallTasks]: '#69a672',
+            [StandardReportCardType.type.OpenSubjectTasks]: '#717cac',
         };
         return typeCardColor[this.name];
     }
@@ -54,13 +58,13 @@ class StandardReportCardType extends BaseEntity {
         return this.isStandardCard() ? '#ffffff' : 'rgba(0, 0, 0, 0.87)'
     }
 
-    isStandardCard() {
-        return _.includes([...this.approvalTypes(), StandardReportCardType.type.Comments, StandardReportCardType.type.Tasks], this.name);
-    }
-
     static fromResource(resource) {
         return General.assignFields(resource, new StandardReportCardType(),
             ["uuid", "name", "description", "voided"]);
+    }
+
+    isStandardCard() {
+        return _.includes([...this.approvalTypes(), StandardReportCardType.type.Comments, StandardReportCardType.type.CallTasks, StandardReportCardType.type.OpenSubjectTasks], this.name);
     }
 
     approvalTypes() {
@@ -80,7 +84,16 @@ class StandardReportCardType extends BaseEntity {
     }
 
     isTaskType() {
-        return this.name === StandardReportCardType.type.Tasks;
+        return _.includes([StandardReportCardType.type.CallTasks, StandardReportCardType.type.OpenSubjectTasks], this.name);
+    }
+
+    getTaskTypeType() {
+        switch (this.name) {
+            case StandardReportCardType.type.CallTasks:
+                return TaskType.TaskTypeName.Call;
+            case StandardReportCardType.type.OpenSubjectTasks:
+                return TaskType.TaskTypeName.OpenSubject;
+        }
     }
 
     isDefaultType() {
