@@ -15,6 +15,8 @@ class Program extends ReferenceEntity {
       programSubjectLabel: 'string',
       enrolmentSummaryRule: {type: 'string', optional: true},
       enrolmentEligibilityCheckRule: {type: 'string', optional: true},
+      manualEligibilityCheckRequired: 'bool',
+      manualEnrolmentEligibilityCheckRule: {type: 'string', optional: true},
       voided: {type: 'bool', default: false},
       active: {type: 'bool', default: true}
     }
@@ -29,6 +31,8 @@ class Program extends ReferenceEntity {
   enrolmentEligibilityCheckRule: string;
   active: boolean;
   voided: boolean;
+  manualEligibilityCheckRequired: boolean;
+  manualEnrolmentEligibilityCheckRule: string;
 
   static fromResource(operationalProgram): Program {
     const program = new Program();

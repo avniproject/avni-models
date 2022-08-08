@@ -12,10 +12,12 @@ deps: check-node-v
 	@rm -rf package-lock.json
 	yarn install
 
-test: check-node-v
+tests:
 	yarn test
 
-build: check-node-v
+build: check-node-v build-only
+
+build-only:
 	yarn run build
 
 release:
@@ -27,3 +29,23 @@ release:
 
 publish:
 	git push && git push origin --tags
+
+deploy:
+	$(if $(local),$(call _deploy,$(local)/packages/openchs-android/node_modules/openchs-models))
+
+deploy-as-source:
+	$(if $(local),$(call _deploy_as_source,$(local)/packages/openchs-android/node_modules/openchs-models))
+
+define _deploy_as_source
+	rm -rf $1/*
+	mkdir $1/dist
+	cp -r src/* $1/dist/
+	cp package.json $1/
+endef
+
+define _deploy
+	rm -rf $1/*
+	mkdir $1/dist
+	cp -r dist/* $1/dist/
+	cp ./* $1/
+endef
