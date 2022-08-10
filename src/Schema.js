@@ -171,7 +171,7 @@ export default {
     Task,
     TaskUnAssignment
   ],
-  schemaVersion: 160,
+  schemaVersion: 161,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");

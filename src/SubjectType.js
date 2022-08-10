@@ -16,6 +16,7 @@ class SubjectType extends ReferenceEntity {
       active: {type: 'bool', default: true},
       type: 'string',
       subjectSummaryRule: {type: 'string', optional: true},
+      programEligibilitySummaryRule: {type: 'string', optional: true},
       uniqueName: {type: 'bool', default: false},
       validFirstNameFormat: { type: "Format", optional: true },
       validMiddleNameFormat: { type: "Format", optional: true },
@@ -39,6 +40,7 @@ class SubjectType extends ReferenceEntity {
   validFirstNameFormat;
   validMiddleNameFormat;
   validLastNameFormat;
+  programEligibilitySummaryRule;
 
   static types = {
     Person: 'Person',
@@ -68,6 +70,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.active = operationalSubjectType.active;
     subjectType.type = operationalSubjectType.type;
     subjectType.subjectSummaryRule = operationalSubjectType.subjectSummaryRule;
+    subjectType.programEligibilitySummaryRule = operationalSubjectType.programEligibilitySummaryRule;
     subjectType.uniqueName = operationalSubjectType.uniqueName;
     subjectType.allowMiddleName = operationalSubjectType.allowMiddleName;
     subjectType.allowProfilePicture = operationalSubjectType.allowProfilePicture;
@@ -91,6 +94,7 @@ class SubjectType extends ReferenceEntity {
     cloned.active = this.active;
     cloned.type = this.type;
     cloned.subjectSummaryRule = this.subjectSummaryRule;
+    cloned.programEligibilitySummaryRule = this.programEligibilitySummaryRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
     cloned.allowMiddleName = this.allowMiddleName;
     cloned.allowProfilePicture = this.allowProfilePicture;
