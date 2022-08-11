@@ -82,6 +82,7 @@ import Task from "./task/Task";
 import TaskType from "./task/TaskType";
 import TaskStatus from "./task/TaskStatus";
 import TaskUnAssignment from "./task/TaskUnAssignment";
+import DraftEncounter from './draft/DraftEncounter';
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -169,7 +170,8 @@ export default {
     TaskType,
     TaskStatus,
     Task,
-    TaskUnAssignment
+    TaskUnAssignment,
+    DraftEncounter
   ],
   schemaVersion: 161,
   migration: function (oldDB, newDB) {

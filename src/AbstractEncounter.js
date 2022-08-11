@@ -249,7 +249,6 @@ class AbstractEncounter extends BaseEntity {
     return displayValue.displayValue;
   }
 
-
   get subjectType() {
     return _.get(
       this,

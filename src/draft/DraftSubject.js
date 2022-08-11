@@ -21,7 +21,6 @@ class DraftSubject {
             registrationLocation: {type: "Point", optional: true},
             updatedOn: "date",
             totalMembers: {type: "string", optional: true}
-
         },
     };
 

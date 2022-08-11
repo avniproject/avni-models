@@ -113,6 +113,7 @@ import Task from "./task/Task";
 import TaskStatus from "./task/TaskStatus";
 import TaskType from "./task/TaskType";
 import TaskUnAssignment from "./task/TaskUnAssignment";
+import DraftEncounter from './draft/DraftEncounter';
 
 export {
   AbstractEncounter,
@@ -231,4 +232,5 @@ export {
   TaskStatus,
   TaskType,
   TaskUnAssignment,
+  DraftEncounter
 };
