@@ -30,6 +30,9 @@ release:
 publish:
 	git push && git push origin --tags
 
+copy-dist-to-avni-client:
+	cp -r * ../avni-client/packages/openchs-android/node_modules/openchs-models/
+
 deploy:
 	$(if $(local),$(call _deploy,$(local)/packages/openchs-android/node_modules/openchs-models))
 
