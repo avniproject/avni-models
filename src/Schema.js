@@ -83,6 +83,7 @@ import TaskType from "./task/TaskType";
 import TaskStatus from "./task/TaskStatus";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
+import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -171,9 +172,10 @@ export default {
     TaskStatus,
     Task,
     TaskUnAssignment,
-    DraftEncounter
+    DraftEncounter,
+    SubjectProgramEligibility
   ],
-  schemaVersion: 161,
+  schemaVersion: 162,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       var oldObjects = oldDB.objects("DecisionConfig");

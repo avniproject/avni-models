@@ -252,7 +252,9 @@ class Form {
     ProgramEncounterCancellation: "ProgramEncounterCancellation",
     ChecklistItem: "ChecklistItem",
     IndividualEncounterCancellation: "IndividualEncounterCancellation",
-    Task: "Task"
+    Task: "Task",
+    SubjectEnrolmentEligibility : "SubjectEnrolmentEligibility",
+    ManualProgramEnrolmentEligibility : "ManualProgramEnrolmentEligibility",
   };
 }
 

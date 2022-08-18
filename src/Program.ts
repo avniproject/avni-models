@@ -48,6 +48,8 @@ class Program extends ReferenceEntity {
     program.programSubjectLabel =
       operationalProgram.programSubjectLabel || operationalProgram.name || program.name;
     program.enrolmentSummaryRule = operationalProgram.enrolmentSummaryRule;
+    program.manualEligibilityCheckRequired = operationalProgram.manualEligibilityCheckRequired;
+    program.manualEnrolmentEligibilityCheckRule = operationalProgram.manualEnrolmentEligibilityCheckRule;
     program.enrolmentEligibilityCheckRule = operationalProgram.enrolmentEligibilityCheckRule;
     program.active = operationalProgram.active;
     program.voided = operationalProgram.programVoided;
