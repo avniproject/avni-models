@@ -30,6 +30,16 @@ class SubjectProgramEligibility extends BaseEntity {
     voided: boolean;
     observations: Observation[];
 
+    static createEmptyInstance(program, subject) {
+      const subjectProgramEligibility = new SubjectProgramEligibility();
+      subjectProgramEligibility.checkDate = new Date();
+      subjectProgramEligibility.uuid = General.randomUUID();
+      subjectProgramEligibility.observations = [];
+      subjectProgramEligibility.program = program;
+      subjectProgramEligibility.subject = subject;
+      return subjectProgramEligibility;
+    }
+
     get toResource() {
         const resource = _.pick(this, ["uuid", "voided", "eligible"]);
         resource.subjectUUID = this.subject.uuid;
@@ -109,6 +119,26 @@ class SubjectProgramEligibility extends BaseEntity {
         subjectProgramEligibility.observations = ObservationsHolder.clone(this.observations);
         return subjectProgramEligibility;
     }
+
+  getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
+    return _.isEmpty(observationForConcept)
+      ? observationForConcept
+      : observationForConcept.getReadableValue();
+  }
+
+  findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+    return _.find(observations, (observation) => {
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
+    });
+  }
+
+  findGroupedObservation(parentConceptNameOrUuid) {
+    const groupedObservations = _.find(this.observations, (observation) =>
+      (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+    return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
+  }
 }
 
 export default SubjectProgramEligibility;
