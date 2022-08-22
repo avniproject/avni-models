@@ -66,6 +66,7 @@ import TaskType from "./task/TaskType";
 import TaskStatus from "./task/TaskStatus";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
+import MenuItem from "./application/MenuItem";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -302,6 +303,7 @@ const task = txData(Task, {syncWeight: 0 });
 const taskType = refData(TaskType, { res: 'taskType', syncWeight: 0 });
 const taskStatus = refData(TaskStatus, { res: 'taskStatus', syncWeight: 0 });
 const taskUnAssigment = txData(TaskUnAssignment, { res: 'taskUnAssignments', syncWeight: 0 });
+const menuItem = refData(MenuItem, {res: 'menuItem', syncWeight: 0});
 
 const subjectProgramEligibility = txData(SubjectProgramEligibility, {
   resUrl: "subjectProgramEligibility",
@@ -322,6 +324,7 @@ class EntityMetaData {
       dashboard,
       reportCard,
       standardReportCardType,
+      menuItem,
       locationHierarchy,
       video,
       checklistItemDetail,

@@ -84,6 +84,7 @@ import TaskStatus from "./task/TaskStatus";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
+import MenuItem from "./application/MenuItem";
 
 export default {
   //order is important, should be arranged according to the dependency
@@ -173,12 +174,13 @@ export default {
     Task,
     TaskUnAssignment,
     DraftEncounter,
-    SubjectProgramEligibility
+    SubjectProgramEligibility,
+    MenuItem
   ],
-  schemaVersion: 162,
+  schemaVersion: 164,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
-      var oldObjects = oldDB.objects("DecisionConfig");
+      const oldObjects = oldDB.objects("DecisionConfig");
       oldObjects.forEach((decisionConfig) => {
         newDB.create(
           ConfigFile.schema.name,
@@ -188,23 +190,22 @@ export default {
       });
     }
     if (oldDB.schemaVersion < 17) {
-      var oldObjects = oldDB.objects("AddressLevel");
-      var newObjects = newDB.objects("AddressLevel");
+      const oldObjects = oldDB.objects("AddressLevel");
+      const newObjects = newDB.objects("AddressLevel");
 
-      for (var i = 0; i < oldObjects.length; i++) {
+      for (let i = 0; i < oldObjects.length; i++) {
         newObjects[i].name = oldObjects[i].title;
       }
     }
     if (oldDB.schemaVersion < 23) {
-      var newObjects = newDB.objects("Individual");
-      for (var i = 0; i < newObjects.length; i++) {
+      const newObjects = newDB.objects("Individual");
+      for (let i = 0; i < newObjects.length; i++) {
         newObjects[i].registrationDate = new Date(2017, 0, 0);
       }
     }
     if (oldDB.schemaVersion < 30) {
-      var oldObjects = oldDB.objects("Settings");
-      var newObjects = newDB.objects("Settings");
-      for (var i = 0; i < newObjects.length; i++) {
+      const newObjects = newDB.objects("Settings");
+      for (let i = 0; i < newObjects.length; i++) {
         newObjects[i].locale = null;
       }
       const oldLocaleMappings = newDB.objects("LocaleMapping");

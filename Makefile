@@ -15,9 +15,7 @@ deps: check-node-v
 tests:
 	yarn test
 
-build: check-node-v build-only
-
-build-only:
+build:
 	yarn run build
 
 release:
@@ -33,7 +31,7 @@ publish:
 copy-dist-to-avni-client:
 	cp -r * ../avni-client/packages/openchs-android/node_modules/openchs-models/
 
-deploy:
+deploy-to-avni-client:
 	$(if $(local),$(call _deploy,$(local)/packages/openchs-android/node_modules/openchs-models))
 
 deploy-as-source:
@@ -50,5 +48,5 @@ define _deploy
 	rm -rf $1/*
 	mkdir $1/dist
 	cp -r dist/* $1/dist/
-	cp ./* $1/
+	cp package.json $1/
 endef

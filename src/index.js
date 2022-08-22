@@ -24,6 +24,7 @@ import FormElementGroup from "./application/FormElementGroup";
 import FormElementStatus from "./application/FormElementStatus";
 import Form from "./application/Form";
 import FormMapping from "./application/FormMapping";
+import MenuItem from "./application/MenuItem";
 import Gender from "./Gender";
 import Individual from "./Individual";
 import IndividualRelation from "./relationship/IndividualRelation";
@@ -234,5 +235,6 @@ export {
   TaskType,
   TaskUnAssignment,
   DraftEncounter,
-  SubjectProgramEligibility
+  SubjectProgramEligibility,
+  MenuItem
 };
