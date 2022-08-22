@@ -177,7 +177,7 @@ export default {
     SubjectProgramEligibility,
     MenuItem
   ],
-  schemaVersion: 164,
+  schemaVersion: 165,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       const oldObjects = oldDB.objects("DecisionConfig");

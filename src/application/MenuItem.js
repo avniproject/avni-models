@@ -6,6 +6,16 @@ class MenuItem {
   static UserGroupName = "User";
   static SupportGroupName = "Support";
 
+  static HyperlinkTypeName = "Link";
+
+  uuid;
+  displayKey;
+  type;
+  icon;
+  group;
+  linkFunction;
+  voided;
+
   static schema = {
     name: "MenuItem",
     primaryKey: "uuid",
@@ -15,13 +25,17 @@ class MenuItem {
       type: "string",
       icon: {type: "string", optional: true},
       group: "string",
-      link: {type: "string", optional: true},
+      linkFunction: {type: "string", optional: true},
       voided: {type: 'bool', default: false}
     }
   };
 
   static fromResource(resource, entityService) {
-    return  General.assignFields(resource, new MenuItem(), ['uuid', 'displayKey', 'type', 'icon', "voided", "group", "link"]);
+    return General.assignFields(resource, new MenuItem(), ['uuid', 'displayKey', 'type', 'icon', "voided", "group", "linkFunction"]);
+  }
+
+  toString() {
+    return `uuid:${this.uuid}; displayKey:${this.displayKey}; type:${this.type}; group:${this.group}; voided:${this.voided}`;
   }
 }
 
