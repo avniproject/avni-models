@@ -34,8 +34,24 @@ class MenuItem {
     return General.assignFields(resource, new MenuItem(), ['uuid', 'displayKey', 'type', 'icon', "voided", "group", "linkFunction"]);
   }
 
+  static fromDb(obj) {
+    return MenuItem.fromResource(obj);
+  }
+
   toString() {
     return `uuid:${this.uuid}; displayKey:${this.displayKey}; type:${this.type}; group:${this.group}; voided:${this.voided}`;
+  }
+
+  isLinkType() {
+    return this.type === MenuItem.HyperlinkTypeName;
+  }
+
+  static getAllGroups() {
+    return [this.FunctionalityGroupName, this.SyncGroupName, this.UserGroupName, this.SupportGroupName];
+  }
+
+  static getAllTypes() {
+    return [this.HyperlinkTypeName];
   }
 }
 

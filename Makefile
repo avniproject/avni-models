@@ -34,7 +34,10 @@ copy-dist-to-avni-client:
 deploy-to-avni-client:
 	$(if $(local),$(call _deploy,$(local)/packages/openchs-android/node_modules/openchs-models))
 
-deploy-as-source:
+deploy-to-avni-web:
+	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))
+
+deploy-as-source-to-avni-client:
 	$(if $(local),$(call _deploy_as_source,$(local)/packages/openchs-android/node_modules/openchs-models))
 
 define _deploy_as_source
