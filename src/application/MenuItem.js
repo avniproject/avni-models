@@ -8,6 +8,7 @@ class MenuItem {
 
   static HyperlinkTypeName = "Link";
 
+  id;
   uuid;
   displayKey;
   type;
@@ -31,7 +32,14 @@ class MenuItem {
   };
 
   static fromResource(resource, entityService) {
-    return General.assignFields(resource, new MenuItem(), ['uuid', 'displayKey', 'type', 'icon', "voided", "group", "linkFunction"]);
+    return this.assignFields(resource, new MenuItem());
+  }
+
+  static assignFields(source, menuItem) {
+    const assigned = General.assignFields(source, menuItem, ['uuid', 'displayKey', 'type', 'icon', "voided", "group", "linkFunction"]);
+    if (source.id)
+      menuItem.id = source.id;
+    return assigned;
   }
 
   static fromDb(obj) {
@@ -52,6 +60,10 @@ class MenuItem {
 
   static getAllTypes() {
     return [this.HyperlinkTypeName];
+  }
+
+  clone() {
+    return MenuItem.assignFields(this, new MenuItem());
   }
 }
 
