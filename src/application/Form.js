@@ -63,7 +63,7 @@ class Form {
     _.forEach(formMappings, ({subjectType}) => {
       const outOfSyncDrafts = entityService.findAll(DraftSubject.schema.name)
           .filtered(`subjectType = $0`, subjectType);
-      entityService.deleteAll(outOfSyncDrafts);
+      entityService.clearDataIn(outOfSyncDrafts);
     })
   }
 
