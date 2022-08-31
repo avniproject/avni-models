@@ -116,6 +116,7 @@ import TaskType from "./task/TaskType";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
+import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 
 export {
   AbstractEncounter,
@@ -236,5 +237,6 @@ export {
   TaskUnAssignment,
   DraftEncounter,
   SubjectProgramEligibility,
-  MenuItem
+  MenuItem,
+  UserSubjectAssignment
 };

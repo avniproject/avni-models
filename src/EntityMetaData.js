@@ -67,6 +67,7 @@ import TaskStatus from "./task/TaskStatus";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
+import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -313,6 +314,8 @@ const subjectProgramEligibility = txData(SubjectProgramEligibility, {
   privilegeName: Privilege.privilegeName.viewSubject,
 });
 
+const userSubjectAssignment = txData(UserSubjectAssignment, {syncWeight: 0});
+
 class EntityMetaData {
   //order is important. last entity in each (tx and ref) with be executed first. parent should be synced before the child.
   static model() {
@@ -365,6 +368,7 @@ class EntityMetaData {
 
       resetSync,
       subjectMigration,
+      userSubjectAssignment,
       task,
       taskUnAssigment,
       subjectProgramEligibility,

@@ -26,6 +26,7 @@ class SubjectType extends ReferenceEntity {
       syncRegistrationConcept2: {type: "string", optional: true},
       allowProfilePicture: {type: 'bool', default: false},
       allowMiddleName: {type: 'bool', default: false},
+      directlyAssignable: {type: 'bool', default: false},
       nameHelpText: {type: "string", optional: true},
     }
   };
@@ -37,6 +38,7 @@ class SubjectType extends ReferenceEntity {
   allowProfilePicture;
   uniqueName;
   allowMiddleName;
+  directlyAssignable;
   validFirstNameFormat;
   validMiddleNameFormat;
   validLastNameFormat;
@@ -73,6 +75,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.programEligibilityCheckRule = operationalSubjectType.programEligibilityCheckRule;
     subjectType.uniqueName = operationalSubjectType.uniqueName;
     subjectType.allowMiddleName = operationalSubjectType.allowMiddleName;
+    subjectType.directlyAssignable = operationalSubjectType.directlyAssignable;
     subjectType.allowProfilePicture = operationalSubjectType.allowProfilePicture;
     subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);
     subjectType.validMiddleNameFormat = Format.fromResource(operationalSubjectType["validMiddleNameFormat"]);
@@ -97,6 +100,7 @@ class SubjectType extends ReferenceEntity {
     cloned.programEligibilityCheckRule = this.programEligibilityCheckRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
     cloned.allowMiddleName = this.allowMiddleName;
+    cloned.directlyAssignable = this.directlyAssignable;
     cloned.allowProfilePicture = this.allowProfilePicture;
     cloned.uniqueName = this.uniqueName;
     cloned.validFirstNameFormat = this.validFirstNameFormat;
