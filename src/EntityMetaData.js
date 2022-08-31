@@ -365,8 +365,8 @@ class EntityMetaData {
 
       resetSync,
       subjectMigration,
-      taskUnAssigment,
       task,
+      taskUnAssigment,
       subjectProgramEligibility,
       news,
       videoTelemetric,
