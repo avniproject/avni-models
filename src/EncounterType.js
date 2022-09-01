@@ -13,7 +13,8 @@ class EncounterType extends ReferenceEntity {
       displayName: 'string',
       voided: {type: 'bool', default: false},
       encounterEligibilityCheckRule: {type: 'string', optional: true},
-      active: {type: 'bool', default: true}
+      active: {type: 'bool', default: true},
+      immutable: {type: 'bool', default: false}
     }
   };
 
@@ -33,6 +34,7 @@ class EncounterType extends ReferenceEntity {
     encounterType.displayName = _.isEmpty(encounterType.operationalEncounterTypeName) ? encounterType.name : encounterType.operationalEncounterTypeName;
     encounterType.encounterEligibilityCheckRule = operationalEncounterType.encounterEligibilityCheckRule;
     encounterType.active = operationalEncounterType.active;
+    encounterType.immutable = operationalEncounterType.immutable;
     return encounterType;
   }
 
@@ -42,6 +44,7 @@ class EncounterType extends ReferenceEntity {
     return General.assignFields(this, super.clone(new EncounterType()), [
       "operationalEncounterTypeName",
       "displayName",
+      "immutable"
     ]);
   }
 }

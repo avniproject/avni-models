@@ -179,7 +179,7 @@ export default {
     MenuItem,
     UserSubjectAssignment
   ],
-  schemaVersion: 166,
+  schemaVersion: 167,
   migration: function (oldDB, newDB) {
     if (oldDB.schemaVersion < 10) {
       const oldObjects = oldDB.objects("DecisionConfig");
