@@ -2,8 +2,11 @@ import ValidationResult from "./application/ValidationResult";
 import _ from "lodash";
 import ValidationResults from "./application/ValidationResults";
 import General from "./utility/General";
+import {BaseEntity} from "./index";
+import EntityUtil from "./framework/EntityUtil";
+import LocaleMapping from "./LocaleMapping";
 
-class Settings {
+class Settings extends BaseEntity {
   static UUID = "2aa81079-38c3-4d9f-8380-f50544b32b3d";
 
   static schema = {
@@ -12,14 +15,14 @@ class Settings {
     properties: {
       uuid: "string",
       serverURL: "string",
-      locale: { type: "LocaleMapping" },
+      locale: {type: "LocaleMapping"},
       logLevel: "int",
       pageSize: "int",
       poolId: "string",
       clientId: "string",
-      devSkipValidation: { type: "bool", default: false },
-      captureLocation: { type: "bool", default: true },
-      userId: {type: "string", optional: true }
+      devSkipValidation: {type: "bool", default: false},
+      captureLocation: {type: "bool", default: true},
+      userId: {type: "string", optional: true}
     },
   };
 
@@ -53,6 +56,10 @@ class Settings {
       validationResults.addOrReplace(ValidationResult.failureForNumeric("logLevel"));
 
     return validationResults;
+  }
+
+  mapNonPrimitives(realmObject) {
+    this.locale = EntityUtil.toModel(realmObject.locale, LocaleMapping);
   }
 }
 

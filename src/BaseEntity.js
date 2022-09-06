@@ -76,5 +76,9 @@ class BaseEntity {
     const errorCodeKey = `${childSchema}-${parentSchema}-Association`;
     throw new SyncError(ErrorCodes[errorCodeKey], `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
   }
+
+  mapNonPrimitives() {
+    throw new Error(`mapNonPrimitives not overridden by ${this.constructor && this.constructor.name}`);
+  }
 }
 export default BaseEntity;
