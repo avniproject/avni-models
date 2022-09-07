@@ -1,6 +1,7 @@
 import _ from "lodash";
+import BaseEntity from "./BaseEntity";
 
-class PlatformTranslation {
+class PlatformTranslation extends BaseEntity {
   static schema = {
     name: "PlatformTranslation",
     primaryKey: "uuid",
@@ -30,6 +31,9 @@ class PlatformTranslation {
     platformTranslation.uuid = this.uuid;
     platformTranslation.language = this.language;
     platformTranslation.platformTranslations = this.platformTranslations;
+  }
+
+  mapNonPrimitives() {
   }
 }
 

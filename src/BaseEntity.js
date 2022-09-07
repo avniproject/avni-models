@@ -77,7 +77,10 @@ class BaseEntity {
     throw new SyncError(ErrorCodes[errorCodeKey], `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
   }
 
-  mapNonPrimitives() {
+  /*
+  All the primitives in "this" has been mapped from realmObject already. This method is called to map the fields which are non primitives. This method is meant to be overridden by all entity classes.
+   */
+  mapNonPrimitives(realmObject) {
     throw new Error(`mapNonPrimitives not overridden by ${this.constructor && this.constructor.name}`);
   }
 }

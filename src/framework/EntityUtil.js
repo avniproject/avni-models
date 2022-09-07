@@ -4,10 +4,17 @@ class EntityUtil {
   static toModel(realmObject, entityClass) {
     if (_.isNil(realmObject)) return null;
 
+    const entity = this.toValueObject(realmObject, entityClass);
+    entity.mapNonPrimitives(realmObject);
+    return entity;
+  }
+
+  static toValueObject(realmObject, entityClass) {
+    if (_.isNil(realmObject)) return null;
+
     const properties = Object.keys(entityClass.schema.properties);
     const entity = new entityClass();
     properties.forEach((x) => entity[x] = realmObject[x]);
-    entity.mapNonPrimitives(realmObject);
     return entity;
   }
 

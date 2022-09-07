@@ -172,7 +172,7 @@ export {
   ReferenceEntity,
   RuleDependency,
   Rule,
-  Schema,
+  Schema as EntityMappingConfig,
   Settings,
   SingleCodedValue,
   SingleSelectFilter,

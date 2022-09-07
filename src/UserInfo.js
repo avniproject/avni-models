@@ -1,6 +1,7 @@
 import _ from "lodash";
+import BaseEntity from "./BaseEntity";
 
-class UserInfo {
+class UserInfo extends BaseEntity {
   static UUID = "ce9ad8ee-193e-49ee-8626-49802c8b4bd7";
   static DEFAULT_SETTINGS = '{"trackLocation": false, "locale": "en"}';
 
@@ -68,6 +69,9 @@ class UserInfo {
     userInfo.settings = UserInfo.DEFAULT_SETTINGS;
     userInfo.syncSettings = '{}';
     return userInfo;
+  }
+
+  mapNonPrimitives() {
   }
 }
 
