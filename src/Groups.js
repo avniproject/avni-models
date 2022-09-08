@@ -1,4 +1,6 @@
-class Groups {
+import BaseEntity from "./BaseEntity";
+
+class Groups extends BaseEntity{
   static schema = {
     name: "Groups",
     primaryKey: "uuid",
@@ -15,6 +17,9 @@ class Groups {
     groups.name = resource.name;
     groups.hasAllPrivileges = resource.hasAllPrivileges;
     return groups;
+  }
+
+  mapNonPrimitives(realmObject) {
   }
 }
 

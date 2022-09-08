@@ -71,7 +71,7 @@ class UserInfo extends BaseEntity {
     return userInfo;
   }
 
-  mapNonPrimitives() {
+  mapNonPrimitives(realmObject, entityMapper) {
   }
 }
 

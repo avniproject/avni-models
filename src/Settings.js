@@ -3,7 +3,6 @@ import _ from "lodash";
 import ValidationResults from "./application/ValidationResults";
 import General from "./utility/General";
 import {BaseEntity} from "./index";
-import EntityUtil from "./framework/EntityUtil";
 import LocaleMapping from "./LocaleMapping";
 
 class Settings extends BaseEntity {
@@ -58,8 +57,8 @@ class Settings extends BaseEntity {
     return validationResults;
   }
 
-  mapNonPrimitives(realmObject) {
-    this.locale = EntityUtil.toModel(realmObject.locale, LocaleMapping);
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.locale = entityMapper.toEntity(realmObject.locale, LocaleMapping);
   }
 }
 

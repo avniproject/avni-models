@@ -696,6 +696,14 @@ class EntityMappingConfig {
   getEntityClass(schemaName) {
     return this.schemaEntityMap.get(schemaName);
   }
+
+  getRealmConfig() {
+    return this.realmConfig;
+  }
+
+  getEntities() {
+    return entities;
+  }
 }
 
 export default EntityMappingConfig;

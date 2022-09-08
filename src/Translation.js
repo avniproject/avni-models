@@ -33,7 +33,7 @@ class Translation extends BaseEntity {
     translation.translations = this.translations;
   }
 
-  mapNonPrimitives() {
+  mapNonPrimitives(realmObject, entityMapper) {
   }
 }
 

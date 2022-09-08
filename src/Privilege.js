@@ -3,8 +3,9 @@ import Encounter from './Encounter';
 import ProgramEnrolment from './ProgramEnrolment';
 import ProgramEncounter from './ProgramEncounter';
 import ChecklistItem from './ChecklistItem';
+import BaseEntity from "./BaseEntity";
 
-class Privilege {
+class Privilege extends BaseEntity {
   static schema = {
     name: "Privilege",
     primaryKey: "uuid",
@@ -55,6 +56,9 @@ class Privilege {
     privilege.description = resource.description;
     privilege.entityType = resource.entityType;
     return privilege;
+  }
+
+  mapNonPrimitives(realmObject) {
   }
 
   static schemaToPrivilegeMetadata = [

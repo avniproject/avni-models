@@ -2,7 +2,6 @@ import ReferenceEntity from "./ReferenceEntity";
 import General from "./utility/General";
 import Format from "./application/Format";
 import ResourceUtil from "./utility/ResourceUtil";
-import EntityUtil from "./framework/EntityUtil";
 
 class SubjectType extends ReferenceEntity {
   static schema = {
@@ -134,10 +133,10 @@ class SubjectType extends ReferenceEntity {
     return !_.isNil(this.iconFileS3Key);
   }
 
-  mapNonPrimitives(realmObject) {
-    this.validFirstNameFormat = EntityUtil.toValueObject(realmObject.validFirstNameFormat, Format);
-    this.validMiddleNameFormat = EntityUtil.toValueObject(realmObject.validMiddleNameFormat, Format);
-    this.validLastNameFormat = EntityUtil.toValueObject(realmObject.validLastNameFormat, Format);
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.validFirstNameFormat = entityMapper.toValueObject(realmObject.validFirstNameFormat, Format);
+    this.validMiddleNameFormat = entityMapper.toValueObject(realmObject.validMiddleNameFormat, Format);
+    this.validLastNameFormat = entityMapper.toValueObject(realmObject.validLastNameFormat, Format);
   }
 }
 

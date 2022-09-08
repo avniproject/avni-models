@@ -13,7 +13,7 @@ import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 
-export class ConceptAnswer {
+export class ConceptAnswer extends BaseEntity {
   static schema = {
     name: "ConceptAnswer",
     primaryKey: "uuid",
@@ -26,6 +26,10 @@ export class ConceptAnswer {
       voided: {type: "bool", default: false},
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.concept = entityMapper.toEntity(realmObject.concept, Concept);
+  }
 
   get name() {
     return this.concept.name;
@@ -49,12 +53,11 @@ export class ConceptAnswer {
   static parentAssociations = () => new Map([[Concept, "conceptUUID"]]);
 }
 
-export default class Concept {
+export default class Concept extends BaseEntity {
   static StandardConcepts = {
     OtherConceptUUID: "05ea583c-51d2-412d-ad00-06c432ffe538",
     NoneConceptUUID: "ebda5e05-a995-43ca-ad1a-30af3b937539",
   };
-
   static schema = {
     name: "Concept",
     primaryKey: "uuid",
@@ -72,6 +75,11 @@ export default class Concept {
       voided: {type: "bool", default: false},
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.keyValues = entityMapper.toValueObjectCollection(realmObject.keyValues, KeyValue);
+    this.answers = entityMapper.toEntityCollection(realmObject.answers, ConceptAnswer);
+  }
 
   static dataType = {
     Date: "Date",

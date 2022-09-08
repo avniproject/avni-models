@@ -80,7 +80,7 @@ class BaseEntity {
   /*
   All the primitives in "this" has been mapped from realmObject already. This method is called to map the fields which are non primitives. This method is meant to be overridden by all entity classes.
    */
-  mapNonPrimitives(realmObject) {
+  mapNonPrimitives(realmObject, entityMapper) {
     throw new Error(`mapNonPrimitives not overridden by ${this.constructor && this.constructor.name}`);
   }
 }

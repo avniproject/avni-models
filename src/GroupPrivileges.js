@@ -1,6 +1,7 @@
-import { Groups, Privilege } from "./index";
+import {Groups, Privilege} from "./index";
+import BaseEntity from "./BaseEntity";
 
-class GroupPrivileges {
+class GroupPrivileges extends BaseEntity {
   static schema = {
     name: "GroupPrivileges",
     primaryKey: "uuid",
@@ -33,6 +34,11 @@ class GroupPrivileges {
     groupPrivileges.checklistDetailUuid = resource.checklistDetailUuid;
     groupPrivileges.allow = resource.allow;
     return groupPrivileges;
+  }
+
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.privilege = entityMapper.toEntity(realmObject.privilege, Privilege);
+    this.groups = entityMapper.toEntity(realmObject.groups, Groups);
   }
 }
 
