@@ -13,6 +13,9 @@ class ResetSync extends BaseEntity {
         }
     };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
     uuid: string;
     subjectTypeUUID: string;
     hasMigrated: boolean;

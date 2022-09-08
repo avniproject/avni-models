@@ -17,6 +17,9 @@ class Rule extends ReferenceEntity {
     },
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
   static types = {
     Decision: "Decision",
     VisitSchedule: "VisitSchedule",

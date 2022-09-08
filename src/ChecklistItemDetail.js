@@ -37,17 +37,17 @@ class ChecklistItemDetail extends BaseEntity {
     ]);
 
   static fromResource(checklistItemResource, entityService, resourcesInCurrentPage) {
-    const checklistDetail = entityService.findByKey(
+    const checklistDetail = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(checklistItemResource, "checklistDetailUUID"),
       ChecklistDetail.schema.name
     );
-    const form = entityService.findByKey(
+    const form = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(checklistItemResource, "formUUID"),
       Form.schema.name
     );
-    const concept = entityService.findByKey(
+    const concept = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(checklistItemResource, "conceptUUID"),
       Concept.schema.name
@@ -74,7 +74,7 @@ class ChecklistItemDetail extends BaseEntity {
     checklistItemDetail.concept = concept;
     const leadDetailUUID = ResourceUtil.getUUIDFor(checklistItemResource, "leadDetailUUID");
     if (!_.isNil(leadDetailUUID)) {
-      const createdLeadChecklistItemDetail = entityService.findByKey(
+      const createdLeadChecklistItemDetail = entityService.findEntity(
         "uuid",
         leadDetailUUID,
         ChecklistItemDetail.schema.name

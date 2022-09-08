@@ -1,6 +1,7 @@
 import _ from "lodash";
+import BaseEntity from "./BaseEntity";
 
-class OrganisationConfig {
+class OrganisationConfig extends BaseEntity{
   static DEFAULT_SETTINGS = '{"languages": ["en", "hi_IN"]}';
   static UUID = "06177b7c-76b9-42ac-b9a4-b5af3cfcb902";
 
@@ -13,6 +14,9 @@ class OrganisationConfig {
       worklistUpdationRule: "string",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static fromResource(resource) {
     let organisationConfig = new OrganisationConfig();

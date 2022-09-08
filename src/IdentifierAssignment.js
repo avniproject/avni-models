@@ -28,17 +28,17 @@ export default class IdentifierAssignment extends BaseEntity {
       new IdentifierAssignment(),
       ["uuid", "identifier", "assignmentOrder", "voided"]
     );
-    identifierAssignment.identifierSource = entityService.findByKey(
+    identifierAssignment.identifierSource = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(identifierAssignmentResource, "identifierSourceUUID"),
       IdentifierSource.schema.name
     );
-    identifierAssignment.individual = entityService.findByKey(
+    identifierAssignment.individual = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(identifierAssignmentResource, "individualUUID"),
       Individual.schema.name
     );
-    identifierAssignment.programEnrolment = entityService.findByKey(
+    identifierAssignment.programEnrolment = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(identifierAssignmentResource, "programEnrolmentUUID"),
       ProgramEnrolment.schema.name

@@ -1,6 +1,7 @@
 import General from "./utility/General";
+import BaseEntity from "./BaseEntity";
 
-class MediaQueue {
+class MediaQueue extends BaseEntity {
   static schema = {
     name: "MediaQueue",
     primaryKey: "uuid",
@@ -14,6 +15,9 @@ class MediaQueue {
       conceptUUID: {type: "string", optional: true},
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static create(entityUUID, entityName, fileName, type, entityTargetField, conceptUUID, uuid = General.randomUUID()) {
     var mediaQueue = new MediaQueue();

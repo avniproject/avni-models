@@ -9,8 +9,9 @@ import Format from "./Format";
 import Filter from "./Filter";
 import moment from "moment";
 import Documentation from "../Documentation";
+import BaseEntity from "../BaseEntity";
 
-class FormElement {
+class FormElement extends BaseEntity {
   static schema = {
     name: "FormElement",
     primaryKey: "uuid",
@@ -31,15 +32,23 @@ class FormElement {
     },
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.keyValues = entityMapper.toValueObjectCollection(realmObject.keyValues, KeyValue);
+    this.concept = entityMapper.toEntity(realmObject.concept, Concept);
+    this.formElementGroup = entityMapper.toEntity(realmObject.formElementGroup, FormElementGroup);
+    this.validFormat = entityMapper.toValueObject(realmObject.validFormat, Format);
+    this.documentation = entityMapper.toEntity(realmObject.documentation, Documentation);
+  }
+
   static parentAssociations = () => new Map([[FormElementGroup, "formElementGroupUUID"]]);
 
   static fromResource(resource, entityService) {
-    const formElementGroup = entityService.findByKey(
+    const formElementGroup = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "formElementGroupUUID"),
       FormElementGroup.schema.name
     );
-    const concept = entityService.findByKey(
+    const concept = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "conceptUUID"),
       Concept.schema.name
@@ -53,7 +62,7 @@ class FormElement {
     );
     formElement.formElementGroup = formElementGroup;
     formElement.groupUuid = ResourceUtil.getUUIDFor(resource, "groupQuestionUUID");
-    formElement.documentation = entityService.findByKey(
+    formElement.documentation = entityService.findEntity(
         "uuid",
         ResourceUtil.getUUIDFor(resource, "documentationUUID"),
         Documentation.schema.name

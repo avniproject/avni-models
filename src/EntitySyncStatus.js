@@ -1,4 +1,6 @@
-class EntitySyncStatus {
+import BaseEntity from "./BaseEntity";
+
+class EntitySyncStatus extends BaseEntity {
   static REALLY_OLD_DATE = new Date("1900-01-01");
 
   static schema = {
@@ -11,6 +13,9 @@ class EntitySyncStatus {
       entityTypeUuid: "string",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static create(entityName, date, uuid, entityTypeUuid) {
     var entitySyncStatus = new EntitySyncStatus();

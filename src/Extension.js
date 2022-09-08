@@ -1,7 +1,7 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 
-
+//Should not be a BaseEntity
 class Extension extends BaseEntity {
 
     static schema = {

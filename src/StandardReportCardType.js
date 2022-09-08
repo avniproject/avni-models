@@ -15,7 +15,11 @@ class StandardReportCardType extends BaseEntity {
         },
     };
 
-    static type = {
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
+  static type = {
         PendingApproval: "Pending approval",
         Approved: "Approved",
         Rejected: "Rejected",

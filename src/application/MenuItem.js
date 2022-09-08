@@ -1,6 +1,7 @@
 import General from "../utility/General";
+import BaseEntity from "../BaseEntity";
 
-class MenuItem {
+class MenuItem extends BaseEntity{
   static FunctionalityGroupName = "Functionality";
   static SyncGroupName = "Sync";
   static UserGroupName = "User";
@@ -30,6 +31,9 @@ class MenuItem {
       voided: {type: 'bool', default: false}
     }
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static fromResource(resource, entityService) {
     return this.assignFields(resource, new MenuItem());

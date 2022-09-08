@@ -9,6 +9,9 @@ class ProgramOutcome extends ReferenceEntity {
       name: "string",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 }
 
 export default ProgramOutcome;

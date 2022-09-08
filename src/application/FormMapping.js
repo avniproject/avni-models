@@ -8,8 +8,9 @@ import ProgramEnrolment from "../ProgramEnrolment";
 import ProgramEncounter from "../ProgramEncounter";
 import ChecklistItem from "../ChecklistItem";
 import TaskType from "../task/TaskType";
+import BaseEntity from "../BaseEntity";
 
-class FormMapping {
+class FormMapping extends BaseEntity {
   static schema = {
     name: "FormMapping",
     primaryKey: "uuid",
@@ -25,6 +26,11 @@ class FormMapping {
     },
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.subjectType = entityMapper.toEntity(realmObject.subjectType, SubjectType);
+    this.taskType = entityMapper.toEntity(realmObject.taskType, TaskType);
+  }
+
   static create(uuid, form, entityUUID, observationsTypeEntityUUID) {
     let formMapping = new FormMapping();
     formMapping.uuid = uuid;
@@ -35,17 +41,17 @@ class FormMapping {
   }
 
   static fromResource(resource, entityService) {
-    const form = entityService.findByKey(
+    const form = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "formUUID"),
       Form.schema.name
     );
-    const subjectType = entityService.findByKey(
+    const subjectType = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "subjectTypeUUID"),
       SubjectType.schema.name
     );
-    const taskType = entityService.findByKey(
+    const taskType = entityService.findEntity(
         "uuid",
         ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
         TaskType.schema.name

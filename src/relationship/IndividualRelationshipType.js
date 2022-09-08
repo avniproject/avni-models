@@ -16,6 +16,11 @@ class IndividualRelationshipType extends ReferenceEntity {
     },
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.individualAIsToBRelation = entityMapper.toEntity(realmObject.individualAIsToBRelation, IndividualRelation);
+    this.individualBIsToBRelation = entityMapper.toEntity(realmObject.individualBIsToBRelation, IndividualRelation);
+  }
+
   static createEmptyInstance() {
     const individualRelationshipType = new IndividualRelationshipType();
     individualRelationshipType.individualAIsToBRelation = IndividualRelation.createEmptyInstance();
@@ -33,12 +38,12 @@ class IndividualRelationshipType extends ReferenceEntity {
   }
 
   static fromResource(resource, entityService) {
-    const individualAIsToBRelation = entityService.findByKey(
+    const individualAIsToBRelation = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "individualAIsToBRelationUUID"),
       IndividualRelation.schema.name
     );
-    const individualBIsToBRelation = entityService.findByKey(
+    const individualBIsToBRelation = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "individualBIsToBRelationUUID"),
       IndividualRelation.schema.name

@@ -1,7 +1,8 @@
 import General from "./utility/General";
 import _ from "lodash";
+import BaseEntity from "./BaseEntity";
 
-class RuleFailureTelemetry {
+class RuleFailureTelemetry extends BaseEntity{
   static schema = {
     name: "RuleFailureTelemetry",
     primaryKey: "uuid",
@@ -15,6 +16,9 @@ class RuleFailureTelemetry {
       errorDateTime: "date",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static create({ ruleUUID, individualUUID, errorMessage, stacktrace }) {
     const ruleFailureTelemetry = new RuleFailureTelemetry();

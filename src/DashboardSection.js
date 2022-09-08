@@ -19,6 +19,10 @@ class DashboardSection extends BaseEntity {
         },
     };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.dashboard = entityMapper.toEntity(realmObject.dashboard, Dashboard);
+  }
+
     static viewTypeName = {
         Tile: 'Tile',
         List: 'List',
@@ -28,7 +32,7 @@ class DashboardSection extends BaseEntity {
     static fromResource(resource, entityService) {
         const dashboardSection = General.assignFields(resource, new DashboardSection(),
             ["uuid", "name", "description", "viewType", "displayOrder", "voided"]);
-        dashboardSection.dashboard = entityService.findByKey(
+        dashboardSection.dashboard = entityService.findEntity(
             "uuid",
             resource.dashboardUUID,
             Dashboard.schema.name

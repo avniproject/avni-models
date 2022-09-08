@@ -9,7 +9,7 @@ import moment from "moment";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
 
-class Form {
+class Form extends BaseEntity {
   static schema = {
     name: "Form",
     primaryKey: "uuid",
@@ -25,6 +25,10 @@ class Form {
       taskScheduleRule: { type: "string", optional: true }
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.formElementGroups = entityMapper.toEntityCollection(realmObject.formElementGroups, FormElementGroup);
+  }
 
   static safeInstance() {
     const form = new Form();

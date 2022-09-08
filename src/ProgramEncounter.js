@@ -41,7 +41,7 @@ class ProgramEncounter extends AbstractEncounter {
 
   static fromResource(resource, entityService) {
     const programEncounter = AbstractEncounter.fromResource(resource, entityService);
-    programEncounter.programEnrolment = entityService.findByKey(
+    programEncounter.programEnrolment = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "programEnrolmentUUID"),
       ProgramEnrolment.schema.name

@@ -37,7 +37,7 @@ export class ConceptAnswer extends BaseEntity {
 
   static fromResource(resource, entityService) {
     const conceptAnswer = new ConceptAnswer();
-    conceptAnswer.concept = entityService.findByKey(
+    conceptAnswer.concept = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "conceptAnswerUUID"),
       Concept.schema.name

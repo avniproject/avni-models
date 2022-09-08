@@ -1,4 +1,6 @@
-export default class LocaleMapping {
+import BaseEntity from "./BaseEntity";
+
+export default class LocaleMapping extends BaseEntity {
   static schema = {
     name: "LocaleMapping",
     primaryKey: "uuid",
@@ -8,4 +10,7 @@ export default class LocaleMapping {
       displayText: "string",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 }

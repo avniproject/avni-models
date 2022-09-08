@@ -13,6 +13,9 @@ class ApprovalStatus extends BaseEntity {
         },
     };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
     static statuses = {
         Pending: "Pending",
         Approved: "Approved",

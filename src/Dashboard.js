@@ -14,7 +14,10 @@ class Dashboard extends BaseEntity {
         },
     };
 
-    static fromResource(resource) {
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
+  static fromResource(resource) {
         return General.assignFields(resource, new Dashboard(),
             ["uuid", "name", "description", "voided"]);
     }

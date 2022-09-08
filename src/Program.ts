@@ -34,6 +34,9 @@ class Program extends ReferenceEntity {
   manualEligibilityCheckRequired: boolean;
   manualEnrolmentEligibilityCheckRule: string;
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
   static fromResource(operationalProgram): Program {
     const program = new Program();
     program.uuid = operationalProgram.programUUID;

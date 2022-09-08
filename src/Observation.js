@@ -21,6 +21,10 @@ class Observation {
     return observation;
   }
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.concept = entityMapper.toEntity(realmObject.concept, Concept);
+  }
+
   toggleMultiSelectAnswer(answerUUID) {
     this.getValueWrapper().toggleAnswer(answerUUID);
   }

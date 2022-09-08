@@ -16,6 +16,10 @@ class TaskType extends BaseEntity {
         },
     };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.metadataSearchFields = entityMapper.toEntityCollection(realmObject.metadataSearchFields, Concept);
+  }
+
     static TaskTypeName = {
         Call: 'Call',
         OpenSubject: 'OpenSubject'
@@ -30,7 +34,7 @@ class TaskType extends BaseEntity {
     static fromResource(resource, entityService) {
         const taskType = General.assignFields(resource, new TaskType(), ['uuid', 'name', 'type', 'voided']);
         taskType.metadataSearchFields = map(resource.metadataSearchFields,
-            uuid => entityService.findByKey("uuid", uuid, Concept.schema.name)
+            uuid => entityService.findEntity("uuid", uuid, Concept.schema.name)
         ).filter(concept => !isNil(concept));
         return taskType;
     }

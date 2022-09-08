@@ -21,6 +21,9 @@ class News extends BaseEntity {
         }
     };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
     static fromResource(resource, entityService) {
         const news = General.assignFields(
             resource,
@@ -28,7 +31,7 @@ class News extends BaseEntity {
             ["uuid", "title", "heroImage", "content", "contentHtml", "voided"],
             ["publishedDate", "lastModifiedDateTime"]
         );
-        const olderNews = entityService.findByKey(
+        const olderNews = entityService.findEntity(
             "uuid",
             news.uuid,
             News.schema.name

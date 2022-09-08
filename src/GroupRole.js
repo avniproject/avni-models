@@ -3,7 +3,7 @@ import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
 import GroupSubject from "./GroupSubject";
 
-class GroupRole {
+class GroupRole extends BaseEntity{
   static schema = {
     name: "GroupRole",
     primaryKey: "uuid",
@@ -18,6 +18,11 @@ class GroupRole {
       voided: { type: "bool", default: false },
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.groupSubjectType = entityMapper.toEntity(realmObject.groupSubjectType, SubjectType);
+    this.memberSubjectType = entityMapper.toEntity(realmObject.memberSubjectType, SubjectType);
+  }
 
   static householdRoles = {
     head: "Head of household",
@@ -41,12 +46,12 @@ class GroupRole {
   }
 
   static fromResource(resource, entityService) {
-    const groupSubjectType = entityService.findByKey(
+    const groupSubjectType = entityService.findEntity(
       "uuid",
       resource.groupSubjectTypeUUID,
       SubjectType.schema.name
     );
-    const memberSubjectType = entityService.findByKey(
+    const memberSubjectType = entityService.findEntity(
       "uuid",
       resource.memberSubjectTypeUUID,
       SubjectType.schema.name

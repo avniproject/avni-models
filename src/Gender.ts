@@ -13,6 +13,9 @@ class Gender extends ReferenceEntity {
   name: string;
   uuid: string;
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
   isMale() {
     return this.name === "Male";
   }

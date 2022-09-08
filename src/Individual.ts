@@ -197,17 +197,17 @@ class Individual extends BaseEntity {
   static dateFields = ["dateOfBirth", "registrationDate"];
 
   static fromResource(individualResource, entityService) {
-    const addressLevel = entityService.findByKey(
+    const addressLevel = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(individualResource, "addressUUID"),
       AddressLevel.schema.name
     );
-    const gender = entityService.findByKey(
+    const gender = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(individualResource, "genderUUID"),
       Gender.schema.name
     );
-    const subjectType = entityService.findByKey(
+    const subjectType = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(individualResource, "subjectTypeUUID"),
       SubjectType.schema.name

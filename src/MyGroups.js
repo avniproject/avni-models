@@ -1,4 +1,6 @@
-class MyGroups {
+import BaseEntity from "./BaseEntity";
+
+class MyGroups extends BaseEntity{
   static schema = {
     name: "MyGroups",
     primaryKey: "uuid",
@@ -9,6 +11,9 @@ class MyGroups {
       voided: { type: "bool", default: false },
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static fromResource(resource) {
     let myGroups = new MyGroups();

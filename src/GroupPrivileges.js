@@ -21,8 +21,8 @@ class GroupPrivileges extends BaseEntity {
   static fromResource(resource, entityService) {
     let groupPrivileges = new GroupPrivileges();
     groupPrivileges.uuid = resource.uuid;
-    groupPrivileges.group = entityService.findByKey("uuid", resource.groupUuid, Groups.schema.name);
-    groupPrivileges.privilege = entityService.findByKey(
+    groupPrivileges.group = entityService.findEntity("uuid", resource.groupUuid, Groups.schema.name);
+    groupPrivileges.privilege = entityService.findEntity(
       "uuid",
       resource.privilegeUuid,
       Privilege.schema.name

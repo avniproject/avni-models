@@ -19,7 +19,7 @@ describe("ChecklistItemTest", () => {
             "_links": {}
         };
         entityService = {
-            findByKey: jest.fn().mockReturnValue(null)
+            findEntity: jest.fn().mockReturnValue(null)
         };
     });
 

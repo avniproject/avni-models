@@ -1,4 +1,6 @@
-class EntityQueue {
+import BaseEntity from "./BaseEntity";
+
+class EntityQueue extends BaseEntity{
   static schema = {
     name: "EntityQueue",
     properties: {
@@ -7,6 +9,9 @@ class EntityQueue {
       entity: "string",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static create(entity, schema, savedAt = new Date()) {
     var entityQueue = new EntityQueue();

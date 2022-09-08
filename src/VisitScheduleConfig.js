@@ -18,7 +18,7 @@ class VisitScheduleConfig extends ReferenceEntity {
       "uuid",
       "name",
     ]);
-    visitScheduleConfig.encounterType = entityService.findByKey(
+    visitScheduleConfig.encounterType = entityService.findEntity(
       "name",
       resource.encounterType,
       EncounterType.schema.name

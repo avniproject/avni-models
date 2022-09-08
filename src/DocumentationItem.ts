@@ -30,7 +30,7 @@ class DocumentationItem extends BaseEntity {
         documentationItem.contentHtml = resource.contentHtml;
         documentationItem.language = resource.language;
         documentationItem.voided = resource.voided;
-        documentationItem.documentation = entityService.findByKey(
+        documentationItem.documentation = entityService.findEntity(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "documentationUUID"),
             Documentation.schema.name

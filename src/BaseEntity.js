@@ -69,7 +69,7 @@ class BaseEntity {
     const childUuid = childResource.uuid;
     const parentUuid = ResourceUtil.getUUIDFor(childResource, parentUUIDField);
     const childSchema = childEntityClass.schema.name;
-    const parent = entityService.findByKey("uuid", parentUuid, parentSchema);
+    const parent = entityService.findEntity("uuid", parentUuid, parentSchema);
     if (!_.isNil(parent)) {
       return parent;
     }

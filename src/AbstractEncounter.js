@@ -96,7 +96,7 @@ class AbstractEncounter extends BaseEntity {
       ["observations", "cancelObservations"],
       entityService
     );
-    encounter.encounterType = entityService.findByKey(
+    encounter.encounterType = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "encounterTypeUUID"),
       EncounterType.schema.name

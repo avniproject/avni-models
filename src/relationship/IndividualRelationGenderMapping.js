@@ -2,8 +2,9 @@ import IndividualRelation from "./IndividualRelation";
 import Gender from "../Gender";
 import General from "../utility/General";
 import ResourceUtil from "../utility/ResourceUtil";
+import BaseEntity from "../BaseEntity";
 
-class IndividualRelationGenderMapping {
+class IndividualRelationGenderMapping extends BaseEntity{
   static schema = {
     name: "IndividualRelationGenderMapping",
     primaryKey: "uuid",
@@ -15,18 +16,22 @@ class IndividualRelationGenderMapping {
     },
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.relation = entityMapper.toEntity(realmObject.relation, IndividualRelation);
+  }
+
   static createEmptyInstance() {
     const individualRelationGenderMapping = new IndividualRelationGenderMapping();
     return individualRelationGenderMapping;
   }
 
   static fromResource(resource, entityService) {
-    const relation = entityService.findByKey(
+    const relation = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "relationUUID"),
       IndividualRelation.schema.name
     );
-    const gender = entityService.findByKey(
+    const gender = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "genderUUID"),
       Gender.schema.name

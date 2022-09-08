@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import BaseEntity from "./BaseEntity";
 
-class DashboardCache {
+class DashboardCache extends BaseEntity{
 
   static rowUUID = '176d5284-7927-422e-909a-a546f5001c84';
 
@@ -14,6 +15,9 @@ class DashboardCache {
       filterJSON: "string",
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
 
   static create(updatedAt, cardJSON, filterJSON) {
     const dashboardCache = new DashboardCache();

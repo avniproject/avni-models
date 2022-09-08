@@ -2,6 +2,7 @@ import BaseEntity from "../BaseEntity";
 import General from "../utility/General";
 import moment from "moment";
 import _ from "lodash";
+import Video from "./Video";
 
 class VideoTelemetric extends BaseEntity {
   static schema = {
@@ -16,6 +17,10 @@ class VideoTelemetric extends BaseEntity {
       videoEndTime: "double", //in seconds
     },
   };
+
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.video = entityMapper.toEntity(realmObject.video, Video);
+  }
 
   static create(obj = {}) {
     const { uuid = General.randomUUID() } = obj;

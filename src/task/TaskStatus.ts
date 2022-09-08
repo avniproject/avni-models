@@ -17,6 +17,10 @@ class TaskStatus extends BaseEntity {
         },
     };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.taskType = entityMapper.toEntity(realmObject.taskType, TaskType);
+  }
+
     uuid: string;
     name: string;
     isTerminal: boolean;
@@ -33,7 +37,7 @@ class TaskStatus extends BaseEntity {
             entityService
         );
         taskStatus.isTerminal = resource.terminal;
-        taskStatus.taskType = entityService.findByKey(
+        taskStatus.taskType = entityService.findEntity(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
             TaskType.schema.name

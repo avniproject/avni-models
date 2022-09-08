@@ -7,7 +7,7 @@ import _ from "lodash";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
 
-class FormElementGroup {
+class FormElementGroup extends BaseEntity {
   static schema = {
     name: "FormElementGroup",
     primaryKey: "uuid",
@@ -28,6 +28,11 @@ class FormElementGroup {
     },
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.formElements = entityMapper.toEntityCollection(realmObject.formElements, FormElement);
+    this.form = entityMapper.toEntity(realmObject.form, Form);
+  }
+
   static fromResource(resource, entityService) {
     const formElementGroup = General.assignFields(resource, new FormElementGroup(), [
       "uuid",
@@ -42,7 +47,7 @@ class FormElementGroup {
       "textColour",
       "backgroundColour"
     ]);
-    formElementGroup.form = entityService.findByKey(
+    formElementGroup.form = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "formUUID"),
       Form.schema.name

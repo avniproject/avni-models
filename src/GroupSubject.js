@@ -60,17 +60,17 @@ class GroupSubject extends BaseEntity {
   }
 
   static fromResource(resource, entityService) {
-    const groupSubject = entityService.findByKey(
+    const groupSubject = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "groupSubjectUUID"),
       Individual.schema.name
     );
-    const memberSubject = entityService.findByKey(
+    const memberSubject = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "memberSubjectUUID"),
       Individual.schema.name
     );
-    const groupRole = entityService.findByKey(
+    const groupRole = entityService.findEntity(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "groupRoleUUID"),
       GroupRole.schema.name

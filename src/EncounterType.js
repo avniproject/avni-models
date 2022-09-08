@@ -17,6 +17,9 @@ class EncounterType extends ReferenceEntity {
     }
   };
 
+  mapNonPrimitives(realmObject, entityMapper) {
+  }
+
   static create(name) {
     let encounterType = new EncounterType();
     encounterType.uuid = General.randomUUID();
