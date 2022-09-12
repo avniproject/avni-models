@@ -7,7 +7,6 @@ class EntityMapper {
   }
 
   toValueObject(realmObject, voClass) {
-    console.log("toValueObject", voClass);
     if (_.isNil(realmObject)) return null;
 
     const valueObject = EntityMapper.mapPrimitiveFields(voClass, realmObject);
@@ -28,7 +27,6 @@ class EntityMapper {
   }
 
   toEntity(realmObject, entityClass) {
-    console.log("toEntity", entityClass);
     if (_.isNil(realmObject)) return null;
 
     let entity = this.identityMap.get(realmObject.uuid);
@@ -42,10 +40,6 @@ class EntityMapper {
       throw new Error(`mapNonPrimitives not present in ${entity.constructor && entity.constructor.name}, also recommended extend the entity from BaseEntity.`);
     entity.mapNonPrimitives(realmObject, this);
     return entity;
-  }
-
-  static toEntityShallow(realmObject, entityClass) {
-    return EntityMapper.mapPrimitiveFields(entityClass, realmObject);
   }
 
   toEntityCollection(realmCollection, entityClass) {

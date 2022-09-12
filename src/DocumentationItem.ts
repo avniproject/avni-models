@@ -38,6 +38,9 @@ class DocumentationItem extends BaseEntity {
         return documentationItem;
     }
 
+  mapNonPrimitives(realmObject, entityMapper) {
+    this.documentation = entityMapper.toEntity(realmObject.documentation, Documentation);
+  }
 }
 
 

@@ -2,7 +2,7 @@ import Concept, {ConceptAnswer} from "./Concept";
 import Gender from "./Gender";
 import AddressLevel, {LocationMapping} from "./AddressLevel";
 import Individual from "./Individual";
-import AllSchema from "./Schema";
+import EntityMappingConfig from "./Schema";
 import _ from "lodash";
 import LocaleMapping from "./LocaleMapping";
 import Settings from "./Settings";
@@ -390,7 +390,7 @@ class EntityMetaData {
   }
 
   static entitiesLoadedFromServer() {
-    return _.differenceBy(AllSchema.schema, [Settings, LocaleMapping], "schema.name");
+    return _.differenceBy(EntityMappingConfig.getInstance().getEntities(), [Settings, LocaleMapping], "schema.name");
   }
 
   static findByName(entityName) {
