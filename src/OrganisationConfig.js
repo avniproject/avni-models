@@ -15,9 +15,6 @@ class OrganisationConfig extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static fromResource(resource) {
     let organisationConfig = new OrganisationConfig();
     organisationConfig.uuid = OrganisationConfig.UUID;

@@ -14,9 +14,6 @@ class EntitySyncStatus extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create(entityName, date, uuid, entityTypeUuid) {
     var entitySyncStatus = new EntitySyncStatus();
     entitySyncStatus.uuid = uuid;

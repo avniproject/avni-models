@@ -10,9 +10,6 @@ class EntityQueue extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create(entity, schema, savedAt = new Date()) {
     var entityQueue = new EntityQueue();
     entityQueue.entityUUID = entity.uuid;

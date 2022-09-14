@@ -64,7 +64,7 @@ class EntityApprovalStatus extends BaseEntity {
         const entityApprovalStatus = General.assignFields(resource, new EntityApprovalStatus(),
             ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided"],
             ["statusDateTime"]);
-        entityApprovalStatus.approvalStatus = entityService.findEntity(
+        entityApprovalStatus.approvalStatus = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "approvalStatusUUID"),
             ApprovalStatus.schema.name

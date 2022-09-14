@@ -40,12 +40,12 @@ class Comment extends BaseEntity {
             ["uuid", "text", "displayUsername", "voided"]
             , ["createdDateTime", "lastModifiedDateTime"]);
         comment.createdByUsername = resource["createdBy"];
-        comment.subject = entityService.findEntity(
+        comment.subject = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "individualUUID"),
             Individual.schema.name
         );
-        comment.commentThread = entityService.findEntity(
+        comment.commentThread = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "commentThreadUUID"),
             CommentThread.schema.name

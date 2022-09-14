@@ -132,12 +132,6 @@ class SubjectType extends ReferenceEntity {
   isIconSetup() {
     return !_.isNil(this.iconFileS3Key);
   }
-
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.validFirstNameFormat = entityMapper.toValueObject(realmObject.validFirstNameFormat, Format);
-    this.validMiddleNameFormat = entityMapper.toValueObject(realmObject.validMiddleNameFormat, Format);
-    this.validLastNameFormat = entityMapper.toValueObject(realmObject.validLastNameFormat, Format);
-  }
 }
 
 export default SubjectType;

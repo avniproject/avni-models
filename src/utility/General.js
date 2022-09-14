@@ -5,7 +5,6 @@ import Observation from "../Observation";
 import Concept from "../Concept";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
-import EntityMapper from "../framework/EntityMapper";
 
 var currentLogLevel;
 
@@ -155,17 +154,15 @@ class General {
       if (!_.isNil(source[observationField])) {
         _.toPairs(source[observationField]).forEach(([conceptUUID, value]) => {
           const observation = new Observation();
-          const realmObject = entityService.findEntity("uuid", conceptUUID, Concept.schema.name);
-          observation.concept = realmObject;
-
-          const concept = EntityMapper.mapPrimitiveFields(Concept, realmObject);
-          if (!_.isNil(concept.groupUuid)) {
+          const concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
+          observation.concept = concept;
+          if (concept.isQuestionGroup()) {
             const valueJson = _.isArray(value) ?
                 this.getRepeatableQuestionValue(value, entityService) :
                 this.createQuestionGroupObservations(value, entityService);
             observation.valueJSON = JSON.stringify(valueJson);
           } else {
-            observation.valueJSON = JSON.stringify(concept.getValueWrapperFor(value));
+            observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
           }
           observations.push(observation);
         });
@@ -184,9 +181,8 @@ class General {
   static createQuestionGroupObservations(keyValues, entityService) {
     const questionGroupObservations = _.map(_.toPairs(keyValues), ([conceptUUID, value]) => {
       const observation = new Observation();
-      observation.concept = entityService.findEntity("uuid", conceptUUID, Concept.schema.name);
-      const concept = EntityMapper.mapPrimitiveFields(Concept, observation.concept);
-      observation.valueJSON = concept.getValueWrapperFor(value);
+      observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
+      observation.valueJSON = observation.concept.getValueWrapperFor(value);
       return observation;
     });
     return new QuestionGroup(questionGroupObservations);

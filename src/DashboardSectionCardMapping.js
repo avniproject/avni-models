@@ -19,20 +19,15 @@ class DashboardSectionCardMapping extends BaseEntity {
         },
     };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.dashboardSection = entityMapper.toEntity(realmObject.dashboardSection, DashboardSection);
-    this.card = entityMapper.toEntity(realmObject.card, ReportCard);
-  }
-
     static fromResource(resource, entityService) {
         const dashboardSectionCardMapping = General.assignFields(resource, new DashboardSectionCardMapping(),
             ["uuid", "displayOrder", "voided"]);
-        dashboardSectionCardMapping.dashboardSection = entityService.findEntity(
+        dashboardSectionCardMapping.dashboardSection = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "dashboardSectionUUID"),
             DashboardSection.schema.name
         );
-        dashboardSectionCardMapping.card = entityService.findEntity(
+        dashboardSectionCardMapping.card = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "cardUUID"),
             ReportCard.schema.name

@@ -32,9 +32,6 @@ class PlatformTranslation extends BaseEntity {
     platformTranslation.language = this.language;
     platformTranslation.platformTranslations = this.platformTranslations;
   }
-
-  mapNonPrimitives() {
-  }
 }
 
 export default PlatformTranslation;

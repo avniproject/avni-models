@@ -16,9 +16,6 @@ class MediaQueue extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create(entityUUID, entityName, fileName, type, entityTargetField, conceptUUID, uuid = General.randomUUID()) {
     var mediaQueue = new MediaQueue();
     mediaQueue.entityUUID = entityUUID;

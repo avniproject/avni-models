@@ -58,9 +58,6 @@ class Privilege extends BaseEntity {
     return privilege;
   }
 
-  mapNonPrimitives(realmObject) {
-  }
-
   static schemaToPrivilegeMetadata = [
     {
       schema: Individual.schema.name,

@@ -15,9 +15,6 @@ class Video extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create({ uuid, title, filePath, description, duration, voided }) {
     return _.assignIn(new Video(), {
       uuid,

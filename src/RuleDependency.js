@@ -12,9 +12,6 @@ class RuleDependency extends ReferenceEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static fromResource(resource, entityService) {
     return General.assignFields(resource, new RuleDependency(), ["uuid", "code"]);
   }

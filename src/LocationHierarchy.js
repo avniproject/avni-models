@@ -17,9 +17,6 @@ class LocationHierarchy extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create({uuid, title, level, typeString, parentUuid, titleLineage, voided, typeUuid}) {
     return _.assignIn(new LocationHierarchy(), {
       uuid,

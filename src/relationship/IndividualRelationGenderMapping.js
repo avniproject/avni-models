@@ -16,22 +16,18 @@ class IndividualRelationGenderMapping extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.relation = entityMapper.toEntity(realmObject.relation, IndividualRelation);
-  }
-
   static createEmptyInstance() {
     const individualRelationGenderMapping = new IndividualRelationGenderMapping();
     return individualRelationGenderMapping;
   }
 
   static fromResource(resource, entityService) {
-    const relation = entityService.findEntity(
+    const relation = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "relationUUID"),
       IndividualRelation.schema.name
     );
-    const gender = entityService.findEntity(
+    const gender = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "genderUUID"),
       Gender.schema.name

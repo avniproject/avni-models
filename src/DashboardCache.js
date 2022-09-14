@@ -16,9 +16,6 @@ class DashboardCache extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create(updatedAt, cardJSON, filterJSON) {
     const dashboardCache = new DashboardCache();
     dashboardCache.uuid = this.rowUUID;

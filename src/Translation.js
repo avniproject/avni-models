@@ -32,9 +32,6 @@ class Translation extends BaseEntity {
     translation.language = this.language;
     translation.translations = this.translations;
   }
-
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
 }
 
 export default Translation;

@@ -17,10 +17,6 @@ class TaskStatus extends BaseEntity {
         },
     };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.taskType = entityMapper.toEntity(realmObject.taskType, TaskType);
-  }
-
     uuid: string;
     name: string;
     isTerminal: boolean;

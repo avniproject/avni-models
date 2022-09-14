@@ -14,10 +14,6 @@ class Documentation extends BaseEntity {
         }
     };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.documentationItems = entityMapper.toEntityCollection(realmObject.documentationItems, DocumentationItem);
-  }
-
   uuid: string;
     name: string;
     documentationItems: DocumentationItem[];

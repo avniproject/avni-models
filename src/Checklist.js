@@ -27,7 +27,7 @@ class Checklist extends BaseEntity {
   }
 
   static fromResource(checklistResource, entityService) {
-    const programEnrolment = entityService.findEntity(
+    const programEnrolment = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(checklistResource, "programEnrolmentUUID"),
       ProgramEnrolment.schema.name
@@ -38,7 +38,7 @@ class Checklist extends BaseEntity {
       ["uuid"],
       ["baseDate"]
     );
-    const checklistDetail = entityService.findEntity(
+    const checklistDetail = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(checklistResource, "checklistDetailUUID"),
       ChecklistDetail.schema.name

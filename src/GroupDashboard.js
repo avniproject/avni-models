@@ -17,19 +17,14 @@ class GroupDashboard extends BaseEntity {
         },
     };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.group = entityMapper.toEntityCollection(realmObject.group, Groups);
-    this.dashboard = entityMapper.toEntity(realmObject.dashboard, Dashboard);
-  }
-
     static fromResource(resource, entityService) {
         const groupDashboard = General.assignFields(resource, new GroupDashboard(), ["uuid", "primaryDashboard", "voided"]);
-        groupDashboard.group = entityService.findEntity(
+        groupDashboard.group = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "groupUUID"),
             Groups.schema.name
         );
-        groupDashboard.dashboard = entityService.findEntity(
+        groupDashboard.dashboard = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "dashboardUUID"),
             Dashboard.schema.name

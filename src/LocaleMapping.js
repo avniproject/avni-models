@@ -10,7 +10,4 @@ export default class LocaleMapping extends BaseEntity {
       displayText: "string",
     },
   };
-
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
 }

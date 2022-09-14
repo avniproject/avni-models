@@ -19,11 +19,6 @@ class GroupRole extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.groupSubjectType = entityMapper.toEntity(realmObject.groupSubjectType, SubjectType);
-    this.memberSubjectType = entityMapper.toEntity(realmObject.memberSubjectType, SubjectType);
-  }
-
   static householdRoles = {
     head: "Head of household",
     member: "Member",
@@ -46,12 +41,12 @@ class GroupRole extends BaseEntity{
   }
 
   static fromResource(resource, entityService) {
-    const groupSubjectType = entityService.findEntity(
+    const groupSubjectType = entityService.findByKey(
       "uuid",
       resource.groupSubjectTypeUUID,
       SubjectType.schema.name
     );
-    const memberSubjectType = entityService.findEntity(
+    const memberSubjectType = entityService.findByKey(
       "uuid",
       resource.memberSubjectTypeUUID,
       SubjectType.schema.name

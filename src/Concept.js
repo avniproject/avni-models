@@ -27,17 +27,45 @@ export class ConceptAnswer extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.concept = entityMapper.toEntity(realmObject.concept, Concept);
+  constructor(that) {
+    super(that);
+  }
+
+  get answerOrder() {
+      return this.that.answerOrder;
+  }
+
+  set answerOrder(x) {
+      this.that.answerOrder = x;
+  }
+
+  get unique() {
+      return this.that.unique;
+  }
+
+  set unique(x) {
+      this.that.unique = x;
+  }
+
+  set concept(x) {
+    this.that.concept = x;
+  }
+
+  get concept() {
+    return this.toEntity("concept", Concept);
   }
 
   get name() {
-    return this.concept.name;
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
   }
 
   static fromResource(resource, entityService) {
     const conceptAnswer = new ConceptAnswer();
-    conceptAnswer.concept = entityService.findEntity(
+    conceptAnswer.concept = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "conceptAnswerUUID"),
       Concept.schema.name
@@ -76,9 +104,72 @@ export default class Concept extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.keyValues = entityMapper.toValueObjectCollection(realmObject.keyValues, KeyValue);
-    this.answers = entityMapper.toEntityCollection(realmObject.answers, ConceptAnswer);
+  constructor(that) {
+    super(that, Concept);
+  }
+
+  get lowAbsolute() {
+      return this.that.lowAbsolute;
+  }
+
+  set lowAbsolute(x) {
+      this.that.lowAbsolute = x;
+  }
+
+  get hiAbsolute() {
+      return this.that.hiAbsolute;
+  }
+
+  set hiAbsolute(x) {
+      this.that.hiAbsolute = x;
+  }
+
+  get hiNormal() {
+      return this.that.hiNormal;
+  }
+
+  set hiNormal(x) {
+      this.that.hiNormal = x;
+  }
+
+  get unit() {
+      return this.that.unit;
+  }
+
+  set unit(x) {
+      this.that.unit = x;
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get dataType() {
+      return this.that.dataType;
+  }
+
+  set dataType(x) {
+      this.that.dataType = x;
+  }
+
+  get answers() {
+    return this.toList("answers", ConceptAnswer);
+  }
+
+  set answers(x) {
+    this.that.answers = x;
+  }
+
+  get keyValues() {
+    return this.toList("keyValues", KeyValue);
+  }
+
+  set keyValues(x) {
+    this.that.keyValues = x;
   }
 
   static dataType = {
@@ -242,7 +333,9 @@ export default class Concept extends BaseEntity {
   }
 
   getPossibleAnswerConcept(nameOrUuid) {
-    return _.find(this.answers, (conceptAnswer) => conceptAnswer.concept.name === nameOrUuid || conceptAnswer.concept.uuid === nameOrUuid);
+    return _.find(this.answers, (conceptAnswer) => {
+      return conceptAnswer.concept.name === nameOrUuid || conceptAnswer.concept.uuid === nameOrUuid;
+    });
   }
 
   getValueWrapperFor(obsValue) {

@@ -28,11 +28,6 @@ class FormElementGroup extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.formElements = entityMapper.toEntityCollection(realmObject.formElements, FormElement);
-    this.form = entityMapper.toEntity(realmObject.form, Form);
-  }
-
   static fromResource(resource, entityService) {
     const formElementGroup = General.assignFields(resource, new FormElementGroup(), [
       "uuid",
@@ -47,7 +42,7 @@ class FormElementGroup extends BaseEntity {
       "textColour",
       "backgroundColour"
     ]);
-    formElementGroup.form = entityService.findEntity(
+    formElementGroup.form = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "formUUID"),
       Form.schema.name

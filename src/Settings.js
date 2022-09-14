@@ -56,10 +56,6 @@ class Settings extends BaseEntity {
 
     return validationResults;
   }
-
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.locale = entityMapper.toEntity(realmObject.locale, LocaleMapping);
-  }
 }
 
 export default Settings;

@@ -26,11 +26,6 @@ class FormMapping extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.subjectType = entityMapper.toEntity(realmObject.subjectType, SubjectType);
-    this.taskType = entityMapper.toEntity(realmObject.taskType, TaskType);
-  }
-
   static create(uuid, form, entityUUID, observationsTypeEntityUUID) {
     let formMapping = new FormMapping();
     formMapping.uuid = uuid;
@@ -41,17 +36,17 @@ class FormMapping extends BaseEntity {
   }
 
   static fromResource(resource, entityService) {
-    const form = entityService.findEntity(
+    const form = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "formUUID"),
       Form.schema.name
     );
-    const subjectType = entityService.findEntity(
+    const subjectType = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "subjectTypeUUID"),
       SubjectType.schema.name
     );
-    const taskType = entityService.findEntity(
+    const taskType = entityService.findByKey(
         "uuid",
         ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
         TaskType.schema.name

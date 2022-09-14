@@ -17,9 +17,6 @@ class RuleFailureTelemetry extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static create({ ruleUUID, individualUUID, errorMessage, stacktrace }) {
     const ruleFailureTelemetry = new RuleFailureTelemetry();
     ruleFailureTelemetry.uuid = General.randomUUID();

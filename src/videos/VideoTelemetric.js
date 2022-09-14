@@ -18,10 +18,6 @@ class VideoTelemetric extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.video = entityMapper.toEntity(realmObject.video, Video);
-  }
-
   static create(obj = {}) {
     const { uuid = General.randomUUID() } = obj;
     return _.assignIn(

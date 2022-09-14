@@ -3,11 +3,52 @@ import ValidationResult from "./application/ValidationResult";
 import ResourceUtil from "./utility/ResourceUtil";
 import SyncError from "./error/SyncError";
 import {ErrorCodes} from "./error/ErrorCodes";
+import RealmListProxy from "./framework/RealmListProxy";
 
 class BaseEntity {
   static fieldKeys = {
     EXTERNAL_RULE: "EXTERNAL_RULE",
   };
+
+  constructor(that) {
+    this.that = _.isNil(that) ? {} : that;
+  }
+
+  get voided() {
+    return this.that.voided;
+  }
+
+  set voided(x) {
+    this.that.voided = x;
+  }
+
+  set uuid(x) {
+    this.that.uuid = x;
+  }
+
+  get uuid() {
+    return this.that.uuid;
+  }
+
+  // This check is used to not unnecessarily return our realm proxies
+  isThatARealmObject() {
+    return !_.isNil(this.that.objectSchema);
+  }
+
+  toList(property, listItemClass) {
+    if (this.isThatARealmObject())
+      return new RealmListProxy(this.that[property], listItemClass);
+    return this.that[property];
+  }
+
+  toEntity(property, entityClass) {
+    const propertyValue = this.that[property];
+    if (_.isNil(propertyValue)) return null;
+
+    if (this.isThatARealmObject())
+      return new entityClass(propertyValue);
+    return propertyValue;
+  }
 
   static mergeOn(key) {
     return (entities) => {
@@ -69,19 +110,12 @@ class BaseEntity {
     const childUuid = childResource.uuid;
     const parentUuid = ResourceUtil.getUUIDFor(childResource, parentUUIDField);
     const childSchema = childEntityClass.schema.name;
-    const parent = entityService.findEntity("uuid", parentUuid, parentSchema);
+    const parent = entityService.findByKey("uuid", parentUuid, parentSchema);
     if (!_.isNil(parent)) {
       return parent;
     }
     const errorCodeKey = `${childSchema}-${parentSchema}-Association`;
     throw new SyncError(ErrorCodes[errorCodeKey], `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
-  }
-
-  /*
-  All the primitives in "this" has been mapped from realmObject already. This method is called to map the fields which are non primitives. This method is meant to be overridden by all entity classes.
-   */
-  mapNonPrimitives(realmObject, entityMapper) {
-    throw new Error(`mapNonPrimitives not overridden by ${this.constructor && this.constructor.name}`);
   }
 }
 export default BaseEntity;

@@ -32,9 +32,6 @@ class MenuItem extends BaseEntity{
     }
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static fromResource(resource, entityService) {
     return this.assignFields(resource, new MenuItem());
   }

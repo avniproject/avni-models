@@ -70,9 +70,6 @@ class UserInfo extends BaseEntity {
     userInfo.syncSettings = '{}';
     return userInfo;
   }
-
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
 }
 
 export default UserInfo;

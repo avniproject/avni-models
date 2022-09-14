@@ -16,10 +16,6 @@ class TaskType extends BaseEntity {
         },
     };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.metadataSearchFields = entityMapper.toEntityCollection(realmObject.metadataSearchFields, Concept);
-  }
-
     static TaskTypeName = {
         Call: 'Call',
         OpenSubject: 'OpenSubject'

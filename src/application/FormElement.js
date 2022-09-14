@@ -32,23 +32,15 @@ class FormElement extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.keyValues = entityMapper.toValueObjectCollection(realmObject.keyValues, KeyValue);
-    this.concept = entityMapper.toEntity(realmObject.concept, Concept);
-    this.formElementGroup = entityMapper.toEntity(realmObject.formElementGroup, FormElementGroup);
-    this.validFormat = entityMapper.toValueObject(realmObject.validFormat, Format);
-    this.documentation = entityMapper.toEntity(realmObject.documentation, Documentation);
-  }
-
   static parentAssociations = () => new Map([[FormElementGroup, "formElementGroupUUID"]]);
 
   static fromResource(resource, entityService) {
-    const formElementGroup = entityService.findEntity(
+    const formElementGroup = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "formElementGroupUUID"),
       FormElementGroup.schema.name
     );
-    const concept = entityService.findEntity(
+    const concept = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "conceptUUID"),
       Concept.schema.name
@@ -62,7 +54,7 @@ class FormElement extends BaseEntity {
     );
     formElement.formElementGroup = formElementGroup;
     formElement.groupUuid = ResourceUtil.getUUIDFor(resource, "groupQuestionUUID");
-    formElement.documentation = entityService.findEntity(
+    formElement.documentation = entityService.findByKey(
         "uuid",
         ResourceUtil.getUUIDFor(resource, "documentationUUID"),
         Documentation.schema.name

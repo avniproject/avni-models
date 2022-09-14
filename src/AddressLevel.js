@@ -19,11 +19,6 @@ export class LocationMapping extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.parent = entityMapper.toEntity(realmObject.parent, AddressLevel);
-    this.child = entityMapper.toEntity(realmObject.child, AddressLevel);
-  }
-
   static create({ uuid, parent, child, voided }) {
     return _.assignIn(new LocationMapping(), { uuid, parent, child, voided });
   }
@@ -31,12 +26,12 @@ export class LocationMapping extends BaseEntity {
   static fromResource(resource, entityService) {
     return LocationMapping.create({
       uuid: resource.uuid,
-      parent: entityService.findEntity(
+      parent: entityService.findByKey(
         "uuid",
         ResourceUtil.getUUIDFor(resource, PARENT_LOCATION_UUID),
         AddressLevel.schema.name
       ),
-      child: entityService.findEntity(
+      child: entityService.findByKey(
         "uuid",
         ResourceUtil.getUUIDFor(resource, CHILD_LOCATION_UUID),
         AddressLevel.schema.name
@@ -67,11 +62,6 @@ class AddressLevel extends BaseEntity {
   };
   uuid;
   name;
-
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.locationMappings = entityMapper.toEntityCollection(realmObject.locationMappings, LocationMapping);
-    this.locationProperties = entityMapper.toValueObjectCollection(realmObject.locationProperties, Observation);
-  }
 
   static create({uuid, title, level, typeString, locationMappings = [], titleLineage, voided, parentUuid, typeUuid, locationProperties}, entityService) {
     const addressLevel = _.assignIn(new AddressLevel(), {

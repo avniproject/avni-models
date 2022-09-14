@@ -32,12 +32,12 @@ class ChecklistItem {
   }
 
   static fromResource(checklistItemResource, entityService) {
-    const checklist = entityService.findEntity(
+    const checklist = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(checklistItemResource, "checklistUUID"),
       Checklist.schema.name
     );
-    const checklistItemDetail = entityService.findEntity(
+    const checklistItemDetail = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(checklistItemResource, "checklistItemDetailUUID"),
       ChecklistItemDetail.schema.name

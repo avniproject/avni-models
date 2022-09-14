@@ -85,13 +85,13 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   static fromResource(resource, entityService) {
-    const program = entityService.findEntity(
+    const program = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "programUUID"),
       Program.schema.name
     );
     const programOutcomeUUID = ResourceUtil.getUUIDFor(resource, "programOutcomeUUID");
-    const individual = entityService.findEntity(
+    const individual = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "individualUUID"),
       Individual.schema.name
@@ -109,7 +109,7 @@ class ProgramEnrolment extends BaseEntity {
     programEnrolment.individual = individual;
 
     if (!_.isNil(programOutcomeUUID)) {
-      programEnrolment.programOutcome = entityService.findEntity(
+      programEnrolment.programOutcome = entityService.findByKey(
         "uuid",
         programOutcomeUUID,
         ProgramOutcome.schema.name

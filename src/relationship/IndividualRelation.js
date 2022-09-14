@@ -11,9 +11,6 @@ class IndividualRelation extends ReferenceEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static createEmptyInstance() {
     return new IndividualRelation();
   }

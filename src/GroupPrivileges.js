@@ -21,8 +21,8 @@ class GroupPrivileges extends BaseEntity {
   static fromResource(resource, entityService) {
     let groupPrivileges = new GroupPrivileges();
     groupPrivileges.uuid = resource.uuid;
-    groupPrivileges.group = entityService.findEntity("uuid", resource.groupUuid, Groups.schema.name);
-    groupPrivileges.privilege = entityService.findEntity(
+    groupPrivileges.group = entityService.findByKey("uuid", resource.groupUuid, Groups.schema.name);
+    groupPrivileges.privilege = entityService.findByKey(
       "uuid",
       resource.privilegeUuid,
       Privilege.schema.name
@@ -34,11 +34,6 @@ class GroupPrivileges extends BaseEntity {
     groupPrivileges.checklistDetailUuid = resource.checklistDetailUuid;
     groupPrivileges.allow = resource.allow;
     return groupPrivileges;
-  }
-
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.privilege = entityMapper.toEntity(realmObject.privilege, Privilege);
-    this.groups = entityMapper.toEntity(realmObject.groups, Groups);
   }
 }
 

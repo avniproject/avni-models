@@ -21,9 +21,6 @@ class SyncTelemetry extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static fromResource() {
     throw new Error(
       "This should never be called because server always returns an empty array for this resource"

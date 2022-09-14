@@ -42,7 +42,7 @@ class Encounter extends AbstractEncounter {
 
   static fromResource(resource, entityService) {
     const encounter = super.fromResource(resource, entityService);
-    encounter.individual = entityService.findEntity(
+    encounter.individual = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "individualUUID"),
       Individual.schema.name

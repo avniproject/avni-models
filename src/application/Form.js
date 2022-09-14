@@ -26,10 +26,6 @@ class Form extends BaseEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.formElementGroups = entityMapper.toEntityCollection(realmObject.formElementGroups, FormElementGroup);
-  }
-
   static safeInstance() {
     const form = new Form();
     form.formElementGroups = [];

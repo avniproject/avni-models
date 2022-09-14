@@ -18,9 +18,6 @@ class Groups extends BaseEntity{
     groups.hasAllPrivileges = resource.hasAllPrivileges;
     return groups;
   }
-
-  mapNonPrimitives(realmObject) {
-  }
 }
 
 export default Groups;

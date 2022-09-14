@@ -18,12 +18,6 @@ class ProgramConfig extends ReferenceEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.program = entityMapper.toEntity(realmObject.program, Program);
-    this.atRiskConcepts = entityMapper.toEntityCollection(realmObject.atRiskConcepts, Concept);
-    this.visitSchedule = entityMapper.toValueObjectCollection(realmObject.visitSchedule, VisitScheduleConfig);
-  }
-
   static fromResource(resource, entityService) {
     const programConfig = General.assignFields(resource, new ProgramConfig(), ["uuid"]);
     programConfig.visitSchedule = _.get(resource, "visitSchedule", []).map((vs) =>

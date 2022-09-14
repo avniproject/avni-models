@@ -12,9 +12,6 @@ class MyGroups extends BaseEntity{
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static fromResource(resource) {
     let myGroups = new MyGroups();
     myGroups.uuid = resource.uuid;

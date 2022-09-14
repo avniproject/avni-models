@@ -11,9 +11,6 @@ class IdentifierSource extends ReferenceEntity {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-  }
-
   static fromResource(resource) {
     return ReferenceEntity.fromResource(resource, new IdentifierSource());
   }
