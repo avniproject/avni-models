@@ -154,6 +154,33 @@ class Form {
     return formElement;
   }
 
+  getFormElementGroupNoWithEmptyObservation(observationHolder) {
+    let formElementGroupNo = 1;
+    let pageNoToBeReturned = undefined;
+
+    _.forEach(this.nonVoidedFormElementGroups(), (formElementGroup) => {
+      _.forEach(formElementGroup.formElements, (formElement) => {
+          let observation = observationHolder.findObservation(formElement.concept);
+          if(_.isNil(observation)) {
+            pageNoToBeReturned = formElementGroupNo;
+          }
+        });
+
+      if(!_.isUndefined(pageNoToBeReturned))
+        return false;
+      else
+        formElementGroupNo++;
+    });
+
+    return pageNoToBeReturned;
+  };
+
+  getSelectedAnswer(concept, nullReplacement) {
+    const observation = this.props.observationHolder.findObservation(concept);
+    return _.isNil(observation) ? nullReplacement : observation.getValueWrapper();
+  }
+
+
   orderObservations(observations) {
     const orderedObservations = [];
     const formElementOrdering = _.sortBy(this.formElementGroups, (feg) => feg.displayOrder).map((feg) =>
