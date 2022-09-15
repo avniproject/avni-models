@@ -13,6 +13,34 @@ class VisitScheduleConfig extends ReferenceEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get encounterType() {
+      return this.toEntity("encounterType", EncounterType);
+  }
+
+  set encounterType(x) {
+      this.that.encounterType = x;
+  }
+
+  get interval() {
+      return this.toEntity("interval", VisitScheduleInterval);
+  }
+
+  set interval(x) {
+      this.that.interval = x;
+  }
+
   static fromResource(resource, entityService) {
     const visitScheduleConfig = General.assignFields(resource, new VisitScheduleConfig(), [
       "uuid",

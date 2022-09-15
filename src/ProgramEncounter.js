@@ -6,6 +6,7 @@ import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import SchemaNames from "./SchemaNames";
 
 class ProgramEncounter extends AbstractEncounter {
   static fieldKeys = {
@@ -19,7 +20,7 @@ class ProgramEncounter extends AbstractEncounter {
   };
 
   static schema = {
-    name: "ProgramEncounter",
+    name: SchemaNames.ProgramEncounter,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
@@ -28,7 +29,7 @@ class ProgramEncounter extends AbstractEncounter {
       earliestVisitDateTime: { type: "date", optional: true },
       maxVisitDateTime: { type: "date", optional: true },
       encounterDateTime: { type: "date", optional: true },
-      programEnrolment: "ProgramEnrolment",
+      programEnrolment: SchemaNames.ProgramEnrolment,
       observations: { type: "list", objectType: "Observation" },
       cancelDateTime: { type: "date", optional: true },
       cancelObservations: { type: "list", objectType: "Observation" },
@@ -38,6 +39,18 @@ class ProgramEncounter extends AbstractEncounter {
       latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get programEnrolment() {
+      return this.toEntity("programEnrolment", ProgramEnrolment);
+  }
+
+  set programEnrolment(x) {
+      this.that.programEnrolment = x;
+  }
 
   static fromResource(resource, entityService) {
     const programEncounter = AbstractEncounter.fromResource(resource, entityService);

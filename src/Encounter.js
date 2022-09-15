@@ -7,16 +7,17 @@ import G from "./utility/General";
 import EncounterType from "./EncounterType";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import SchemaNames from "./SchemaNames";
 
 class Encounter extends AbstractEncounter {
   static schema = {
-    name: "Encounter",
+    name: SchemaNames.Encounter,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
       encounterType: "EncounterType",
       encounterDateTime: { type: "date", optional: true },
-      individual: "Individual",
+      individual: SchemaNames.Individual,
       observations: { type: "list", objectType: "Observation" },
       encounterLocation: { type: "Point", optional: true },
       name: { type: "string", optional: true },
@@ -29,6 +30,18 @@ class Encounter extends AbstractEncounter {
       latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get individual() {
+      return this.toEntity("individual", Individual);
+  }
+
+  set individual(x) {
+      this.that.individual = x;
+  }
 
   static validationKeys = {
     ENCOUNTER_LOCATION: "ENCOUNTER_LOCATION",

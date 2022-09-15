@@ -1,7 +1,6 @@
 import BaseEntity from "./BaseEntity";
 import _ from "lodash";
 import General from "./utility/General";
-import EntityMetaData from "./EntityMetaData";
 
 class SyncTelemetry extends BaseEntity {
   static schema = {
@@ -103,12 +102,11 @@ class SyncTelemetry extends BaseEntity {
     );
   }
 
-  static newInstance() {
+  static newInstance(allEntitiesMetaData) {
     const syncTelemetry = new SyncTelemetry();
     syncTelemetry.uuid = General.randomUUID();
     syncTelemetry.syncStartTime = new Date();
     syncTelemetry.syncStatus = "incomplete";
-    const allEntitiesMetaData = EntityMetaData.model();
     const initialEntityStatus = {
       push: allEntitiesMetaData.map((e) => ({
         entity: e.entityName,

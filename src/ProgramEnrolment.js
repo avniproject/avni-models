@@ -13,10 +13,12 @@ import Checklist from "./Checklist";
 import { findMediaObservations } from "./Media";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import Observation from "./Observation";
+import SchemaNames from "./SchemaNames";
 
 class ProgramEnrolment extends BaseEntity {
   static schema = {
-    name: "ProgramEnrolment",
+    name: SchemaNames.ProgramEnrolment,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
@@ -26,7 +28,7 @@ class ProgramEnrolment extends BaseEntity {
       programExitDateTime: { type: "date", optional: true },
       programExitObservations: { type: "list", objectType: "Observation" },
       programOutcome: { type: "ProgramOutcome", optional: true },
-      encounters: { type: "list", objectType: "ProgramEncounter" },
+      encounters: { type: "list", objectType: SchemaNames.ProgramEncounter },
       checklists: { type: "list", objectType: "Checklist" },
       individual: "Individual",
       enrolmentLocation: { type: "Point", optional: true },
@@ -36,7 +38,105 @@ class ProgramEnrolment extends BaseEntity {
     },
   };
 
-  voided;
+  constructor(that) {
+    super(that);
+  }
+
+  get program() {
+      return this.toEntity("program", Program);
+  }
+
+  set program(x) {
+      this.that.program = x;
+  }
+
+  get enrolmentDateTime() {
+      return this.that.enrolmentDateTime;
+  }
+
+  set enrolmentDateTime(x) {
+      this.that.enrolmentDateTime = x;
+  }
+
+  get observations() {
+      return this.toList("observations", Observation);
+  }
+
+  set observations(x) {
+      this.that.observations = x;
+  }
+
+  get programExitDateTime() {
+      return this.that.programExitDateTime;
+  }
+
+  set programExitDateTime(x) {
+      this.that.programExitDateTime = x;
+  }
+
+  get programExitObservations() {
+      return this.toList("programExitObservations", Observation);
+  }
+
+  set programExitObservations(x) {
+      this.that.programExitObservations = x;
+  }
+
+  get programOutcome() {
+      return this.toEntity("programOutcome", ProgramOutcome);
+  }
+
+  set programOutcome(x) {
+      this.that.programOutcome = x;
+  }
+
+  get encounters() {
+      return this.toList("encounters", ProgramEncounter);
+  }
+
+  set encounters(x) {
+      this.that.encounters = x;
+  }
+
+  get checklists() {
+      return this.toList("checklists", Checklist);
+  }
+
+  set checklists(x) {
+      this.that.checklists = x;
+  }
+
+  get individual() {
+      return this.toEntity("individual", Individual);
+  }
+
+  set individual(x) {
+      this.that.individual = x;
+  }
+
+  get enrolmentLocation() {
+      return this.toEntity("enrolmentLocation", Point);
+  }
+
+  set enrolmentLocation(x) {
+      this.that.enrolmentLocation = x;
+  }
+
+  get exitLocation() {
+      return this.toEntity("exitLocation", Point);
+  }
+
+  set exitLocation(x) {
+      this.that.exitLocation = x;
+  }
+
+  get latestEntityApprovalStatus() {
+      return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+  }
+
+  set latestEntityApprovalStatus(x) {
+      this.that.latestEntityApprovalStatus = x;
+  }
 
   static createEmptyInstance({ individual, program } = {}) {
     const programEnrolment = new ProgramEnrolment();

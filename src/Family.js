@@ -9,6 +9,7 @@ import Encounter from "./Encounter";
 import Individual from "./Individual";
 import _ from "lodash";
 import ObservationsHolder from "./ObservationsHolder";
+import Observation from "./Observation";
 
 class Family extends BaseEntity {
   static schema = {
@@ -25,6 +26,66 @@ class Family extends BaseEntity {
       observations: { type: "list", objectType: "Observation" },
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get registrationDate() {
+      return this.that.registrationDate;
+  }
+
+  set registrationDate(x) {
+      this.that.registrationDate = x;
+  }
+
+  get lowestAddressLevel() {
+      return this.toEntity("lowestAddressLevel", AddressLevel);
+  }
+
+  set lowestAddressLevel(x) {
+      this.that.lowestAddressLevel = x;
+  }
+
+  get headOfFamily() {
+      return this.toEntity("headOfFamily", Individual);
+  }
+
+  set headOfFamily(x) {
+      this.that.headOfFamily = x;
+  }
+
+  get typeOfFamily() {
+      return this.that.typeOfFamily;
+  }
+
+  set typeOfFamily(x) {
+      this.that.typeOfFamily = x;
+  }
+
+  get householdNumber() {
+      return this.that.householdNumber;
+  }
+
+  set householdNumber(x) {
+      this.that.householdNumber = x;
+  }
+
+  get members() {
+      return this.toList("members", Individual);
+  }
+
+  set members(x) {
+      this.that.members = x;
+  }
+
+  get observations() {
+      return this.toList("observations", Observation);
+  }
+
+  set observations(x) {
+      this.that.observations = x;
+  }
 
   static validationKeys = {
     HEAD_OF_FAMILY: "HEAD_OF_FAMILY",

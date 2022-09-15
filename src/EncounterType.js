@@ -17,6 +17,50 @@ class EncounterType extends ReferenceEntity {
     }
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get operationalEncounterTypeName() {
+      return this.that.operationalEncounterTypeName;
+  }
+
+  set operationalEncounterTypeName(x) {
+      this.that.operationalEncounterTypeName = x;
+  }
+
+  get displayName() {
+      return this.that.displayName;
+  }
+
+  set displayName(x) {
+      this.that.displayName = x;
+  }
+
+  get encounterEligibilityCheckRule() {
+      return this.that.encounterEligibilityCheckRule;
+  }
+
+  set encounterEligibilityCheckRule(x) {
+      this.that.encounterEligibilityCheckRule = x;
+  }
+
+  get active() {
+      return this.that.active;
+  }
+
+  set active(x) {
+      this.that.active = x;
+  }
+
   static create(name) {
     let encounterType = new EncounterType();
     encounterType.uuid = General.randomUUID();

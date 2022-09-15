@@ -16,14 +16,43 @@ class DocumentationItem extends BaseEntity {
         }
     };
 
-    uuid: string;
-    content: string;
-    contentHtml: string;
-    language: string;
-    documentation: Documentation;
-    voided: boolean;
+  constructor(that) {
+    super(that);
+  }
 
-    static fromResource(resource, entityService) {
+  get content() {
+      return this.that.content;
+  }
+
+  set content(x) {
+      this.that.content = x;
+  }
+
+  get language() {
+      return this.that.language;
+  }
+
+  set language(x) {
+      this.that.language = x;
+  }
+
+  get contentHtml() {
+      return this.that.contentHtml;
+  }
+
+  set contentHtml(x) {
+      this.that.contentHtml = x;
+  }
+
+  get documentation() {
+      return this.toEntity("documentation", Documentation);
+  }
+
+  set documentation(x) {
+      this.that.documentation = x;
+  }
+
+  static fromResource(resource, entityService) {
         const documentationItem = new DocumentationItem();
         documentationItem.uuid = resource.uuid;
         documentationItem.content = resource.content;

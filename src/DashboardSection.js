@@ -19,7 +19,51 @@ class DashboardSection extends BaseEntity {
         },
     };
 
-    static viewTypeName = {
+  constructor(that) {
+    super(that);
+  }
+
+  get dashboard() {
+      return this.toEntity("dashboard", Dashboard);
+  }
+
+  set dashboard(x) {
+      this.that.dashboard = x;
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get description() {
+      return this.that.description;
+  }
+
+  set description(x) {
+      this.that.description = x;
+  }
+
+  get viewType() {
+      return this.that.viewType;
+  }
+
+  set viewType(x) {
+      this.that.viewType = x;
+  }
+
+  get displayOrder() {
+      return this.that.displayOrder;
+  }
+
+  set displayOrder(x) {
+      this.that.displayOrder = x;
+  }
+
+  static viewTypeName = {
         Tile: 'Tile',
         List: 'List',
         Default: 'Default'

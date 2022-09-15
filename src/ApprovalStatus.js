@@ -19,7 +19,20 @@ class ApprovalStatus extends BaseEntity {
         Rejected: "Rejected",
     };
 
-    get isPending() {
+
+  constructor(that) {
+    super(that);
+  }
+
+  get status() {
+      return this.that.status;
+  }
+
+  set status(x) {
+      this.that.status = x;
+  }
+
+  get isPending() {
         return this.status === ApprovalStatus.statuses.Pending
     }
 

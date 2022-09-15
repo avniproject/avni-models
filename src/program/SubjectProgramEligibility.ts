@@ -22,15 +22,51 @@ class SubjectProgramEligibility extends BaseEntity {
         },
     };
 
-    uuid: string;
-    subject: Individual;
-    program: Program;
-    checkDate: Date;
-    eligible: boolean;
-    voided: boolean;
-    observations: Observation[];
+  constructor(that) {
+    super(that);
+  }
 
-    static createEmptyInstance(program, subject) {
+  get subject() {
+      return this.toEntity("subject", Individual);
+  }
+
+  set subject(x) {
+      this.that.subject = x;
+  }
+
+  get program() {
+      return this.toEntity("program", Program);
+  }
+
+  set program(x) {
+      this.that.program = x;
+  }
+
+  get checkDate() {
+      return this.that.checkDate;
+  }
+
+  set checkDate(x) {
+      this.that.checkDate = x;
+  }
+
+  get eligible() {
+      return this.that.eligible;
+  }
+
+  set eligible(x) {
+      this.that.eligible = x;
+  }
+
+  get observations() {
+      return this.toList("observations", Observation);
+  }
+
+  set observations(x) {
+      this.that.observations = x;
+  }
+
+  static createEmptyInstance(program, subject) {
       const subjectProgramEligibility = new SubjectProgramEligibility();
       subjectProgramEligibility.checkDate = new Date();
       subjectProgramEligibility.uuid = General.randomUUID();

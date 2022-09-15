@@ -12,6 +12,26 @@ class Translation extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get language() {
+    return this.that.language;
+  }
+
+  set language(x) {
+    this.that.language = x;
+  }
+
+  get platformTranslations() {
+    return this.that.platformTranslations;
+  }
+
+  set platformTranslations(x) {
+    this.that.platformTranslations = x;
+  }
+
   static fromResource(resource) {
     let translation = new Translation();
     translation.uuid = resource.uuid;

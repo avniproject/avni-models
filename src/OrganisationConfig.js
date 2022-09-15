@@ -15,6 +15,26 @@ class OrganisationConfig extends BaseEntity{
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get settings() {
+      return this.that.settings;
+  }
+
+  set settings(x) {
+      this.that.settings = x;
+  }
+
+  get worklistUpdationRule() {
+      return this.that.worklistUpdationRule;
+  }
+
+  set worklistUpdationRule(x) {
+      this.that.worklistUpdationRule = x;
+  }
+
   static fromResource(resource) {
     let organisationConfig = new OrganisationConfig();
     organisationConfig.uuid = OrganisationConfig.UUID;

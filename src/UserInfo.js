@@ -18,6 +18,50 @@ class UserInfo extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get username() {
+      return this.that.username;
+  }
+
+  set username(x) {
+      this.that.username = x;
+  }
+
+  get organisationName() {
+      return this.that.organisationName;
+  }
+
+  set organisationName(x) {
+      this.that.organisationName = x;
+  }
+
+  get settings() {
+      return this.that.settings;
+  }
+
+  set settings(x) {
+      this.that.settings = x;
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get syncSettings() {
+      return this.that.syncSettings;
+  }
+
+  set syncSettings(x) {
+      this.that.syncSettings = x;
+  }
+
   static fromResource(resource) {
     let userInfo = new UserInfo();
     userInfo.username = resource.username;

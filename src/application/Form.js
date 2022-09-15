@@ -3,7 +3,6 @@ import BaseEntity from "../BaseEntity";
 import FormElementGroup from "./FormElementGroup";
 import _ from "lodash";
 import FormMapping from "./FormMapping";
-import DraftSubject from "../draft/DraftSubject";
 import EntitySyncStatus from "../EntitySyncStatus";
 import moment from "moment";
 import QuestionGroup from "../observation/QuestionGroup";
@@ -25,6 +24,74 @@ class Form extends BaseEntity {
       taskScheduleRule: { type: "string", optional: true }
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get formType() {
+      return this.that.formType;
+  }
+
+  set formType(x) {
+      this.that.formType = x;
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get formElementGroups() {
+      return this.toList("formElementGroups", FormElementGroup);
+  }
+
+  set formElementGroups(x) {
+      this.that.formElementGroups = x;
+  }
+
+  get decisionRule() {
+      return this.that.decisionRule;
+  }
+
+  set decisionRule(x) {
+      this.that.decisionRule = x;
+  }
+
+  get visitScheduleRule() {
+      return this.that.visitScheduleRule;
+  }
+
+  set visitScheduleRule(x) {
+      this.that.visitScheduleRule = x;
+  }
+
+  get validationRule() {
+      return this.that.validationRule;
+  }
+
+  set validationRule(x) {
+      this.that.validationRule = x;
+  }
+
+  get checklistsRule() {
+      return this.that.checklistsRule;
+  }
+
+  set checklistsRule(x) {
+      this.that.checklistsRule = x;
+  }
+
+  get taskScheduleRule() {
+      return this.that.taskScheduleRule;
+  }
+
+  set taskScheduleRule(x) {
+      this.that.taskScheduleRule = x;
+  }
 
   static safeInstance() {
     const form = new Form();
@@ -61,7 +128,7 @@ class Form extends BaseEntity {
   static deleteOutOfSyncDrafts(entityService, formUUID) {
     const formMappings = entityService.findAllByCriteria(`form.uuid = '${formUUID}'`, FormMapping.schema.name);
     _.forEach(formMappings, ({subjectType}) => {
-      const outOfSyncDrafts = entityService.findAll(DraftSubject.schema.name)
+      const outOfSyncDrafts = entityService.findAll("DraftSubject")
           .filtered(`subjectType = $0`, subjectType);
       entityService.deleteAll(outOfSyncDrafts);
     })

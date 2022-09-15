@@ -11,6 +11,26 @@ class Groups extends BaseEntity{
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get hasAllPrivileges() {
+      return this.that.hasAllPrivileges;
+  }
+
+  set hasAllPrivileges(x) {
+      this.that.hasAllPrivileges = x;
+  }
+
   static fromResource(resource) {
     let groups = new Groups();
     groups.uuid = resource.uuid;

@@ -2,11 +2,6 @@ import ResourceUtil from "../utility/ResourceUtil";
 import Form from "./Form";
 import General from "../utility/General";
 import SubjectType from "../SubjectType";
-import Individual from "../Individual";
-import Encounter from "../Encounter";
-import ProgramEnrolment from "../ProgramEnrolment";
-import ProgramEncounter from "../ProgramEncounter";
-import ChecklistItem from "../ChecklistItem";
 import TaskType from "../task/TaskType";
 import BaseEntity from "../BaseEntity";
 
@@ -25,6 +20,58 @@ class FormMapping extends BaseEntity {
       taskType: {type: "TaskType", optional: true}
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get form() {
+      return this.toEntity("form", Form);
+  }
+
+  set form(x) {
+      this.that.form = x;
+  }
+
+  get subjectType() {
+      return this.toEntity("subjectType", SubjectType);
+  }
+
+  set subjectType(x) {
+      this.that.subjectType = x;
+  }
+
+  get entityUUID() {
+      return this.that.entityUUID;
+  }
+
+  set entityUUID(x) {
+      this.that.entityUUID = x;
+  }
+
+  get observationsTypeEntityUUID() {
+      return this.that.observationsTypeEntityUUID;
+  }
+
+  set observationsTypeEntityUUID(x) {
+      this.that.observationsTypeEntityUUID = x;
+  }
+
+  get enableApproval() {
+      return this.that.enableApproval;
+  }
+
+  set enableApproval(x) {
+      this.that.enableApproval = x;
+  }
+
+  get taskType() {
+      return this.toEntity("taskType", TaskType);
+  }
+
+  set taskType(x) {
+      this.that.taskType = x;
+  }
 
   static create(uuid, form, entityUUID, observationsTypeEntityUUID) {
     let formMapping = new FormMapping();
@@ -73,39 +120,39 @@ class FormMapping extends BaseEntity {
   getSchemaAndFilterQuery() {
     switch (this.form.formType) {
       case Form.formTypes.IndividualProfile :
-        return {schema: Individual.schema.name, filterQuery: `subjectType.uuid = '${this.subjectType.uuid}'`};
+        return {schema: "Individual", filterQuery: `subjectType.uuid = '${this.subjectType.uuid}'`};
       case Form.formTypes.IndividualEncounterCancellation:
         return {
-          schema: Encounter.schema.name,
+          schema: "Encounter",
           filterQuery: `individual.subjectType.uuid = '${this.subjectType.uuid}' and encounterType.uuid = '${this.observationsTypeEntityUUID}' and cancelDateTime <> null`
         };
       case Form.formTypes.Encounter :
         return {
-          schema: Encounter.schema.name,
+          schema: "Encounter",
           filterQuery: `individual.subjectType.uuid = '${this.subjectType.uuid}' and encounterType.uuid = '${this.observationsTypeEntityUUID}' and cancelDateTime = null`
         };
       case Form.formTypes.ProgramEnrolment:
         return {
-          schema: ProgramEnrolment.schema.name,
+          schema: "ProgramEnrolment",
           filterQuery: `individual.subjectType.uuid = '${this.subjectType.uuid}' and program.uuid = '${this.entityUUID}' and programExitDateTime = null`
         };
       case Form.formTypes.ProgramExit:
         return {
-          schema: ProgramEnrolment.schema.name,
+          schema: "ProgramEnrolment",
           filterQuery: `individual.subjectType.uuid = '${this.subjectType.uuid}' and program.uuid = '${this.entityUUID}' and programExitDateTime <> null`
         };
       case Form.formTypes.ProgramEncounter:
         return {
-          schema: ProgramEncounter.schema.name,
+          schema: "ProgramEncounter",
           filterQuery: `programEnrolment.individual.subjectType.uuid = '${this.subjectType.uuid}' and programEnrolment.program.uuid =  '${this.entityUUID}' and encounterType.uuid = '${this.observationsTypeEntityUUID}' and cancelDateTime = null`
         };
       case Form.formTypes.ProgramEncounterCancellation:
         return {
-          schema: ProgramEncounter.schema.name,
+          schema: "ProgramEncounter",
           filterQuery: `programEnrolment.individual.subjectType.uuid = '${this.subjectType.uuid}' and programEnrolment.program.uuid =  '${this.entityUUID}' and encounterType.uuid = '${this.observationsTypeEntityUUID}' and cancelDateTime <> null`
         };
       case Form.formTypes.ChecklistItem :
-        return {schema: ChecklistItem.schema.name, filterQuery: ''};
+        return {schema: "ChecklistItem", filterQuery: ''};
     }
   }
 }

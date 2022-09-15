@@ -1,6 +1,7 @@
 import _ from "lodash";
+import PersistedObject from "../PersistedObject";
 
-class Format {
+class Format extends PersistedObject {
   static map = new Map();
 
   static schema = {
@@ -10,6 +11,26 @@ class Format {
       descriptionKey: "string",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get regex() {
+      return this.that.regex;
+  }
+
+  set regex(x) {
+      this.that.regex = x;
+  }
+
+  get descriptionKey() {
+      return this.that.descriptionKey;
+  }
+
+  set descriptionKey(x) {
+      this.that.descriptionKey = x;
+  }
 
   static fromResource(resource) {
     if (_.isNil(resource)) return null;

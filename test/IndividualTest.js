@@ -92,7 +92,7 @@ describe('IndividualTest', () => {
         const fooEnrol3 = addEnrolment(300, fooProgram, new Date(2003, 1, 1));
         assert.equal(individual.firstActiveOrRecentEnrolment.uuid, 300);
 
-        delete fooEnrol1.programExitDateTime;
+        fooEnrol1.programExitDateTime = undefined;
         assert.equal(individual.firstActiveOrRecentEnrolment.uuid, 300);
 
         fooEnrol3.programExitDateTime = new Date(2003, 2, 2);

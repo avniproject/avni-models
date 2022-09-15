@@ -12,6 +12,18 @@ class RuleDependency extends ReferenceEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get code() {
+      return this.that.code;
+  }
+
+  set code(x) {
+      this.that.code = x;
+  }
+
   static fromResource(resource, entityService) {
     return General.assignFields(resource, new RuleDependency(), ["uuid", "code"]);
   }

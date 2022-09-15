@@ -18,6 +18,34 @@ class ProgramConfig extends ReferenceEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get program() {
+      return this.toEntity("program", Program);
+  }
+
+  set program(x) {
+      this.that.program = x;
+  }
+
+  get atRiskConcepts() {
+      return this.toList("atRiskConcepts", Concept);
+  }
+
+  set atRiskConcepts(x) {
+      this.that.atRiskConcepts = x;
+  }
+
+  get visitSchedule() {
+      return this.toList("visitSchedule", VisitScheduleConfig);
+  }
+
+  set visitSchedule(x) {
+      this.that.visitSchedule = x;
+  }
+
   static fromResource(resource, entityService) {
     const programConfig = General.assignFields(resource, new ProgramConfig(), ["uuid"]);
     programConfig.visitSchedule = _.get(resource, "visitSchedule", []).map((vs) =>

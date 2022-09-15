@@ -21,18 +21,82 @@ class Program extends ReferenceEntity {
       active: {type: 'bool', default: true}
     }
   };
-  uuid: string;
-  name: string;
-  operationalProgramName: string;
-  colour: string;
-  displayName: string;
-  programSubjectLabel: string;
-  enrolmentSummaryRule: string;
-  enrolmentEligibilityCheckRule: string;
-  active: boolean;
-  voided: boolean;
-  manualEligibilityCheckRequired: boolean;
-  manualEnrolmentEligibilityCheckRule: string;
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get operationalProgramName() {
+      return this.that.operationalProgramName;
+  }
+
+  set operationalProgramName(x) {
+      this.that.operationalProgramName = x;
+  }
+
+  get displayName() {
+      return this.that.displayName;
+  }
+
+  set displayName(x) {
+      this.that.displayName = x;
+  }
+
+  get colour() {
+      return this.that.colour;
+  }
+
+  set colour(x) {
+      this.that.colour = x;
+  }
+
+  get programSubjectLabel() {
+      return this.that.programSubjectLabel;
+  }
+
+  set programSubjectLabel(x) {
+      this.that.programSubjectLabel = x;
+  }
+
+  get enrolmentSummaryRule() {
+      return this.that.enrolmentSummaryRule;
+  }
+
+  set enrolmentSummaryRule(x) {
+      this.that.enrolmentSummaryRule = x;
+  }
+
+  get enrolmentEligibilityCheckRule() {
+      return this.that.enrolmentEligibilityCheckRule;
+  }
+
+  set enrolmentEligibilityCheckRule(x) {
+      this.that.enrolmentEligibilityCheckRule = x;
+  }
+
+  get manualEnrolmentEligibilityCheckRule() {
+      return this.that.manualEnrolmentEligibilityCheckRule;
+  }
+
+  set manualEnrolmentEligibilityCheckRule(x) {
+      this.that.manualEnrolmentEligibilityCheckRule = x;
+  }
+
+  get active() {
+      return this.that.active;
+  }
+
+  set active(x) {
+      this.that.active = x;
+  }
 
   static fromResource(operationalProgram): Program {
     const program = new Program();

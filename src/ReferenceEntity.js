@@ -2,6 +2,10 @@ import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
 
 class ReferenceEntity extends BaseEntity {
+  constructor(that) {
+    super(that);
+  }
+
   static fromResource(resource, entity) {
     return General.assignFields(resource, entity, ["uuid", "name"]);
   }

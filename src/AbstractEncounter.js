@@ -9,12 +9,97 @@ import {findMediaObservations} from "./Media";
 import Point from "./geo/Point";
 import moment from "moment";
 import Observation from "./Observation";
+import EntityApprovalStatus from "./EntityApprovalStatus";
 
 class AbstractEncounter extends BaseEntity {
   static fieldKeys = {
     ENCOUNTER_DATE_TIME: "ENCOUNTER_DATE_TIME",
     COMPLETION_DATE: "COMPLETION_DATE",
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get latestEntityApprovalStatus() {
+    return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+  }
+
+  set latestEntityApprovalStatus(x) {
+    this.that.latestEntityApprovalStatus = x;
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get earliestVisitDateTime() {
+      return this.that.earliestVisitDateTime;
+  }
+
+  set earliestVisitDateTime(x) {
+      this.that.earliestVisitDateTime = x;
+  }
+
+  get maxVisitDateTime() {
+      return this.that.maxVisitDateTime;
+  }
+
+  set maxVisitDateTime(x) {
+      this.that.maxVisitDateTime = x;
+  }
+
+  get encounterType() {
+      return this.toEntity("encounterType", EncounterType);
+  }
+
+  set encounterType(x) {
+      this.that.encounterType = x;
+  }
+
+  get encounterDateTime() {
+    return this.that.encounterDateTime;
+  }
+
+  set encounterDateTime(x) {
+    this.that.encounterDateTime = x;
+  }
+
+  get observations() {
+    return this.toList("observations", Observation);
+  }
+
+  set observations(x) {
+    this.that.observations = x;
+  }
+
+  get cancelLocation() {
+    return this.toEntity("cancelLocation", Point);
+  }
+
+  set cancelLocation(x) {
+    this.that.cancelLocation = x;
+  }
+
+  get cancelObservations() {
+      return this.toList("cancelObservations", Observation);
+  }
+
+  set cancelObservations(x) {
+      this.that.cancelObservations = x;
+  }
+
+  get cancelDateTime() {
+      return this.that.cancelDateTime;
+  }
+
+  set cancelDateTime(x) {
+      this.that.cancelDateTime = x;
+  }
 
   validate() {
     return _.isNil(this.encounterDateTime)

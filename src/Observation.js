@@ -3,8 +3,9 @@ import Concept from "./Concept";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import General from "./utility/General";
 import Displayable from "./Displayable";
+import PersistedObject from "./PersistedObject";
 
-class Observation {
+class Observation extends PersistedObject {
   static schema = {
     name: "Observation",
     properties: {
@@ -13,16 +14,32 @@ class Observation {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get concept() {
+      return this.toEntity("concept", Concept);
+  }
+
+  set concept(x) {
+      this.that.concept = x;
+  }
+
+  get valueJSON() {
+      return this.that.valueJSON;
+  }
+
+  set valueJSON(x) {
+      this.that.valueJSON = x;
+  }
+
   static create(concept, value, abnormal = false) {
     const observation = new Observation();
     observation.concept = concept;
     observation.valueJSON = value;
     observation.abnormal = abnormal;
     return observation;
-  }
-
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.concept = entityMapper.toEntity(realmObject.concept, Concept);
   }
 
   toggleMultiSelectAnswer(answerUUID) {

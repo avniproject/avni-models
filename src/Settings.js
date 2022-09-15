@@ -2,8 +2,8 @@ import ValidationResult from "./application/ValidationResult";
 import _ from "lodash";
 import ValidationResults from "./application/ValidationResults";
 import General from "./utility/General";
-import {BaseEntity} from "./index";
 import LocaleMapping from "./LocaleMapping";
+import BaseEntity from "./BaseEntity";
 
 class Settings extends BaseEntity {
   static UUID = "2aa81079-38c3-4d9f-8380-f50544b32b3d";

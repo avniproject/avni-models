@@ -17,6 +17,58 @@ class LocationHierarchy extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get type() {
+      return this.that.type;
+  }
+
+  set type(x) {
+      this.that.type = x;
+  }
+
+  get level() {
+      return this.that.level;
+  }
+
+  set level(x) {
+      this.that.level = x;
+  }
+
+  get parentUuid() {
+      return this.that.parentUuid;
+  }
+
+  set parentUuid(x) {
+      this.that.parentUuid = x;
+  }
+
+  get titleLineage() {
+      return this.that.titleLineage;
+  }
+
+  set titleLineage(x) {
+      this.that.titleLineage = x;
+  }
+
+  get typeUuid() {
+      return this.that.typeUuid;
+  }
+
+  set typeUuid(x) {
+      this.that.typeUuid = x;
+  }
+
   static create({uuid, title, level, typeString, parentUuid, titleLineage, voided, typeUuid}) {
     return _.assignIn(new LocationHierarchy(), {
       uuid,

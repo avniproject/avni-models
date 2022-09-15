@@ -29,18 +29,146 @@ class SubjectType extends ReferenceEntity {
       nameHelpText: {type: "string", optional: true},
     }
   };
-  uuid;
-  name;
-  iconFileS3Key;
-  //This property is right now used only in web-app, adding it this way for the clone().
-  allowEmptyLocation;
-  allowProfilePicture;
-  uniqueName;
-  allowMiddleName;
-  validFirstNameFormat;
-  validMiddleNameFormat;
-  validLastNameFormat;
-  programEligibilityCheckRule;
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get group() {
+      return this.that.group;
+  }
+
+  set group(x) {
+      this.that.group = x;
+  }
+
+  get household() {
+      return this.that.household;
+  }
+
+  set household(x) {
+      this.that.household = x;
+  }
+
+  get active() {
+      return this.that.active;
+  }
+
+  set active(x) {
+      this.that.active = x;
+  }
+
+  get type() {
+      return this.that.type;
+  }
+
+  set type(x) {
+      this.that.type = x;
+  }
+
+  get subjectSummaryRule() {
+      return this.that.subjectSummaryRule;
+  }
+
+  set subjectSummaryRule(x) {
+      this.that.subjectSummaryRule = x;
+  }
+
+  get programEligibilityCheckRule() {
+      return this.that.programEligibilityCheckRule;
+  }
+
+  set programEligibilityCheckRule(x) {
+      this.that.programEligibilityCheckRule = x;
+  }
+
+  get uniqueName() {
+      return this.that.uniqueName;
+  }
+
+  set uniqueName(x) {
+      this.that.uniqueName = x;
+  }
+
+  get validFirstNameFormat() {
+      return this.toEntity("validFirstNameFormat", Format);
+  }
+
+  set validFirstNameFormat(x) {
+      this.that.validFirstNameFormat = x;
+  }
+
+  get validMiddleNameFormat() {
+      return this.toEntity("validMiddleNameFormat", Format);
+  }
+
+  set validMiddleNameFormat(x) {
+      this.that.validMiddleNameFormat = x;
+  }
+
+  get validLastNameFormat() {
+      return this.toEntity("validLastNameFormat", Format);
+  }
+
+  set validLastNameFormat(x) {
+      this.that.validLastNameFormat = x;
+  }
+
+  get iconFileS3Key() {
+      return this.that.iconFileS3Key;
+  }
+
+  set iconFileS3Key(x) {
+      this.that.iconFileS3Key = x;
+  }
+
+  get syncRegistrationConcept1() {
+      return this.that.syncRegistrationConcept1;
+  }
+
+  set syncRegistrationConcept1(x) {
+      this.that.syncRegistrationConcept1 = x;
+  }
+
+  get syncRegistrationConcept2() {
+      return this.that.syncRegistrationConcept2;
+  }
+
+  set syncRegistrationConcept2(x) {
+      this.that.syncRegistrationConcept2 = x;
+  }
+
+  get allowProfilePicture() {
+      return this.that.allowProfilePicture;
+  }
+
+  set allowProfilePicture(x) {
+      this.that.allowProfilePicture = x;
+  }
+
+  get allowMiddleName() {
+      return this.that.allowMiddleName;
+  }
+
+  set allowMiddleName(x) {
+      this.that.allowMiddleName = x;
+  }
+
+  get nameHelpText() {
+      return this.that.nameHelpText;
+  }
+
+  set nameHelpText(x) {
+      this.that.nameHelpText = x;
+  }
 
   static types = {
     Person: 'Person',

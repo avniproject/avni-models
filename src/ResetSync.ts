@@ -13,12 +13,27 @@ class ResetSync extends BaseEntity {
         }
     };
 
-    uuid: string;
-    subjectTypeUUID: string;
-    hasMigrated: boolean;
-    voided: boolean;
+  constructor(that) {
+    super(that);
+  }
 
-    static fromResource(resource) {
+  get subjectTypeUUID() {
+      return this.that.subjectTypeUUID;
+  }
+
+  set subjectTypeUUID(x) {
+      this.that.subjectTypeUUID = x;
+  }
+
+  get hasMigrated() {
+      return this.that.hasMigrated;
+  }
+
+  set hasMigrated(x) {
+      this.that.hasMigrated = x;
+  }
+
+  static fromResource(resource) {
         const resetSync = new ResetSync();
         resetSync.uuid = resource.uuid;
         resetSync.voided = resource.voided;

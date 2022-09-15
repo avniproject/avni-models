@@ -28,6 +28,98 @@ class FormElementGroup extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get displayOrder() {
+      return this.that.displayOrder;
+  }
+
+  set displayOrder(x) {
+      this.that.displayOrder = x;
+  }
+
+  get display() {
+      return this.that.display;
+  }
+
+  set display(x) {
+      this.that.display = x;
+  }
+
+  get formElements() {
+      return this.toList("formElements", FormElement);
+  }
+
+  set formElements(x) {
+      this.that.formElements = x;
+  }
+
+  get form() {
+      return this.toEntity("form", Form);
+  }
+
+  set form(x) {
+      this.that.form = x;
+  }
+
+  get rule() {
+      return this.that.rule;
+  }
+
+  set rule(x) {
+      this.that.rule = x;
+  }
+
+  get startTime() {
+      return this.that.startTime;
+  }
+
+  set startTime(x) {
+      this.that.startTime = x;
+  }
+
+  get stayTime() {
+      return this.that.stayTime;
+  }
+
+  set stayTime(x) {
+      this.that.stayTime = x;
+  }
+
+  get timed() {
+      return this.that.timed;
+  }
+
+  set timed(x) {
+      this.that.timed = x;
+  }
+
+  get textColour() {
+      return this.that.textColour;
+  }
+
+  set textColour(x) {
+      this.that.textColour = x;
+  }
+
+  get backgroundColour() {
+      return this.that.backgroundColour;
+  }
+
+  set backgroundColour(x) {
+      this.that.backgroundColour = x;
+  }
+
   static fromResource(resource, entityService) {
     const formElementGroup = General.assignFields(resource, new FormElementGroup(), [
       "uuid",

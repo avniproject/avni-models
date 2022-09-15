@@ -10,4 +10,24 @@ export default class LocaleMapping extends BaseEntity {
       displayText: "string",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get locale() {
+      return this.that.locale;
+  }
+
+  set locale(x) {
+      this.that.locale = x;
+  }
+
+  get displayText() {
+      return this.that.displayText;
+  }
+
+  set displayText(x) {
+      this.that.displayText = x;
+  }
 }

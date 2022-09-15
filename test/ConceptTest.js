@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import { Concept, ConceptAnswer } from "../src";
+import Concept from "../src/Concept";
 import _ from "lodash";
 
 describe('ConceptTest', () => {

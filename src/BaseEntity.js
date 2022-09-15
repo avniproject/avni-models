@@ -3,16 +3,12 @@ import ValidationResult from "./application/ValidationResult";
 import ResourceUtil from "./utility/ResourceUtil";
 import SyncError from "./error/SyncError";
 import {ErrorCodes} from "./error/ErrorCodes";
-import RealmListProxy from "./framework/RealmListProxy";
+import PersistedObject from "./PersistedObject";
 
-class BaseEntity {
+class BaseEntity extends PersistedObject {
   static fieldKeys = {
     EXTERNAL_RULE: "EXTERNAL_RULE",
   };
-
-  constructor(that) {
-    this.that = _.isNil(that) ? {} : that;
-  }
 
   get voided() {
     return this.that.voided;
@@ -28,26 +24,6 @@ class BaseEntity {
 
   get uuid() {
     return this.that.uuid;
-  }
-
-  // This check is used to not unnecessarily return our realm proxies
-  isThatARealmObject() {
-    return !_.isNil(this.that.objectSchema);
-  }
-
-  toList(property, listItemClass) {
-    if (this.isThatARealmObject())
-      return new RealmListProxy(this.that[property], listItemClass);
-    return this.that[property];
-  }
-
-  toEntity(property, entityClass) {
-    const propertyValue = this.that[property];
-    if (_.isNil(propertyValue)) return null;
-
-    if (this.isThatARealmObject())
-      return new entityClass(propertyValue);
-    return propertyValue;
   }
 
   static mergeOn(key) {

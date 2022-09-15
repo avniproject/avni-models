@@ -1,8 +1,19 @@
 import ObservationsHolder from "../ObservationsHolder";
 import Individual from "../Individual";
+import BaseEntity from "../BaseEntity";
+import SubjectType from "../SubjectType";
+import Gender from "../Gender";
+import AddressLevel from "../AddressLevel";
+import ProgramEnrolment from "../ProgramEnrolment";
+import Encounter from "../Encounter";
+import Observation from "../Observation";
+import IndividualRelationship from "../relationship/IndividualRelationship";
+import GroupSubject from "../GroupSubject";
+import Point from "../geo/Point";
+import EntityApprovalStatus from "../EntityApprovalStatus";
+import Comment from "../Comment";
 
-
-class DraftSubject {
+class DraftSubject extends BaseEntity {
     static schema = {
         name: "DraftSubject",
         primaryKey: "uuid",
@@ -23,6 +34,162 @@ class DraftSubject {
             totalMembers: {type: "string", optional: true}
         },
     };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get subjectType() {
+    return this.toEntity("subjectType", SubjectType);
+  }
+
+  set subjectType(x) {
+    this.that.subjectType = x;
+  }
+
+  get firstName() {
+    return this.that.firstName;
+  }
+
+  set firstName(x) {
+    this.that.firstName = x;
+  }
+
+  get middleName() {
+    return this.that.middleName;
+  }
+
+  set middleName(x) {
+    this.that.middleName = x;
+  }
+
+  get lastName() {
+    return this.that.lastName;
+  }
+
+  set lastName(x) {
+    this.that.lastName = x;
+  }
+
+  get profilePicture() {
+    return this.that.profilePicture;
+  }
+
+  set profilePicture(x) {
+    this.that.profilePicture = x;
+  }
+
+  get dateOfBirth() {
+    return this.that.dateOfBirth;
+  }
+
+  set dateOfBirth(x) {
+    this.that.dateOfBirth = x;
+  }
+
+  get dateOfBirthVerified() {
+    return this.that.dateOfBirthVerified;
+  }
+
+  set dateOfBirthVerified(x) {
+    this.that.dateOfBirthVerified = x;
+  }
+
+  get gender() {
+    return this.toEntity("gender", Gender);
+  }
+
+  set gender(x) {
+    this.that.gender = x;
+  }
+
+  get registrationDate() {
+    return this.that.registrationDate;
+  }
+
+  set registrationDate(x) {
+    this.that.registrationDate = x;
+  }
+
+  get lowestAddressLevel() {
+    return this.toEntity("lowestAddressLevel", AddressLevel);
+  }
+
+  set lowestAddressLevel(x) {
+    this.that.lowestAddressLevel = x;
+  }
+
+  get enrolments() {
+    return this.toList("enrolments", ProgramEnrolment);
+  }
+
+  set enrolments(x) {
+    this.that.enrolments = x;
+  }
+
+  get encounters() {
+    return this.toList("encounters", Encounter);
+  }
+
+  set encounters(x) {
+    this.that.encounters = x;
+  }
+
+  get observations() {
+    return this.toList("observations", Observation);
+  }
+
+  set observations(x) {
+    this.that.observations = x;
+  }
+
+  get relationships() {
+    return this.toList("relationships", IndividualRelationship);
+  }
+
+  set relationships(x) {
+    this.that.relationships = x;
+  }
+
+  get groupSubjects() {
+    return this.toList("groupSubjects", GroupSubject);
+  }
+
+  set groupSubjects(x) {
+    this.that.groupSubjects = x;
+  }
+
+  get registrationLocation() {
+    return this.toEntity("registrationLocation", Point);
+  }
+
+  set registrationLocation(x) {
+    this.that.registrationLocation = x;
+  }
+
+  get latestEntityApprovalStatus() {
+    return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+  }
+
+  set latestEntityApprovalStatus(x) {
+    this.that.latestEntityApprovalStatus = x;
+  }
+
+  get comments() {
+    return this.toList("comments", Comment);
+  }
+
+  set comments(x) {
+    this.that.comments = x;
+  }
+
+  get groups() {
+    return this.toList("groups", GroupSubject);
+  }
+
+  set groups(x) {
+    this.that.groups = x;
+  }
 
     static create(subject, totalMembers) {
         const draftSubject = new DraftSubject();

@@ -1,6 +1,6 @@
-import BaseEntity from "./BaseEntity";
+import PersistedObject from "./PersistedObject";
 
-class EntityQueue extends BaseEntity{
+class EntityQueue extends PersistedObject {
   static schema = {
     name: "EntityQueue",
     properties: {
@@ -9,6 +9,30 @@ class EntityQueue extends BaseEntity{
       entity: "string",
     },
   };
+
+  get savedAt() {
+      return this.that.savedAt;
+  }
+
+  set savedAt(x) {
+      this.that.savedAt = x;
+  }
+
+  get entityUUID() {
+      return this.that.entityUUID;
+  }
+
+  set entityUUID(x) {
+      this.that.entityUUID = x;
+  }
+
+  get entity() {
+      return this.that.entity;
+  }
+
+  set entity(x) {
+      this.that.entity = x;
+  }
 
   static create(entity, schema, savedAt = new Date()) {
     var entityQueue = new EntityQueue();

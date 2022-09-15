@@ -60,8 +60,74 @@ class AddressLevel extends BaseEntity {
       typeUuid: {type: "string", optional: true}
     },
   };
-  uuid;
-  name;
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get level() {
+      return this.that.level;
+  }
+
+  set level(x) {
+      this.that.level = x;
+  }
+
+  get type() {
+      return this.that.type;
+  }
+
+  set type(x) {
+      this.that.type = x;
+  }
+
+  get locationMappings() {
+      return this.toList("locationMappings", LocationMapping);
+  }
+
+  set locationMappings(x) {
+      this.that.locationMappings = x;
+  }
+
+  get locationProperties() {
+      return this.toList("locationProperties", Observation);
+  }
+
+  set locationProperties(x) {
+      this.that.locationProperties = x;
+  }
+
+  get titleLineage() {
+      return this.that.titleLineage;
+  }
+
+  set titleLineage(x) {
+      this.that.titleLineage = x;
+  }
+
+  get parentUuid() {
+      return this.that.parentUuid;
+  }
+
+  set parentUuid(x) {
+      this.that.parentUuid = x;
+  }
+
+  get typeUuid() {
+      return this.that.typeUuid;
+  }
+
+  set typeUuid(x) {
+      this.that.typeUuid = x;
+  }
 
   static create({uuid, title, level, typeString, locationMappings = [], titleLineage, voided, parentUuid, typeUuid, locationProperties}, entityService) {
     const addressLevel = _.assignIn(new AddressLevel(), {

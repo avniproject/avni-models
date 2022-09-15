@@ -32,6 +32,98 @@ class FormElement extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get displayOrder() {
+      return this.that.displayOrder;
+  }
+
+  set displayOrder(x) {
+      this.that.displayOrder = x;
+  }
+
+  get mandatory() {
+      return this.that.mandatory;
+  }
+
+  set mandatory(x) {
+      this.that.mandatory = x;
+  }
+
+  get keyValues() {
+      return this.toList("keyValues", KeyValue);
+  }
+
+  set keyValues(x) {
+      this.that.keyValues = x;
+  }
+
+  get concept() {
+      return this.toEntity("concept", Concept);
+  }
+
+  set concept(x) {
+      this.that.concept = x;
+  }
+
+  get type() {
+      return this.that.type;
+  }
+
+  set type(x) {
+      this.that.type = x;
+  }
+
+  get formElementGroup() {
+      return this.toEntity("formElementGroup", FormElementGroup);
+  }
+
+  set formElementGroup(x) {
+      this.that.formElementGroup = x;
+  }
+
+  get validFormat() {
+      return this.toEntity("validFormat", Format);
+  }
+
+  set validFormat(x) {
+      this.that.validFormat = x;
+  }
+
+  get rule() {
+      return this.that.rule;
+  }
+
+  set rule(x) {
+      this.that.rule = x;
+  }
+
+  get groupUuid() {
+      return this.that.groupUuid;
+  }
+
+  set groupUuid(x) {
+      this.that.groupUuid = x;
+  }
+
+  get documentation() {
+      return this.toEntity("documentation", Documentation);
+  }
+
+  set documentation(x) {
+      this.that.documentation = x;
+  }
+
   static parentAssociations = () => new Map([[FormElementGroup, "formElementGroupUUID"]]);
 
   static fromResource(resource, entityService) {

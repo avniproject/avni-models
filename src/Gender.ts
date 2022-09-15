@@ -10,8 +10,18 @@ class Gender extends ReferenceEntity {
       name: "string",
     },
   };
-  name: string;
-  uuid: string;
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
 
   isMale() {
     return this.name === "Male";

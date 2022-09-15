@@ -7,10 +7,11 @@ import ObservationsHolder from "./ObservationsHolder";
 import ChecklistItemDetail from "./ChecklistItemDetail";
 import moment from "moment";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import SchemaNames from "./SchemaNames";
 
 class ChecklistItem {
   static schema = {
-    name: "ChecklistItem",
+    name: SchemaNames.ChecklistItem,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

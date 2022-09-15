@@ -17,11 +17,6 @@ class ChecklistItemStatus {
     },
   };
 
-  mapNonPrimitives(realmObject, entityMapper) {
-    this.from = entityMapper.toValueObject(realmObject.from, StringKeyNumericValue);
-    this.to = entityMapper.toValueObject(realmObject.to, StringKeyNumericValue);
-  }
-
   static fromResource(resource, entityService) {
     const checklistItemStatus = General.assignFields(resource, new ChecklistItemStatus(), [
       "state",

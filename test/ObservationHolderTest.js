@@ -2,7 +2,6 @@ import { assert } from "chai";
 import EntityFactory from "./EntityFactory";
 import ObservationsHolder from "../src/ObservationsHolder";
 import Concept from "../src/Concept";
-import moment from "moment/moment";
 
 describe('ObservationHolderTest', () => {
     describe("Remove Observations not present in the form elements", () => {

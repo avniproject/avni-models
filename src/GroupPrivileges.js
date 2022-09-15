@@ -1,4 +1,5 @@
-import {Groups, Privilege} from "./index";
+import Groups from "./Groups";
+import Privilege from "./Privilege";
 import BaseEntity from "./BaseEntity";
 
 class GroupPrivileges extends BaseEntity {
@@ -17,6 +18,74 @@ class GroupPrivileges extends BaseEntity {
       allow: { type: "bool", default: false },
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get group() {
+      return this.toEntity("group", Groups);
+  }
+
+  set group(x) {
+      this.that.group = x;
+  }
+
+  get privilege() {
+      return this.toEntity("privilege", Privilege);
+  }
+
+  set privilege(x) {
+      this.that.privilege = x;
+  }
+
+  get subjectTypeUuid() {
+      return this.that.subjectTypeUuid;
+  }
+
+  set subjectTypeUuid(x) {
+      this.that.subjectTypeUuid = x;
+  }
+
+  get programUuid() {
+      return this.that.programUuid;
+  }
+
+  set programUuid(x) {
+      this.that.programUuid = x;
+  }
+
+  get programEncounterTypeUuid() {
+      return this.that.programEncounterTypeUuid;
+  }
+
+  set programEncounterTypeUuid(x) {
+      this.that.programEncounterTypeUuid = x;
+  }
+
+  get encounterTypeUuid() {
+      return this.that.encounterTypeUuid;
+  }
+
+  set encounterTypeUuid(x) {
+      this.that.encounterTypeUuid = x;
+  }
+
+  get checklistDetailUuid() {
+      return this.that.checklistDetailUuid;
+  }
+
+  set checklistDetailUuid(x) {
+      this.that.checklistDetailUuid = x;
+  }
+
+  get allow() {
+      return this.that.allow;
+  }
+
+  set allow(x) {
+      this.that.allow = x;
+  }
 
   static fromResource(resource, entityService) {
     let groupPrivileges = new GroupPrivileges();

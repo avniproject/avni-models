@@ -15,6 +15,25 @@ class StandardReportCardType extends BaseEntity {
         },
     };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get description() {
+      return this.that.description;
+  }
+
+  set description(x) {
+      this.that.description = x;
+  }
 
   static type = {
         PendingApproval: "Pending approval",

@@ -9,6 +9,18 @@ class ProgramOutcome extends ReferenceEntity {
       name: "string",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
 }
 
 export default ProgramOutcome;

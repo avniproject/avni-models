@@ -12,6 +12,26 @@ class MyGroups extends BaseEntity{
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get groupUuid() {
+      return this.that.groupUuid;
+  }
+
+  set groupUuid(x) {
+      this.that.groupUuid = x;
+  }
+
+  get groupName() {
+      return this.that.groupName;
+  }
+
+  set groupName(x) {
+      this.that.groupName = x;
+  }
+
   static fromResource(resource) {
     let myGroups = new MyGroups();
     myGroups.uuid = resource.uuid;

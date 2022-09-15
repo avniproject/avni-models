@@ -1,4 +1,6 @@
-import {EntityMappingConfig, RealmProxy, Settings} from "../../src";
+import EntityMappingConfig from "../../src/Schema";
+import RealmProxy from "../../src/framework/RealmProxy";
+import Settings from "../../src/Settings";
 import StubbedRealmDb from "./stubs/StubbedRealmDb";
 
 import {assert} from 'chai';

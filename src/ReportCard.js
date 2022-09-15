@@ -19,6 +19,46 @@ class ReportCard extends BaseEntity {
         },
     };
 
+    get name() {
+        return this.that.name;
+    }
+
+    set name(x) {
+        this.that.name = x;
+    }
+
+    get query() {
+        return this.that.query;
+    }
+
+    set query(x) {
+        this.that.query = x;
+    }
+
+    get description() {
+        return this.that.description;
+    }
+
+    set description(x) {
+        this.that.description = x;
+    }
+
+    get standardReportCardType() {
+        return this.toEntity("standardReportCardType", StandardReportCardType);
+    }
+
+    set standardReportCardType(x) {
+        this.that.standardReportCardType = x;
+    }
+
+    get colour() {
+        return this.that.colour;
+    }
+
+    set colour(x) {
+        this.that.colour = x;
+    }
+
     get iconName() {
         //TODO: right now not syncing the icon name uploaded from app designer.
         return _.isNil(this.standardReportCardType) ? null : this.standardReportCardType.iconName;

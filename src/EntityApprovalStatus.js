@@ -2,12 +2,9 @@ import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
 import ApprovalStatus from "./ApprovalStatus";
-import Individual from "./Individual";
-import ProgramEnrolment from "./ProgramEnrolment";
-import Encounter from "./Encounter";
-import ProgramEncounter from "./ProgramEncounter";
 import ChecklistItem from "./ChecklistItem";
 import _ from 'lodash';
+import SchemaNames from "./SchemaNames";
 
 class EntityApprovalStatus extends BaseEntity {
 
@@ -87,10 +84,10 @@ class EntityApprovalStatus extends BaseEntity {
 
     static getSchemaEntityTypeList() {
         return [
-            {schema: Individual.schema.name, entityType: EntityApprovalStatus.entityType.Subject},
-            {schema: ProgramEnrolment.schema.name, entityType: EntityApprovalStatus.entityType.ProgramEnrolment},
-            {schema: Encounter.schema.name, entityType: EntityApprovalStatus.entityType.Encounter},
-            {schema: ProgramEncounter.schema.name, entityType: EntityApprovalStatus.entityType.ProgramEncounter},
+            {schema: SchemaNames.Individual, entityType: EntityApprovalStatus.entityType.Subject},
+            {schema: SchemaNames.ProgramEnrolment, entityType: EntityApprovalStatus.entityType.ProgramEnrolment},
+            {schema: SchemaNames.Encounter, entityType: EntityApprovalStatus.entityType.Encounter},
+            {schema: SchemaNames.ProgramEncounter, entityType: EntityApprovalStatus.entityType.ProgramEncounter},
             {schema: ChecklistItem.schema.name, entityType: EntityApprovalStatus.entityType.ChecklistItem}
         ];
     }

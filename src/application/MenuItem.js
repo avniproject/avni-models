@@ -6,17 +6,7 @@ class MenuItem extends BaseEntity{
   static SyncGroupName = "Sync";
   static UserGroupName = "User";
   static SupportGroupName = "Support";
-
   static HyperlinkTypeName = "Link";
-
-  id;
-  uuid;
-  displayKey;
-  type;
-  icon;
-  group;
-  linkFunction;
-  voided;
 
   static schema = {
     name: "MenuItem",
@@ -31,6 +21,50 @@ class MenuItem extends BaseEntity{
       voided: {type: 'bool', default: false}
     }
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get displayKey() {
+      return this.that.displayKey;
+  }
+
+  set displayKey(x) {
+      this.that.displayKey = x;
+  }
+
+  get type() {
+      return this.that.type;
+  }
+
+  set type(x) {
+      this.that.type = x;
+  }
+
+  get icon() {
+      return this.that.icon;
+  }
+
+  set icon(x) {
+      this.that.icon = x;
+  }
+
+  get group() {
+      return this.that.group;
+  }
+
+  set group(x) {
+      this.that.group = x;
+  }
+
+  get linkFunction() {
+      return this.that.linkFunction;
+  }
+
+  set linkFunction(x) {
+      this.that.linkFunction = x;
+  }
 
   static fromResource(resource, entityService) {
     return this.assignFields(resource, new MenuItem());

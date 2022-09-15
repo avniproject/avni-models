@@ -1,4 +1,6 @@
-class Decision {
+import PersistedObject from "./PersistedObject";
+
+class Decision extends PersistedObject {
   static schema = {
     name: "Decision",
     properties: {
@@ -7,6 +9,34 @@ class Decision {
       value: "string",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get value() {
+      return this.that.value;
+  }
+
+  set value(x) {
+      this.that.value = x;
+  }
+
+  get code() {
+      return this.that.code;
+  }
+
+  set code(x) {
+      this.that.code = x;
+  }
 
   static newInstance(name, code, value) {
     return {

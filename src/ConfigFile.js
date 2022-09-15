@@ -1,4 +1,6 @@
-class ConfigFile {
+import PersistedObject from "./PersistedObject";
+
+class ConfigFile extends PersistedObject {
   static schema = {
     name: "ConfigFile",
     primaryKey: "fileName",
@@ -7,6 +9,26 @@ class ConfigFile {
       contents: "string",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get fileName() {
+      return this.that.fileName;
+  }
+
+  set fileName(x) {
+      this.that.fileName = x;
+  }
+
+  get contents() {
+      return this.that.contents;
+  }
+
+  set contents(x) {
+      this.that.contents = x;
+  }
 
   static create(fileName, contents) {
     const configFile = new ConfigFile();

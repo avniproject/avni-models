@@ -15,6 +15,42 @@ class Video extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get title() {
+      return this.that.title;
+  }
+
+  set title(x) {
+      this.that.title = x;
+  }
+
+  get filePath() {
+      return this.that.filePath;
+  }
+
+  set filePath(x) {
+      this.that.filePath = x;
+  }
+
+  get description() {
+      return this.that.description;
+  }
+
+  set description(x) {
+      this.that.description = x;
+  }
+
+  get duration() {
+      return this.that.duration;
+  }
+
+  set duration(x) {
+      this.that.duration = x;
+  }
+
   static create({ uuid, title, filePath, description, duration, voided }) {
     return _.assignIn(new Video(), {
       uuid,

@@ -19,6 +19,58 @@ class GroupRole extends BaseEntity{
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get groupSubjectType() {
+      return this.toEntity("groupSubjectType", SubjectType);
+  }
+
+  set groupSubjectType(x) {
+      this.that.groupSubjectType = x;
+  }
+
+  get memberSubjectType() {
+      return this.toEntity("memberSubjectType", SubjectType);
+  }
+
+  set memberSubjectType(x) {
+      this.that.memberSubjectType = x;
+  }
+
+  get role() {
+      return this.that.role;
+  }
+
+  set role(x) {
+      this.that.role = x;
+  }
+
+  get primary() {
+      return this.that.primary;
+  }
+
+  set primary(x) {
+      this.that.primary = x;
+  }
+
+  get maximumNumberOfMembers() {
+      return this.that.maximumNumberOfMembers;
+  }
+
+  set maximumNumberOfMembers(x) {
+      this.that.maximumNumberOfMembers = x;
+  }
+
+  get minimumNumberOfMembers() {
+      return this.that.minimumNumberOfMembers;
+  }
+
+  set minimumNumberOfMembers(x) {
+      this.that.minimumNumberOfMembers = x;
+  }
+
   static householdRoles = {
     head: "Head of household",
     member: "Member",

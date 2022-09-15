@@ -1,9 +1,5 @@
-import Individual from './Individual';
-import Encounter from './Encounter';
-import ProgramEnrolment from './ProgramEnrolment';
-import ProgramEncounter from './ProgramEncounter';
-import ChecklistItem from './ChecklistItem';
 import BaseEntity from "./BaseEntity";
+import SchemaNames from "./SchemaNames";
 
 class Privilege extends BaseEntity {
   static schema = {
@@ -16,6 +12,35 @@ class Privilege extends BaseEntity {
       entityType: "string",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get description() {
+      return this.that.description;
+  }
+
+  set description(x) {
+      this.that.description = x;
+  }
+
+  get entityType() {
+      return this.that.entityType;
+  }
+
+  set entityType(x) {
+      this.that.entityType = x;
+  }
+
   static privilegeName = {
     viewSubject: "View subject",
     registerSubject: "Register subject",
@@ -60,31 +85,31 @@ class Privilege extends BaseEntity {
 
   static schemaToPrivilegeMetadata = [
     {
-      schema: Individual.schema.name,
+      schema: SchemaNames.Individual,
       approvedPrivilegeName: Privilege.privilegeName.approveSubject,
       editPrivilegeName: Privilege.privilegeName.editSubject,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.subjectType.uuid}'`
     },
     {
-      schema: Encounter.schema.name,
+      schema: SchemaNames.Encounter,
       approvedPrivilegeName: Privilege.privilegeName.approveEncounter,
       editPrivilegeName: Privilege.privilegeName.editVisit,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.individual.subjectType.uuid}' and encounterTypeUuid = '${entity.encounterType.uuid}'`
     },
     {
-      schema: ProgramEnrolment.schema.name,
+      schema: SchemaNames.ProgramEnrolment,
       approvedPrivilegeName: Privilege.privilegeName.approveEnrolment,
       editPrivilegeName: Privilege.privilegeName.editEnrolmentDetails,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.individual.subjectType.uuid}' and programUuid = '${entity.program.uuid}'`
     },
     {
-      schema: ProgramEncounter.schema.name,
+      schema: SchemaNames.ProgramEncounter,
       approvedPrivilegeName: Privilege.privilegeName.approveEncounter,
       editPrivilegeName: Privilege.privilegeName.editVisit,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.programEnrolment.individual.subjectType.uuid}' and programUuid = '${entity.programEnrolment.program.uuid}' and programEncounterTypeUuid = '${entity.encounterType.uuid}'`
     },
     {
-      schema: ChecklistItem.schema.name,
+      schema: SchemaNames.ChecklistItem,
       approvedPrivilegeName: Privilege.privilegeName.approveChecklistItem,
       editPrivilegeName: Privilege.privilegeName.editChecklist,
       entityFilterQueryFunc: (entity) => `subjectTypeUuid = '${entity.programEnrolment.individual.subjectType.uuid}' and checklistDetailUuid = '${entity.checklist.detail.uuid}'`

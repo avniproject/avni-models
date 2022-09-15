@@ -1,4 +1,6 @@
-class StringKeyNumericValue {
+import PersistedObject from "../PersistedObject";
+
+class StringKeyNumericValue extends PersistedObject {
   static schema = {
     name: "StringKeyNumericValue",
     properties: {
@@ -6,6 +8,26 @@ class StringKeyNumericValue {
       value: "double",
     },
   };
+
+  constructor(that) {
+    super(that);
+  }
+
+  get key() {
+      return this.that.key;
+  }
+
+  set key(x) {
+      this.that.key = x;
+  }
+
+  get value() {
+      return this.that.value;
+  }
+
+  set value(x) {
+      this.that.value = x;
+  }
 
   static fromResource(key, value) {
     const stringKeyNumericValue = new StringKeyNumericValue();

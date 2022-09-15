@@ -14,12 +14,27 @@ class Documentation extends BaseEntity {
         }
     };
 
-  uuid: string;
-    name: string;
-    documentationItems: DocumentationItem[];
-    voided: boolean;
+  constructor(that) {
+    super(that);
+  }
 
-    static merge = () => BaseEntity.mergeOn("documentationItems");
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get documentationItems() {
+      return this.toList("documentationItems", DocumentationItem);
+  }
+
+  set documentationItems(x) {
+      this.that.documentationItems = x;
+  }
+
+  static merge = () => BaseEntity.mergeOn("documentationItems");
 
     static associateChild(child, childEntityClass, childResource, entityService) {
         let documentation = BaseEntity.getParentEntity(

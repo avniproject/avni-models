@@ -20,7 +20,49 @@ class GroupSubject extends BaseEntity {
     },
   };
 
-  voided;
+  constructor(that) {
+    super(that);
+  }
+
+  get groupSubject() {
+      return this.toEntity("groupSubject", Individual);
+  }
+
+  set groupSubject(x) {
+      this.that.groupSubject = x;
+  }
+
+  get memberSubject() {
+      return this.toEntity("memberSubject", Individual);
+  }
+
+  set memberSubject(x) {
+      this.that.memberSubject = x;
+  }
+
+  get groupRole() {
+      return this.toEntity("groupRole", GroupRole);
+  }
+
+  set groupRole(x) {
+      this.that.groupRole = x;
+  }
+
+  get membershipStartDate() {
+      return this.that.membershipStartDate;
+  }
+
+  set membershipStartDate(x) {
+      this.that.membershipStartDate = x;
+  }
+
+  get membershipEndDate() {
+      return this.that.membershipEndDate;
+  }
+
+  set membershipEndDate(x) {
+      this.that.membershipEndDate = x;
+  }
 
   get toResource() {
     const resource = _.pick(this, ["uuid"]);

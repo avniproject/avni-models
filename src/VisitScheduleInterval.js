@@ -15,6 +15,34 @@ class VisitScheduleInterval extends ReferenceEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get from() {
+      return this.that.from;
+  }
+
+  set from(x) {
+      this.that.from = x;
+  }
+
+  get min() {
+      return this.toEntity("min", StringKeyNumericValue);
+  }
+
+  set min(x) {
+      this.that.min = x;
+  }
+
+  get max() {
+      return this.toEntity("max", StringKeyNumericValue);
+  }
+
+  set max(x) {
+      this.that.max = x;
+  }
+
   static fromResource(resource) {
     const visitScheduleInterval = General.assignFields(resource, new VisitScheduleInterval(), [
       "uuid",
