@@ -30,7 +30,7 @@ class VisitScheduleConfig extends ReferenceEntity {
   }
 
   set encounterType(x) {
-      this.that.encounterType = x;
+      this.that.encounterType = x && x.that;
   }
 
   get interval() {
@@ -38,7 +38,7 @@ class VisitScheduleConfig extends ReferenceEntity {
   }
 
   set interval(x) {
-      this.that.interval = x;
+      this.that.interval = x && x.that;
   }
 
   static fromResource(resource, entityService) {

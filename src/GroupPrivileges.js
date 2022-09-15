@@ -28,7 +28,7 @@ class GroupPrivileges extends BaseEntity {
   }
 
   set group(x) {
-      this.that.group = x;
+      this.that.group = x && x.that;
   }
 
   get privilege() {
@@ -36,7 +36,7 @@ class GroupPrivileges extends BaseEntity {
   }
 
   set privilege(x) {
-      this.that.privilege = x;
+      this.that.privilege = x && x.that;
   }
 
   get subjectTypeUuid() {

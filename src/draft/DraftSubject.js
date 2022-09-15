@@ -44,7 +44,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set subjectType(x) {
-    this.that.subjectType = x;
+    this.that.subjectType = x && x.that;
   }
 
   get firstName() {
@@ -100,7 +100,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set gender(x) {
-    this.that.gender = x;
+    this.that.gender = x && x.that;
   }
 
   get registrationDate() {
@@ -116,7 +116,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set lowestAddressLevel(x) {
-    this.that.lowestAddressLevel = x;
+    this.that.lowestAddressLevel = x && x.that;
   }
 
   get enrolments() {
@@ -164,7 +164,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set registrationLocation(x) {
-    this.that.registrationLocation = x;
+    this.that.registrationLocation = x && x.that;
   }
 
   get latestEntityApprovalStatus() {
@@ -172,7 +172,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set latestEntityApprovalStatus(x) {
-    this.that.latestEntityApprovalStatus = x;
+    this.that.latestEntityApprovalStatus = x && x.that;
   }
 
   get comments() {

@@ -83,9 +83,9 @@ describe('ProgramEnrolmentTest', () => {
             enrolment.addEncounter(encounterNotYetFilled);
 
             assert.equal(enrolment.lastFulfilledEncounter(), tomorrowsEncounter);
-            yesterdaysEncounter.encounterType = {name: 'special'};
-            tomorrowsEncounter.encounterType = {name: 'notspecial'};
-            todaysEncounter.encounterType = {name: 'notspecial'};
+            yesterdaysEncounter.encounterType = EncounterType.create('special');
+            tomorrowsEncounter.encounterType = EncounterType.create('notspecial');
+            todaysEncounter.encounterType = EncounterType.create('notspecial');
             assert.equal(enrolment.lastFulfilledEncounter('special'), yesterdaysEncounter);
             assert.equal(enrolment.lastFulfilledEncounter('notspecial'), tomorrowsEncounter);
             assert.equal(enrolment.lastFulfilledEncounter('unavailable'), null);

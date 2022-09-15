@@ -32,7 +32,7 @@ class VisitScheduleInterval extends ReferenceEntity {
   }
 
   set min(x) {
-      this.that.min = x;
+      this.that.min = x && x.that;
   }
 
   get max() {
@@ -40,7 +40,7 @@ class VisitScheduleInterval extends ReferenceEntity {
   }
 
   set max(x) {
-      this.that.max = x;
+      this.that.max = x && x.that;
   }
 
   static fromResource(resource) {

@@ -28,7 +28,7 @@ class GroupRole extends BaseEntity{
   }
 
   set groupSubjectType(x) {
-      this.that.groupSubjectType = x;
+      this.that.groupSubjectType = x && x.that;
   }
 
   get memberSubjectType() {
@@ -36,7 +36,7 @@ class GroupRole extends BaseEntity{
   }
 
   set memberSubjectType(x) {
-      this.that.memberSubjectType = x;
+      this.that.memberSubjectType = x && x.that;
   }
 
   get role() {

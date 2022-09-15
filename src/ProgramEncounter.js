@@ -49,7 +49,7 @@ class ProgramEncounter extends AbstractEncounter {
   }
 
   set programEnrolment(x) {
-      this.that.programEnrolment = x;
+      this.that.programEnrolment = x && x.that;
   }
 
   static fromResource(resource, entityService) {

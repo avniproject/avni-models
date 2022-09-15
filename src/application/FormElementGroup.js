@@ -69,7 +69,7 @@ class FormElementGroup extends BaseEntity {
   }
 
   set form(x) {
-      this.that.form = x;
+      this.that.form = x && x.that;
   }
 
   get rule() {

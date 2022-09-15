@@ -27,7 +27,7 @@ class ProgramConfig extends ReferenceEntity {
   }
 
   set program(x) {
-      this.that.program = x;
+      this.that.program = x && x.that;
   }
 
   get atRiskConcepts() {

@@ -49,7 +49,7 @@ class DocumentationItem extends BaseEntity {
   }
 
   set documentation(x) {
-      this.that.documentation = x;
+      this.that.documentation = x.that;
   }
 
   static fromResource(resource, entityService) {

@@ -29,7 +29,7 @@ class DashboardSectionCardMapping extends BaseEntity {
   }
 
   set dashboardSection(x) {
-      this.that.dashboardSection = x;
+      this.that.dashboardSection = x && x.that;
   }
 
   get card() {
@@ -37,7 +37,7 @@ class DashboardSectionCardMapping extends BaseEntity {
   }
 
   set card(x) {
-      this.that.card = x;
+      this.that.card = x && x.that;
   }
 
   get displayOrder() {

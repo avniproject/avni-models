@@ -26,7 +26,7 @@ class AbstractEncounter extends BaseEntity {
   }
 
   set latestEntityApprovalStatus(x) {
-    this.that.latestEntityApprovalStatus = x;
+    this.that.latestEntityApprovalStatus = x && x.that;
   }
 
   get name() {
@@ -58,7 +58,7 @@ class AbstractEncounter extends BaseEntity {
   }
 
   set encounterType(x) {
-      this.that.encounterType = x;
+      this.that.encounterType = x && x.that;
   }
 
   get encounterDateTime() {
@@ -82,7 +82,7 @@ class AbstractEncounter extends BaseEntity {
   }
 
   set cancelLocation(x) {
-    this.that.cancelLocation = x;
+    this.that.cancelLocation = x && x.that;
   }
 
   get cancelObservations() {

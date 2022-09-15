@@ -21,9 +21,7 @@ class PersistedObject {
     const propertyValue = this.that[property];
     if (_.isNil(propertyValue)) return null;
 
-    if (this.isThatARealmObject())
-      return new entityClass(propertyValue);
-    return propertyValue;
+    return new entityClass(propertyValue);
   }
 }
 

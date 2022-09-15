@@ -100,10 +100,10 @@ describe('ObservationHolderTest', () => {
             observationsHolder.updateObs(allFormElements[2], date);
 
 
-            assert.equal(200, observationsHolder.observations.find(obs => obs.concept === concepts[0]).getValue());
-            assert.equal("Not empty", observationsHolder.observations.find(obs => obs.concept === concepts[1]).getValue());
+            assert.equal(200, observationsHolder.observations.find(obs => obs.concept.uuid === concepts[0].uuid).getValue());
+            assert.equal("Not empty", observationsHolder.observations.find(obs => obs.concept.uuid === concepts[1].uuid).getValue());
             assert.equal(3, observationsHolder.observations.length);
-            assert.equal(date, observationsHolder.observations.find(obs => obs.concept === concepts[2]).getValueWrapper().asDisplayDate());
+            assert.equal(date, observationsHolder.observations.find(obs => obs.concept.uuid === concepts[2].uuid).getValueWrapper().asDisplayDate());
         });
 
         it('updates coded obs', () => {
@@ -113,19 +113,19 @@ describe('ObservationHolderTest', () => {
                 concepts[4].getPossibleAnswerConcept("Answer 4").concept.uuid
             ];
             observationsHolder.updateObs(allFormElements[4], answer);
-            assert.equal(answer, observationsHolder.observations.find(obs => obs.concept === concepts[4]).getValue());
+            assert.equal(answer, observationsHolder.observations.find(obs => obs.concept.uuid === concepts[4].uuid).getValue());
 
             //Removal of an answer
             answer = [
                 concepts[4].getPossibleAnswerConcept("Answer 3").concept.uuid,
             ];
             observationsHolder.updateObs(allFormElements[4], answer);
-            assert.equal(answer, observationsHolder.observations.find(obs => obs.concept === concepts[4]).getValue());
+            assert.equal(answer, observationsHolder.observations.find(obs => obs.concept.uuid === concepts[4].uuid).getValue());
 
             //No answer provided
             answer = [];
             observationsHolder.updateObs(allFormElements[4], answer);
-            assert.equal(undefined, observationsHolder.observations.find(obs => obs.concept === concepts[4]));
+            assert.equal(undefined, observationsHolder.observations.find(obs => obs.concept.uuid === concepts[4].uuid));
 
         });
     });

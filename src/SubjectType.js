@@ -103,7 +103,7 @@ class SubjectType extends ReferenceEntity {
   }
 
   set validFirstNameFormat(x) {
-      this.that.validFirstNameFormat = x;
+      this.that.validFirstNameFormat = x && x.that;
   }
 
   get validMiddleNameFormat() {
@@ -111,7 +111,7 @@ class SubjectType extends ReferenceEntity {
   }
 
   set validMiddleNameFormat(x) {
-      this.that.validMiddleNameFormat = x;
+      this.that.validMiddleNameFormat = x && x.that;
   }
 
   get validLastNameFormat() {
@@ -119,7 +119,7 @@ class SubjectType extends ReferenceEntity {
   }
 
   set validLastNameFormat(x) {
-      this.that.validLastNameFormat = x;
+      this.that.validLastNameFormat = x && x.that;
   }
 
   get iconFileS3Key() {

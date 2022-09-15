@@ -40,7 +40,7 @@ class Encounter extends AbstractEncounter {
   }
 
   set individual(x) {
-      this.that.individual = x;
+      this.that.individual = x && x.that;
   }
 
   static validationKeys = {

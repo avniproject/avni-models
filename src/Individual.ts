@@ -55,7 +55,7 @@ class Individual extends BaseEntity {
   }
 
   set subjectType(x) {
-      this.that.subjectType = x;
+      this.that.subjectType = x.that;
   }
 
   get name() {
@@ -119,7 +119,7 @@ class Individual extends BaseEntity {
   }
 
   set gender(x) {
-      this.that.gender = x;
+      this.that.gender = x.that;
   }
 
   get registrationDate() {
@@ -135,7 +135,7 @@ class Individual extends BaseEntity {
   }
 
   set lowestAddressLevel(x) {
-      this.that.lowestAddressLevel = x;
+      this.that.lowestAddressLevel = x.that;
   }
 
   get enrolments() {
@@ -183,7 +183,7 @@ class Individual extends BaseEntity {
   }
 
   set registrationLocation(x) {
-      this.that.registrationLocation = x;
+      this.that.registrationLocation = x.that;
   }
 
   get latestEntityApprovalStatus() {
@@ -191,7 +191,7 @@ class Individual extends BaseEntity {
   }
 
   set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = x;
+      this.that.latestEntityApprovalStatus = x.that;
   }
 
   get comments() {

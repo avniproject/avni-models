@@ -34,7 +34,7 @@ class GroupDashboard extends BaseEntity {
   }
 
   set group(x) {
-      this.that.group = x;
+      this.that.group = x && x.that;
   }
 
   get dashboard() {
@@ -42,7 +42,7 @@ class GroupDashboard extends BaseEntity {
   }
 
   set dashboard(x) {
-      this.that.dashboard = x;
+      this.that.dashboard = x && x.that;
   }
 
   static fromResource(resource, entityService) {

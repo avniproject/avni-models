@@ -23,7 +23,7 @@ class Observation extends PersistedObject {
   }
 
   set concept(x) {
-      this.that.concept = x;
+      this.that.concept = x && x.that;
   }
 
   get valueJSON() {

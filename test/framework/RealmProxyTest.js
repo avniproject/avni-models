@@ -4,6 +4,8 @@ import Settings from "../../src/Settings";
 import StubbedRealmDb from "./stubs/StubbedRealmDb";
 
 import {assert} from 'chai';
+import {Encounter, EncounterType} from "../../src";
+import _ from 'lodash';
 
 describe('RealmProxyTest', () => {
   it('use indexor on collection', () => {
@@ -22,7 +24,7 @@ describe('RealmProxyTest', () => {
 
     settingsCollection.forEach((x) => {
       assert.isNotNull(x);
-      assert.isDefined(x)
+      assert.isDefined(x);
     });
 
     const iterator1 = settingsCollection[Symbol.iterator]();
@@ -34,5 +36,12 @@ describe('RealmProxyTest', () => {
     const anotherArray = [...settingsCollection];
     assert.equal(anotherArray.length, 1);
     assert.isDefined(anotherArray[0]);
+  });
+
+  it('should _.get', function () {
+    const encounter = new Encounter();
+    encounter.encounterType = new EncounterType();
+    encounter.encounterType.name = "Foo";
+    assert.equal("Foo", _.get(encounter, "encounterType.name"));
   });
 });

@@ -47,12 +47,12 @@ export class ConceptAnswer extends BaseEntity {
       this.that.unique = x;
   }
 
-  set concept(x) {
-    this.that.concept = x;
-  }
-
   get concept() {
     return this.toEntity("concept", Concept);
+  }
+
+  set concept(x) {
+    this.that.concept = x && x.that;
   }
 
   get name() {
@@ -148,12 +148,12 @@ export default class Concept extends BaseEntity {
       this.that.name = x;
   }
 
-  get dataType() {
-      return this.that.dataType;
+  get datatype() {
+      return this.that.datatype;
   }
 
-  set dataType(x) {
-      this.that.dataType = x;
+  set datatype(x) {
+      this.that.datatype = x;
   }
 
   get answers() {
