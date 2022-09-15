@@ -21,6 +21,82 @@ class SyncTelemetry extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get appVersion() {
+      return this.that.appVersion;
+  }
+
+  set appVersion(x) {
+      this.that.appVersion = x;
+  }
+
+  get androidVersion() {
+      return this.that.androidVersion;
+  }
+
+  set androidVersion(x) {
+      this.that.androidVersion = x;
+  }
+
+  get deviceName() {
+      return this.that.deviceName;
+  }
+
+  set deviceName(x) {
+      this.that.deviceName = x;
+  }
+
+  get syncStatus() {
+      return this.that.syncStatus;
+  }
+
+  set syncStatus(x) {
+      this.that.syncStatus = x;
+  }
+
+  get syncStartTime() {
+      return this.that.syncStartTime;
+  }
+
+  set syncStartTime(x) {
+      this.that.syncStartTime = x;
+  }
+
+  get syncEndTime() {
+      return this.that.syncEndTime;
+  }
+
+  set syncEndTime(x) {
+      this.that.syncEndTime = x;
+  }
+
+  get entityStatus() {
+      return this.that.entityStatus;
+  }
+
+  set entityStatus(x) {
+      this.that.entityStatus = x;
+  }
+
+  get syncSource() {
+      return this.that.syncSource;
+  }
+
+  set syncSource(x) {
+      this.that.syncSource = x;
+  }
+
+  get deviceInfo() {
+      return this.that.deviceInfo;
+  }
+
+  set deviceInfo(x) {
+      this.that.deviceInfo = x;
+  }
+
   static fromResource() {
     throw new Error(
       "This should never be called because server always returns an empty array for this resource"

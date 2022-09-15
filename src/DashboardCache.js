@@ -16,6 +16,34 @@ class DashboardCache extends BaseEntity{
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get updatedAt() {
+      return this.that.updatedAt;
+  }
+
+  set updatedAt(x) {
+      this.that.updatedAt = x;
+  }
+
+  get cardJSON() {
+      return this.that.cardJSON;
+  }
+
+  set cardJSON(x) {
+      this.that.cardJSON = x;
+  }
+
+  get filterJSON() {
+      return this.that.filterJSON;
+  }
+
+  set filterJSON(x) {
+      this.that.filterJSON = x;
+  }
+
   static create(updatedAt, cardJSON, filterJSON) {
     const dashboardCache = new DashboardCache();
     dashboardCache.uuid = this.rowUUID;

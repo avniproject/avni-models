@@ -14,6 +14,34 @@ class EntitySyncStatus extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get entityName() {
+      return this.that.entityName;
+  }
+
+  set entityName(x) {
+      this.that.entityName = x;
+  }
+
+  get loadedSince() {
+      return this.that.loadedSince;
+  }
+
+  set loadedSince(x) {
+      this.that.loadedSince = x;
+  }
+
+  get entityTypeUuid() {
+      return this.that.entityTypeUuid;
+  }
+
+  set entityTypeUuid(x) {
+      this.that.entityTypeUuid = x;
+  }
+
   static create(entityName, date, uuid, entityTypeUuid) {
     var entitySyncStatus = new EntitySyncStatus();
     entitySyncStatus.uuid = uuid;

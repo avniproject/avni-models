@@ -17,7 +17,35 @@ class GroupDashboard extends BaseEntity {
         },
     };
 
-    static fromResource(resource, entityService) {
+  constructor(that) {
+    super(that);
+  }
+
+  get primaryDashboard() {
+      return this.that.primaryDashboard;
+  }
+
+  set primaryDashboard(x) {
+      this.that.primaryDashboard = x;
+  }
+
+  get group() {
+      return this.toEntity("group", Groups);
+  }
+
+  set group(x) {
+      this.that.group = x;
+  }
+
+  get dashboard() {
+      return this.toEntity("dashboard", Dashboard);
+  }
+
+  set dashboard(x) {
+      this.that.dashboard = x;
+  }
+
+  static fromResource(resource, entityService) {
         const groupDashboard = General.assignFields(resource, new GroupDashboard(), ["uuid", "primaryDashboard", "voided"]);
         groupDashboard.group = entityService.findByKey(
             "uuid",

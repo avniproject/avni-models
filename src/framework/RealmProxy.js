@@ -32,7 +32,7 @@ class RealmProxy {
         return this.realmDb.close();
     }
 
-    create(type, properties, updateMode) {
+    create(type, properties, updateMode = "never") {
         return this.realmDb.create(type, properties.that, updateMode);
     }
 
