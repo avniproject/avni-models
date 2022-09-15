@@ -78,6 +78,10 @@ class RealmCollectionProxy extends RealmDatabaseObjectProxy {
   get type() {
     return this.realmCollection.type;
   }
+
+  [Symbol.iterator]() {
+    return this.realmCollection.map((x) => new this.entityClass(x))[Symbol.iterator]();
+  }
 }
 
 export default RealmCollectionProxy;

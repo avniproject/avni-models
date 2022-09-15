@@ -1,4 +1,3 @@
-import _ from "lodash";
 import RealmCollectionProxyHandler from "./RealmCollectionProxyHandler";
 import RealmCollectionProxy from "./RealmCollectionProxy";
 
@@ -9,8 +8,8 @@ class RealmProxy {
     }
 
     objects(type) {
-        const realmResultsProxy = new RealmCollectionProxy(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
-        return new Proxy(realmResultsProxy, RealmCollectionProxyHandler);
+        const realmCollectionProxy = new RealmCollectionProxy(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
+        return new Proxy(realmCollectionProxy, RealmCollectionProxyHandler);
     }
 
     get isInTransaction() {
@@ -34,11 +33,11 @@ class RealmProxy {
     }
 
     create(type, properties, updateMode) {
-        return this.realmDb.create(type, properties, updateMode);
+        return this.realmDb.create(type, properties.that, updateMode);
     }
 
     delete(object) {
-        return this.realmDb.delete(object);
+        return this.realmDb.delete(object.that);
     }
 
     objectForPrimaryKey(type, key) {

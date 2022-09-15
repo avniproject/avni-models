@@ -25,6 +25,82 @@ class Settings extends BaseEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get serverURL() {
+      return this.that.serverURL;
+  }
+
+  set serverURL(x) {
+      this.that.serverURL = x;
+  }
+
+  get locale() {
+      return this.toEntity("locale", LocaleMapping);
+  }
+
+  set locale(x) {
+      this.that.locale = x;
+  }
+
+  get logLevel() {
+      return this.that.logLevel;
+  }
+
+  set logLevel(x) {
+      this.that.logLevel = x;
+  }
+
+  get pageSize() {
+      return this.that.pageSize;
+  }
+
+  set pageSize(x) {
+      this.that.pageSize = x;
+  }
+
+  get poolId() {
+      return this.that.poolId;
+  }
+
+  set poolId(x) {
+      this.that.poolId = x;
+  }
+
+  get clientId() {
+      return this.that.clientId;
+  }
+
+  set clientId(x) {
+      this.that.clientId = x;
+  }
+
+  get devSkipLocation() {
+      return this.that.devSkipLocation;
+  }
+
+  set devSkipLocation(x) {
+      this.that.devSkipLocation = x;
+  }
+
+  get captureLocation() {
+      return this.that.captureLocation;
+  }
+
+  set captureLocation(x) {
+      this.that.captureLocation = x;
+  }
+
+  get userId() {
+      return this.that.userId;
+  }
+
+  set userId(x) {
+      this.that.userId = x;
+  }
+
   clone() {
     const settings = new Settings();
     settings.uuid = this.uuid;

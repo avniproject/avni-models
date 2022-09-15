@@ -704,6 +704,10 @@ class EntityMappingConfig {
   getEntities() {
     return entities;
   }
+
+  getSchemaVersion() {
+    return this.getRealmConfig().schemaVersion;
+  }
 }
 
 export default EntityMappingConfig;
