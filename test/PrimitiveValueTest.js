@@ -20,6 +20,12 @@ describe('getValue', () => {
         });
     });
 
+  describe('when concept datatype is numeric', () => {
+    it('should accept string numbers', function () {
+      const primitiveValue = new PrimitiveValue("10", Concept.dataType.Numeric);
+      expect(primitiveValue.getValue()).to.equal(10);
+    });
+  });
 });
 
 describe('asDisplayDate', () => {

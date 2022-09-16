@@ -36,7 +36,10 @@ class PrimitiveValue {
   }
 
   _valueFromString() {
-    if (this.datatype === Concept.dataType.Numeric && !/\.$|\.0+$|\.*0$/.test(this.value)) {
+    // https://stackoverflow.com/a/1711405/766175
+    if (this.datatype === Concept.dataType.Numeric
+        && !isNaN(this.value) && !isNaN(parseInt(this.value))) {
+        // && !/\.$|\.0+$|\.*0$/.test(this.value)) {
       return _.toNumber(this.value);
     } else if (this.datatype === Concept.dataType.DateTime) {
       return new Date(Date.parse(this.value));

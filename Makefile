@@ -37,6 +37,12 @@ deploy-to-avni-client: build
 deploy-to-avni-web: build
 	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))
 
+deploy-to-rules-config: build
+	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))
+
+deploy-to-rules-server: build
+	$(if $(local),$(call _deploy,$(local)/node_modules/rules-server))
+
 deploy-as-source-to-avni-client:
 	$(if $(local),$(call _deploy_as_source,$(local)/packages/openchs-android/node_modules/openchs-models))
 

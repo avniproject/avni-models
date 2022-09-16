@@ -31,7 +31,7 @@ class SubjectProgramEligibility extends BaseEntity {
   }
 
   set subject(x) {
-      this.that.subject = x.that;
+      this.that.subject = x && x.that;
   }
 
   get program() {
@@ -39,7 +39,7 @@ class SubjectProgramEligibility extends BaseEntity {
   }
 
   set program(x) {
-      this.that.program = x.that;
+      this.that.program = x && x.that;
   }
 
   get checkDate() {
