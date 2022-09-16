@@ -25,7 +25,7 @@ class Form extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -50,7 +50,7 @@ class Form extends BaseEntity {
   }
 
   set formElementGroups(x) {
-      this.that.formElementGroups = x;
+      this.that.formElementGroups = this.fromList(x);
   }
 
   get decisionRule() {

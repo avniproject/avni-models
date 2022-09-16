@@ -17,7 +17,7 @@ class GroupDashboard extends BaseEntity {
         },
     };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

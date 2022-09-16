@@ -2,7 +2,7 @@ import _ from "lodash";
 import RealmListProxy from "./framework/RealmListProxy";
 
 class PersistedObject {
-  constructor(that) {
+   constructor(that = null) {
     this.that = _.isNil(that) ? {} : that;
   }
 
@@ -15,6 +15,13 @@ class PersistedObject {
     if (this.isThatARealmObject())
       return new RealmListProxy(this.that[property], listItemClass);
     return this.that[property];
+  }
+
+  fromList(list) {
+    let value = null;
+    if (!_.isNil(list))
+      value = _.isNil(list.that) ? list : list.that;
+    return value;
   }
 
   toEntity(property, entityClass) {

@@ -28,7 +28,7 @@ class FormElementGroup extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -61,7 +61,7 @@ class FormElementGroup extends BaseEntity {
   }
 
   set formElements(x) {
-      this.that.formElements = x;
+      this.that.formElements = this.fromList(x);
   }
 
   get form() {

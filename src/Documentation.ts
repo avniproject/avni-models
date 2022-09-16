@@ -14,7 +14,7 @@ class Documentation extends BaseEntity {
         }
     };
 
-  constructor(that) {
+  constructor(that = null) {
     super(that);
   }
 
@@ -31,7 +31,7 @@ class Documentation extends BaseEntity {
   }
 
   set documentationItems(x) {
-      this.that.documentationItems = x;
+      this.that.documentationItems = this.fromList(x);
   }
 
   static merge = () => BaseEntity.mergeOn("documentationItems");

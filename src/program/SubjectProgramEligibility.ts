@@ -22,7 +22,7 @@ class SubjectProgramEligibility extends BaseEntity {
         },
     };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -63,7 +63,7 @@ class SubjectProgramEligibility extends BaseEntity {
   }
 
   set observations(x) {
-      this.that.observations = x;
+      this.that.observations = this.fromList(x);
   }
 
   static createEmptyInstance(program, subject) {

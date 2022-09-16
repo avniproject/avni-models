@@ -17,7 +17,7 @@ class Rule extends ReferenceEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

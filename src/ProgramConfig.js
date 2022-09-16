@@ -18,7 +18,7 @@ class ProgramConfig extends ReferenceEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -35,7 +35,7 @@ class ProgramConfig extends ReferenceEntity {
   }
 
   set atRiskConcepts(x) {
-      this.that.atRiskConcepts = x;
+      this.that.atRiskConcepts = this.fromList(x);
   }
 
   get visitSchedule() {
@@ -43,7 +43,7 @@ class ProgramConfig extends ReferenceEntity {
   }
 
   set visitSchedule(x) {
-      this.that.visitSchedule = x;
+      this.that.visitSchedule = this.fromList(x);
   }
 
   static fromResource(resource, entityService) {

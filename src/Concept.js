@@ -27,7 +27,7 @@ export class ConceptAnswer extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -104,7 +104,7 @@ export default class Concept extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that, Concept);
   }
 
@@ -161,7 +161,7 @@ export default class Concept extends BaseEntity {
   }
 
   set answers(x) {
-    this.that.answers = x;
+    this.that.answers = this.fromList(x);
   }
 
   get keyValues() {
@@ -169,7 +169,7 @@ export default class Concept extends BaseEntity {
   }
 
   set keyValues(x) {
-    this.that.keyValues = x;
+    this.that.keyValues = this.fromList(x);
   }
 
   static dataType = {

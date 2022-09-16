@@ -10,6 +10,10 @@ class BaseEntity extends PersistedObject {
     EXTERNAL_RULE: "EXTERNAL_RULE",
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
   get voided() {
     return this.that.voided;
   }

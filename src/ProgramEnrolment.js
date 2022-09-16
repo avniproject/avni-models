@@ -15,6 +15,7 @@ import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
+import RealmCollectionProxy from "./framework/RealmCollectionProxy";
 
 class ProgramEnrolment extends BaseEntity {
   static schema = {
@@ -38,7 +39,7 @@ class ProgramEnrolment extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -63,7 +64,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set observations(x) {
-      this.that.observations = x;
+      this.that.observations = this.fromList(x);
   }
 
   get programExitDateTime() {
@@ -79,7 +80,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set programExitObservations(x) {
-      this.that.programExitObservations = x;
+      this.that.programExitObservations = this.fromList(x);
   }
 
   get programOutcome() {
@@ -95,7 +96,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set encounters(x) {
-      this.that.encounters = x;
+      this.that.encounters = this.fromList(x);
   }
 
   get checklists() {
@@ -103,7 +104,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set checklists(x) {
-      this.that.checklists = x;
+      this.that.checklists = this.fromList(x);
   }
 
   get individual() {

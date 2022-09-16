@@ -14,7 +14,7 @@ class Observation extends PersistedObject {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

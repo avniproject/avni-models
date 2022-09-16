@@ -19,7 +19,7 @@ class GroupPrivileges extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

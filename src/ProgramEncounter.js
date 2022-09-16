@@ -24,32 +24,32 @@ class ProgramEncounter extends AbstractEncounter {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      name: { type: "string", optional: true },
+      name: {type: "string", optional: true},
       encounterType: "EncounterType",
-      earliestVisitDateTime: { type: "date", optional: true },
-      maxVisitDateTime: { type: "date", optional: true },
-      encounterDateTime: { type: "date", optional: true },
+      earliestVisitDateTime: {type: "date", optional: true},
+      maxVisitDateTime: {type: "date", optional: true},
+      encounterDateTime: {type: "date", optional: true},
       programEnrolment: SchemaNames.ProgramEnrolment,
-      observations: { type: "list", objectType: "Observation" },
-      cancelDateTime: { type: "date", optional: true },
-      cancelObservations: { type: "list", objectType: "Observation" },
-      encounterLocation: { type: "Point", optional: true },
-      cancelLocation: { type: "Point", optional: true },
-      voided: { type: "bool", default: false },
+      observations: {type: "list", objectType: "Observation"},
+      cancelDateTime: {type: "date", optional: true},
+      cancelObservations: {type: "list", objectType: "Observation"},
+      encounterLocation: {type: "Point", optional: true},
+      cancelLocation: {type: "Point", optional: true},
+      voided: {type: "bool", default: false},
       latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
 
-  constructor(that) {
+  constructor(that = null) {
     super(that);
   }
 
   get programEnrolment() {
-      return this.toEntity("programEnrolment", ProgramEnrolment);
+    return this.toEntity("programEnrolment", ProgramEnrolment);
   }
 
   set programEnrolment(x) {
-      this.that.programEnrolment = x && x.that;
+    this.that.programEnrolment = x && x.that;
   }
 
   static fromResource(resource, entityService) {
@@ -61,6 +61,7 @@ class ProgramEncounter extends AbstractEncounter {
     );
     return programEncounter;
   }
+
   static parentAssociations = () => new Map([[ProgramEnrolment, "programEnrolmentUUID"]]);
 
   get toResource() {
@@ -148,6 +149,14 @@ class ProgramEncounter extends AbstractEncounter {
       voided: this.voided,
       latestEntityApprovalStatus: this.latestEntityApprovalStatus,
     };
+  }
+
+  getEncounterDateValues() {
+    return {
+      [AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME]: this.encounterDateTime,
+      [ProgramEncounter.fieldKeys.SCHEDULED_DATE_TIME]: this.earliestVisitDateTime,
+      [ProgramEncounter.fieldKeys.MAX_DATE_TIME]: this.maxVisitDateTime
+    }
   }
 }
 

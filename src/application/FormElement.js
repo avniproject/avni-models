@@ -32,7 +32,7 @@ class FormElement extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -65,7 +65,7 @@ class FormElement extends BaseEntity {
   }
 
   set keyValues(x) {
-      this.that.keyValues = x;
+      this.that.keyValues = this.fromList(x);
   }
 
   get concept() {

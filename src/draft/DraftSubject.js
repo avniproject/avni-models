@@ -35,7 +35,7 @@ class DraftSubject extends BaseEntity {
         },
     };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -124,7 +124,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set enrolments(x) {
-    this.that.enrolments = x;
+    this.that.enrolments = this.fromList(x);
   }
 
   get encounters() {
@@ -132,7 +132,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set encounters(x) {
-    this.that.encounters = x;
+    this.that.encounters = this.fromList(x);
   }
 
   get observations() {
@@ -140,7 +140,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set observations(x) {
-    this.that.observations = x;
+    this.that.observations = this.fromList(x);
   }
 
   get relationships() {
@@ -148,7 +148,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set relationships(x) {
-    this.that.relationships = x;
+    this.that.relationships = this.fromList(x);
   }
 
   get groupSubjects() {
@@ -156,7 +156,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set groupSubjects(x) {
-    this.that.groupSubjects = x;
+    this.that.groupSubjects = this.fromList(x);
   }
 
   get registrationLocation() {
@@ -180,7 +180,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set comments(x) {
-    this.that.comments = x;
+    this.that.comments = this.fromList(x);
   }
 
   get groups() {
@@ -188,7 +188,7 @@ class DraftSubject extends BaseEntity {
   }
 
   set groups(x) {
-    this.that.groups = x;
+    this.that.groups = this.fromList(x);
   }
 
     static create(subject, totalMembers) {

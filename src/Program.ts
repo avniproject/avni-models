@@ -22,7 +22,7 @@ class Program extends ReferenceEntity {
     }
   };
 
-  constructor(that) {
+  constructor(that = null) {
     super(that);
   }
 
@@ -64,6 +64,14 @@ class Program extends ReferenceEntity {
 
   set programSubjectLabel(x) {
       this.that.programSubjectLabel = x;
+  }
+
+  get manualEligibilityCheckRequired() {
+      return this.that.manualEligibilityCheckRequired;
+  }
+
+  set manualEligibilityCheckRequired(x) {
+      this.that.manualEligibilityCheckRequired = x;
   }
 
   get enrolmentSummaryRule() {

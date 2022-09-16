@@ -2,7 +2,6 @@ import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
 import ApprovalStatus from "./ApprovalStatus";
-import ChecklistItem from "./ChecklistItem";
 import _ from 'lodash';
 import SchemaNames from "./SchemaNames";
 
@@ -29,9 +28,12 @@ class EntityApprovalStatus extends BaseEntity {
         Encounter: "Encounter",
         ChecklistItem: "ChecklistItem",
     };
-    uuid;
 
-    get toResource() {
+  constructor(that = null) {
+    super(that);
+  }
+
+  get toResource() {
         const resource = _.pick(this, [
             "uuid",
             "entityType",
@@ -88,7 +90,7 @@ class EntityApprovalStatus extends BaseEntity {
             {schema: SchemaNames.ProgramEnrolment, entityType: EntityApprovalStatus.entityType.ProgramEnrolment},
             {schema: SchemaNames.Encounter, entityType: EntityApprovalStatus.entityType.Encounter},
             {schema: SchemaNames.ProgramEncounter, entityType: EntityApprovalStatus.entityType.ProgramEncounter},
-            {schema: ChecklistItem.schema.name, entityType: EntityApprovalStatus.entityType.ChecklistItem}
+            {schema: SchemaNames.ChecklistItem, entityType: EntityApprovalStatus.entityType.ChecklistItem}
         ];
     }
 

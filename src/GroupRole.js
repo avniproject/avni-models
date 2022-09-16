@@ -19,7 +19,7 @@ class GroupRole extends BaseEntity{
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

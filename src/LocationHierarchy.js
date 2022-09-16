@@ -17,7 +17,7 @@ class LocationHierarchy extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

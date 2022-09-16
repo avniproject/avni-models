@@ -49,6 +49,7 @@ class Individual extends BaseEntity {
       groups: {type: "list", objectType: "GroupSubject"},
     },
   };
+  private affiliatedGroups: GroupSubject[];
 
   get subjectType() {
       return this.toEntity("subjectType", SubjectType);
@@ -143,7 +144,7 @@ class Individual extends BaseEntity {
   }
 
   set enrolments(x) {
-      this.that.enrolments = x;
+      this.that.enrolments = this.fromList(x);
   }
 
   get encounters() {
@@ -151,7 +152,7 @@ class Individual extends BaseEntity {
   }
 
   set encounters(x) {
-      this.that.encounters = x;
+      this.that.encounters = this.fromList(x);
   }
 
   get observations() {
@@ -159,7 +160,7 @@ class Individual extends BaseEntity {
   }
 
   set observations(x) {
-      this.that.observations = x;
+      this.that.observations = this.fromList(x);
   }
 
   get relationships() {
@@ -167,7 +168,7 @@ class Individual extends BaseEntity {
   }
 
   set relationships(x) {
-      this.that.relationships = x;
+      this.that.relationships = this.fromList(x);
   }
 
   get groupSubjects() {
@@ -175,7 +176,7 @@ class Individual extends BaseEntity {
   }
 
   set groupSubjects(x) {
-      this.that.groupSubjects = x;
+      this.that.groupSubjects = this.fromList(x);
   }
 
   get registrationLocation() {
@@ -199,7 +200,7 @@ class Individual extends BaseEntity {
   }
 
   set comments(x) {
-      this.that.comments = x;
+      this.that.comments = this.fromList(x);
   }
 
   get groups() {
@@ -207,7 +208,7 @@ class Individual extends BaseEntity {
   }
 
   set groups(x) {
-      this.that.groups = x;
+      this.that.groups = this.fromList(x);
   }
 
   static validationKeys = {

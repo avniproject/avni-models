@@ -31,7 +31,7 @@ class Encounter extends AbstractEncounter {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

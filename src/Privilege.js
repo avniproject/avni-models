@@ -13,7 +13,7 @@ class Privilege extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 

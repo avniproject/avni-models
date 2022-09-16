@@ -17,7 +17,7 @@ class AbstractEncounter extends BaseEntity {
     COMPLETION_DATE: "COMPLETION_DATE",
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -74,7 +74,7 @@ class AbstractEncounter extends BaseEntity {
   }
 
   set observations(x) {
-    this.that.observations = x;
+    this.that.observations = this.fromList(x);
   }
 
   get cancelLocation() {
@@ -90,7 +90,7 @@ class AbstractEncounter extends BaseEntity {
   }
 
   set cancelObservations(x) {
-      this.that.cancelObservations = x;
+      this.that.cancelObservations = this.fromList(x);
   }
 
   get cancelDateTime() {
@@ -205,9 +205,7 @@ class AbstractEncounter extends BaseEntity {
 
   getEncounterDateValues() {
     return {
-      [AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME]: this.encounterDateTime,
-      [ProgramEncounter.fieldKeys.SCHEDULED_DATE_TIME]: this.earliestVisitDateTime,
-      [ProgramEncounter.fieldKeys.MAX_DATE_TIME]: this.maxVisitDateTime,
+      [AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME]: this.encounterDateTime
     };
   }
 

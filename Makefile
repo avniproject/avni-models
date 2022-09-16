@@ -8,7 +8,7 @@ endif
 clean:
 	rm -rf node_modules
 
-deps: check-node-v
+deps:
 	@rm -rf package-lock.json
 	yarn install
 

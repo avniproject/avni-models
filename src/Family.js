@@ -27,7 +27,7 @@ class Family extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -76,7 +76,7 @@ class Family extends BaseEntity {
   }
 
   set members(x) {
-      this.that.members = x;
+      this.that.members = this.fromList(x);
   }
 
   get observations() {
@@ -84,7 +84,7 @@ class Family extends BaseEntity {
   }
 
   set observations(x) {
-      this.that.observations = x;
+      this.that.observations = this.fromList(x);
   }
 
   static validationKeys = {

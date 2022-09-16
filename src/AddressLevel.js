@@ -61,7 +61,7 @@ class AddressLevel extends BaseEntity {
     },
   };
 
-  constructor(that) {
+   constructor(that = null) {
     super(that);
   }
 
@@ -94,7 +94,7 @@ class AddressLevel extends BaseEntity {
   }
 
   set locationMappings(x) {
-      this.that.locationMappings = x;
+      this.that.locationMappings = this.fromList(x);
   }
 
   get locationProperties() {
@@ -102,7 +102,7 @@ class AddressLevel extends BaseEntity {
   }
 
   set locationProperties(x) {
-      this.that.locationProperties = x;
+      this.that.locationProperties = this.fromList(x);
   }
 
   get titleLineage() {

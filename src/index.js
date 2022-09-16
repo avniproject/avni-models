@@ -117,6 +117,7 @@ import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import RealmProxy from "./framework/RealmProxy";
+import PersistedObject from "./PersistedObject";
 
 export {
   AbstractEncounter,
