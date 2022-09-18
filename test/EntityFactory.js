@@ -11,7 +11,7 @@ import PrimitiveValue from "../src/observation/PrimitiveValue";
 import ProgramEncounter from "../src/ProgramEncounter";
 import ProgramEnrolment from "../src/ProgramEnrolment";
 import Individual from "../src/Individual";
-import {ConceptAnswer} from "../src/Concept";
+import ConceptAnswer from "../src/ConceptAnswer";
 import EncounterType from "../src/EncounterType";
 
 class EntityFactory {
@@ -128,6 +128,10 @@ class EntityFactory {
         program.name = name;
         return program;
     };
+
+    static createConceptAnswer({concept, answerOrder, abnormal}) {
+
+    }
 }
 
 export default EntityFactory;

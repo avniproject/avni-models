@@ -10,6 +10,7 @@ import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
 import General from "./utility/General";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
+import ah from "./framework/ArrayHelper";
 
 class ObservationsHolder {
   constructor(observations) {
@@ -41,7 +42,7 @@ class ObservationsHolder {
 
   updateObs(formElement, value) {
     const currentValue = this.getObservation(formElement.concept);
-    _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
+    ah.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
 
     if (formElement.concept.isPrimitive() && isNil(formElement.durationOptions)) {
       this.addOrUpdatePrimitiveObs(formElement.concept, value);
@@ -101,7 +102,7 @@ class ObservationsHolder {
   _removeExistingObs(concept) {
     const observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
-      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+      ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
     }
   }
 
@@ -171,7 +172,7 @@ class ObservationsHolder {
       const questionGroupObservation = questionGroup && questionGroup.getGroupObservationAtIndex(formElement.questionGroupIndex);
       return questionGroupObservation && questionGroupObservation.removeExistingObs(formElement.concept);
     } else {
-      return _.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid)
+      return ah.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid)
     }
   }
 
@@ -183,7 +184,7 @@ class ObservationsHolder {
 
   removeNonApplicableAnswers(fe, isSingleSelect, observation) {
     if (!_.isEmpty(observation)) {
-      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+      ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
       const applicableConceptAnswerUUIDs = fe.getApplicableAnswerConceptUUIDs();
       const applicableAnswers = _.filter(_.flatten([observation.getValue()]), value => _.includes(applicableConceptAnswerUUIDs, value));
       const newValue = isSingleSelect ? new SingleCodedValue(_.head(applicableAnswers)) : new MultipleCodedValues(applicableAnswers);
@@ -259,7 +260,7 @@ class ObservationsHolder {
         ? observation.toggleSingleSelectAnswer(answerUUID)
         : observation.toggleMultiSelectAnswer(answerUUID);
       if (observation.hasNoAnswer()) {
-        _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+        ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
         return null;
       }
       return observation;
@@ -269,7 +270,7 @@ class ObservationsHolder {
   updateCompositeDurationValue(concept, duration) {
     let observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
-      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+      ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
       if (duration.isEmpty) return null;
     }
     observation = Observation.create(concept, duration);
@@ -280,7 +281,7 @@ class ObservationsHolder {
   updatePhoneNumberValue(concept, phoneNumber, verified = false, skipVerification = false) {
     let observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
-      _.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+      ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
       if (_.isEmpty(phoneNumber)) return null;
     }
     observation = Observation.create(concept, new PhoneNumber(phoneNumber, verified, skipVerification));

@@ -90,19 +90,19 @@ class AddressLevel extends BaseEntity {
   }
 
   get locationMappings() {
-      return this.toList("locationMappings", LocationMapping);
+      return this.toEntityList("locationMappings", LocationMapping);
   }
 
   set locationMappings(x) {
-      this.that.locationMappings = this.fromList(x);
+      this.that.locationMappings = this.fromEntityList(x);
   }
 
   get locationProperties() {
-      return this.toList("locationProperties", Observation);
+      return this.toEntityList("locationProperties", Observation);
   }
 
   set locationProperties(x) {
-      this.that.locationProperties = this.fromList(x);
+      this.that.locationProperties = this.fromEntityList(x);
   }
 
   get titleLineage() {

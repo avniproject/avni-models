@@ -1,33 +1,40 @@
-import RealmCollectionProxy from "./RealmCollectionProxy";
+class RealmListProxy extends Array {
+  constructor(realmList) {
+    super();
+    this.realmList = realmList;
+  }
 
-class RealmListProxy extends RealmCollectionProxy {
-    constructor(realmCollection, entityClass) {
-        super(realmCollection, entityClass);
-    }
+  /*
+  Not to be used by external callers.
+   */
+  pushAll(listItemClass) {
+    this.realmList.forEach((x) => super.push(new listItemClass(x)));
+  }
 
-    get realmList() {
-        return this.realmCollection;
-    }
+  pop() {
+    this.realmList.pop();
+    return super.pop();
+  }
 
-    pop() {
-        return this.createEntity(this.realmList.pop());
-    }
+  push(...values) {
+    super.push(...values);
+    values.forEach((x) => this.realmList.push(x.that));
+  }
 
-    push(...values) {
-        this.realmList.push(...values);
-    }
+  shift() {
+    this.realmList.shift();
+    return super.shift();
+  }
 
-    shift() {
-        return this.createEntity(this.realmList.shift());
-    }
+  splice(index, count, ...values) {
+    this.realmList.splice(index, count, ...values);
+    return super.splice(index, count, ...values);
+  }
 
-    splice(index, count, ...values) {
-        return this.realmList.splice(index, count, ...values);
-    }
-
-    unshift(...values) {
-        return this.realmList.unshift(...values);
-    }
+  unshift(...values) {
+    super.unshift(...values);
+    return this.realmList.unshift(...values);
+  }
 }
 
 export default RealmListProxy;

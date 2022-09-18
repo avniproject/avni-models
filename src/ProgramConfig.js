@@ -31,19 +31,19 @@ class ProgramConfig extends ReferenceEntity {
   }
 
   get atRiskConcepts() {
-      return this.toList("atRiskConcepts", Concept);
+      return this.toEntityList("atRiskConcepts", Concept);
   }
 
   set atRiskConcepts(x) {
-      this.that.atRiskConcepts = this.fromList(x);
+      this.that.atRiskConcepts = this.fromEntityList(x);
   }
 
   get visitSchedule() {
-      return this.toList("visitSchedule", VisitScheduleConfig);
+      return this.toEntityList("visitSchedule", VisitScheduleConfig);
   }
 
   set visitSchedule(x) {
-      this.that.visitSchedule = this.fromList(x);
+      this.that.visitSchedule = this.fromEntityList(x);
   }
 
   static fromResource(resource, entityService) {

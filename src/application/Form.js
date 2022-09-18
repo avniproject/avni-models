@@ -46,11 +46,11 @@ class Form extends BaseEntity {
   }
 
   get formElementGroups() {
-      return this.toList("formElementGroups", FormElementGroup);
+      return this.toEntityList("formElementGroups", FormElementGroup);
   }
 
   set formElementGroups(x) {
-      this.that.formElementGroups = this.fromList(x);
+      this.that.formElementGroups = this.fromEntityList(x);
   }
 
   get decisionRule() {
@@ -190,7 +190,9 @@ class Form extends BaseEntity {
   }
 
   nonVoidedFormElementGroups() {
-    return _.filter(this.formElementGroups, (formElementGroup) => !formElementGroup.voided);
+    return _.filter(this.formElementGroups, (formElementGroup) => {
+      return !formElementGroup.voided;
+    });
   }
 
   getFormElementGroups() {

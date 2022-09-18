@@ -1,5 +1,4 @@
 import BaseEntity from "./BaseEntity";
-import ResourceUtil from "./utility/ResourceUtil";
 import General from "./utility/General";
 import _ from "lodash";
 import MultipleCodedValues from "./observation/MultipleCodedValues";
@@ -12,74 +11,7 @@ import PhoneNumber from "./PhoneNumber";
 import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
-
-export class ConceptAnswer extends BaseEntity {
-  static schema = {
-    name: "ConceptAnswer",
-    primaryKey: "uuid",
-    properties: {
-      uuid: "string",
-      concept: "Concept",
-      answerOrder: "double",
-      abnormal: "bool",
-      unique: "bool",
-      voided: {type: "bool", default: false},
-    },
-  };
-
-   constructor(that = null) {
-    super(that);
-  }
-
-  get answerOrder() {
-      return this.that.answerOrder;
-  }
-
-  set answerOrder(x) {
-      this.that.answerOrder = x;
-  }
-
-  get unique() {
-      return this.that.unique;
-  }
-
-  set unique(x) {
-      this.that.unique = x;
-  }
-
-  get concept() {
-    return this.toEntity("concept", Concept);
-  }
-
-  set concept(x) {
-    this.that.concept = x && x.that;
-  }
-
-  get name() {
-      return this.that.name;
-  }
-
-  set name(x) {
-      this.that.name = x;
-  }
-
-  static fromResource(resource, entityService) {
-    const conceptAnswer = new ConceptAnswer();
-    conceptAnswer.concept = entityService.findByKey(
-      "uuid",
-      ResourceUtil.getUUIDFor(resource, "conceptAnswerUUID"),
-      Concept.schema.name
-    );
-    conceptAnswer.uuid = resource.uuid;
-    conceptAnswer.answerOrder = resource.order;
-    conceptAnswer.abnormal = resource.abnormal;
-    conceptAnswer.unique = resource.unique;
-    conceptAnswer.voided = resource.voided || false; //This change should be independently deployable irrespective of server
-    return conceptAnswer;
-  }
-
-  static parentAssociations = () => new Map([[Concept, "conceptUUID"]]);
-}
+import ConceptAnswer from "./ConceptAnswer";
 
 export default class Concept extends BaseEntity {
   static StandardConcepts = {
@@ -106,6 +38,14 @@ export default class Concept extends BaseEntity {
 
    constructor(that = null) {
     super(that, Concept);
+  }
+
+  get lowNormal() {
+      return this.that.lowNormal;
+  }
+
+  set lowNormal(x) {
+      this.that.lowNormal = x;
   }
 
   get lowAbsolute() {
@@ -157,19 +97,19 @@ export default class Concept extends BaseEntity {
   }
 
   get answers() {
-    return this.toList("answers", ConceptAnswer);
+    return this.toEntityList("answers", ConceptAnswer);
   }
 
   set answers(x) {
-    this.that.answers = this.fromList(x);
+    this.that.answers = this.fromEntityList(x);
   }
 
   get keyValues() {
-    return this.toList("keyValues", KeyValue);
+    return this.toEntityList("keyValues", KeyValue);
   }
 
   set keyValues(x) {
-    this.that.keyValues = this.fromList(x);
+    this.that.keyValues = this.fromEntityList(x);
   }
 
   static dataType = {
@@ -210,7 +150,7 @@ export default class Concept extends BaseEntity {
   };
 
   static encounterScopes = {
-    withinSubject: 'Within Subject',
+    withinSubject: "Within Subject"
   };
 
   // static primitiveDataTypes = [Concept.dataType.Boolean, Concept.dataType.Coded, Concept.dataType.Numeric, Concept.dataType.Date, Concept.dataType.Text];

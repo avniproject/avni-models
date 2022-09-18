@@ -30,7 +30,7 @@ describe('Form', () => {
     const formElement = EntityFactory.createFormElement('b2');
     formElementGroup2.addFormElement(formElement);
 
-    assert.equal(form.findFormElement('b2'), formElement);
+    assert.equal(form.findFormElement('b2').uuid, formElement.uuid);
     assert.notEqual(form.findFormElement('a1'), undefined);
 
     const modifiedForm = form.removeFormElement('b2');

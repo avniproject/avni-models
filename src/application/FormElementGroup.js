@@ -57,11 +57,11 @@ class FormElementGroup extends BaseEntity {
   }
 
   get formElements() {
-      return this.toList("formElements", FormElement);
+      return this.toEntityList("formElements", FormElement);
   }
 
   set formElements(x) {
-      this.that.formElements = this.fromList(x);
+      this.that.formElements = this.fromEntityList(x);
   }
 
   get form() {

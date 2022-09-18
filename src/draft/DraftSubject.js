@@ -120,43 +120,43 @@ class DraftSubject extends BaseEntity {
   }
 
   get enrolments() {
-    return this.toList("enrolments", ProgramEnrolment);
+    return this.toEntityList("enrolments", ProgramEnrolment);
   }
 
   set enrolments(x) {
-    this.that.enrolments = this.fromList(x);
+    this.that.enrolments = this.fromEntityList(x);
   }
 
   get encounters() {
-    return this.toList("encounters", Encounter);
+    return this.toEntityList("encounters", Encounter);
   }
 
   set encounters(x) {
-    this.that.encounters = this.fromList(x);
+    this.that.encounters = this.fromEntityList(x);
   }
 
   get observations() {
-    return this.toList("observations", Observation);
+    return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-    this.that.observations = this.fromList(x);
+    this.that.observations = this.fromEntityList(x);
   }
 
   get relationships() {
-    return this.toList("relationships", IndividualRelationship);
+    return this.toEntityList("relationships", IndividualRelationship);
   }
 
   set relationships(x) {
-    this.that.relationships = this.fromList(x);
+    this.that.relationships = this.fromEntityList(x);
   }
 
   get groupSubjects() {
-    return this.toList("groupSubjects", GroupSubject);
+    return this.toEntityList("groupSubjects", GroupSubject);
   }
 
   set groupSubjects(x) {
-    this.that.groupSubjects = this.fromList(x);
+    this.that.groupSubjects = this.fromEntityList(x);
   }
 
   get registrationLocation() {
@@ -176,19 +176,19 @@ class DraftSubject extends BaseEntity {
   }
 
   get comments() {
-    return this.toList("comments", Comment);
+    return this.toEntityList("comments", Comment);
   }
 
   set comments(x) {
-    this.that.comments = this.fromList(x);
+    this.that.comments = this.fromEntityList(x);
   }
 
   get groups() {
-    return this.toList("groups", GroupSubject);
+    return this.toEntityList("groups", GroupSubject);
   }
 
   set groups(x) {
-    this.that.groups = this.fromList(x);
+    this.that.groups = this.fromEntityList(x);
   }
 
     static create(subject, totalMembers) {

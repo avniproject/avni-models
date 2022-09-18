@@ -1,7 +1,9 @@
 import _ from "lodash";
-import Concept, {ConceptAnswer} from "../Concept";
+import Concept from "../Concept";
+import ConceptAnswer from "../ConceptAnswer";
 import Observation from "../Observation";
 import General from "../utility/General";
+import ah from "../framework/ArrayHelper";
 
 class QuestionGroup {
     constructor(groupObservations = []) {
@@ -85,7 +87,7 @@ class QuestionGroup {
     }
 
     removeExistingObs(concept) {
-        return _.remove(this.groupObservations, obs => obs.concept.uuid === concept.uuid);
+        return ah.remove(this.groupObservations, obs => obs.concept.uuid === concept.uuid);
     }
 
     getValueForConcept(concept) {

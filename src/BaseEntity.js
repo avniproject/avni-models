@@ -4,6 +4,7 @@ import ResourceUtil from "./utility/ResourceUtil";
 import SyncError from "./error/SyncError";
 import {ErrorCodes} from "./error/ErrorCodes";
 import PersistedObject from "./PersistedObject";
+import ah from "./framework/ArrayHelper";
 
 class BaseEntity extends PersistedObject {
   static fieldKeys = {
@@ -52,7 +53,7 @@ class BaseEntity extends PersistedObject {
   }
 
   static removeFromCollection(collection, entity) {
-    _.remove(collection, (item) => item.uuid === entity.uuid);
+    ah.remove(collection, (item) => item.uuid === entity.uuid);
   }
 
   equals(other) {

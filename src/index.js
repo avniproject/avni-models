@@ -7,7 +7,8 @@ import ChecklistItemDetail from "./ChecklistItemDetail";
 import ChecklistItem from "./ChecklistItem";
 import ChecklistItemStatus from "./ChecklistItemStatus";
 import CompositeDuration from "./CompositeDuration";
-import Concept, { ConceptAnswer } from "./Concept";
+import Concept from "./Concept";
+import ConceptAnswer from "./ConceptAnswer";
 import ConfigFile from "./ConfigFile";
 import Decision from "./Decision";
 import Duration from "./Duration";
@@ -117,7 +118,7 @@ import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import RealmProxy from "./framework/RealmProxy";
-import PersistedObject from "./PersistedObject";
+import ah from "./framework/ArrayHelper";
 
 export {
   AbstractEncounter,
@@ -239,5 +240,6 @@ export {
   DraftEncounter,
   SubjectProgramEligibility,
   MenuItem,
-  RealmProxy
+  RealmProxy,
+  ah
 };

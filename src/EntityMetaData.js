@@ -1,4 +1,5 @@
-import Concept, {ConceptAnswer} from "./Concept";
+import Concept from "./Concept";
+import ConceptAnswer from "./ConceptAnswer";
 import Gender from "./Gender";
 import AddressLevel, {LocationMapping} from "./AddressLevel";
 import Individual from "./Individual";

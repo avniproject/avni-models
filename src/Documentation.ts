@@ -27,11 +27,11 @@ class Documentation extends BaseEntity {
   }
 
   get documentationItems() {
-      return this.toList("documentationItems", DocumentationItem);
+      return this.toEntityList("documentationItems", DocumentationItem);
   }
 
   set documentationItems(x) {
-      this.that.documentationItems = this.fromList(x);
+      this.that.documentationItems = this.fromEntityList(x);
   }
 
   static merge = () => BaseEntity.mergeOn("documentationItems");

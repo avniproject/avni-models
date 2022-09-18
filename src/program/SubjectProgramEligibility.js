@@ -59,11 +59,11 @@ class SubjectProgramEligibility extends BaseEntity {
   }
 
   get observations() {
-      return this.toList("observations", Observation);
+      return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-      this.that.observations = this.fromList(x);
+      this.that.observations = this.fromEntityList(x);
   }
 
   static createEmptyInstance(program, subject) {

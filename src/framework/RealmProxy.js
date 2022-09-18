@@ -1,57 +1,63 @@
 import RealmCollectionProxyHandler from "./RealmCollectionProxyHandler";
-import RealmCollectionProxy from "./RealmCollectionProxy";
+import RealmResultsProxy from "./RealmResultsProxy";
 
 class RealmProxy {
-    constructor(realmDb, entityMappingConfig) {
-        this.realmDb = realmDb;
-        this.entityMappingConfig = entityMappingConfig;
-    }
+  constructor(realmDb, entityMappingConfig) {
+    this.realmDb = realmDb;
+    this.entityMappingConfig = entityMappingConfig;
+  }
 
-    objects(type) {
-        const realmCollectionProxy = new RealmCollectionProxy(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
-        return new Proxy(realmCollectionProxy, RealmCollectionProxyHandler);
-    }
+  objects(type) {
+    const realmCollectionProxy = new RealmResultsProxy(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
+    return new Proxy(realmCollectionProxy, RealmCollectionProxyHandler);
+  }
 
-    get isInTransaction() {
-        return this.realmDb.isInTransaction;
-    }
+  get isInTransaction() {
+    return this.realmDb.isInTransaction;
+  }
 
-    get path() {
-        return this.realmDb.path;
-    }
+  get path() {
+    return this.realmDb.path;
+  }
 
-    get schema() {
-        return this.realmDb.schema;
-    }
+  get schema() {
+    return this.realmDb.schema;
+  }
 
-    get schemaVersion() {
-        return this.realmDb.schemaVersion;
-    }
+  get schemaVersion() {
+    return this.realmDb.schemaVersion;
+  }
 
-    close() {
-        return this.realmDb.close();
-    }
+  close() {
+    return this.realmDb.close();
+  }
 
-    create(type, properties, updateMode = "never") {
-        return this.realmDb.create(type, properties.that, updateMode);
-    }
+  create(type, properties, updateMode = "never") {
+    return this.realmDb.create(type, properties.that, updateMode);
+  }
 
-    delete(object) {
-        return this.realmDb.delete(object.that);
-    }
+  delete(object) {
+    let deleteObj = object;
+    if (!_.isNil(object.that))
+      deleteObj = object.that;
+    else if (!_.isNil(object.realmCollection))
+      deleteObj = object.realmCollection;
 
-    objectForPrimaryKey(type, key) {
-        const entityClass = this.entityMappingConfig.getEntityClass(type);
-        return new entityClass(this.realmDb.objectForPrimaryKey(type, key));
-    }
+    return this.realmDb.delete(deleteObj);
+  }
 
-    write(callback) {
-        return this.realmDb.write(callback);
-    }
+  objectForPrimaryKey(type, key) {
+    const entityClass = this.entityMappingConfig.getEntityClass(type);
+    return new entityClass(this.realmDb.objectForPrimaryKey(type, key));
+  }
 
-    writeCopyTo(pathOrConfig, encryptionKey) {
-        return this.realmDb.writeCopyTo(pathOrConfig, encryptionKey);
-    }
+  write(callback) {
+    return this.realmDb.write(callback);
+  }
+
+  writeCopyTo(pathOrConfig, encryptionKey) {
+    return this.realmDb.writeCopyTo(pathOrConfig, encryptionKey);
+  }
 }
 
 export default RealmProxy;

@@ -1,5 +1,6 @@
 import {assert} from 'chai';
 import Concept from "../src/Concept";
+import ConceptAnswer from "../src/ConceptAnswer";
 import _ from "lodash";
 
 describe('ConceptTest', () => {
@@ -13,28 +14,44 @@ describe('ConceptTest', () => {
         return concept;
     };
 
+    function createConcept({uuid, name, datatype}) {
+      let concept = new Concept();
+      concept.uuid = uuid;
+      concept.name = name;
+      concept.datatype = datatype;
+      return concept;
+    };
+
+    function createAnswer({concept, answerOrder, abnormal}) {
+      let conceptAnswer = new ConceptAnswer();
+      conceptAnswer.concept = concept;
+      conceptAnswer.answerOrder = answerOrder;
+      conceptAnswer.abnormal = abnormal;
+      return conceptAnswer;
+    }
+
     let createCodedConcept = function () {
         const concept = new Concept();
         concept.datatype = Concept.dataType.Coded;
         concept.answers = [
-            {
+            createAnswer({
                 concept:
-                    {uuid: '5a738df9-b09a-4e7d-b683-189a9cdabcad', name: 'Pregnancy Induced Hypertension', datatype: 'NA'},
+                    createConcept({uuid: '5a738df9-b09a-4e7d-b683-189a9cdabcad', name: 'Pregnancy Induced Hypertension', datatype: 'NA'}),
                 answerOrder: 1,
                 abnormal: true
-            },
-            {
+            }),
+          createAnswer({
                 concept:
-                    {uuid: Concept.StandardConcepts.OtherConceptUUID, name: 'Other', datatype: 'NA'},
+                createConcept({uuid: Concept.StandardConcepts.OtherConceptUUID, name: 'Other', datatype: 'NA'}),
                 answerOrder: 2,
                 abnormal: true
-            },
-            {
+            }),
+          createAnswer({
                 concept:
-                    {uuid: '2f819f63-2a99-4719-a0c5-49e1386194a0', name: 'Underweight', datatype: 'NA'},
+                  createConcept({uuid: '2f819f63-2a99-4719-a0c5-49e1386194a0', name: 'Underweight', datatype: 'NA'}),
                 answerOrder: 3,
                 abnormal: false
-            }
+            })
         ];
         return concept;
     };

@@ -61,11 +61,11 @@ class FormElement extends BaseEntity {
   }
 
   get keyValues() {
-      return this.toList("keyValues", KeyValue);
+      return this.toEntityList("keyValues", KeyValue);
   }
 
   set keyValues(x) {
-      this.that.keyValues = this.fromList(x);
+      this.that.keyValues = this.fromEntityList(x);
   }
 
   get concept() {

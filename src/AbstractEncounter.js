@@ -70,11 +70,11 @@ class AbstractEncounter extends BaseEntity {
   }
 
   get observations() {
-    return this.toList("observations", Observation);
+    return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-    this.that.observations = this.fromList(x);
+    this.that.observations = this.fromEntityList(x);
   }
 
   get cancelLocation() {
@@ -86,11 +86,11 @@ class AbstractEncounter extends BaseEntity {
   }
 
   get cancelObservations() {
-      return this.toList("cancelObservations", Observation);
+      return this.toEntityList("cancelObservations", Observation);
   }
 
   set cancelObservations(x) {
-      this.that.cancelObservations = this.fromList(x);
+      this.that.cancelObservations = this.fromEntityList(x);
   }
 
   get cancelDateTime() {

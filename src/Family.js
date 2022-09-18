@@ -72,19 +72,19 @@ class Family extends BaseEntity {
   }
 
   get members() {
-      return this.toList("members", Individual);
+      return this.toEntityList("members", Individual);
   }
 
   set members(x) {
-      this.that.members = this.fromList(x);
+      this.that.members = this.fromEntityList(x);
   }
 
   get observations() {
-      return this.toList("observations", Observation);
+      return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-      this.that.observations = this.fromList(x);
+      this.that.observations = this.fromEntityList(x);
   }
 
   static validationKeys = {

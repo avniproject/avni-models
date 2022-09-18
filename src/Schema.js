@@ -1,6 +1,7 @@
 import Settings from "./Settings";
 import LocaleMapping from "./LocaleMapping";
-import Concept, {ConceptAnswer} from "./Concept";
+import Concept from "./Concept";
+import ConceptAnswer from "./ConceptAnswer";
 import Individual from "./Individual";
 import Family from "./Family";
 import AddressLevel, {LocationMapping} from "./AddressLevel";

@@ -38,7 +38,6 @@ class Observation extends PersistedObject {
     const observation = new Observation();
     observation.concept = concept;
     observation.valueJSON = value;
-    observation.abnormal = abnormal;
     return observation;
   }
 

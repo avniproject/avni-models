@@ -4,12 +4,12 @@ import moment from "moment";
 import Individual from "../src/Individual";
 import Program from "../src/Program";
 import ProgramEnrolment from "../src/ProgramEnrolment";
-import ProgramEncounter from "../src/ProgramEncounter";
 import _ from "lodash";
 import EncounterType from "../src/EncounterType";
 import Concept from "../src/Concept";
 import Observation from "../src/Observation";
 import SingleCodedValue from "../src/observation/SingleCodedValue";
+import Encounter from "../src/Encounter";
 
 let createProgram = function (uuid) {
     const program = new Program();
@@ -69,8 +69,8 @@ describe('IndividualTest', () => {
         const programEnrolment2 = addEnrolment(EntityFactory.createEnrolment({program: program2, enrolmentDateTime: new Date(2012, 1, 1)}));
         const programEnrolment3 = addEnrolment(EntityFactory.createEnrolment({program: program1, enrolmentDateTime: new Date(2014, 1, 1)}));
         const programEnrolment4 = addEnrolment(EntityFactory.createEnrolment({program: program1, enrolmentDateTime: new Date(2017, 1, 1)}));
-        assert.equal(individual.getPreviousEnrolment('FooProgram', programEnrolment4.uuid), programEnrolment3);
-        assert.equal(individual.getPreviousEnrolment('FooProgram', programEnrolment3.uuid), programEnrolment1);
+        assert.equal(individual.getPreviousEnrolment('FooProgram', programEnrolment4.uuid).uuid, programEnrolment3.uuid);
+        assert.equal(individual.getPreviousEnrolment('FooProgram', programEnrolment3.uuid).uuid, programEnrolment1.uuid);
         assert.equal(individual.getPreviousEnrolment('FooProgram', programEnrolment1.uuid), null);
         assert.equal(individual.getPreviousEnrolment('BarProgram', programEnrolment2.uuid), null);
     });
@@ -122,11 +122,11 @@ describe('IndividualTest', () => {
     const quarterlyVisit = createEncounter(new Date(2018, 3, 11), "Quarterly Visit");
     individual.addEncounter(quarterlyVisit);
 
-    assert.equal(individual.findLatestObservationFromEncounters("height", firstVisit), obs2);
-    assert.equal(individual.findLatestObservationFromEncounters("height", secondVisit), obs3);
-    assert.equal(individual.findLatestObservationFromPreviousEncounters("height", firstVisit), obs1);
-    assert.equal(individual.findLatestObservationFromPreviousEncounters("height", secondVisit), obs2);
-    assert.equal(individual.findLastEncounterOfType(secondVisit, ['Monthly Visit']), firstVisit)
+    assert.equal(individual.findLatestObservationFromEncounters("height", firstVisit).valueJSON, obs2.valueJSON);
+    assert.equal(individual.findLatestObservationFromEncounters("height", secondVisit).valueJSON, obs3.valueJSON);
+    assert.equal(individual.findLatestObservationFromPreviousEncounters("height", firstVisit).valueJSON, obs1.valueJSON);
+    assert.equal(individual.findLatestObservationFromPreviousEncounters("height", secondVisit).valueJSON, obs2.valueJSON);
+    assert.equal(individual.findLastEncounterOfType(secondVisit, ['Monthly Visit']).encounterDateTime, firstVisit.encounterDateTime)
   })
 
   it('should get full name', function () {
@@ -137,7 +137,7 @@ describe('IndividualTest', () => {
 });
 
 function createEncounter(date, name) {
-  const encounter = ProgramEncounter.createEmptyInstance();
+  const encounter = Encounter.createEmptyInstance();
   encounter.encounterDateTime = date;
   if (!_.isEmpty(name)) encounter.encounterType = EncounterType.create(name);
   return encounter;

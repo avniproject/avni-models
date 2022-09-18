@@ -1,16 +1,19 @@
 import RealmCollectionProxyHandler from "./RealmCollectionProxyHandler";
-import RealmDatabaseObjectProxy from "./RealmDatabaseObjectProxy";
 
 //https://www.mongodb.com/docs/realm-sdks/js/latest/Realm.Collection.html
 //RealmCollection as per realm documentation returns RealmResults. But there are no extra methods/properties in realm results, so we are using realm collection proxy for realm results and don't have a separate proxy class for it
-class RealmCollectionProxy extends RealmDatabaseObjectProxy {
+class RealmResultsProxy {
   constructor(realmCollection, entityClass) {
-    super(entityClass);
+    this.entityClass = entityClass;
     this.realmCollection = realmCollection;
   }
 
+  createEntity(object) {
+    return new this.entityClass(object);
+  }
+
   _realmResultsWithProxy(realmCollection) {
-    return new Proxy(new RealmCollectionProxy(realmCollection, this.entityClass), RealmCollectionProxyHandler);
+    return new RealmResultsProxy(realmCollection, this.entityClass);
   }
 
   filtered(query, ...args) {
@@ -23,7 +26,7 @@ class RealmCollectionProxy extends RealmDatabaseObjectProxy {
 
   forEach(callback, thisArg) {
     return this.realmCollection.forEach((object, index) => {
-      callback(this.createEntity(object), index, this);
+      return callback(this.createEntity(object), index, this);
     }, thisArg);
   }
 
@@ -37,7 +40,7 @@ class RealmCollectionProxy extends RealmDatabaseObjectProxy {
 
   map(callback, thisArg) {
     return this.realmCollection.map((object, index) => {
-      callback(this.createEntity(object), index, this);
+      return callback(this.createEntity(object), index, this);
     }, thisArg);
   }
 
@@ -55,7 +58,7 @@ class RealmCollectionProxy extends RealmDatabaseObjectProxy {
 
   some(callback, thisArg) {
     return this.realmCollection.some((object, index, collection) => {
-      callback(this.createEntity(object), index, this);
+      return callback(this.createEntity(object), index, this);
     }, thisArg);
   }
 
@@ -84,4 +87,4 @@ class RealmCollectionProxy extends RealmDatabaseObjectProxy {
   }
 }
 
-export default RealmCollectionProxy;
+export default RealmResultsProxy;

@@ -15,7 +15,7 @@ import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
-import RealmCollectionProxy from "./framework/RealmCollectionProxy";
+import RealmResultsProxy from "./framework/RealmResultsProxy";
 
 class ProgramEnrolment extends BaseEntity {
   static schema = {
@@ -60,11 +60,11 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   get observations() {
-      return this.toList("observations", Observation);
+      return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-      this.that.observations = this.fromList(x);
+      this.that.observations = this.fromEntityList(x);
   }
 
   get programExitDateTime() {
@@ -76,11 +76,11 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   get programExitObservations() {
-      return this.toList("programExitObservations", Observation);
+      return this.toEntityList("programExitObservations", Observation);
   }
 
   set programExitObservations(x) {
-      this.that.programExitObservations = this.fromList(x);
+      this.that.programExitObservations = this.fromEntityList(x);
   }
 
   get programOutcome() {
@@ -92,19 +92,19 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   get encounters() {
-      return this.toList("encounters", ProgramEncounter);
+      return this.toEntityList("encounters", ProgramEncounter);
   }
 
   set encounters(x) {
-      this.that.encounters = this.fromList(x);
+      this.that.encounters = this.fromEntityList(x);
   }
 
   get checklists() {
-      return this.toList("checklists", Checklist);
+      return this.toEntityList("checklists", Checklist);
   }
 
   set checklists(x) {
-      this.that.checklists = this.fromList(x);
+      this.that.checklists = this.fromEntityList(x);
   }
 
   get individual() {

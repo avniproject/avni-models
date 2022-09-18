@@ -19,6 +19,7 @@ import GroupSubject from "./GroupSubject";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import Comment from "./Comment";
 import SchemaNames from "./SchemaNames";
+import ah from "./framework/ArrayHelper";
 
 class Individual extends BaseEntity {
   static schema = {
@@ -49,7 +50,6 @@ class Individual extends BaseEntity {
       groups: {type: "list", objectType: "GroupSubject"},
     },
   };
-  private affiliatedGroups: GroupSubject[];
 
   get subjectType() {
       return this.toEntity("subjectType", SubjectType);
@@ -140,43 +140,43 @@ class Individual extends BaseEntity {
   }
 
   get enrolments() {
-      return this.toList("enrolments", ProgramEnrolment);
+      return this.toEntityList("enrolments", ProgramEnrolment);
   }
 
   set enrolments(x) {
-      this.that.enrolments = this.fromList(x);
+      this.that.enrolments = this.fromEntityList(x);
   }
 
   get encounters() {
-      return this.toList("encounters", Encounter);
+      return this.toEntityList("encounters", Encounter);
   }
 
   set encounters(x) {
-      this.that.encounters = this.fromList(x);
+      this.that.encounters = this.fromEntityList(x);
   }
 
   get observations() {
-      return this.toList("observations", Observation);
+      return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-      this.that.observations = this.fromList(x);
+      this.that.observations = this.fromEntityList(x);
   }
 
   get relationships() {
-      return this.toList("relationships", IndividualRelationship);
+      return this.toEntityList("relationships", IndividualRelationship);
   }
 
   set relationships(x) {
-      this.that.relationships = this.fromList(x);
+      this.that.relationships = this.fromEntityList(x);
   }
 
   get groupSubjects() {
-      return this.toList("groupSubjects", GroupSubject);
+      return this.toEntityList("groupSubjects", GroupSubject);
   }
 
   set groupSubjects(x) {
-      this.that.groupSubjects = this.fromList(x);
+      this.that.groupSubjects = this.fromEntityList(x);
   }
 
   get registrationLocation() {
@@ -196,19 +196,19 @@ class Individual extends BaseEntity {
   }
 
   get comments() {
-      return this.toList("comments", Comment);
+      return this.toEntityList("comments", Comment);
   }
 
   set comments(x) {
-      this.that.comments = this.fromList(x);
+      this.that.comments = this.fromEntityList(x);
   }
 
   get groups() {
-      return this.toList("groups", GroupSubject);
+      return this.toEntityList("groups", GroupSubject);
   }
 
   set groups(x) {
-      this.that.groups = this.fromList(x);
+      this.that.groups = this.fromEntityList(x);
   }
 
   static validationKeys = {
@@ -377,7 +377,7 @@ class Individual extends BaseEntity {
 
   static merge = (childEntityClass) =>
     BaseEntity.mergeOn(
-      new Map<any, any>([
+      ([
         [ProgramEnrolment, "enrolments"],
         [Encounter, "encounters"],
         [IndividualRelationship, "relationships"],
@@ -432,7 +432,7 @@ class Individual extends BaseEntity {
   }
 
   static childAssociations = () =>
-    new Map<any, any>([
+    ([
       [IndividualRelationship, "relationships"],
       [ProgramEnrolment, "enrolments"],
       [Encounter, "encounters"],
@@ -701,7 +701,7 @@ class Individual extends BaseEntity {
   eligiblePrograms(allPrograms) {
     const eligiblePrograms = _.slice(allPrograms);
 
-    _.remove(eligiblePrograms, (program) => {
+    ah.remove(eligiblePrograms, (program) => {
       const find = _.find(this.nonVoidedEnrolments(), (enrolment) => {
         return enrolment.program.uuid === program.uuid && enrolment.isActive;
       });

@@ -67,27 +67,27 @@ describe('ProgramEnrolmentTest', () => {
             const todaysEncounter = createEncounter(new Date());
             enrolment.addEncounter(todaysEncounter);
 
-            assert.equal(enrolment.lastFulfilledEncounter(), todaysEncounter);
+            assert.equal(enrolment.lastFulfilledEncounter().encounterDateTime, todaysEncounter.encounterDateTime);
 
             const yesterdaysEncounter = createEncounter(moment().subtract(1, 'days').toDate());
             enrolment.addEncounter(yesterdaysEncounter);
 
-            assert.equal(enrolment.lastFulfilledEncounter(), todaysEncounter);
+            assert.equal(enrolment.lastFulfilledEncounter().encounterDateTime, todaysEncounter.encounterDateTime);
 
             const tomorrowsEncounter = createEncounter(moment().add(1, 'days').toDate());
             enrolment.addEncounter(tomorrowsEncounter);
 
-            assert.equal(enrolment.lastFulfilledEncounter(), tomorrowsEncounter);
+            assert.equal(enrolment.lastFulfilledEncounter().encounterDateTime, tomorrowsEncounter.encounterDateTime);
 
             const encounterNotYetFilled = createEncounter(undefined);
             enrolment.addEncounter(encounterNotYetFilled);
 
-            assert.equal(enrolment.lastFulfilledEncounter(), tomorrowsEncounter);
+            assert.equal(enrolment.lastFulfilledEncounter().encounterDateTime, tomorrowsEncounter.encounterDateTime);
             yesterdaysEncounter.encounterType = EncounterType.create('special');
             tomorrowsEncounter.encounterType = EncounterType.create('notspecial');
             todaysEncounter.encounterType = EncounterType.create('notspecial');
-            assert.equal(enrolment.lastFulfilledEncounter('special'), yesterdaysEncounter);
-            assert.equal(enrolment.lastFulfilledEncounter('notspecial'), tomorrowsEncounter);
+            assert.equal(enrolment.lastFulfilledEncounter('special').encounterDateTime, yesterdaysEncounter.encounterDateTime);
+            assert.equal(enrolment.lastFulfilledEncounter('notspecial').encounterDateTime, tomorrowsEncounter.encounterDateTime);
             assert.equal(enrolment.lastFulfilledEncounter('unavailable'), null);
         });
 
@@ -109,7 +109,7 @@ describe('ProgramEnrolmentTest', () => {
             enrolment.addEncounter(firstAnnualVisit);
 
             assert.equal(enrolment.findNthLastEncounterOfType(thirdMonthlyVisit,
-                ["Annual Visit", "Half-Yearly Visit", "Quarterly Visit", "Monthly Visit"], 1), secondMonthlyVisit);
+                ["Annual Visit", "Half-Yearly Visit", "Quarterly Visit", "Monthly Visit"], 1).encounterDateTime, secondMonthlyVisit.encounterDateTime);
         });
 
         it("returns the latest value of observation recorded", () => {
@@ -140,13 +140,13 @@ describe('ProgramEnrolmentTest', () => {
 
 
             assert.equal(enrolment.findLatestObservationFromEncounters("height",
-                firstMonthlyVisit, false), obs1);
+                firstMonthlyVisit, false).valueJSON, obs1.valueJSON);
             assert.equal(enrolment.findLatestObservationFromEncounters("height",
-                secondMonthlyVisit, false), obs2);
+                secondMonthlyVisit, false).valueJSON, obs2.valueJSON);
             assert.equal(enrolment.findLatestObservationFromEncounters("height",
-                thirdMonthlyVisit, false), obs2);
+                thirdMonthlyVisit, false).valueJSON, obs2.valueJSON);
             assert.equal(enrolment.findLatestObservationFromEncounters("height",
-                null, false), obs2);
+                null, false).valueJSON, obs2.valueJSON);
         });
 
     });

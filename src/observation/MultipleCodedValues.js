@@ -1,4 +1,5 @@
 import _ from "lodash";
+import ah from "../framework/ArrayHelper";
 
 class MultipleCodedValues {
   constructor(answer) {
@@ -19,7 +20,7 @@ class MultipleCodedValues {
   }
 
   removeAnswer(conceptUUID) {
-    _.remove(this.answer, (item) => item === conceptUUID);
+    ah.remove(this.answer, (item) => item === conceptUUID);
   }
 
   toggleAnswer(answerUUID) {
