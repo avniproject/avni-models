@@ -195,6 +195,14 @@ class FormElementGroup {
     return FormElementGroup._sortedFormElements(filteredFormElements);
   }
 
+  hasEmptyFormElement(filteredFormElements, observationHolder) {
+    let emptyFormElement =  _.find(filteredFormElements, (formElement) =>
+      _.isNil(observationHolder.findObservation(formElement.concept))
+    )
+
+    return !_.isUndefined(emptyFormElement);
+  };
+
   toJSON() {
     return {
       uuid: this.uuid,
