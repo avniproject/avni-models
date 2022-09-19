@@ -1,9 +1,14 @@
-import RealmCollectionProxyHandler from "./RealmCollectionProxyHandler";
+import RealmResultsProxyHandler from "./RealmResultsProxyHandler";
 
 //https://www.mongodb.com/docs/realm-sdks/js/latest/Realm.Collection.html
 //RealmCollection as per realm documentation returns RealmResults. But there are no extra methods/properties in realm results, so we are using realm collection proxy for realm results and don't have a separate proxy class for it
-class RealmResultsProxy {
+class RealmResultsProxy extends Array {
+  static create(realmCollection, entityClass) {
+    return new Proxy(new RealmResultsProxy(realmCollection, entityClass), RealmResultsProxyHandler);
+  }
+
   constructor(realmCollection, entityClass) {
+    super();
     this.entityClass = entityClass;
     this.realmCollection = realmCollection;
   }
@@ -12,12 +17,17 @@ class RealmResultsProxy {
     return new this.entityClass(object);
   }
 
-  _realmResultsWithProxy(realmCollection) {
-    return new Proxy(new RealmResultsProxy(realmCollection, this.entityClass), RealmCollectionProxyHandler);
+  materialiseArray() {
+    // console.log("materialiseArray called");
+    if (super.length !== this.realmCollection.length) {
+      this.realmCollection.forEach((object, index) => {
+        super.push(this.createEntity(object));
+      });
+    }
   }
 
   filtered(query, ...args) {
-    return this._realmResultsWithProxy(this.realmCollection.filtered(query, ...args));
+    return RealmResultsProxy.create(this.realmCollection.filtered(query, ...args), this.entityClass);
   }
 
   getAt(index) {
@@ -63,14 +73,14 @@ class RealmResultsProxy {
   }
 
   sorted(descriptor, reverse) {
-    return this._realmResultsWithProxy(this.realmCollection.sorted(descriptor, reverse));
+    return RealmResultsProxy.create(this.realmCollection.sorted(descriptor, reverse), this.entityClass);
   }
 
   sum(property) {
     return this.realmCollection.sum(property);
   }
 
-  get length() {
+  getLength() {
     return this.realmCollection.length;
   }
 

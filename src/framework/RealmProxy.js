@@ -1,4 +1,4 @@
-import RealmCollectionProxyHandler from "./RealmCollectionProxyHandler";
+import RealmResultsProxyHandler from "./RealmResultsProxyHandler";
 import RealmResultsProxy from "./RealmResultsProxy";
 
 class RealmProxy {
@@ -8,8 +8,7 @@ class RealmProxy {
   }
 
   objects(type) {
-    const realmCollectionProxy = new RealmResultsProxy(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
-    return new Proxy(realmCollectionProxy, RealmCollectionProxyHandler);
+    return RealmResultsProxy.create(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
   }
 
   get isInTransaction() {
