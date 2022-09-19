@@ -33,7 +33,7 @@ class TaskStatus extends BaseEntity {
             entityService
         );
         taskStatus.isTerminal = resource.terminal;
-        taskStatus.taskType = entityService.findEntity(
+        taskStatus.taskType = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
             TaskType.schema.name

@@ -13,7 +13,7 @@ class RealmResultsProxy {
   }
 
   _realmResultsWithProxy(realmCollection) {
-    return new RealmResultsProxy(realmCollection, this.entityClass);
+    return new Proxy(new RealmResultsProxy(realmCollection, this.entityClass), RealmCollectionProxyHandler);
   }
 
   filtered(query, ...args) {

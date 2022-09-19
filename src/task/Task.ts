@@ -64,17 +64,17 @@ class Task extends BaseEntity {
             ['metadata', 'observations'],
             entityService
         );
-        task.taskType = entityService.findEntity(
+        task.taskType = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "taskTypeUUID"),
             TaskType.schema.name
         );
-        task.taskStatus = entityService.findEntity(
+        task.taskStatus = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "taskStatusUUID"),
             TaskStatus.schema.name
         );
-        task.subject = entityService.findEntity(
+        task.subject = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "subjectUUID"),
             Individual.schema.name

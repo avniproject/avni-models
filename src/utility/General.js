@@ -189,10 +189,10 @@ class General {
   }
 
   static pick(from, attributes, listAttributes) {
-    const picked = _.pick(from, attributes);
+    const picked = _.pick(from.that, attributes);
     if (!_.isNil(listAttributes)) {
       listAttributes.forEach((listAttribute) => {
-        picked[listAttribute] = [...from[listAttribute]];
+        picked[listAttribute] = [...from.that[listAttribute]];
       });
     }
     return picked;

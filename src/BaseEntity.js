@@ -42,9 +42,13 @@ class BaseEntity extends PersistedObject {
     };
   }
 
+  /*
+  to be used only during sync where entities are handled generically and not via model classes
+   */
   static addNewChild(newChild, existingChildren) {
     if (!BaseEntity.collectionHasEntity(existingChildren, newChild)) {
-      existingChildren.push(newChild);
+      const child = _.isNil(newChild.that) ? newChild : newChild.that;
+      existingChildren.push(child);
     }
   }
 

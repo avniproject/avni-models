@@ -93,12 +93,12 @@ class SubjectProgramEligibility extends BaseEntity {
     }
 
     static fromResource(resource, entityService) {
-        const program = entityService.findEntity(
+        const program = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "programUUID"),
             Program.schema.name
         );
-        const subject = entityService.findEntity(
+        const subject = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "subjectUUID"),
             Individual.schema.name
@@ -130,8 +130,8 @@ class SubjectProgramEligibility extends BaseEntity {
     }
 
     static buildSubjectProgramEligibility(status, subjectProgramEligibility, entityService) {
-        const program = entityService.findEntity("uuid", status.programUUID, Program.schema.name);
-        const subject = entityService.findEntity("uuid", status.subjectUUID, Individual.schema.name);
+        const program = entityService.findByKey("uuid", status.programUUID, Program.schema.name);
+        const subject = entityService.findByKey("uuid", status.subjectUUID, Individual.schema.name);
         subjectProgramEligibility.program = program;
         subjectProgramEligibility.subject = subject;
         subjectProgramEligibility.eligible = status.eligible;

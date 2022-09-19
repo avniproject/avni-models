@@ -21,9 +21,11 @@ describe('BaseEntityTest', () => {
         const form = EntityFactory.createForm('foo');
         const formElementGroup = new FormElementGroup();
         formElementGroup.uuid = General.randomUUID();
-        BaseEntity.addNewChild(formElementGroup, form.formElementGroups);
-        assert.equal(form.numberOfPages, 1);
-        BaseEntity.addNewChild(formElementGroup, form.formElementGroups);
-        assert.equal(form.numberOfPages, 1);
+
+        const pickedForm = General.pick(form, [], ["formElementGroups"]);
+        BaseEntity.addNewChild(formElementGroup, pickedForm.formElementGroups);
+        assert.equal(pickedForm.formElementGroups.length, 1);
+        BaseEntity.addNewChild(formElementGroup, pickedForm.formElementGroups);
+        assert.equal(pickedForm.formElementGroups.length, 1);
     });
 });
