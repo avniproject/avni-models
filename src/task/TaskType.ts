@@ -21,13 +21,35 @@ class TaskType extends BaseEntity {
         OpenSubject: 'OpenSubject'
     };
 
-    uuid: string;
-    name: string;
-    type: string;
-    metadataSearchFields: Concept[];
-    voided: boolean;
+  constructor(that = null) {
+    super(that);
+  }
 
-    static fromResource(resource, entityService) {
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get type() {
+      return this.that.type;
+  }
+
+  set type(x) {
+      this.that.type = x;
+  }
+
+  get metadataSearchFields() {
+      return this.toEntityList("metadataSearchFields", Concept);
+  }
+
+  set metadataSearchFields(x) {
+      this.that.metadataSearchFields = this.fromEntityList(x);
+  }
+
+  static fromResource(resource, entityService) {
         const taskType = General.assignFields(resource, new TaskType(), ['uuid', 'name', 'type', 'voided']);
         taskType.metadataSearchFields = map(resource.metadataSearchFields,
             uuid => entityService.findByKey("uuid", uuid, Concept.schema.name)

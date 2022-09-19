@@ -16,6 +16,26 @@ class IndividualRelationGenderMapping extends BaseEntity{
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
+  get relation() {
+      return this.toEntity("relation", IndividualRelation);
+  }
+
+  set relation(x) {
+      this.that.relation = x && x.that;
+  }
+
+  get gender() {
+      return this.toEntity("gender", Gender);
+  }
+
+  set gender(x) {
+      this.that.gender = x && x.that;
+  }
+
   static createEmptyInstance() {
     const individualRelationGenderMapping = new IndividualRelationGenderMapping();
     return individualRelationGenderMapping;

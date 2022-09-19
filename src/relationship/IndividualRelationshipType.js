@@ -16,6 +16,34 @@ class IndividualRelationshipType extends ReferenceEntity {
     },
   };
 
+  constructor(that) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get individualAIsToBRelation() {
+      return this.toEntity("individualAIsToBRelation", IndividualRelation);
+  }
+
+  set individualAIsToBRelation(x) {
+      this.that.individualAIsToBRelation = x && x.that;
+  }
+
+  get individualBIsToARelation() {
+      return this.toEntity("individualBIsToARelation", IndividualRelation);
+  }
+
+  set individualBIsToARelation(x) {
+      this.that.individualBIsToARelation = x && x.that;
+  }
+
   static createEmptyInstance() {
     const individualRelationshipType = new IndividualRelationshipType();
     individualRelationshipType.individualAIsToBRelation = IndividualRelation.createEmptyInstance();

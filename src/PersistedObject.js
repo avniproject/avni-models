@@ -2,7 +2,7 @@ import _ from "lodash";
 import RealmListProxy from "./framework/RealmListProxy";
 
 class PersistedObject {
-  constructor(that = null) {
+  constructor(that) {
     this.that = _.isNil(that) ? {} : that;
   }
 

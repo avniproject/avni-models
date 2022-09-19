@@ -27,18 +27,75 @@ class Task extends BaseEntity {
         },
     };
 
-    uuid: string;
-    name: string;
-    taskType: TaskType;
-    taskStatus: TaskStatus;
-    scheduledOn: Date;
-    completedOn: Date;
-    metadata: Observation[];
-    subject: Individual;
-    observations: Observation[];
-    voided: boolean;
+  constructor(that = null) {
+    super(that);
+  }
 
-    get toResource() {
+  get scheduledOn() {
+      return this.that.scheduledOn;
+  }
+
+  set scheduledOn(x) {
+      this.that.scheduledOn = x;
+  }
+
+  get completedOn() {
+      return this.that.completedOn;
+  }
+
+  set completedOn(x) {
+      this.that.completedOn = x;
+  }
+
+  get metadata() {
+      return this.toEntityList("metadata", Observation);
+  }
+
+  set metadata(x) {
+      this.that.metadata = this.fromEntityList(x);
+  }
+
+  get subject() {
+      return this.toEntity("subject", Individual);
+  }
+
+  set subject(x) {
+      this.that.subject = x && x.that;
+  }
+
+  get observations() {
+      return this.toEntityList("observations", Observation);
+  }
+
+  set observations(x) {
+      this.that.observations = this.fromEntityList(x);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get taskType() {
+      return this.toEntity("taskType", TaskType);
+  }
+
+  set taskType(x) {
+      this.that.taskType = x && x.that;
+  }
+
+  get taskStatus() {
+      return this.toEntity("taskStatus", TaskStatus);
+  }
+
+  set taskStatus(x) {
+      this.that.taskStatus = x && x.that;
+  }
+
+  get toResource() {
         const taskResource = _.pick(this, ["uuid", "voided", "name"]);
         taskResource.observations = _.map(this.observations, "toResource");
         taskResource.metadata = _.map(this.metadata, "toResource");

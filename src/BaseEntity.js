@@ -11,7 +11,7 @@ class BaseEntity extends PersistedObject {
     EXTERNAL_RULE: "EXTERNAL_RULE",
   };
 
-  constructor(that = null) {
+  constructor(that) {
     super(that);
   }
 

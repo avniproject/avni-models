@@ -17,13 +17,35 @@ class TaskStatus extends BaseEntity {
         },
     };
 
-    uuid: string;
-    name: string;
-    isTerminal: boolean;
-    taskType: TaskType;
-    voided: boolean;
+  constructor(that = null) {
+    super(that);
+  }
 
-    static fromResource(resource, entityService) {
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get isTerminal() {
+      return this.that.isTerminal;
+  }
+
+  set isTerminal(x) {
+      this.that.isTerminal = x;
+  }
+
+  get taskType() {
+      return this.toEntity("taskType", TaskType);
+  }
+
+  set taskType(x) {
+      this.that.taskType = x && x.that;
+  }
+
+  static fromResource(resource, entityService) {
         const taskStatus = General.assignFields(
             resource,
             new TaskStatus(),

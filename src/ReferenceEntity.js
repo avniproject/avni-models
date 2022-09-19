@@ -2,7 +2,7 @@ import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
 
 class ReferenceEntity extends BaseEntity {
-   constructor(that = null) {
+   constructor(that) {
     super(that);
   }
 

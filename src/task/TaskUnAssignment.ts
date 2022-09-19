@@ -12,11 +12,27 @@ class TaskUnAssignment extends BaseEntity {
         }
     };
 
-    uuid: string;
-    taskUUID: string;
-    hasMigrated: boolean;
+  constructor(that = null) {
+    super(that);
+  }
 
-    static fromResource(resource) {
+  get taskUUID() {
+      return this.that.taskUUID;
+  }
+
+  set taskUUID(x) {
+      this.that.taskUUID = x;
+  }
+
+  get hasMigrated() {
+      return this.that.hasMigrated;
+  }
+
+  set hasMigrated(x) {
+      this.that.hasMigrated = x;
+  }
+
+  static fromResource(resource) {
         const taskUnAssigment = new TaskUnAssignment();
         taskUnAssigment.uuid = resource.uuid;
         taskUnAssigment.taskUUID = ResourceUtil.getUUIDFor(resource, 'taskUUID');

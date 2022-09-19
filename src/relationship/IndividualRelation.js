@@ -11,6 +11,18 @@ class IndividualRelation extends ReferenceEntity {
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
   static createEmptyInstance() {
     return new IndividualRelation();
   }
