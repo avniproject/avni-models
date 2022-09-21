@@ -195,12 +195,11 @@ class FormElementGroup {
     return FormElementGroup._sortedFormElements(filteredFormElements);
   }
 
-  hasEmptyFormElement(filteredFormElements, observationHolder) {
-    let emptyFormElement =  _.find(filteredFormElements, (formElement) =>
-      _.isNil(observationHolder.findObservation(formElement.concept))
-    )
-
-    return !_.isUndefined(emptyFormElement);
+  areAllFormElementsEmpty(filteredFormElements, observationHolder) {
+    return  _.reduce(filteredFormElements, (areAllEmpty, formElement) => {
+       return areAllEmpty && _.isNil(observationHolder.findObservation(formElement.concept))
+      }, true
+    );
   };
 
   toJSON() {
