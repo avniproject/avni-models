@@ -1,5 +1,6 @@
 import _ from "lodash";
 import RealmListProxy from "./framework/RealmListProxy";
+import RealmObjectSchema from "./framework/RealmObjectSchema";
 
 class PersistedObject {
   constructor(that) {
@@ -30,6 +31,15 @@ class PersistedObject {
     if (_.isNil(propertyValue)) return null;
 
     return new entityClass(propertyValue);
+  }
+
+  toJSON() {
+    const json = {};
+    if (!_.isNil(this.that) && !_.isNil(this.that.objectSchema)) {
+      const realmObjectSchema = new RealmObjectSchema(this.that.objectSchema());
+      realmObjectSchema.getAllProperties().forEach(p => json[p] = this.that[p]);
+    }
+    return json;
   }
 }
 
