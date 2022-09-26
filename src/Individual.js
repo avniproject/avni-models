@@ -377,7 +377,7 @@ class Individual extends BaseEntity {
 
   static merge = (childEntityClass) =>
     BaseEntity.mergeOn(
-      ([
+      new Map([
         [ProgramEnrolment, "enrolments"],
         [Encounter, "encounters"],
         [IndividualRelationship, "relationships"],

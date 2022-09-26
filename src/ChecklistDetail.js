@@ -17,6 +17,26 @@ class ChecklistDetail extends BaseEntity {
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
+  get items() {
+      return this.toEntityList("items", ChecklistItemDetail);
+  }
+
+  set items(x) {
+      this.that.items = this.fromEntityList(x);
+  }
+
   static fromResource(checklistResource, entityService) {
     const checklistDetail = General.assignFields(checklistResource, new ChecklistDetail(), [
       "uuid",

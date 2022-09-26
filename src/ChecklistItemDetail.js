@@ -28,6 +28,82 @@ class ChecklistItemDetail extends BaseEntity {
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
+  get concept() {
+      return this.toEntity("concept", Concept);
+  }
+
+  set concept(x) {
+      this.that.concept = x && x.that;
+  }
+
+  get stateConfig() {
+      return this.toEntityList("stateConfig", ChecklistItemStatus);
+  }
+
+  set stateConfig(x) {
+      this.that.stateConfig = this.fromEntityList(x);
+  }
+
+  get form() {
+      return this.toEntity("form", Form);
+  }
+
+  set form(x) {
+      this.that.form = x && x.that;
+  }
+
+  get checklistDetail() {
+      return this.toEntity("checklistDetail", ChecklistDetail);
+  }
+
+  set checklistDetail(x) {
+      this.that.checklistDetail = x && x.that;
+  }
+
+  get dependentOn() {
+      return this.toEntity("dependentOn", ChecklistItemDetail);
+  }
+
+  set dependentOn(x) {
+      this.that.dependentOn = x && x.that;
+  }
+
+  get scheduleOnExpiryOfDependency() {
+      return this.that.scheduleOnExpiryOfDependency;
+  }
+
+  set scheduleOnExpiryOfDependency(x) {
+      this.that.scheduleOnExpiryOfDependency = x;
+  }
+
+  get minDaysFromStartDate() {
+      return this.that.minDaysFromStartDate;
+  }
+
+  set minDaysFromStartDate(x) {
+      this.that.minDaysFromStartDate = x;
+  }
+
+  get minDaysFromDependent() {
+      return this.that.minDaysFromDependent;
+  }
+
+  set minDaysFromDependent(x) {
+      this.that.minDaysFromDependent = x;
+  }
+
+  get expiresAfter() {
+      return this.that.expiresAfter;
+  }
+
+  set expiresAfter(x) {
+      this.that.expiresAfter = x;
+  }
+
   static parentAssociations = () =>
     new Map([
       [ChecklistDetail, "checklistDetailUUID"],

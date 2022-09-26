@@ -24,7 +24,67 @@ class Comment extends BaseEntity {
         },
     };
 
-    get toResource() {
+  constructor(that = null) {
+    super(that);
+  }
+
+  get text() {
+      return this.that.text;
+  }
+
+  set text(x) {
+      this.that.text = x;
+  }
+
+  get subject() {
+      return this.toEntity("subject", Individual);
+  }
+
+  set subject(x) {
+      this.that.subject = x && x.that;
+  }
+
+  get displayUsername() {
+      return this.that.displayUsername;
+  }
+
+  set displayUsername(x) {
+      this.that.displayUsername = x;
+  }
+
+  get createdByUsername() {
+      return this.that.createdByUsername;
+  }
+
+  set createdByUsername(x) {
+      this.that.createdByUsername = x;
+  }
+
+  get createdDateTime() {
+      return this.that.createdDateTime;
+  }
+
+  set createdDateTime(x) {
+      this.that.createdDateTime = x;
+  }
+
+  get lastModifiedDateTime() {
+      return this.that.lastModifiedDateTime;
+  }
+
+  set lastModifiedDateTime(x) {
+      this.that.lastModifiedDateTime = x;
+  }
+
+  get commentThread() {
+      return this.toEntity("commentThread", CommentThread);
+  }
+
+  set commentThread(x) {
+      this.that.commentThread = x && x.that;
+  }
+
+  get toResource() {
         const resource = _.pick(this, [
             "uuid",
             "text",

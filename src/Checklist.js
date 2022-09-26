@@ -19,6 +19,42 @@ class Checklist extends BaseEntity {
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
+  get detail() {
+      return this.toEntity("detail", ChecklistDetail);
+  }
+
+  set detail(x) {
+      this.that.detail = x && x.that;
+  }
+
+  get baseDate() {
+      return this.that.baseDate;
+  }
+
+  set baseDate(x) {
+      this.that.baseDate = x;
+  }
+
+  get items() {
+      return this.toEntityList("items", ChecklistItem);
+  }
+
+  set items(x) {
+      this.that.items = this.fromEntityList(x);
+  }
+
+  get programEnrolment() {
+      return this.toEntity("programEnrolment", ProgramEnrolment);
+  }
+
+  set programEnrolment(x) {
+      this.that.programEnrolment = x && x.that;
+  }
+
   static create() {
     const checklist = new Checklist();
     checklist.uuid = General.randomUUID();

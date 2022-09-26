@@ -4,6 +4,7 @@ import BaseEntity from "../BaseEntity";
 import Individual from "../Individual";
 import _ from "lodash";
 import IndividualRelationshipType from "./IndividualRelationshipType";
+import Observation from "../Observation";
 
 class IndividualRelationship extends BaseEntity {
   static schema = {
@@ -20,6 +21,58 @@ class IndividualRelationship extends BaseEntity {
       voided: { type: "bool", default: false },
     },
   };
+
+  constructor(that = null) {
+    super(that);
+  }
+
+  get relationship() {
+      return this.toEntity("relationship", IndividualRelationshipType);
+  }
+
+  set relationship(x) {
+      this.that.relationship = x && x.that;
+  }
+
+  get individualA() {
+      return this.toEntity("individualA", Individual);
+  }
+
+  set individualA(x) {
+      this.that.individualA = x && x.that;
+  }
+
+  get individualB() {
+      return this.toEntity("individualB", Individual);
+  }
+
+  set individualB(x) {
+      this.that.individualB = x && x.that;
+  }
+
+  get enterDateTime() {
+      return this.that.enterDateTime;
+  }
+
+  set enterDateTime(x) {
+      this.that.enterDateTime = x;
+  }
+
+  get exitDateTime() {
+      return this.that.exitDateTime;
+  }
+
+  set exitDateTime(x) {
+      this.that.exitDateTime = x;
+  }
+
+  get exitObservations() {
+      return this.toEntityList("exitObservations", Observation);
+  }
+
+  set exitObservations(x) {
+      this.that.exitObservations = this.fromEntityList(x);
+  }
 
   static createEmptyInstance() {
     const individualRelationship = new IndividualRelationship();

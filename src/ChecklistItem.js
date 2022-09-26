@@ -8,8 +8,10 @@ import ChecklistItemDetail from "./ChecklistItemDetail";
 import moment from "moment";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
+import BaseEntity from "./BaseEntity";
+import Observation from "./Observation";
 
-class ChecklistItem {
+class ChecklistItem extends BaseEntity {
   static schema = {
     name: SchemaNames.ChecklistItem,
     primaryKey: "uuid",
@@ -22,6 +24,50 @@ class ChecklistItem {
       latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
     },
   };
+
+  constructor(that = null) {
+    super(that);
+  }
+
+  get detail() {
+      return this.toEntity("detail", ChecklistItemDetail);
+  }
+
+  set detail(x) {
+      this.that.detail = x && x.that;
+  }
+
+  get completionDate() {
+      return this.that.completionDate;
+  }
+
+  set completionDate(x) {
+      this.that.completionDate = x;
+  }
+
+  get observations() {
+      return this.toEntityList("observations", Observation);
+  }
+
+  set observations(x) {
+      this.that.observations = this.fromEntityList(x);
+  }
+
+  get checklist() {
+      return this.toEntity("checklist", Checklist);
+  }
+
+  set checklist(x) {
+      this.that.checklist = x && x.that;
+  }
+
+  get latestEntityApprovalStatus() {
+      return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+  }
+
+  set latestEntityApprovalStatus(x) {
+      this.that.latestEntityApprovalStatus = x && x.that;
+  }
 
   static create({ uuid = General.randomUUID(), observations = [], checklist, detail }) {
     return _.assignIn(new ChecklistItem(), {
