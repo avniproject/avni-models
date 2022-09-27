@@ -25,7 +25,7 @@ class IndividualRelationGenderMapping extends BaseEntity{
   }
 
   set relation(x) {
-      this.that.relation = x && x.that;
+      this.that.relation = this.fromObject(x);
   }
 
   get gender() {
@@ -33,7 +33,7 @@ class IndividualRelationGenderMapping extends BaseEntity{
   }
 
   set gender(x) {
-      this.that.gender = x && x.that;
+      this.that.gender = this.fromObject(x);
   }
 
   static createEmptyInstance() {

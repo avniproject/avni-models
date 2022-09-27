@@ -28,7 +28,7 @@ class DashboardSection extends BaseEntity {
   }
 
   set dashboard(x) {
-      this.that.dashboard = x && x.that;
+      this.that.dashboard = this.fromObject(x);
   }
 
   get name() {

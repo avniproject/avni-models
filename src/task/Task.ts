@@ -60,7 +60,7 @@ class Task extends BaseEntity {
   }
 
   set subject(x) {
-      this.that.subject = x && x.that;
+      this.that.subject = this.fromObject(x);
   }
 
   get observations() {
@@ -84,7 +84,7 @@ class Task extends BaseEntity {
   }
 
   set taskType(x) {
-      this.that.taskType = x && x.that;
+      this.that.taskType = this.fromObject(x);
   }
 
   get taskStatus() {
@@ -92,7 +92,7 @@ class Task extends BaseEntity {
   }
 
   set taskStatus(x) {
-      this.that.taskStatus = x && x.that;
+      this.that.taskStatus = this.fromObject(x);
   }
 
   get toResource() {

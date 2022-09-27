@@ -37,7 +37,7 @@ class ChecklistItemDetail extends BaseEntity {
   }
 
   set concept(x) {
-      this.that.concept = x && x.that;
+      this.that.concept = this.fromObject(x);
   }
 
   get stateConfig() {
@@ -53,7 +53,7 @@ class ChecklistItemDetail extends BaseEntity {
   }
 
   set form(x) {
-      this.that.form = x && x.that;
+      this.that.form = this.fromObject(x);
   }
 
   get checklistDetail() {
@@ -61,7 +61,7 @@ class ChecklistItemDetail extends BaseEntity {
   }
 
   set checklistDetail(x) {
-      this.that.checklistDetail = x && x.that;
+      this.that.checklistDetail = this.fromObject(x);
   }
 
   get dependentOn() {
@@ -69,7 +69,7 @@ class ChecklistItemDetail extends BaseEntity {
   }
 
   set dependentOn(x) {
-      this.that.dependentOn = x && x.that;
+      this.that.dependentOn = this.fromObject(x);
   }
 
   get scheduleOnExpiryOfDependency() {

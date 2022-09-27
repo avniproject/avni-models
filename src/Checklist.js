@@ -28,7 +28,7 @@ class Checklist extends BaseEntity {
   }
 
   set detail(x) {
-      this.that.detail = x && x.that;
+      this.that.detail = this.fromObject(x);
   }
 
   get baseDate() {
@@ -52,7 +52,7 @@ class Checklist extends BaseEntity {
   }
 
   set programEnrolment(x) {
-      this.that.programEnrolment = x && x.that;
+      this.that.programEnrolment = this.fromObject(x);
   }
 
   static create() {

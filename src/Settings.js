@@ -42,7 +42,7 @@ class Settings extends BaseEntity {
   }
 
   set locale(x) {
-      this.that.locale = x && x.that;
+      this.that.locale = this.fromObject(x);
   }
 
   get logLevel() {

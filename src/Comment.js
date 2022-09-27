@@ -41,7 +41,7 @@ class Comment extends BaseEntity {
   }
 
   set subject(x) {
-      this.that.subject = x && x.that;
+      this.that.subject = this.fromObject(x);
   }
 
   get displayUsername() {
@@ -81,7 +81,7 @@ class Comment extends BaseEntity {
   }
 
   set commentThread(x) {
-      this.that.commentThread = x && x.that;
+      this.that.commentThread = this.fromObject(x);
   }
 
   get toResource() {

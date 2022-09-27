@@ -73,7 +73,7 @@ class FormElement extends BaseEntity {
   }
 
   set concept(x) {
-      this.that.concept = x && x.that;
+      this.that.concept = this.fromObject(x);
   }
 
   get type() {
@@ -89,7 +89,7 @@ class FormElement extends BaseEntity {
   }
 
   set formElementGroup(x) {
-      this.that.formElementGroup = x && x.that;
+      this.that.formElementGroup = this.fromObject(x);
   }
 
   get validFormat() {
@@ -97,7 +97,7 @@ class FormElement extends BaseEntity {
   }
 
   set validFormat(x) {
-      this.that.validFormat = x && x.that;
+      this.that.validFormat = this.fromObject(x);
   }
 
   get rule() {
@@ -121,7 +121,7 @@ class FormElement extends BaseEntity {
   }
 
   set documentation(x) {
-      this.that.documentation = x && x.that;
+      this.that.documentation = this.fromObject(x);
   }
 
   static parentAssociations = () => new Map([[FormElementGroup, "formElementGroupUUID"]]);

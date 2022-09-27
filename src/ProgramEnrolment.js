@@ -48,7 +48,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set program(x) {
-      this.that.program = x && x.that;
+      this.that.program = this.fromObject(x);
   }
 
   get enrolmentDateTime() {
@@ -88,7 +88,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set programOutcome(x) {
-      this.that.programOutcome = x && x.that;
+      this.that.programOutcome = this.fromObject(x);
   }
 
   get encounters() {
@@ -112,7 +112,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set individual(x) {
-      this.that.individual = x && x.that;
+      this.that.individual = this.fromObject(x);
   }
 
   get enrolmentLocation() {
@@ -120,7 +120,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set enrolmentLocation(x) {
-      this.that.enrolmentLocation = x && x.that;
+      this.that.enrolmentLocation = this.fromObject(x);
   }
 
   get exitLocation() {
@@ -128,7 +128,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set exitLocation(x) {
-      this.that.exitLocation = x && x.that;
+      this.that.exitLocation = this.fromObject(x);
   }
 
   get latestEntityApprovalStatus() {
@@ -136,7 +136,7 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = x && x.that;
+      this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   static createEmptyInstance({ individual, program } = {}) {

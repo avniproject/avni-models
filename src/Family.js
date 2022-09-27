@@ -44,7 +44,7 @@ class Family extends BaseEntity {
   }
 
   set lowestAddressLevel(x) {
-      this.that.lowestAddressLevel = x && x.that;
+      this.that.lowestAddressLevel = this.fromObject(x);
   }
 
   get headOfFamily() {
@@ -52,7 +52,7 @@ class Family extends BaseEntity {
   }
 
   set headOfFamily(x) {
-      this.that.headOfFamily = x && x.that;
+      this.that.headOfFamily = this.fromObject(x);
   }
 
   get typeOfFamily() {

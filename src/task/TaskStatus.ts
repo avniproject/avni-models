@@ -42,7 +42,7 @@ class TaskStatus extends BaseEntity {
   }
 
   set taskType(x) {
-      this.that.taskType = x && x.that;
+      this.that.taskType = this.fromObject(x);
   }
 
   static fromResource(resource, entityService) {

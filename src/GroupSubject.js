@@ -29,7 +29,7 @@ class GroupSubject extends BaseEntity {
   }
 
   set groupSubject(x) {
-      this.that.groupSubject = x && x.that;
+      this.that.groupSubject = this.fromObject(x);
   }
 
   get memberSubject() {
@@ -37,7 +37,7 @@ class GroupSubject extends BaseEntity {
   }
 
   set memberSubject(x) {
-      this.that.memberSubject = x && x.that;
+      this.that.memberSubject = this.fromObject(x);
   }
 
   get groupRole() {
@@ -45,7 +45,7 @@ class GroupSubject extends BaseEntity {
   }
 
   set groupRole(x) {
-      this.that.groupRole = x && x.that;
+      this.that.groupRole = this.fromObject(x);
   }
 
   get membershipStartDate() {

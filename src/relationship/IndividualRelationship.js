@@ -31,7 +31,7 @@ class IndividualRelationship extends BaseEntity {
   }
 
   set relationship(x) {
-      this.that.relationship = x && x.that;
+      this.that.relationship = this.fromObject(x);
   }
 
   get individualA() {
@@ -39,7 +39,7 @@ class IndividualRelationship extends BaseEntity {
   }
 
   set individualA(x) {
-      this.that.individualA = x && x.that;
+      this.that.individualA = this.fromObject(x);
   }
 
   get individualB() {
@@ -47,7 +47,7 @@ class IndividualRelationship extends BaseEntity {
   }
 
   set individualB(x) {
-      this.that.individualB = x && x.that;
+      this.that.individualB = this.fromObject(x);
   }
 
   get enterDateTime() {

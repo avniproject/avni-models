@@ -35,7 +35,7 @@ class ChecklistItemStatus extends PersistedObject {
   }
 
   set from(x) {
-      this.that.from = x && x.that;
+      this.that.from = this.fromObject(x);
   }
 
   get to() {
@@ -43,7 +43,7 @@ class ChecklistItemStatus extends PersistedObject {
   }
 
   set to(x) {
-      this.that.to = x && x.that;
+      this.that.to = this.fromObject(x);
   }
 
   get color() {

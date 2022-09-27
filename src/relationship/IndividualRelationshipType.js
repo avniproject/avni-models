@@ -33,7 +33,7 @@ class IndividualRelationshipType extends ReferenceEntity {
   }
 
   set individualAIsToBRelation(x) {
-      this.that.individualAIsToBRelation = x && x.that;
+      this.that.individualAIsToBRelation = this.fromObject(x);
   }
 
   get individualBIsToARelation() {
@@ -41,7 +41,7 @@ class IndividualRelationshipType extends ReferenceEntity {
   }
 
   set individualBIsToARelation(x) {
-      this.that.individualBIsToARelation = x && x.that;
+      this.that.individualBIsToARelation = this.fromObject(x);
   }
 
   static createEmptyInstance() {

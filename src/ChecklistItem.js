@@ -34,7 +34,7 @@ class ChecklistItem extends BaseEntity {
   }
 
   set detail(x) {
-      this.that.detail = x && x.that;
+      this.that.detail = this.fromObject(x);
   }
 
   get completionDate() {
@@ -58,7 +58,7 @@ class ChecklistItem extends BaseEntity {
   }
 
   set checklist(x) {
-      this.that.checklist = x && x.that;
+      this.that.checklist = this.fromObject(x);
   }
 
   get latestEntityApprovalStatus() {
@@ -66,7 +66,7 @@ class ChecklistItem extends BaseEntity {
   }
 
   set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = x && x.that;
+      this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   static create({ uuid = General.randomUUID(), observations = [], checklist, detail }) {

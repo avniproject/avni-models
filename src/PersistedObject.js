@@ -33,6 +33,11 @@ class PersistedObject {
     return new entityClass(propertyValue);
   }
 
+  fromObject(x) {
+    if (_.isNil(x) || _.isNil(x.that)) return x;
+    return x.that;
+  }
+
   toJSON() {
     const json = {};
     if (!_.isNil(this.that) && !_.isNil(this.that.objectSchema)) {

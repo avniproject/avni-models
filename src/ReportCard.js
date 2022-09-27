@@ -48,7 +48,7 @@ class ReportCard extends BaseEntity {
     }
 
     set standardReportCardType(x) {
-        this.that.standardReportCardType = x && x.that;
+        this.that.standardReportCardType = this.fromObject(x);
     }
 
     get colour() {

@@ -30,7 +30,7 @@ class FormMapping extends BaseEntity {
   }
 
   set form(x) {
-      this.that.form = x && x.that;
+      this.that.form = this.fromObject(x);
   }
 
   get subjectType() {
@@ -38,7 +38,7 @@ class FormMapping extends BaseEntity {
   }
 
   set subjectType(x) {
-      this.that.subjectType = x && x.that;
+      this.that.subjectType = this.fromObject(x);
   }
 
   get entityUUID() {
@@ -70,7 +70,7 @@ class FormMapping extends BaseEntity {
   }
 
   set taskType(x) {
-      this.that.taskType = x && x.that;
+      this.that.taskType = this.fromObject(x);
   }
 
   static create(uuid, form, entityUUID, observationsTypeEntityUUID) {
