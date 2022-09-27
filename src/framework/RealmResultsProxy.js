@@ -17,6 +17,11 @@ class RealmResultsProxy {
     return new this.entityClass(object);
   }
 
+  asArray() {
+    this.materialiseArray();
+    return this.array;
+  }
+
   materialiseArray() {
     if (this.array.length !== this.realmCollection.length) {
       this.realmCollection.forEach((object, index) => {

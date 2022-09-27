@@ -51,6 +51,10 @@ class Individual extends BaseEntity {
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
   get subjectType() {
       return this.toEntity("subjectType", SubjectType);
   }
