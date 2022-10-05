@@ -41,8 +41,7 @@ class PrimitiveValue {
     } else if (this.datatype === Concept.dataType.DateTime) {
       return new Date(Date.parse(this.value));
     } else if (this.datatype === Concept.dataType.Date) {
-      const date = new Date(Date.parse(this.value));
-      return moment(date).startOf("day").toDate();
+      return moment(this.value).startOf("day").toDate();
     }
 
     return this.value;
