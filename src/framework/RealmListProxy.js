@@ -1,3 +1,4 @@
+// Extends only methods that mutate the array, others methods needn't be extended as the behavior can be
 class RealmListProxy extends Array {
   constructor(realmList) {
     super();
@@ -5,7 +6,7 @@ class RealmListProxy extends Array {
   }
 
   /*
-  Not to be used by external callers.
+  Not to be used by external callers. Cannot be done in the constructor as somehow array doesn't take this via super()
    */
   pushAll(listItemClass) {
     this.realmList.forEach((x) => super.push(new listItemClass(x)));
