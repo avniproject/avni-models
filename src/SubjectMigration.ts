@@ -20,16 +20,81 @@ class SubjectMigration extends BaseEntity {
         }
     };
 
-    uuid: string;
-    subjectUUID: string;
-    oldAddressLevelUUID: string;
-    newAddressLevelUUID: string;
-    oldSyncConcept1Value: string;
-    newSyncConcept1Value: string;
-    oldSyncConcept2Value: string;
-    newSyncConcept2Value: string;
-    subjectTypeUUID: string;
-    hasMigrated: boolean;
+    constructor(that = null) {
+      super(that);
+    }
+
+    get subjectUUID() {
+      return this.that.subjectUUID;
+    }
+
+    set subjectUUID(x) {
+      this.that.subjectUUID = x;
+    }
+
+    get oldAddressLevelUUID() {
+      return this.that.oldAddressLevelUUID;
+    }
+
+    set oldAddressLevelUUID(x) {
+      this.that.oldAddressLevelUUID = x;
+    }
+
+    get newAddressLevelUUID() {
+      return this.that.newAddressLevelUUID;
+    }
+
+    set newAddressLevelUUID(x) {
+      this.that.newAddressLevelUUID = x;
+    }
+
+    get oldSyncConcept1Value() {
+      return this.that.oldSyncConcept1Value;
+    }
+
+    set oldSyncConcept1Value(x) {
+      this.that.oldSyncConcept1Value = x;
+    }
+
+    get newSyncConcept1Value() {
+      return this.that.newSyncConcept1Value;
+    }
+
+    set newSyncConcept1Value(x) {
+      this.that.newSyncConcept1Value = x;
+    }
+
+    get oldSyncConcept2Value() {
+      return this.that.oldSyncConcept2Value;
+    }
+
+    set oldSyncConcept2Value(x) {
+      this.that.oldSyncConcept2Value = x;
+    }
+
+    get newSyncConcept2Value() {
+      return this.that.newSyncConcept2Value;
+    }
+
+    set newSyncConcept2Value(x) {
+      this.that.newSyncConcept2Value = x;
+    }
+
+    get subjectTypeUUID() {
+      return this.that.subjectTypeUUID;
+    }
+
+    set subjectTypeUUID(x) {
+      this.that.subjectTypeUUID = x;
+    }
+
+    get hasMigrated() {
+      return this.that.hasMigrated;
+    }
+
+    set hasMigrated(x) {
+      this.that.hasMigrated = x;
+    }
 
     static create(subjectUUID, oldAddressLevelUUID, newAddressLevelUUID, oldSyncConcept1Value, newSyncConcept1Value, oldSyncConcept2Value, newSyncConcept2Value, subjectTypeUUID) {
         let subjectMigration = new SubjectMigration();

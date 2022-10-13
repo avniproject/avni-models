@@ -19,6 +19,10 @@ class ReportCard extends BaseEntity {
         },
     };
 
+    constructor(that = null) {
+      super(that);
+    }
+
     get name() {
         return this.that.name;
     }
