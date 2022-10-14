@@ -32,8 +32,10 @@ class RealmProxy {
   }
 
   create(type, properties, updateMode = "never") {
-    let createProperties = _.isNil(properties.that) ? properties : properties.that;
-    return this.realmDb.create(type, createProperties, updateMode);
+    const createProperties = _.isNil(properties.that) ? properties : properties.that;
+    const entityClass = this.entityMappingConfig.getEntityClass(type);
+    const dbEntity = this.realmDb.create(type, createProperties, updateMode);
+    return new entityClass(dbEntity);
   }
 
   delete(object) {
