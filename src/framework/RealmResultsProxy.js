@@ -1,4 +1,5 @@
 import RealmResultsProxyHandler from "./RealmResultsProxyHandler";
+import _ from "lodash";
 
 //https://www.mongodb.com/docs/realm-sdks/js/latest/Realm.Collection.html
 //RealmCollection as per realm documentation returns RealmResults. But there are no extra methods/properties in realm results, so we are using realm collection proxy for realm results and don't have a separate proxy class for it
@@ -104,6 +105,13 @@ class RealmResultsProxy {
 
   [Symbol.iterator]() {
     return this.realmCollection.map((x) => new this.entityClass(x))[Symbol.iterator]();
+  }
+
+  find(filterCallback, thisArg) {
+    const findFunc = (object, index, collection) => {
+      return filterCallback(this.createEntity(object), index, this);
+    };
+    return _.isNil(thisArg) ? this.realmCollection.find(findFunc) : this.realmCollection.find(findFunc, thisArg);
   }
 }
 
