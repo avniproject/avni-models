@@ -6,6 +6,7 @@ class SchemaNames {
   static ProgramEncounter = "ProgramEncounter";
   static Encounter = "Encounter";
   static ChecklistItem = "ChecklistItem";
+  static Extension = "Extension";
 }
 
 export default SchemaNames;
