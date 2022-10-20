@@ -50,6 +50,16 @@ class EntitySyncStatus extends BaseEntity {
     entitySyncStatus.entityTypeUuid = entityTypeUuid;
     return entitySyncStatus;
   }
+
+  toJSON() {
+    return {
+      uuid: this.uuid,
+      entityName: this.entityName,
+      loadedSince: this.loadedSince,
+      entityTypeUuid: this.entityTypeUuid,
+      voided: this.voided,
+    };
+  }
 }
 
 export default EntitySyncStatus;
