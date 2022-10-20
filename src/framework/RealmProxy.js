@@ -1,5 +1,21 @@
-import RealmResultsProxyHandler from "./RealmResultsProxyHandler";
 import RealmResultsProxy from "./RealmResultsProxy";
+import _ from "lodash";
+
+const isVanillaArray = function (object) {
+  return !_.isNil(object) && ("RealmListProxy" !== object.constructor.name) && _.isArrayLikeObject(object);
+}
+
+const isRealmList = function (object) {
+  return !_.isNil(object) && !_.isNil(object.realmList);
+}
+
+const isRealmResults = function (object) {
+  return !_.isNil(object) && !_.isNil(object.realmCollection);
+}
+
+const isRealmObject = function (object) {
+  return !_.isNil(object) && !_.isNil(object.that);
+}
 
 class RealmProxy {
   constructor(realmDb, entityMappingConfig) {
@@ -40,10 +56,15 @@ class RealmProxy {
 
   delete(object) {
     let deleteObj = object;
-    if (!_.isNil(object.that))
+    if (isRealmObject(object))
       deleteObj = object.that;
-    else if (!_.isNil(object.realmCollection))
+    else if (isRealmResults(object))
       deleteObj = object.realmCollection;
+    else if (isRealmList(object))
+      deleteObj = object.realmList;
+    else if (isVanillaArray(object)) {
+      deleteObj = object.map(o => isRealmObject(o) ? o.that : o);
+    }
 
     return this.realmDb.delete(deleteObj);
   }
