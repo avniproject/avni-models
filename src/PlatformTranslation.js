@@ -43,7 +43,7 @@ class PlatformTranslation extends BaseEntity {
   }
 
   getTranslations() {
-    return JSON.parse(this.platformTranslations);
+    return JSON.parse(this.that.platformTranslations);
   }
 
   clone() {

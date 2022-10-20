@@ -24,12 +24,12 @@ class Translation extends BaseEntity {
     this.that.language = x;
   }
 
-  get platformTranslations() {
-    return this.that.platformTranslations;
+  get translations() {
+    return this.that.translations;
   }
 
-  set platformTranslations(x) {
-    this.that.platformTranslations = x;
+  set translations(x) {
+    this.that.translations = x;
   }
 
   static fromResource(resource) {
@@ -43,7 +43,7 @@ class Translation extends BaseEntity {
   }
 
   getTranslations() {
-    return JSON.parse(this.translations);
+    return JSON.parse(this.that.translations);
   }
 
   clone() {
