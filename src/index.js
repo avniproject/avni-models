@@ -119,6 +119,7 @@ import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import RealmProxy from "./framework/RealmProxy";
 import ah from "./framework/ArrayHelper";
+import {getUnderlyingRealmCollection, getUnderlyingRealmObject} from "./framework/RealmCollectionHelper";
 
 export {
   AbstractEncounter,
@@ -241,5 +242,7 @@ export {
   SubjectProgramEligibility,
   MenuItem,
   RealmProxy,
-  ah
+  ah,
+  getUnderlyingRealmCollection,
+  getUnderlyingRealmObject
 };

@@ -1,21 +1,12 @@
 import RealmResultsProxy from "./RealmResultsProxy";
 import _ from "lodash";
+import {getUnderlyingRealmObject, isRealmObject} from "./RealmCollectionHelper";
+import General from "../utility/General";
 
 const isVanillaArray = function (object) {
   return !_.isNil(object) && ("RealmListProxy" !== object.constructor.name) && _.isArrayLikeObject(object);
 }
 
-const isRealmList = function (object) {
-  return !_.isNil(object) && !_.isNil(object.realmList);
-}
-
-const isRealmResults = function (object) {
-  return !_.isNil(object) && !_.isNil(object.realmCollection);
-}
-
-const isRealmObject = function (object) {
-  return !_.isNil(object) && !_.isNil(object.that);
-}
 
 class RealmProxy {
   constructor(realmDb, entityMappingConfig) {
@@ -55,18 +46,19 @@ class RealmProxy {
   }
 
   delete(object) {
-    let deleteObj = object;
-    if (isRealmObject(object))
-      deleteObj = object.that;
-    else if (isRealmResults(object))
-      deleteObj = object.realmCollection;
-    else if (isRealmList(object))
-      deleteObj = object.realmList;
-    else if (isVanillaArray(object)) {
-      deleteObj = object.map(o => isRealmObject(o) ? o.that : o);
-    }
+    try {
+      let deleteObj = getUnderlyingRealmObject(object);
+      if (_.isNil(deleteObj) && isVanillaArray(object)) {
+        deleteObj = object.map(o => isRealmObject(o) ? o.that : o);
+      } else if (_.isNil(deleteObj)) {
+        deleteObj = object;
+      }
 
-    return this.realmDb.delete(deleteObj);
+      return this.realmDb.delete(deleteObj);
+    } catch (e) {
+      General.logError("RealmProxy", `Could not delete object: ${JSON.stringify(object)}`);
+      throw e;
+    }
   }
 
   objectForPrimaryKey(type, key) {

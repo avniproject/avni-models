@@ -15,6 +15,10 @@ class StubbedRealmDb {
     else
       this.map.get(type).push(x);
   }
+
+  delete(object) {
+    this.deletedObject = object;
+  }
 }
 
 export default StubbedRealmDb;
