@@ -23,9 +23,11 @@ const ah = {
     let length = array ? indexes.length : 0,
       lastIndex = length - 1;
 
+    let previous = null;
     while (length--) {
       const index = indexes[length];
       if (length === lastIndex || index !== previous) {
+        previous = index;
         array.splice(index, 1);
       }
     }

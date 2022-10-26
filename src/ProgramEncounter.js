@@ -53,7 +53,7 @@ class ProgramEncounter extends AbstractEncounter {
   }
 
   static fromResource(resource, entityService) {
-    const programEncounter = AbstractEncounter.fromResource(resource, entityService);
+    const programEncounter = AbstractEncounter.fromResource(resource, entityService, new ProgramEncounter());
     programEncounter.programEnrolment = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "programEnrolmentUUID"),
@@ -99,6 +99,10 @@ class ProgramEncounter extends AbstractEncounter {
         )
       );
     return validationResults;
+  }
+
+  static createEmptyInstance() {
+    return AbstractEncounter.createEmptyInstance(new ProgramEncounter());
   }
 
   static createScheduled(encounterType, programEnrolment) {

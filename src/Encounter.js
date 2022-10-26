@@ -48,13 +48,13 @@ class Encounter extends AbstractEncounter {
   };
 
   static create() {
-    let encounter = super.createEmptyInstance();
+    let encounter = this.createEmptyInstance();
     encounter.encounterType = EncounterType.create();
     return encounter;
   }
 
   static fromResource(resource, entityService) {
-    const encounter = super.fromResource(resource, entityService);
+    const encounter = super.fromResource(resource, entityService, new Encounter());
     encounter.individual = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "individualUUID"),
@@ -105,12 +105,16 @@ class Encounter extends AbstractEncounter {
     return "Encounter";
   }
 
+  static createEmptyInstance() {
+    return AbstractEncounter.createEmptyInstance(new Encounter());
+  }
+
   static createScheduled(encounterType, individual) {
-    const programEncounter = Encounter.createEmptyInstance();
-    programEncounter.encounterType = encounterType;
-    programEncounter.individual = individual;
-    programEncounter.encounterDateTime = null;
-    return programEncounter;
+    const encounter = Encounter.createEmptyInstance();
+    encounter.encounterType = encounterType;
+    encounter.individual = individual;
+    encounter.encounterDateTime = null;
+    return encounter;
   }
 
   getAllScheduledVisits() {

@@ -136,8 +136,7 @@ class AbstractEncounter extends BaseEntity {
     return resource;
   }
 
-  static createEmptyInstance() {
-    const encounter = new this();
+  static createEmptyInstance(encounter) {
     encounter.voided = false;
     encounter.uuid = General.randomUUID();
     encounter.observations = [];
@@ -171,8 +170,7 @@ class AbstractEncounter extends BaseEntity {
     return encounter;
   }
 
-  static fromResource(resource, entityService) {
-    const encounter = new this();
+  static fromResource(resource, entityService, encounter) {
     General.assignFields(
       resource,
       encounter,
