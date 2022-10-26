@@ -71,6 +71,8 @@ class RealmProxy {
   }
 
   writeCopyTo(pathOrConfig, encryptionKey) {
+    if (_.isNil(encryptionKey))
+      return this.realmDb.writeCopyTo(pathOrConfig);
     return this.realmDb.writeCopyTo(pathOrConfig, encryptionKey);
   }
 }

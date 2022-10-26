@@ -18,6 +18,50 @@ class VideoTelemetric extends BaseEntity {
     },
   };
 
+  constructor(that = null) {
+    super(that);
+  }
+
+  get video() {
+      return this.toEntity("video", Video);
+  }
+
+  set video(x) {
+      this.that.video = this.fromObject(x);
+  }
+
+  get playerOpenTime() {
+      return this.that.playerOpenTime;
+  }
+
+  set playerOpenTime(x) {
+      this.that.playerOpenTime = x;
+  }
+
+  get playerCloseTime() {
+      return this.that.playerCloseTime;
+  }
+
+  set playerCloseTime(x) {
+      this.that.playerCloseTime = x;
+  }
+
+  get videoStartTime() {
+      return this.that.videoStartTime;
+  }
+
+  set videoStartTime(x) {
+      this.that.videoStartTime = x;
+  }
+
+  get videoEndTime() {
+      return this.that.videoEndTime;
+  }
+
+  set videoEndTime(x) {
+      this.that.videoEndTime = x;
+  }
+
   static create(obj = {}) {
     const { uuid = General.randomUUID() } = obj;
     return _.assignIn(
