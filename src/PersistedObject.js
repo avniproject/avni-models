@@ -46,21 +46,6 @@ class PersistedObject {
     }
     return json;
   }
-
-  /**
-   * This is a helper method to be used to fetch property values from an entity instead of using the array-accessor approach.
-   * Ex: Use entity.getValueFor(objectKey) instead of entity[objectKey]
-   * Regex to use, to find instances where this method should be replaced, is as follows: \(.*[A-Za-z].*\[.*[A-Za-z].*\]\)
-   * From results of above regex search, only a small sub-set would need to be replaced with below method invocation.
-   * @param field
-   * @returns {null|*}
-   */
-  getValueFor(field) {
-    if (!_.isNil(this.that)) {
-      return this.that[field];
-    }
-    return null;
-  }
 }
 
 export default PersistedObject;
