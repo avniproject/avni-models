@@ -243,7 +243,6 @@ export {
   SubjectProgramEligibility,
   MenuItem,
   UserSubjectAssignment,
-  MenuItem,
   RealmProxy,
   ah,
   getUnderlyingRealmCollection,
