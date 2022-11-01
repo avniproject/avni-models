@@ -130,7 +130,7 @@ class Form extends BaseEntity {
     _.forEach(formMappings, ({subjectType}) => {
       const outOfSyncDrafts = entityService.findAll("DraftSubject")
           .filtered(`subjectType = $0`, subjectType);
-      entityService.deleteAll(outOfSyncDrafts);
+      entityService.clearDataIn(outOfSyncDrafts);
     })
   }
 
@@ -222,6 +222,12 @@ class Form extends BaseEntity {
     });
     return formElement;
   }
+
+  getSelectedAnswer(concept, nullReplacement) {
+    const observation = this.props.observationHolder.findObservation(concept);
+    return _.isNil(observation) ? nullReplacement : observation.getValueWrapper();
+  }
+
 
   orderObservations(observations) {
     const orderedObservations = [];

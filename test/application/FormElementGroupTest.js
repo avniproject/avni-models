@@ -5,6 +5,7 @@ import FormElement from "openchs-models/src/application/FormElement";
 import FormElementStatus from "../../src/application/FormElementStatus";
 import FormElementGroup from "../../src/application/FormElementGroup";
 import Form from "../../src/application/Form";
+import ObservationsHolder from "../../src/ObservationsHolder";
 
 describe('FormElementGroupTest', () => {
     it('previous and next', () => {
@@ -50,6 +51,46 @@ describe('FormElementGroupTest', () => {
         let filteredElements = formElementGroup.filterElements(formElementStatuses);
         assert.equal(filteredElements[0].answersToExclude.length, 1);
         assert.equal(filteredElements[1].answersToExclude.length, 2);
+    });
+
+    it('returnFalseIfAllFormElementsAreNotEmpty', () => {
+        let observations, concepts, allFormElements;
+        concepts = [EntityFactory.createConcept("Concept 1", Concept.dataType.Coded, "concept-1"),
+          EntityFactory.createConcept("Concept 2", Concept.dataType.Coded, "concept-2")];
+        observations = [EntityFactory.createObservation(concepts[0], "Yao")];
+        const observationsHolder = new ObservationsHolder(observations);
+        allFormElements = [
+          EntityFactory.createFormElement("Form Element 1", true, concepts[0], 1, "SingleSelect"),
+          EntityFactory.createFormElement("Form Element 2", true, concepts[1], 2, "SingleSelect")
+        ];
+        const form = EntityFactory.createForm('form1');
+        const formElementGroup = EntityFactory.createFormElementGroup('foo', 1, form);
+        formElementGroup.addFormElement(allFormElements[0]);
+        formElementGroup.addFormElement(allFormElements[1]);
+
+        const isEmpty = formElementGroup.areAllFormElementsEmpty(allFormElements, observationsHolder);
+
+        assert.isFalse(isEmpty);
+    });
+
+    it('returnTrueIfAllFormElementsAreEmpty', () => {
+        let observations, concepts, allFormElements;
+        concepts = [EntityFactory.createConcept("Concept 1", Concept.dataType.Coded, "concept-1"),
+          EntityFactory.createConcept("Concept 2", Concept.dataType.Coded, "concept-2")];
+        observations = [];
+        const observationsHolder = new ObservationsHolder(observations);
+        allFormElements = [
+          EntityFactory.createFormElement("Form Element 1", true, concepts[0], 1, "SingleSelect"),
+          EntityFactory.createFormElement("Form Element 2", true, concepts[1], 2, "SingleSelect")
+        ];
+        const form = EntityFactory.createForm('form1');
+        const formElementGroup = EntityFactory.createFormElementGroup('foo', 1, form);
+        formElementGroup.addFormElement(allFormElements[0]);
+        formElementGroup.addFormElement(allFormElements[1]);
+
+        const isEmpty = formElementGroup.areAllFormElementsEmpty(allFormElements, observationsHolder);
+
+        assert.isTrue(isEmpty);
     });
 
     function createFormElement(uuid, answers = []) {

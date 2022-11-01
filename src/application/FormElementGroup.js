@@ -287,6 +287,13 @@ class FormElementGroup extends BaseEntity {
     return FormElementGroup._sortedFormElements(filteredFormElements);
   }
 
+  areAllFormElementsEmpty(filteredFormElements, observationHolder) {
+    return  _.reduce(filteredFormElements, (areAllEmpty, formElement) => {
+       return areAllEmpty && _.isNil(observationHolder.findObservation(formElement.concept))
+      }, true
+    );
+  };
+
   toJSON() {
     return {
       uuid: this.uuid,
