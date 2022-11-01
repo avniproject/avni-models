@@ -12,8 +12,17 @@ class UserSubjectAssignment extends BaseEntity {
         }
     };
 
-    uuid: string;
-    subjectUUID: string;
+    constructor(that = null) {
+        super(that);
+    }
+
+    get subjectUUID() {
+        return this.that.subjectUUID;
+    }
+
+    set subjectUUID(x) {
+        this.that.subjectUUID = x;
+    }
 
     static fromResource(resource) {
         const userSubjectAssignment = new UserSubjectAssignment();

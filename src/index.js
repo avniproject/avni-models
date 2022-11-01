@@ -117,6 +117,7 @@ import TaskType from "./task/TaskType";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
+import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import RealmProxy from "./framework/RealmProxy";
 import ah from "./framework/ArrayHelper";
 import {getUnderlyingRealmCollection, getUnderlyingRealmObject} from "./framework/RealmCollectionHelper";
@@ -240,6 +241,8 @@ export {
   TaskUnAssignment,
   DraftEncounter,
   SubjectProgramEligibility,
+  MenuItem,
+  UserSubjectAssignment,
   MenuItem,
   RealmProxy,
   ah,

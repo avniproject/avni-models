@@ -86,6 +86,7 @@ import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
+import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 
 const entities = [
   LocaleMapping,
@@ -174,13 +175,14 @@ const entities = [
   TaskUnAssignment,
   DraftEncounter,
   SubjectProgramEligibility,
-  MenuItem
+  MenuItem,
+  UserSubjectAssignment
 ];
 
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 165,
+    schemaVersion: 167,
     migration: function (oldDB, newDB) {
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
