@@ -1,12 +1,12 @@
 import General from "./utility/General";
 import StringKeyNumericValue from "./application/StringKeyNumericValue";
-import VisitScheduleConfig from "./VisitScheduleConfig";
 import moment from "moment";
 import PersistedObject from "./PersistedObject";
+import SchemaNames from "./SchemaNames";
 
 class ChecklistItemStatus extends PersistedObject {
   static schema = {
-    name: "ChecklistItemStatus",
+    name: SchemaNames.ChecklistItemStatus,
     properties: {
       state: "string",
       from: "StringKeyNumericValue",

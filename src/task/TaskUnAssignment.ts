@@ -1,9 +1,10 @@
 import BaseEntity from "../BaseEntity";
 import ResourceUtil from "../utility/ResourceUtil";
+import SchemaNames from "../SchemaNames";
 
 class TaskUnAssignment extends BaseEntity {
     static schema = {
-        name: 'TaskUnAssignment',
+        name: SchemaNames.TaskUnAssignment,
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',

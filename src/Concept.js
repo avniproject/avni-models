@@ -12,6 +12,7 @@ import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 import ConceptAnswer from "./ConceptAnswer";
+import SchemaNames from "./SchemaNames";
 
 export default class Concept extends BaseEntity {
   static StandardConcepts = {
@@ -19,7 +20,7 @@ export default class Concept extends BaseEntity {
     NoneConceptUUID: "ebda5e05-a995-43ca-ad1a-30af3b937539",
   };
   static schema = {
-    name: "Concept",
+    name: SchemaNames.Concept,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

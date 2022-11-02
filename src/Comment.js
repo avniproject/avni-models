@@ -4,12 +4,13 @@ import Individual from "./Individual";
 import _ from "lodash";
 import ResourceUtil from "./utility/ResourceUtil";
 import CommentThread from "./CommentThread";
+import SchemaNames from "./SchemaNames";
 
 
 class Comment extends BaseEntity {
 
     static schema = {
-        name: "Comment",
+        name: SchemaNames.Comment,
         primaryKey: "uuid",
         properties: {
             uuid: "string",

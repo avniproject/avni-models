@@ -2,7 +2,7 @@ import General from "./utility/General";
 import _ from "lodash";
 import BaseEntity from "./BaseEntity";
 
-class RuleFailureTelemetry extends BaseEntity{
+class RuleFailureTelemetry extends BaseEntity {
   static schema = {
     name: "RuleFailureTelemetry",
     primaryKey: "uuid",
@@ -12,12 +12,64 @@ class RuleFailureTelemetry extends BaseEntity{
       individualUuid: "string",
       errorMessage: "string",
       stacktrace: "string",
-      closed: { type: "bool", default: false },
+      closed: {type: "bool", default: false},
       errorDateTime: "date",
     },
   };
 
-  static create({ ruleUUID, individualUUID, errorMessage, stacktrace }) {
+  constructor(that = null) {
+    super(that);
+  }
+
+  get ruleUuid() {
+      return this.that.ruleUuid;
+  }
+
+  set ruleUuid(x) {
+      this.that.ruleUuid = x;
+  }
+
+  get individualUuid() {
+      return this.that.individualUuid;
+  }
+
+  set individualUuid(x) {
+      this.that.individualUuid = x;
+  }
+
+  get errorMessage() {
+      return this.that.errorMessage;
+  }
+
+  set errorMessage(x) {
+      this.that.errorMessage = x;
+  }
+
+  get stacktrace() {
+      return this.that.stacktrace;
+  }
+
+  set stacktrace(x) {
+      this.that.stacktrace = x;
+  }
+
+  get closed() {
+      return this.that.closed;
+  }
+
+  set closed(x) {
+      this.that.closed = x;
+  }
+
+  get errorDateTime() {
+      return this.that.errorDateTime;
+  }
+
+  set errorDateTime(x) {
+      this.that.errorDateTime = x;
+  }
+
+  static create({ruleUUID, individualUUID, errorMessage, stacktrace}) {
     const ruleFailureTelemetry = new RuleFailureTelemetry();
     ruleFailureTelemetry.uuid = General.randomUUID();
     ruleFailureTelemetry.closed = false;

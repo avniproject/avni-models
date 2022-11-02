@@ -5,10 +5,11 @@ import Individual from "../Individual";
 import _ from "lodash";
 import IndividualRelationshipType from "./IndividualRelationshipType";
 import Observation from "../Observation";
+import SchemaNames from "../SchemaNames";
 
 class IndividualRelationship extends BaseEntity {
   static schema = {
-    name: "IndividualRelationship",
+    name: SchemaNames.IndividualRelationship,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

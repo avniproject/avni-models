@@ -1,8 +1,9 @@
 import PersistedObject from "./PersistedObject";
+import SchemaNames from "./SchemaNames";
 
 class BeneficiaryModePin extends PersistedObject {
   static schema = {
-    name: "BeneficiaryModePin",
+    name: SchemaNames.BeneficiaryModePin,
     properties: {
       pin: "int",
     },

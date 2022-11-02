@@ -2,10 +2,11 @@ import ResourceUtil from "../utility/ResourceUtil";
 import General from "../utility/General";
 import IndividualRelation from "./IndividualRelation";
 import ReferenceEntity from "../ReferenceEntity";
+import SchemaNames from "../SchemaNames";
 
 class IndividualRelationshipType extends ReferenceEntity {
   static schema = {
-    name: "IndividualRelationshipType",
+    name: SchemaNames.IndividualRelationshipType,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

@@ -3,10 +3,11 @@ import General from "../utility/General";
 import moment from "moment";
 import _ from "lodash";
 import Video from "./Video";
+import SchemaNames from "../SchemaNames";
 
 class VideoTelemetric extends BaseEntity {
   static schema = {
-    name: "VideoTelemetric",
+    name: SchemaNames.VideoTelemetric,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

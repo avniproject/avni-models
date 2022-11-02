@@ -1,5 +1,6 @@
 import General from "../utility/General";
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class MenuItem extends BaseEntity{
   static FunctionalityGroupName = "Functionality";
@@ -9,7 +10,7 @@ class MenuItem extends BaseEntity{
   static HyperlinkTypeName = "Link";
 
   static schema = {
-    name: "MenuItem",
+    name: SchemaNames.MenuItem,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

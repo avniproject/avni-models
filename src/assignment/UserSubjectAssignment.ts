@@ -1,10 +1,11 @@
 import BaseEntity from "../BaseEntity";
 import ResourceUtil from "../utility/ResourceUtil";
+import SchemaNames from "../SchemaNames";
 
 class UserSubjectAssignment extends BaseEntity {
 
     static schema = {
-        name: 'UserSubjectAssignment',
+        name: SchemaNames.UserSubjectAssignment,
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',

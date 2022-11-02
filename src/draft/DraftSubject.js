@@ -4,38 +4,33 @@ import BaseEntity from "../BaseEntity";
 import SubjectType from "../SubjectType";
 import Gender from "../Gender";
 import AddressLevel from "../AddressLevel";
-import ProgramEnrolment from "../ProgramEnrolment";
-import Encounter from "../Encounter";
 import Observation from "../Observation";
-import IndividualRelationship from "../relationship/IndividualRelationship";
-import GroupSubject from "../GroupSubject";
 import Point from "../geo/Point";
-import EntityApprovalStatus from "../EntityApprovalStatus";
-import Comment from "../Comment";
+import SchemaNames from "../SchemaNames";
 
 class DraftSubject extends BaseEntity {
-    static schema = {
-        name: "DraftSubject",
-        primaryKey: "uuid",
-        properties: {
-            uuid: "string",
-            subjectType: "SubjectType",
-            firstName: "string",
-            lastName: {type: "string", optional: true},
-            profilePicture: {type: "string", optional: true},
-            dateOfBirth: {type: "date", optional: true},
-            dateOfBirthVerified: {type: "bool", optional: true},
-            gender: {type: "Gender", optional: true},
-            registrationDate: "date",
-            lowestAddressLevel: "AddressLevel",
-            observations: {type: "list", objectType: "Observation"},
-            registrationLocation: {type: "Point", optional: true},
-            updatedOn: "date",
-            totalMembers: {type: "string", optional: true}
-        },
-    };
+  static schema = {
+    name: SchemaNames.DraftSubject,
+    primaryKey: "uuid",
+    properties: {
+      uuid: "string",
+      subjectType: "SubjectType",
+      firstName: "string",
+      lastName: {type: "string", optional: true},
+      profilePicture: {type: "string", optional: true},
+      dateOfBirth: {type: "date", optional: true},
+      dateOfBirthVerified: {type: "bool", optional: true},
+      gender: {type: "Gender", optional: true},
+      registrationDate: "date",
+      lowestAddressLevel: "AddressLevel",
+      observations: {type: "list", objectType: "Observation"},
+      registrationLocation: {type: "Point", optional: true},
+      updatedOn: "date",
+      totalMembers: {type: "string", optional: true}
+    },
+  };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
@@ -53,14 +48,6 @@ class DraftSubject extends BaseEntity {
 
   set firstName(x) {
     this.that.firstName = x;
-  }
-
-  get middleName() {
-    return this.that.middleName;
-  }
-
-  set middleName(x) {
-    this.that.middleName = x;
   }
 
   get lastName() {
@@ -119,44 +106,12 @@ class DraftSubject extends BaseEntity {
     this.that.lowestAddressLevel = this.fromObject(x);
   }
 
-  get enrolments() {
-    return this.toEntityList("enrolments", ProgramEnrolment);
-  }
-
-  set enrolments(x) {
-    this.that.enrolments = this.fromEntityList(x);
-  }
-
-  get encounters() {
-    return this.toEntityList("encounters", Encounter);
-  }
-
-  set encounters(x) {
-    this.that.encounters = this.fromEntityList(x);
-  }
-
   get observations() {
     return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
     this.that.observations = this.fromEntityList(x);
-  }
-
-  get relationships() {
-    return this.toEntityList("relationships", IndividualRelationship);
-  }
-
-  set relationships(x) {
-    this.that.relationships = this.fromEntityList(x);
-  }
-
-  get groupSubjects() {
-    return this.toEntityList("groupSubjects", GroupSubject);
-  }
-
-  set groupSubjects(x) {
-    this.that.groupSubjects = this.fromEntityList(x);
   }
 
   get registrationLocation() {
@@ -167,74 +122,66 @@ class DraftSubject extends BaseEntity {
     this.that.registrationLocation = this.fromObject(x);
   }
 
-  get latestEntityApprovalStatus() {
-    return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+  get updatedOn() {
+    return this.that.updatedOn;
   }
 
-  set latestEntityApprovalStatus(x) {
-    this.that.latestEntityApprovalStatus = this.fromObject(x);
+  set updatedOn(x) {
+    this.that.updatedOn = x;
   }
 
-  get comments() {
-    return this.toEntityList("comments", Comment);
+  get totalMembers() {
+    return this.that.totalMembers;
   }
 
-  set comments(x) {
-    this.that.comments = this.fromEntityList(x);
+  set totalMembers(x) {
+    this.that.totalMembers = x;
   }
 
-  get groups() {
-    return this.toEntityList("groups", GroupSubject);
+  static create(subject, totalMembers) {
+    const draftSubject = new DraftSubject();
+    draftSubject.uuid = subject.uuid;
+    draftSubject.subjectType = subject.subjectType;
+    draftSubject.firstName = subject.firstName;
+    draftSubject.lastName = subject.lastName;
+    draftSubject.profilePicture = subject.profilePicture;
+    draftSubject.dateOfBirth = subject.dateOfBirth;
+    draftSubject.registrationDate = subject.registrationDate;
+    draftSubject.dateOfBirthVerified = subject.dateOfBirthVerified;
+    draftSubject.gender = subject.gender;
+    draftSubject.lowestAddressLevel = subject.lowestAddressLevel;
+    draftSubject.observations = subject.observations;
+    draftSubject.registrationLocation = subject.registrationLocation;
+    draftSubject.totalMembers = _.isEmpty(totalMembers) ? null : totalMembers;
+    draftSubject.updatedOn = new Date();
+    return draftSubject;
   }
 
-  set groups(x) {
-    this.that.groups = this.fromEntityList(x);
+  constructIndividual() {
+    const individual = new Individual();
+    individual.uuid = this.uuid;
+    individual.subjectType = this.subjectType.clone();
+    individual.firstName = this.firstName;
+    individual.lastName = this.lastName;
+    individual.profilePicture = this.profilePicture;
+    individual.dateOfBirth = this.dateOfBirth;
+    individual.registrationDate = this.registrationDate;
+    individual.dateOfBirthVerified = this.dateOfBirthVerified;
+    individual.gender = _.isNil(this.gender) ? null : this.gender.clone();
+    individual.lowestAddressLevel = _.isNil(this.lowestAddressLevel)
+      ? null
+      : _.assignIn({}, this.lowestAddressLevel);
+    individual.observations = ObservationsHolder.clone(this.observations);
+    individual.registrationLocation = _.isNil(this.registrationLocation)
+      ? null
+      : this.registrationLocation.clone();
+    individual.voided = false;
+    individual.encounters = [];
+    individual.enrolments = [];
+    individual.relationships = [];
+    individual.groupSubjects = [];
+    return individual;
   }
-
-    static create(subject, totalMembers) {
-        const draftSubject = new DraftSubject();
-        draftSubject.uuid = subject.uuid;
-        draftSubject.subjectType = subject.subjectType;
-        draftSubject.firstName = subject.firstName;
-        draftSubject.lastName = subject.lastName;
-        draftSubject.profilePicture = subject.profilePicture;
-        draftSubject.dateOfBirth = subject.dateOfBirth;
-        draftSubject.registrationDate = subject.registrationDate;
-        draftSubject.dateOfBirthVerified = subject.dateOfBirthVerified;
-        draftSubject.gender = subject.gender;
-        draftSubject.lowestAddressLevel = subject.lowestAddressLevel;
-        draftSubject.observations = subject.observations;
-        draftSubject.registrationLocation = subject.registrationLocation;
-        draftSubject.totalMembers = _.isEmpty(totalMembers) ? null : totalMembers;
-        draftSubject.updatedOn = new Date();
-        return draftSubject;
-    }
-
-    constructIndividual() {
-        const individual = new Individual();
-        individual.uuid = this.uuid;
-        individual.subjectType = this.subjectType.clone();
-        individual.firstName = this.firstName;
-        individual.lastName = this.lastName;
-        individual.profilePicture = this.profilePicture;
-        individual.dateOfBirth = this.dateOfBirth;
-        individual.registrationDate = this.registrationDate;
-        individual.dateOfBirthVerified = this.dateOfBirthVerified;
-        individual.gender = _.isNil(this.gender) ? null : this.gender.clone();
-        individual.lowestAddressLevel = _.isNil(this.lowestAddressLevel)
-            ? null
-            : _.assignIn({}, this.lowestAddressLevel);
-        individual.observations = ObservationsHolder.clone(this.observations);
-        individual.registrationLocation = _.isNil(this.registrationLocation)
-            ? null
-            : this.registrationLocation.clone();
-        individual.voided = false;
-        individual.encounters = [];
-        individual.enrolments = [];
-        individual.relationships = [];
-        individual.groupSubjects = [];
-        return individual;
-    }
 }
 
 

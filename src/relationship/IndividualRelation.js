@@ -1,8 +1,9 @@
 import ReferenceEntity from "../ReferenceEntity";
+import SchemaNames from "../SchemaNames";
 
 class IndividualRelation extends ReferenceEntity {
   static schema = {
-    name: "IndividualRelation",
+    name: SchemaNames.IndividualRelation,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

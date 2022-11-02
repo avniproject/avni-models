@@ -6,10 +6,11 @@ import General from "../utility/General";
 import ResourceUtil from "../utility/ResourceUtil";
 import ObservationsHolder from "../ObservationsHolder";
 import _ from 'lodash';
+import SchemaNames from "../SchemaNames";
 
 class SubjectProgramEligibility extends BaseEntity {
     static schema = {
-        name: "SubjectProgramEligibility",
+        name: SchemaNames.SubjectProgramEligibility,
         primaryKey: "uuid",
         properties: {
             uuid: "string",

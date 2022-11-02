@@ -1,8 +1,9 @@
 import PersistedObject from "../PersistedObject";
+import SchemaNames from "../SchemaNames";
 
 class StringKeyNumericValue extends PersistedObject {
   static schema = {
-    name: "StringKeyNumericValue",
+    name: SchemaNames.StringKeyNumericValue,
     properties: {
       key: "string",
       value: "double",

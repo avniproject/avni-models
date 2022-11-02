@@ -1,9 +1,9 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import SchemaNames from "./SchemaNames";
+import PersistedObject from "./PersistedObject";
 
-//Should not be a BaseEntity
-class Extension extends BaseEntity {
+class Extension extends PersistedObject {
     static schema = {
         name: SchemaNames.Extension,
         primaryKey: "url",

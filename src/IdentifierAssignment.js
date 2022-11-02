@@ -1,11 +1,10 @@
-import ResourceUtil from "./utility/ResourceUtil";
-import General from "./utility/General";
-import BaseEntity from "./BaseEntity";
-import Individual from "./Individual";
-import ProgramEnrolment from "./ProgramEnrolment";
-import IdentifierSource from "./IdentifierSource";
-import moment from "moment/moment";
-import _ from "lodash";
+import ResourceUtil from './utility/ResourceUtil';
+import General from './utility/General';
+import BaseEntity from './BaseEntity';
+import Individual from './Individual';
+import ProgramEnrolment from './ProgramEnrolment';
+import IdentifierSource from './IdentifierSource';
+import _ from 'lodash';
 
 export default class IdentifierAssignment extends BaseEntity {
   static schema = {
@@ -21,6 +20,52 @@ export default class IdentifierAssignment extends BaseEntity {
       programEnrolment: { type: "ProgramEnrolment", optional: true },
     },
   };
+
+  constructor(that = null) {
+    super(that);
+  }
+
+  get identifierSource() {
+      return this.toEntity("identifierSource", IdentifierSource);
+  }
+
+  set identifierSource(x) {
+      this.that.identifierSource = this.toObject(x);
+  }
+
+  get identifier() {
+      return this.that.identifier;
+  }
+
+  set identifier(x) {
+      this.that.identifier = x;
+  }
+
+  get assignmentOrder() {
+      return this.that.assignmentOrder;
+  }
+
+  set assignmentOrder(x) {
+      this.that.assignmentOrder = x;
+  }
+
+  get individual() {
+      return this.toEntity("individual", Individual);
+  }
+
+  set individual(x) {
+    this.that.individual = this.toObject(x);
+  }
+
+  get programEnrolment() {
+      return this.toEntity("programEnrolment", ProgramEnrolment);
+  }
+
+  set programEnrolment(x) {
+      this.that.programEnrolment = this.toObject(x);
+  }
+
+
 
   static fromResource(identifierAssignmentResource, entityService) {
     const identifierAssignment = General.assignFields(

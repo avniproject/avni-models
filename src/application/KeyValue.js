@@ -1,8 +1,9 @@
 import PersistedObject from "../PersistedObject";
+import SchemaNames from "../SchemaNames";
 
 class KeyValue extends PersistedObject {
   static schema = {
-    name: "KeyValue",
+    name: SchemaNames.KeyValue,
     properties: {
       key: "string",
       value: "string",

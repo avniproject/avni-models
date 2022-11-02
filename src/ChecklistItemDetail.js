@@ -6,12 +6,11 @@ import Form from "./application/Form";
 import ChecklistDetail from "./ChecklistDetail";
 import Concept from "./Concept";
 import ChecklistItemStatus from "./ChecklistItemStatus";
-import ProgramEncounter from "./ProgramEncounter";
-import Checklist from "./Checklist";
+import SchemaNames from "./SchemaNames";
 
 class ChecklistItemDetail extends BaseEntity {
   static schema = {
-    name: "ChecklistItemDetail",
+    name: SchemaNames.ChecklistItemDetail,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

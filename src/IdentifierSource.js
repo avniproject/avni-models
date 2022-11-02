@@ -1,15 +1,27 @@
-import General from "./utility/General";
-import ReferenceEntity from "./ReferenceEntity";
+import General from './utility/General';
+import ReferenceEntity from './ReferenceEntity';
 
 class IdentifierSource extends ReferenceEntity {
   static schema = {
-    name: "IdentifierSource",
-    primaryKey: "uuid",
+    name: 'IdentifierSource',
+    primaryKey: 'uuid',
     properties: {
-      uuid: "string",
-      name: "string",
+      uuid: 'string',
+      name: 'string',
     },
   };
+
+  constructor(that = null) {
+    super(that);
+  }
+
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
 
   static fromResource(resource) {
     return ReferenceEntity.fromResource(resource, new IdentifierSource());

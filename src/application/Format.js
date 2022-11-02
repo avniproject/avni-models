@@ -1,11 +1,12 @@
 import _ from "lodash";
 import PersistedObject from "../PersistedObject";
+import SchemaNames from "../SchemaNames";
 
 class Format extends PersistedObject {
   static map = new Map();
 
   static schema = {
-    name: "Format",
+    name: SchemaNames.Format,
     properties: {
       regex: "string",
       descriptionKey: "string",

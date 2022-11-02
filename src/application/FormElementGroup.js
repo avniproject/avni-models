@@ -6,10 +6,11 @@ import FormElement from "./FormElement";
 import _ from "lodash";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
+import SchemaNames from "../SchemaNames";
 
 class FormElementGroup extends BaseEntity {
   static schema = {
-    name: "FormElementGroup",
+    name: SchemaNames.FormElementGroup,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

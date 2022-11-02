@@ -5,10 +5,11 @@ import ProgramEnrolment from "./ProgramEnrolment";
 import BaseEntity from "./BaseEntity";
 import ChecklistItem from "./ChecklistItem";
 import ChecklistDetail from "./ChecklistDetail";
+import SchemaNames from "./SchemaNames";
 
 class Checklist extends BaseEntity {
   static schema = {
-    name: "Checklist",
+    name: SchemaNames.Checklist,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

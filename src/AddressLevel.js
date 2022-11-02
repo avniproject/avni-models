@@ -3,24 +3,45 @@ import ResourceUtil from "./utility/ResourceUtil";
 import General from "./utility/General";
 import _ from "lodash";
 import Observation from "./Observation";
+import SchemaNames from "./SchemaNames";
 
 const PARENT_LOCATION_UUID = "parentLocationUUID";
 const CHILD_LOCATION_UUID = "locationUUID";
 
 export class LocationMapping extends BaseEntity {
   static schema = {
-    name: "LocationMapping",
+    name: SchemaNames.LocationMapping,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
       parent: "AddressLevel",
       child: "AddressLevel",
-      voided: { type: "bool", default: false },
+      voided: {type: "bool", default: false},
     },
   };
 
-  static create({ uuid, parent, child, voided }) {
-    return _.assignIn(new LocationMapping(), { uuid, parent, child, voided });
+  constructor(that = null) {
+    super(that);
+  }
+
+  get parent() {
+    return this.toEntity("parent", AddressLevel);
+  }
+
+  set parent(x) {
+    this.that.parent = this.toObject(x);
+  }
+
+  get child() {
+    return this.toEntity("child", AddressLevel);
+  }
+
+  set child(x) {
+    this.that.child = this.toObject(x);
+  }
+
+  static create({uuid, parent, child, voided}) {
+    return _.assignIn(new LocationMapping(), {uuid, parent, child, voided});
   }
 
   static fromResource(resource, entityService) {
@@ -61,75 +82,86 @@ class AddressLevel extends BaseEntity {
     },
   };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
   get name() {
-      return this.that.name;
+    return this.that.name;
   }
 
   set name(x) {
-      this.that.name = x;
+    this.that.name = x;
   }
 
   get level() {
-      return this.that.level;
+    return this.that.level;
   }
 
   set level(x) {
-      this.that.level = x;
+    this.that.level = x;
   }
 
   get type() {
-      return this.that.type;
+    return this.that.type;
   }
 
   set type(x) {
-      this.that.type = x;
+    this.that.type = x;
   }
 
   get locationMappings() {
-      return this.toEntityList("locationMappings", LocationMapping);
+    return this.toEntityList("locationMappings", LocationMapping);
   }
 
   set locationMappings(x) {
-      this.that.locationMappings = this.fromEntityList(x);
+    this.that.locationMappings = this.fromEntityList(x);
   }
 
   get locationProperties() {
-      return this.toEntityList("locationProperties", Observation);
+    return this.toEntityList("locationProperties", Observation);
   }
 
   set locationProperties(x) {
-      this.that.locationProperties = this.fromEntityList(x);
+    this.that.locationProperties = this.fromEntityList(x);
   }
 
   get titleLineage() {
-      return this.that.titleLineage;
+    return this.that.titleLineage;
   }
 
   set titleLineage(x) {
-      this.that.titleLineage = x;
+    this.that.titleLineage = x;
   }
 
   get parentUuid() {
-      return this.that.parentUuid;
+    return this.that.parentUuid;
   }
 
   set parentUuid(x) {
-      this.that.parentUuid = x;
+    this.that.parentUuid = x;
   }
 
   get typeUuid() {
-      return this.that.typeUuid;
+    return this.that.typeUuid;
   }
 
   set typeUuid(x) {
-      this.that.typeUuid = x;
+    this.that.typeUuid = x;
   }
 
-  static create({uuid, title, level, typeString, locationMappings = [], titleLineage, voided, parentUuid, typeUuid, locationProperties}, entityService) {
+  static create({
+                  uuid,
+                  title,
+                  level,
+                  typeString,
+                  locationMappings = [],
+                  titleLineage,
+                  voided,
+                  parentUuid,
+                  typeUuid,
+                  locationProperties
+                }, entityService) {
     const addressLevel = _.assignIn(new AddressLevel(), {
       uuid,
       name: title,

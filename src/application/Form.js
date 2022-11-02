@@ -7,10 +7,11 @@ import EntitySyncStatus from "../EntitySyncStatus";
 import moment from "moment";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
+import SchemaNames from "../SchemaNames";
 
 class Form extends BaseEntity {
   static schema = {
-    name: "Form",
+    name: SchemaNames.Form,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

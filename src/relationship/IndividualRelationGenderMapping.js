@@ -3,10 +3,11 @@ import Gender from "../Gender";
 import General from "../utility/General";
 import ResourceUtil from "../utility/ResourceUtil";
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class IndividualRelationGenderMapping extends BaseEntity{
   static schema = {
-    name: "IndividualRelationGenderMapping",
+    name: SchemaNames.IndividualRelationGenderMapping,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

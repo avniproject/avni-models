@@ -2,10 +2,11 @@ import General from "../utility/General";
 import Concept from "../Concept";
 import {isNil, map} from 'lodash';
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class TaskType extends BaseEntity {
     static schema = {
-        name: "TaskType",
+        name: SchemaNames.TaskType,
         primaryKey: "uuid",
         properties: {
             uuid: "string",

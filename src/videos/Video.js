@@ -1,9 +1,10 @@
 import BaseEntity from "../BaseEntity";
 import _ from "lodash";
+import SchemaNames from "../SchemaNames";
 
 class Video extends BaseEntity {
   static schema = {
-    name: "Video",
+    name: SchemaNames.Video,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

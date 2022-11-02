@@ -1,13 +1,11 @@
-import ResourceUtil from "./utility/ResourceUtil";
 import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
 import ChecklistItemDetail from "./ChecklistItemDetail";
-import ProgramEncounter from "./ProgramEncounter";
-import Checklist from "./Checklist";
+import SchemaNames from "./SchemaNames";
 
 class ChecklistDetail extends BaseEntity {
   static schema = {
-    name: "ChecklistDetail",
+    name: SchemaNames.ChecklistDetail,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

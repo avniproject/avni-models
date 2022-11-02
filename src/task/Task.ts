@@ -8,10 +8,11 @@ import ObservationsHolder from "../ObservationsHolder";
 import moment from "moment";
 import _ from 'lodash';
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class Task extends BaseEntity {
     static schema = {
-        name: "Task",
+        name: SchemaNames.Task,
         primaryKey: "uuid",
         properties: {
             uuid: "string",

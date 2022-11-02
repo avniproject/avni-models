@@ -4,10 +4,11 @@ import General from "../utility/General";
 import SubjectType from "../SubjectType";
 import TaskType from "../task/TaskType";
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class FormMapping extends BaseEntity {
   static schema = {
-    name: "FormMapping",
+    name: SchemaNames.FormMapping,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

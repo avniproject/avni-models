@@ -3,7 +3,6 @@ import General from "./utility/General";
 import _ from "lodash";
 
 class CommentThread extends BaseEntity {
-
     static schema = {
         name: "CommentThread",
         primaryKey: "uuid",
@@ -15,6 +14,34 @@ class CommentThread extends BaseEntity {
             voided: {type: "bool", default: false},
         },
     };
+
+    constructor(that = null) {
+        super(that);
+    }
+
+    get status() {
+        return this.that.status;
+    }
+
+    set status(x) {
+        this.that.status = x;
+    }
+
+    get openDateTime() {
+        return this.that.openDateTime;
+    }
+
+    set openDateTime(x) {
+        this.that.openDateTime = x;
+    }
+
+    get resolvedDateTime() {
+        return this.that.resolvedDateTime;
+    }
+
+    set resolvedDateTime(x) {
+        this.that.resolvedDateTime = x;
+    }
 
     static threadStatus = {
         Open: "Open",

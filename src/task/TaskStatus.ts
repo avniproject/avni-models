@@ -2,11 +2,12 @@ import TaskType from "./TaskType";
 import General from "../utility/General";
 import ResourceUtil from "../utility/ResourceUtil";
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class TaskStatus extends BaseEntity {
 
     static schema = {
-        name: "TaskStatus",
+        name: SchemaNames.TaskStatus,
         primaryKey: "uuid",
         properties: {
             uuid: "string",

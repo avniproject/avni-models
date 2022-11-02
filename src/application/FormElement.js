@@ -10,10 +10,11 @@ import Filter from "./Filter";
 import moment from "moment";
 import Documentation from "../Documentation";
 import BaseEntity from "../BaseEntity";
+import SchemaNames from "../SchemaNames";
 
 class FormElement extends BaseEntity {
   static schema = {
-    name: "FormElement",
+    name: SchemaNames.FormElement,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
