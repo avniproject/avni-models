@@ -249,6 +249,10 @@ class Form {
     return mandatoryConcepts;
   }
 
+  getAllFormElementConcepts() {
+    return _.flatten(this.formElementGroups.map((x) => x.formElements)).map((x) => x.concept);
+  }
+
   static formTypes = {
     IndividualProfile: "IndividualProfile",
     Encounter: "Encounter",

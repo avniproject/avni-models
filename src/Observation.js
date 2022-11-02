@@ -4,6 +4,13 @@ import SingleCodedValue from "./observation/SingleCodedValue";
 import General from "./utility/General";
 import Displayable from "./Displayable";
 
+const clone = function (concept, valueJSON) {
+  const observation = new Observation();
+  observation.concept = concept;
+  observation.valueJSON = valueJSON;
+  return observation;
+}
+
 class Observation {
   static schema = {
     name: "Observation",
@@ -110,10 +117,11 @@ class Observation {
   }
 
   cloneForEdit() {
-    const observation = new Observation();
-    observation.concept = this.concept.cloneForReference();
-    observation.valueJSON = this.getValueWrapper().cloneForEdit();
-    return observation;
+    return clone(this.concept.cloneForReference(), this.getValueWrapper().cloneForEdit());
+  }
+
+  shallowClone() {
+    return clone(this.concept, this.valueJSON);
   }
 
   getValueWrapper() {

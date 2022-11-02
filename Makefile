@@ -31,8 +31,10 @@ publish:
 copy-dist-to-avni-client:
 	cp -r * ../avni-client/packages/openchs-android/node_modules/openchs-models/
 
-deploy-to-avni-client:
+deploy-to-avni-client-only:
 	$(if $(local),$(call _deploy,$(local)/packages/openchs-android/node_modules/openchs-models))
+
+deploy-to-avni-client: build deploy-to-avni-client-only
 
 deploy-to-avni-web:
 	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))
