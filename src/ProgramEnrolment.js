@@ -10,12 +10,11 @@ import moment from "moment";
 import ObservationsHolder from "./ObservationsHolder";
 import ValidationResult from "./application/ValidationResult";
 import Checklist from "./Checklist";
-import { findMediaObservations } from "./Media";
+import {findMediaObservations} from "./Media";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
-import RealmResultsProxy from "./framework/RealmResultsProxy";
 
 class ProgramEnrolment extends BaseEntity {
   static schema = {

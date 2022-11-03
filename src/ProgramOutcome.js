@@ -10,16 +10,16 @@ class ProgramOutcome extends ReferenceEntity {
     },
   };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
   get name() {
-      return this.that.name;
+    return this.that.name;
   }
 
   set name(x) {
-      this.that.name = x;
+    this.that.name = x;
   }
 }
 

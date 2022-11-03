@@ -1,8 +1,5 @@
 import ReferenceEntity from "./ReferenceEntity";
-import Program from "./Program";
-import _ from "lodash";
 import StringKeyNumericValue from "./application/StringKeyNumericValue";
-import VisitScheduleConfig from "./VisitScheduleConfig";
 import General from "./utility/General";
 
 class VisitScheduleInterval extends ReferenceEntity {

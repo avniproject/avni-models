@@ -12,61 +12,61 @@ class Rule extends ReferenceEntity {
       name: "string",
       fnName: "string",
       executionOrder: "double",
-      voided: { type: "bool", default: false },
-      data: { type: "string", optional: true },
+      voided: {type: "bool", default: false},
+      data: {type: "string", optional: true},
     },
   };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
   get _entityString() {
-      return this.that._entityString;
+    return this.that._entityString;
   }
 
   set _entityString(x) {
-      this.that._entityString = x;
+    this.that._entityString = x;
   }
 
   get type() {
-      return this.that.type;
+    return this.that.type;
   }
 
   set type(x) {
-      this.that.type = x;
+    this.that.type = x;
   }
 
   get name() {
-      return this.that.name;
+    return this.that.name;
   }
 
   set name(x) {
-      this.that.name = x;
+    this.that.name = x;
   }
 
   get fnName() {
-      return this.that.fnName;
+    return this.that.fnName;
   }
 
   set fnName(x) {
-      this.that.fnName = x;
+    this.that.fnName = x;
   }
 
   get executionOrder() {
-      return this.that.executionOrder;
+    return this.that.executionOrder;
   }
 
   set executionOrder(x) {
-      this.that.executionOrder = x;
+    this.that.executionOrder = x;
   }
 
   get data() {
-      return this.that.data;
+    return this.that.data;
   }
 
   set data(x) {
-      this.that.data = x;
+    this.that.data = x;
   }
 
   static types = {
