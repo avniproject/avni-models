@@ -202,6 +202,10 @@ class FormElementGroup {
     );
   };
 
+  getAllFormElementConcepts() {
+    return this.formElements.map((x) => x.concept);
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,

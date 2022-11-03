@@ -250,7 +250,11 @@ class Form {
   }
 
   getAllFormElementConcepts() {
-    return _.flatten(this.formElementGroups.map((x) => x.formElements)).map((x) => x.concept);
+    let concepts = [];
+    this.formElementGroups.forEach((feg) => {
+      concepts = _.concat(concepts, feg.getAllFormElementConcepts());
+    });
+    return concepts;
   }
 
   static formTypes = {
