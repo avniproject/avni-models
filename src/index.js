@@ -18,7 +18,6 @@ import EntityQueue from "./EntityQueue";
 import EntityRule from "./EntityRule";
 import EntitySyncStatus from "./EntitySyncStatus";
 import Family from "./Family";
-import Filter from "./application/Filter";
 import FormElement from "./application/FormElement";
 import FormElementGroup from "./application/FormElementGroup";
 import FormElementStatus from "./application/FormElementStatus";
@@ -35,7 +34,6 @@ import IndividualRelative from "./relationship/IndividualRelative";
 import KeyValue from "./application/KeyValue";
 import LocaleMapping from "./LocaleMapping";
 import MultipleCodedValues from "./observation/MultipleCodedValues";
-import MultiSelectFilter from "./application/MultiSelectFilter";
 import ModelGeneral from "./utility/General";
 import NullProgramEnrolment from "./application/NullProgramEnrolment";
 import Observation from "./Observation";
@@ -52,7 +50,6 @@ import Rule from "./Rule";
 import Schema from "./Schema";
 import Settings from "./Settings";
 import SingleCodedValue from "./observation/SingleCodedValue";
-import SingleSelectFilter from "./application/SingleSelectFilter";
 import StaticFormElementGroup from "./application/StaticFormElementGroup";
 import StringKeyNumericValue from "./application/StringKeyNumericValue";
 import UserDefinedIndividualProperty from "./UserDefinedIndividualProperty";
@@ -140,7 +137,6 @@ export {
   EntityRule,
   EntitySyncStatus,
   Family,
-  Filter,
   Format,
   FormElement,
   FormElementGroup,
@@ -158,7 +154,6 @@ export {
   LocaleMapping,
   MediaQueue,
   MultipleCodedValues,
-  MultiSelectFilter,
   ModelGeneral,
   NullProgramEnrolment,
   Observation,
@@ -175,7 +170,6 @@ export {
   Schema,
   Settings,
   SingleCodedValue,
-  SingleSelectFilter,
   StaticFormElementGroup,
   StringKeyNumericValue,
   UserDefinedIndividualProperty,
