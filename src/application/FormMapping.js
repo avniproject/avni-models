@@ -161,25 +161,6 @@ class FormMapping extends BaseEntity {
     const formTypes = Form.formTypes;
     switch (this.form.formType) {
       case formTypes.IndividualProfile :
-        return {entityName: Individual.schema.name, entityTypeUuid: this.subjectType.uuid};
-      case formTypes.Encounter:
-      case formTypes.IndividualEncounterCancellation:
-        return {entityName:Encounter.schema.name, entityTypeUuid: this.observationsTypeEntityUUID};
-      case formTypes.ProgramEncounter:
-      case formTypes.ProgramEncounterCancellation:
-        return {entityName:ProgramEncounter.schema.name, entityTypeUuid: this.observationsTypeEntityUUID};
-      case formTypes.ProgramEnrolment:
-      case formTypes.ProgramExit:
-        return {entityName:ProgramEnrolment.schema.name, entityTypeUuid: this.entityUUID};
-      default:
-        return {entityName:"", entityTypeUuid: ""};
-    }
-  }
-
-  getEntityNameAndEntityTypeUUID() {
-    const formTypes = Form.formTypes;
-    switch (this.form.formType) {
-      case formTypes.IndividualProfile :
         return {entityName: "Individual", entityTypeUuid: this.subjectType.uuid};
       case formTypes.Encounter:
       case formTypes.IndividualEncounterCancellation:
