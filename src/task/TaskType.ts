@@ -1,6 +1,6 @@
 import General from "../utility/General";
 import Concept from "../Concept";
-import {isNil, map} from 'lodash';
+import {isNil, map, find, identity} from 'lodash';
 import BaseEntity from "../BaseEntity";
 
 class TaskType extends BaseEntity {
@@ -45,6 +45,9 @@ class TaskType extends BaseEntity {
         return taskType;
     }
 
+    getMetadataConcept(conceptUuid) {
+      return find(this.metadataSearchFields.map(identity), (x) => x.uuid === conceptUuid);
+    }
 }
 
 
