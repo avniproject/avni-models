@@ -1,7 +1,7 @@
 {
     "name": "openchs-models",
     "description": "OpenCHS data model to be used by front end clients",
-    "version": "1.27.5",
+    "version": "1.27.6",
     "private": false,
     "repository": {
         "type": "git",
@@ -27,15 +27,12 @@
         ]
     },
     "license": "AGPL-3.0",
-    "dependencies": {
-    },
+    "dependencies": {},
     "peerDependencies": {
-      "lodash": "*",
-      "moment": "*"
+        "lodash": "*",
+        "moment": "*"
     },
     "devDependencies": {
-        "lodash": "^4.17.11",
-        "moment": "^2.22.2",
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.4.5",
         "@babel/plugin-proposal-class-properties": "^7.4.4",
@@ -53,6 +50,8 @@
         "jest": "^24.8.0",
         "jsdom": "15.1.1",
         "jsdom-global": "3.0.2",
+        "lodash": "^4.17.11",
+        "moment": "^2.22.2",
         "nyc": "^14.1.1",
         "prettier": "2.0.5",
         "typedoc": "^0.17.4",
