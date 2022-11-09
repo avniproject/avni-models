@@ -351,7 +351,7 @@ export default class Concept {
   }
 
   isMobileNo() {
-    const keyValue = this.recordValueByKey('primary_contact') || this.recordValueByKey('contact_number');
-    return (keyValue === 'yes');
+    const keyValue = this.recordValueByKey(KeyValue.PrimaryContactKey) || this.recordValueByKey(KeyValue.ContactNumberKey);
+    return (keyValue === KeyValue.ContactYesValue);
   }
 }

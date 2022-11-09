@@ -106,8 +106,8 @@ class Task extends BaseEntity {
         return this.taskType.type === TaskType.TaskTypeName.OpenSubject;
     }
 
-    getNonPhoneNumberMetadataObservationValues() {
-        return this.metadata.map(_.identity).filter((o: Observation) => !o.concept.isPhoneNumberConcept()).map((x: Observation) => x.getReadableValue());
+    getNonMobileNumberMetadataObservationValues() {
+        return this.metadata.map(_.identity).filter((o: Observation) => !o.isMobileNumberObs()).map((x: Observation) => x.getReadableValue());
     }
 
     cloneForEdit() {

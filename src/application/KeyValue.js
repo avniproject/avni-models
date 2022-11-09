@@ -1,4 +1,8 @@
 class KeyValue {
+  static PrimaryContactKey = "primary_contact";
+  static ContactNumberKey = "contact_number";
+  static ContactYesValue = "yes";
+
   static schema = {
     name: "KeyValue",
     properties: {
