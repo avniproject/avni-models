@@ -106,6 +106,10 @@ class Task extends BaseEntity {
         return this.taskType.type === TaskType.TaskTypeName.OpenSubject;
     }
 
+    getNonPhoneNumberMetadataObservationValues() {
+        return this.metadata.map(_.identity).filter((o: Observation) => !o.concept.isPhoneNumberConcept()).map((x) => x.getReadableValue());
+    }
+
     cloneForEdit() {
         const task = new Task();
         task.uuid = this.uuid;
