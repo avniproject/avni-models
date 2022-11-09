@@ -107,7 +107,7 @@ class Task extends BaseEntity {
     }
 
     getNonPhoneNumberMetadataObservationValues() {
-        return this.metadata.map(_.identity).filter((o: Observation) => !o.concept.isPhoneNumberConcept()).map((x) => x.getReadableValue());
+        return this.metadata.map(_.identity).filter((o: Observation) => !o.concept.isPhoneNumberConcept()).map((x: Observation) => x.getReadableValue());
     }
 
     cloneForEdit() {

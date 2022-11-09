@@ -12,6 +12,8 @@ const clone = function (concept, valueJSON) {
 }
 
 class Observation {
+  concept;
+
   static schema = {
     name: "Observation",
     properties: {
