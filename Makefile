@@ -1,24 +1,20 @@
-check-node-v:
-ifneq ($(shell node -v),$(shell cat .nvmrc))
-	@echo '\nPlease run `nvm use` in your terminal to change node version\n'
-	@exit 1
-endif
-	@node -v
+set_node_version:
+	. ${NVM_DIR}/nvm.sh && nvm use
 
 clean:
 	rm -rf node_modules
 
-deps:
+deps: set_node_version
 	@rm -rf package-lock.json
 	yarn install
 
-tests:
+tests: set_node_version
 	yarn test
 
-build:
+build: set_node_version
 	yarn run build
 
-release:
+release: set_node_version
 	git pull --tags
 	git pull --rebase
 	@echo "Ensure version changes follow semantic versioning - https://classic.yarnpkg.com/en/docs/dependency-versions#toc-semantic-versioning"
