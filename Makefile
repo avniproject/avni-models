@@ -5,7 +5,7 @@ clean:
 	rm -rf node_modules
 
 deps: set_node_version
-	@rm -rf package-lock.json
+	@rm -f package-lock.json
 	yarn install
 
 tests: set_node_version

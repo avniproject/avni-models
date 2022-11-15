@@ -87,6 +87,9 @@ class ReportCard extends BaseEntity {
     return reportCard;
   }
 
+    isStandardTaskType() {
+      return _.isNil(this.standardReportCardType) ? false : this.standardReportCardType.isTaskType();
+    }
 }
 
 export default ReportCard;

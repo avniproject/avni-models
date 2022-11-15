@@ -2,6 +2,10 @@ import PersistedObject from "../PersistedObject";
 import SchemaNames from "../SchemaNames";
 
 class KeyValue extends PersistedObject {
+  static PrimaryContactKey = "primary_contact";
+  static ContactNumberKey = "contact_number";
+  static ContactYesValue = "yes";
+
   static schema = {
     name: SchemaNames.KeyValue,
     properties: {

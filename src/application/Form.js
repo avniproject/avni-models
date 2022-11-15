@@ -319,6 +319,14 @@ class Form extends BaseEntity {
     return mandatoryConcepts;
   }
 
+  getAllFormElementConcepts() {
+    let concepts = [];
+    this.formElementGroups.forEach((feg) => {
+      concepts = _.concat(concepts, feg.getAllFormElementConcepts());
+    });
+    return concepts;
+  }
+
   static formTypes = {
     IndividualProfile: "IndividualProfile",
     Encounter: "Encounter",

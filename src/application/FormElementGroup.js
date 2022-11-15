@@ -295,6 +295,10 @@ class FormElementGroup extends BaseEntity {
     );
   };
 
+  getAllFormElementConcepts() {
+    return this.formElements.map((x) => x.concept);
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,
