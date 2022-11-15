@@ -6,6 +6,7 @@ import _ from "lodash";
 import ValidationResult from "./ValidationResult";
 import KeyValue from "./KeyValue";
 import Format from "./Format";
+import Filter from "./Filter";
 import moment from "moment";
 import Documentation from "../Documentation";
 import BaseEntity from "../BaseEntity";
@@ -165,7 +166,7 @@ class FormElement extends BaseEntity {
   }
 
   isMultiSelect() {
-    return this.type === "MultiSelect";
+    return this.type === Filter.types.MultiSelect;
   }
 
   excludedAnswers() {
@@ -193,7 +194,7 @@ class FormElement extends BaseEntity {
   }
 
   isSingleSelect() {
-    return this.type === "SingleSelect" || _.isNil(this.type);
+    return this.type === Filter.types.SingleSelect || _.isNil(this.type);
   }
 
   get truthDisplayValue() {
