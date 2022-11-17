@@ -54,7 +54,7 @@ class EntityApprovalStatus extends BaseEntity {
   }
 
   set approvalStatus(x) {
-    this.that.approvalStatus = this.toObject(x);
+    this.that.approvalStatus = this.fromObject(x);
   }
 
   get approvalStatusComment() {

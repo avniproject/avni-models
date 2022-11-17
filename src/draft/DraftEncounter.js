@@ -39,7 +39,7 @@ class DraftEncounter extends BaseEntity {
   }
 
   set encounterType(x) {
-      this.that.encounterType = this.toObject(x);
+      this.that.encounterType = this.fromObject(x);
   }
 
   get encounterDateTime() {
@@ -55,7 +55,7 @@ class DraftEncounter extends BaseEntity {
   }
 
   set individual(x) {
-      this.that.individual = this.toObject(x);
+      this.that.individual = this.fromObject(x);
   }
 
   get observations() {
@@ -71,7 +71,7 @@ class DraftEncounter extends BaseEntity {
   }
 
   set encounterLocation(x) {
-      this.that.encounterLocation = this.toObject(x);
+      this.that.encounterLocation = this.fromObject(x);
   }
 
   get name() {
@@ -119,7 +119,7 @@ class DraftEncounter extends BaseEntity {
   }
 
   set cancelLocation(x) {
-      this.that.cancelLocation = this.toObject(x);
+      this.that.cancelLocation = this.fromObject(x);
   }
 
   get latestEntityApprovalStatus() {
@@ -127,7 +127,7 @@ class DraftEncounter extends BaseEntity {
   }
 
   set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = this.toObject(x);
+      this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   static create(encounter) {

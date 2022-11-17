@@ -30,7 +30,7 @@ export default class IdentifierAssignment extends BaseEntity {
   }
 
   set identifierSource(x) {
-      this.that.identifierSource = this.toObject(x);
+      this.that.identifierSource = this.fromObject(x);
   }
 
   get identifier() {
@@ -54,7 +54,7 @@ export default class IdentifierAssignment extends BaseEntity {
   }
 
   set individual(x) {
-    this.that.individual = this.toObject(x);
+    this.that.individual = this.fromObject(x);
   }
 
   get programEnrolment() {
@@ -62,7 +62,7 @@ export default class IdentifierAssignment extends BaseEntity {
   }
 
   set programEnrolment(x) {
-      this.that.programEnrolment = this.toObject(x);
+      this.that.programEnrolment = this.fromObject(x);
   }
 
 

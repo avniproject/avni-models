@@ -29,7 +29,7 @@ export class LocationMapping extends BaseEntity {
   }
 
   set parent(x) {
-    this.that.parent = this.toObject(x);
+    this.that.parent = this.fromObject(x);
   }
 
   get child() {
@@ -37,7 +37,7 @@ export class LocationMapping extends BaseEntity {
   }
 
   set child(x) {
-    this.that.child = this.toObject(x);
+    this.that.child = this.fromObject(x);
   }
 
   static create({uuid, parent, child, voided}) {
