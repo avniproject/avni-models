@@ -19,6 +19,7 @@ export default class Concept extends BaseEntity {
     OtherConceptUUID: "05ea583c-51d2-412d-ad00-06c432ffe538",
     NoneConceptUUID: "ebda5e05-a995-43ca-ad1a-30af3b937539",
   };
+
   static schema = {
     name: SchemaNames.Concept,
     primaryKey: "uuid",
@@ -113,6 +114,20 @@ export default class Concept extends BaseEntity {
     this.that.keyValues = this.fromEntityList(x);
   }
 
+  static keys = {
+    isWithinCatchment: 'isWithinCatchment',
+    lowestAddressLevelTypeUUIDs: 'lowestAddressLevelTypeUUIDs',
+    highestAddressLevelTypeUUID: 'highestAddressLevelTypeUUID',
+    subjectTypeUUID: 'subjectTypeUUID',
+    encounterTypeUUID: 'encounterTypeUUID',
+    encounterScope: 'encounterScope',
+    encounterIdentifier: 'encounterIdentifier'
+  };
+
+  static encounterScopes = {
+    withinSubject: "Within Subject"
+  };
+
   static dataType = {
     Date: "Date",
     DateTime: "DateTime",
@@ -139,22 +154,6 @@ export default class Concept extends BaseEntity {
       return [this.Image, this.Video, this.Audio, this.File];
     },
   };
-
-  static keys = {
-    isWithinCatchment: 'isWithinCatchment',
-    lowestAddressLevelTypeUUIDs: 'lowestAddressLevelTypeUUIDs',
-    highestAddressLevelTypeUUID: 'highestAddressLevelTypeUUID',
-    subjectTypeUUID: 'subjectTypeUUID',
-    encounterTypeUUID: 'encounterTypeUUID',
-    encounterScope: 'encounterScope',
-    encounterIdentifier: 'encounterIdentifier'
-  };
-
-  static encounterScopes = {
-    withinSubject: "Within Subject"
-  };
-
-  // static primitiveDataTypes = [Concept.dataType.Boolean, Concept.dataType.Coded, Concept.dataType.Numeric, Concept.dataType.Date, Concept.dataType.Text];
 
   static fromResource(conceptResource, entityService) {
     const concept = new Concept();

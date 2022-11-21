@@ -39,12 +39,15 @@ class PersistedObject {
   }
 
   toJSON() {
-    const json = {};
+    let plainJSObject;
     if (!_.isNil(this.that) && !_.isNil(this.that.objectSchema)) {
+      plainJSObject = {};
       const realmObjectSchema = new RealmObjectSchema(this.that.objectSchema());
-      realmObjectSchema.getAllProperties().forEach(p => json[p] = this.that[p]);
+      realmObjectSchema.getAllProperties().forEach(p => plainJSObject[p] = this.that[p]);
+    } else if (!_.isNil(this.that)) {
+      plainJSObject = this.that;
     }
-    return json;
+    return plainJSObject;
   }
 }
 
