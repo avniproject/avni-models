@@ -2,12 +2,18 @@ import _ from "lodash";
 import BaseEntity from "../BaseEntity";
 
 class ValidationResult {
-  constructor(success, formIdentifier, messageKey, extra, questionGroupIndex) {
+  static ValidationTypes = {
+    Form: "Form",
+    Rule: "Rule"
+  }
+
+  constructor(success, formIdentifier, messageKey, extra, questionGroupIndex, validationType = ValidationResult.ValidationTypes.Form) {
     this.success = success;
     this.formIdentifier = formIdentifier;
     this.messageKey = messageKey;
     this.extra = extra;
     this.questionGroupIndex = questionGroupIndex;
+    this.validationType = validationType;
   }
 
   addQuestionGroupIndex(index) {
@@ -37,7 +43,8 @@ class ValidationResult {
       validationResult.formIdentifier,
       validationResult.messageKey,
       validationResult.extra,
-      validationResult.questionGroupIndex
+      validationResult.questionGroupIndex,
+      validationResult.validationType
     );
   }
 
