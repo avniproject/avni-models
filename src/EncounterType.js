@@ -62,6 +62,14 @@ class EncounterType extends ReferenceEntity {
       this.that.active = x;
   }
 
+  get immutable() {
+      return this.that.immutable;
+  }
+
+  set immutable(x) {
+      this.that.immutable = x;
+  }
+
   static create(name) {
     let encounterType = new EncounterType();
     encounterType.uuid = General.randomUUID();
