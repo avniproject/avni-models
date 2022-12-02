@@ -52,14 +52,6 @@ export default class ConceptAnswer extends BaseEntity {
     this.that.concept = this.fromObject(x);
   }
 
-  get name() {
-    return this.that.name;
-  }
-
-  set name(x) {
-    this.that.name = x;
-  }
-
   static fromResource(resource, entityService) {
     const conceptAnswer = new ConceptAnswer();
     conceptAnswer.concept = entityService.findByKey(
