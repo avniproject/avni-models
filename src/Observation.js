@@ -192,7 +192,7 @@ class Observation extends PersistedObject {
                 General.logError("Observation.getReadableValue", message);
                 throw Error(message);
               }
-              return answerConcept.name;
+              return answerConcept.concept.name;
             });
         }
       } else if(this.concept.isQuestionGroup()) {
