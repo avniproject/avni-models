@@ -183,7 +183,7 @@ class Observation extends PersistedObject {
           case "string":
             return this.concept.answers.find(
               (conceptAnswer) => conceptAnswer.concept.uuid === value
-            ).name;
+            ).concept.name;
           case "object":
             return value.map((answerUUID) => {
               let answerConcept = this.concept.answers.find((ca) => ca.concept.uuid === answerUUID);
