@@ -18,7 +18,8 @@ class Program extends ReferenceEntity {
       manualEligibilityCheckRequired: 'bool',
       manualEnrolmentEligibilityCheckRule: {type: 'string', optional: true},
       voided: {type: 'bool', default: false},
-      active: {type: 'bool', default: true}
+      active: {type: 'bool', default: true},
+      allowMultipleEnrolments: {type: 'bool', default: false}
     }
   };
 
@@ -104,6 +105,14 @@ class Program extends ReferenceEntity {
 
   set active(x) {
       this.that.active = x;
+  }
+
+  get allowMultipleEnrolments() {
+      return this.that.allowMultipleEnrolments;
+  }
+
+  set allowMultipleEnrolments(x) {
+      this.that.allowMultipleEnrolments = x;
   }
 
   static fromResource(operationalProgram): Program {
