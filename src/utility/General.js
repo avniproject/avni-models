@@ -255,7 +255,7 @@ class General {
   static log(source, message, level) {
     if (level >= General.getCurrentLogLevel()) {
       let levelName = `${_.findKey(General.LogLevel, (value) => value === level)}`;
-      let logMessage = `[${source}][${levelName}] ${General.getDisplayableMessage(message)}`;
+      let logMessage = `[${moment().format("h:mm:ss:SSS")}] [${source}][${levelName}] ${General.getDisplayableMessage(message)}`;
       if (level >= General.getCurrentLogLevel()) console[levelName.toLowerCase()](logMessage);
     }
   }
