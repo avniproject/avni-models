@@ -182,7 +182,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 167,
+    schemaVersion: 168,
     migration: function (oldDB, newDB) {
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
