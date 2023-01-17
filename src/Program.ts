@@ -132,6 +132,7 @@ class Program extends ReferenceEntity {
     program.manualEligibilityCheckRequired = operationalProgram.manualEligibilityCheckRequired;
     program.manualEnrolmentEligibilityCheckRule = operationalProgram.manualEnrolmentEligibilityCheckRule;
     program.enrolmentEligibilityCheckRule = operationalProgram.enrolmentEligibilityCheckRule;
+    program.allowMultipleEnrolments = operationalProgram.allowMultipleEnrolments;
     program.active = operationalProgram.active;
     program.voided = operationalProgram.programVoided;
     return program;

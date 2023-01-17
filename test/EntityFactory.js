@@ -123,10 +123,11 @@ class EntityFactory {
         return programEnrolment;
     }
 
-    static createProgram = function ({uuid = General.randomUUID(), name = null}) {
+    static createProgram = function ({uuid = General.randomUUID(), name = null, allowMultipleEnrolments = false}) {
         const program = new Program();
         program.uuid = uuid;
         program.name = name;
+        program.allowMultipleEnrolments = allowMultipleEnrolments;
         return program;
     };
 

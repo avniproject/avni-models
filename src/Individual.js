@@ -702,17 +702,17 @@ class Individual extends BaseEntity {
     return this.gender === gender;
   }
 
-  eligiblePrograms(allPrograms) {
-    const eligiblePrograms = _.slice(allPrograms);
+  staticallyEligiblePrograms(allPrograms) {
+    const programs = _.slice(allPrograms);
 
-    ah.remove(eligiblePrograms, (program) => {
+    ah.remove(programs, (program) => {
       const find = _.find(this.nonVoidedEnrolments(), (enrolment) => {
-        return enrolment.program.uuid === program.uuid && enrolment.isActive;
+        return enrolment.program.uuid === program.uuid && enrolment.isActive && !enrolment.program.allowMultipleEnrolments;
       });
       return find !== undefined;
     });
 
-    return eligiblePrograms;
+    return programs;
   }
 
   addEncounter(encounter) {
