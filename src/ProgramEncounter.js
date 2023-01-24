@@ -23,9 +23,9 @@ class ProgramEncounter extends AbstractEncounter {
     name: SchemaNames.ProgramEncounter,
     primaryKey: "uuid",
     properties: {
-      uuid: "string",
+      uuid: {type: "string"},
       name: {type: "string", optional: true},
-      encounterType: "EncounterType",
+      encounterType: {type: "EncounterType"},
       earliestVisitDateTime: {type: "date", optional: true},
       maxVisitDateTime: {type: "date", optional: true},
       encounterDateTime: {type: "date", optional: true},

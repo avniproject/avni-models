@@ -56,163 +56,163 @@ class Individual extends BaseEntity {
   }
 
   get subjectType() {
-      return this.toEntity("subjectType", SubjectType);
+    return this.toEntity("subjectType", SubjectType);
   }
 
   set subjectType(x) {
-      this.that.subjectType = this.fromObject(x);
+    this.that.subjectType = this.fromObject(x);
   }
 
   get name() {
-      return this.that.name;
+    return this.that.name;
   }
 
   set name(x) {
-      this.that.name = x;
+    this.that.name = x;
   }
 
   get firstName() {
-      return this.that.firstName;
+    return this.that.firstName;
   }
 
   set firstName(x) {
-      this.that.firstName = x;
+    this.that.firstName = x;
   }
 
   get middleName() {
-      return this.that.middleName;
+    return this.that.middleName;
   }
 
   set middleName(x) {
-      this.that.middleName = x;
+    this.that.middleName = x;
   }
 
   get lastName() {
-      return this.that.lastName;
+    return this.that.lastName;
   }
 
   set lastName(x) {
-      this.that.lastName = x;
+    this.that.lastName = x;
   }
 
   get profilePicture() {
-      return this.that.profilePicture;
+    return this.that.profilePicture;
   }
 
   set profilePicture(x) {
-      this.that.profilePicture = x;
+    this.that.profilePicture = x;
   }
 
   get dateOfBirth() {
-      return this.that.dateOfBirth;
+    return this.that.dateOfBirth;
   }
 
   set dateOfBirth(x) {
-      this.that.dateOfBirth = x;
+    this.that.dateOfBirth = x;
   }
 
   get dateOfBirthVerified() {
-      return this.that.dateOfBirthVerified;
+    return this.that.dateOfBirthVerified;
   }
 
   set dateOfBirthVerified(x) {
-      this.that.dateOfBirthVerified = x;
+    this.that.dateOfBirthVerified = x;
   }
 
   get gender() {
-      return this.toEntity("gender", Gender);
+    return this.toEntity("gender", Gender);
   }
 
   set gender(x) {
-      this.that.gender = this.fromObject(x);
+    this.that.gender = this.fromObject(x);
   }
 
   get registrationDate() {
-      return this.that.registrationDate;
+    return this.that.registrationDate;
   }
 
   set registrationDate(x) {
-      this.that.registrationDate = x;
+    this.that.registrationDate = x;
   }
 
   get lowestAddressLevel() {
-      return this.toEntity("lowestAddressLevel", AddressLevel);
+    return this.toEntity("lowestAddressLevel", AddressLevel);
   }
 
   set lowestAddressLevel(x) {
-      this.that.lowestAddressLevel = this.fromObject(x);
+    this.that.lowestAddressLevel = this.fromObject(x);
   }
 
   get enrolments() {
-      return this.toEntityList("enrolments", ProgramEnrolment);
+    return this.toEntityList("enrolments", ProgramEnrolment);
   }
 
   set enrolments(x) {
-      this.that.enrolments = this.fromEntityList(x);
+    this.that.enrolments = this.fromEntityList(x);
   }
 
   get encounters() {
-      return this.toEntityList("encounters", Encounter);
+    return this.toEntityList("encounters", Encounter);
   }
 
   set encounters(x) {
-      this.that.encounters = this.fromEntityList(x);
+    this.that.encounters = this.fromEntityList(x);
   }
 
   get observations() {
-      return this.toEntityList("observations", Observation);
+    return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-      this.that.observations = this.fromEntityList(x);
+    this.that.observations = this.fromEntityList(x);
   }
 
   get relationships() {
-      return this.toEntityList("relationships", IndividualRelationship);
+    return this.toEntityList("relationships", IndividualRelationship);
   }
 
   set relationships(x) {
-      this.that.relationships = this.fromEntityList(x);
+    this.that.relationships = this.fromEntityList(x);
   }
 
   get groupSubjects() {
-      return this.toEntityList("groupSubjects", GroupSubject);
+    return this.toEntityList("groupSubjects", GroupSubject);
   }
 
   set groupSubjects(x) {
-      this.that.groupSubjects = this.fromEntityList(x);
+    this.that.groupSubjects = this.fromEntityList(x);
   }
 
   get registrationLocation() {
-      return this.toEntity("registrationLocation", Point);
+    return this.toEntity("registrationLocation", Point);
   }
 
   set registrationLocation(x) {
-      this.that.registrationLocation = this.fromObject(x);
+    this.that.registrationLocation = this.fromObject(x);
   }
 
   get latestEntityApprovalStatus() {
-      return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+    return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
   }
 
   set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = this.fromObject(x);
+    this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   get comments() {
-      return this.toEntityList("comments", Comment);
+    return this.toEntityList("comments", Comment);
   }
 
   set comments(x) {
-      this.that.comments = this.fromEntityList(x);
+    this.that.comments = this.fromEntityList(x);
   }
 
   get groups() {
-      return this.toEntityList("groups", GroupSubject);
+    return this.toEntityList("groups", GroupSubject);
   }
 
   set groups(x) {
-      this.that.groups = this.fromEntityList(x);
+    this.that.groups = this.fromEntityList(x);
   }
 
   static validationKeys = {
@@ -1093,8 +1093,19 @@ class Individual extends BaseEntity {
   getMobileNumber() {
     const mobileNumberObs = _.find(this.observations, obs => obs.concept.isMobileNo());
     if (!_.isNil(mobileNumberObs)) {
-        return mobileNumberObs.getReadableValue();
+      return mobileNumberObs.getReadableValue();
     }
+  }
+
+  hasProgramEncounterOfType(encounterTypes) {
+    return _.some(this.enrolments, (enrolment) =>
+              _.some(enrolment.encounters, (encounter) =>
+                  _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid)));
+  }
+
+  hasEncounterOfType(encounterTypes) {
+    return _.some(this.encounters, (encounter) =>
+              _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid));
   }
 
   toJSON() {
