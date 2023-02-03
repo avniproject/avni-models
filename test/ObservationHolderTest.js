@@ -2,6 +2,8 @@ import { assert } from "chai";
 import EntityFactory from "./EntityFactory";
 import ObservationsHolder from "../src/ObservationsHolder";
 import Concept from "../src/Concept";
+import TestObservationFactory from "./ref/TestObservationFactory";
+import TestConceptFactory from "./ref/TestConceptFactory";
 
 describe('ObservationHolderTest', () => {
     describe("Remove Observations not present in the form elements", () => {
@@ -129,4 +131,17 @@ describe('ObservationHolderTest', () => {
 
         });
     });
+
+  it('has any answer', function () {
+    const q1 = TestConceptFactory.create({uuid: "q1"});
+    const q2 = TestConceptFactory.create({uuid: "q2"});
+    const a = TestObservationFactory.create({concept: q1, valueJSON: "a1, a2"});
+    const b = TestObservationFactory.create({concept: q2, valueJSON: "a2"});
+    const obsHolder = {
+      observations: [a, b]
+    };
+    assert.equal(true, ObservationsHolder.hasAnyAnswer(obsHolder, "q1", ["a1", "a2"]));
+    assert.equal(true, ObservationsHolder.hasAnyAnswer(obsHolder, "q1", ["a1"]));
+    assert.equal(false, ObservationsHolder.hasAnyAnswer(obsHolder, "q2", ["a1"]));
+  });
 });

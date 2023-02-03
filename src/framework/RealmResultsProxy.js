@@ -36,6 +36,13 @@ class RealmResultsProxy {
     return this.array.filter(predicate, thisArg);
   }
 
+  /*
+  Uses underlying collection. The objects would not have access to business methods on avni model
+   */
+  filterInternal(predicate, thisArg) {
+    return this.realmCollection.filter(predicate, thisArg);
+  }
+
   filtered(query, ...args) {
     return RealmResultsProxy.create(this.realmCollection.filtered(query, ...args), this.entityClass);
   }
@@ -61,6 +68,15 @@ class RealmResultsProxy {
   map(callback, thisArg) {
     return this.realmCollection.map((object, index) => {
       return callback(this.createEntity(object), index, this);
+    }, thisArg);
+  }
+
+  /*
+  Uses underlying collection. The objects would not have access to business methods on avni model
+   */
+  mapInternal(callback, thisArg) {
+    return this.realmCollection.map((object, index) => {
+      return callback(object, index, this);
     }, thisArg);
   }
 

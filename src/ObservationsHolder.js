@@ -50,7 +50,10 @@ class ObservationsHolder {
 
     if (formElement.getType() === Concept.dataType.Id) {
       if (!_.isEmpty(value)) {
-        this.observations.push(Observation.create(formElement.concept, Identifier.fromObs({...currentValue, value})));
+        this.observations.push(Observation.create(formElement.concept, Identifier.fromObs({
+          ...currentValue,
+          value
+        })));
       }
     }
 
@@ -90,7 +93,10 @@ class ObservationsHolder {
     this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
       if (concept.isIdConcept()) {
-        this.observations.push(Observation.create(concept, Identifier.fromObs({...currentValue, value})));
+        this.observations.push(Observation.create(concept, Identifier.fromObs({
+          ...currentValue,
+          value
+        })));
       } else {
         this.observations.push(
           Observation.create(concept, new PrimitiveValue(value, concept.datatype))
@@ -111,8 +117,8 @@ class ObservationsHolder {
     const getConceptUUID = (conceptAnswer) => conceptAnswer ? conceptAnswer.concept.uuid : undefined;
     if (!_.isEmpty(value)) {
       const answerUUID = isSingleSelect
-          ? getConceptUUID(concept.getAnswerWithConceptName(value))
-          : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
+        ? getConceptUUID(concept.getAnswerWithConceptName(value))
+        : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
       const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID) : new MultipleCodedValues(answerUUID));
       this.observations.push(observation);
     }
@@ -133,20 +139,20 @@ class ObservationsHolder {
             formElementsIncludingRepeatableElements.push(newFormElement);
           })
         })
-      } else if(_.isNil(fe.groupUuid)) {
+      } else if (_.isNil(fe.groupUuid)) {
         formElementsIncludingRepeatableElements.push(fe);
       }
     });
     const inApplicableFormElements = _.differenceWith(
-        formElementsIncludingRepeatableElements,
-        applicableFormElements,
-        (a, b) => a.uuid === b.uuid && a.questionGroupIndex === b.questionGroupIndex
+      formElementsIncludingRepeatableElements,
+      applicableFormElements,
+      (a, b) => a.uuid === b.uuid && a.questionGroupIndex === b.questionGroupIndex
     );
     applicableFormElements.forEach((fe) => {
       if (fe.concept.isCodedConcept() && (!_.isEmpty(fe.answersToShow) || !_.isEmpty(fe.answersToExclude))) {
         fe.isQuestionGroup() ?
-            this.removeNonApplicableAnswersFromQuestionGroup(fe, fe.isSingleSelect(), allFormElements) :
-            this.removeNonApplicableAnswers(fe, fe.isSingleSelect(), this.getObservation(fe.concept));
+          this.removeNonApplicableAnswersFromQuestionGroup(fe, fe.isSingleSelect(), allFormElements) :
+          this.removeNonApplicableAnswers(fe, fe.isSingleSelect(), this.getObservation(fe.concept));
       }
     });
     return _.flatten(inApplicableFormElements.map(fe => this._removeObs(fe))).filter(obs => !_.isEmpty(obs));
@@ -196,7 +202,7 @@ class ObservationsHolder {
   updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
     const updateQuestionGroupObs = (parentFormElement, questionGroupIndex, fe, value) => {
       parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
-          this.updateGroupQuestion(parentFormElement, fe, value);
+        this.updateGroupQuestion(parentFormElement, fe, value);
     };
 
     applicableFormElements.forEach((fe) => {
@@ -233,8 +239,8 @@ class ObservationsHolder {
           })
         } else {
           concept.isCodedConcept()
-              ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
-              : this.addOrUpdatePrimitiveObs(concept, value);
+            ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
+            : this.addOrUpdatePrimitiveObs(concept, value);
         }
       }
     });
@@ -314,7 +320,7 @@ class ObservationsHolder {
       const isSingleSelect = childFormElement.isSingleSelect();
       if (_.isEmpty(observation)) {
         observation = Observation.create(childConcept,
-            isSingleSelect ? new SingleCodedValue(value) : new MultipleCodedValues().push(value));
+          isSingleSelect ? new SingleCodedValue(value) : new MultipleCodedValues().push(value));
         childObservations.addObservation(observation);
       } else {
         isSingleSelect ? observation.toggleSingleSelectAnswer(value) : observation.toggleMultiSelectAnswer(value);
@@ -384,8 +390,7 @@ class ObservationsHolder {
 
     if (observation) {
       observation.setValue(valueWrapper);
-    }
-    else {
+    } else {
       this.observations.push(Observation.create(concept, valueWrapper));
     }
   }
@@ -438,6 +443,12 @@ class ObservationsHolder {
       display += `${I18n.t(obs.concept.name)}: ${obs.getReadableValue()}\n`;
     });
     return display;
+  }
+
+  // it uses only underlying realm model and not avni model
+  static hasAnyAnswer(obsHolder, conceptUuid, answerUuids) {
+    return _.some(obsHolder.observations, (obs) => obs.concept.uuid === conceptUuid && obs.valueJSON
+                                                          && _.some(answerUuids, (ansUuid) => obs.valueJSON.includes(ansUuid)));
   }
 }
 
