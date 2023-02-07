@@ -130,8 +130,8 @@ class Form extends BaseEntity {
     const formMappings = entityService.findAllByCriteria(`form.uuid = '${formUUID}'`, FormMapping.schema.name);
     _.forEach(formMappings, ({subjectType}) => {
       const outOfSyncDrafts = entityService.findAll("DraftSubject")
-          .filtered(`subjectType = $0`, subjectType);
-      entityService.clearDataIn(outOfSyncDrafts);
+        .filtered(`subjectType.uuid = $0`, subjectType.uuid);
+      entityService.deleteEntities(outOfSyncDrafts);
     })
   }
 
