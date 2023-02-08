@@ -182,7 +182,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 168,
+    schemaVersion: 169,
     migration: function (oldDB, newDB) {
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
@@ -674,6 +674,11 @@ function createRealmConfig() {
         _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
           sub.allowProfilePicture = false;
         });
+      }
+
+      if (oldDB.schemaVersion < 169) {
+        const oldDraftSubjects = newDB.objects(DraftSubject.schema.name);
+        newDB.delete(oldDraftSubjects);
       }
     },
   };
