@@ -315,7 +315,7 @@ class ObservationsHolder {
         childObservations.addObservation(observation);
       }
     }
-    if (childConcept.isCodedConcept() || childConcept.isMediaConcept()) {
+    if (childConcept.isCodedConcept() || childConcept.isMediaConcept() || childConcept.isSubjectConcept()) {
       let observation = childObservations.getObservation(childConcept);
       const isSingleSelect = childFormElement.isSingleSelect();
       if (_.isEmpty(observation)) {
