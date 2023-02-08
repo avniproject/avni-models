@@ -374,8 +374,10 @@ class ObservationsHolder {
   }
 
   static convertObsForSave(observations) {
-    observations.forEach((observation) => {
-      observation.valueJSON = JSON.stringify(observation.valueJSON);
+    observations.forEach(observation => {
+      if(observation.valueJSON && typeof (observation.valueJSON) !== "string") {
+        observation.valueJSON = JSON.stringify(observation.valueJSON);
+      }
     });
   }
 
