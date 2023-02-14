@@ -96,7 +96,7 @@ describe('ObservationHolderTest', () => {
 
         it('updates primitive obs', () => {
             const observationsHolder = new ObservationsHolder(observations);
-            const date = '01-Jan-2019';
+            const date = 'Jan 1, 2019';
             observationsHolder.updateObs(allFormElements[0], 200);
             observationsHolder.updateObs(allFormElements[1], "Not empty");
             observationsHolder.updateObs(allFormElements[2], date);

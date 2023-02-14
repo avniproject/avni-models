@@ -33,13 +33,13 @@ describe('asDisplayDate', () => {
         it('returns time info when value date have time data', () => {
             const date = new Date(2018, 1, 1, 1, 1, 0, 0);
             const primitiveValue = new PrimitiveValue(date, Concept.dataType.DateTime);
-            assert.equal("01-Feb-2018 01:01", primitiveValue.asDisplayDate());
+            assert.equal("Feb 1, 2018 1:01 AM", primitiveValue.asDisplayDate());
         });
 
         it('does not return time info when value date do not have time data', () => {
             const date = new Date(2018, 1, 1);
             const primitiveValue = new PrimitiveValue(date, Concept.dataType.DateTime);
-            assert.equal("01-Feb-2018", primitiveValue.asDisplayDate());
+            assert.equal("Feb 1, 2018", primitiveValue.asDisplayDate());
         });
     });
 
@@ -47,13 +47,13 @@ describe('asDisplayDate', () => {
         it('does not return time info when value date have time data', () => {
             const date = '2018-02-01T12:34:56.000Z';
             const primitiveValue = new PrimitiveValue(date, Concept.dataType.Date);
-            assert.equal("01-Feb-2018", primitiveValue.asDisplayDate());
+            assert.equal("Feb 1, 2018", primitiveValue.asDisplayDate());
         });
 
         it('does not return time info when value date do not have time data', () => {
             const date = '2018-02-01T00:00:00.000Z';
             const primitiveValue = new PrimitiveValue(date, Concept.dataType.Date);
-            assert.equal("01-Feb-2018", primitiveValue.asDisplayDate());
+            assert.equal("Feb 1, 2018", primitiveValue.asDisplayDate());
         });
     });
 });
