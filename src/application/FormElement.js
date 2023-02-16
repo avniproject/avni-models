@@ -13,6 +13,9 @@ import BaseEntity from "../BaseEntity";
 import SchemaNames from "../SchemaNames";
 
 class FormElement extends BaseEntity {
+  answersToExclude; //transient field
+  answersToShow; //transient field
+
   static schema = {
     name: SchemaNames.FormElement,
     primaryKey: "uuid",
