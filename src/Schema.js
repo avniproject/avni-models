@@ -87,6 +87,11 @@ import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
+import SubjectEntityApprovalStatus from './SubjectEntityApprovalStatus';
+import ProgramEncounterEntityApprovalStatus from './ProgramEncounterEntityApprovalStatus';
+import EncounterEntityApprovalStatus from './EncounterEntityApprovalStatus';
+import ProgramEnrolmentEntityApprovalStatus from './ProgramEnrolmentEntityApprovalStatus';
+import ChecklistItemEntityApprovalStatus from './ChecklistItemEntityApprovalStatus';
 
 const entities = [
   LocaleMapping,
@@ -159,6 +164,11 @@ const entities = [
   StandardReportCardType,
   ApprovalStatus,
   EntityApprovalStatus,
+  SubjectEntityApprovalStatus,
+  EncounterEntityApprovalStatus,
+  ProgramEncounterEntityApprovalStatus,
+  ProgramEnrolmentEntityApprovalStatus,
+  ChecklistItemEntityApprovalStatus,
   GroupDashboard,
   DashboardSection,
   News,
@@ -182,7 +192,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 169,
+    schemaVersion: 170,
     migration: function (oldDB, newDB) {
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
@@ -680,6 +690,51 @@ function createRealmConfig() {
         const oldDraftSubjects = newDB.objects(DraftSubject.schema.name);
         newDB.delete(oldDraftSubjects);
       }
+
+      if (oldDB.schemaVersion < 170) {
+        const oldObjects = oldDB.objects("EntityApprovalStatus");
+        const newObjects = newDB.objects("EntityApprovalStatus");
+
+        for (let i = 0; i < oldObjects.length; i++) {
+          let entityApprovalStatus = oldObjects[i]
+          if(oldObjects[i].entityType === 'Subject') {
+            const subject = oldDB
+              .objects(Individual.schema.name)
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+            if(subject) {
+              newObjects[i].entityTypeUUID = subject.subjectType.uuid;
+            }
+          } else if(oldObjects[i].entityType === 'ProgramEnrolment') {
+            const programEnrolment = oldDB
+              .objects(ProgramEnrolment.schema.name)
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+            if(programEnrolment) {
+              newObjects[i].entityTypeUUID = programEnrolment.program.uuid;
+            }
+          } else if(oldObjects[i].entityType === 'ChecklistItem') {
+            const checklistItem = oldDB
+              .objects(ChecklistItem.schema.name)
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+            if(checklistItem) {
+              newObjects[i].entityTypeUUID = checklistItem.checklist.programEnrolment.program.uuid;
+            }
+          } else if(oldObjects[i].entityType === 'Encounter') {
+            const encounter = oldDB
+              .objects(Encounter.schema.name)
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+            if(encounter) {
+              newObjects[i].entityTypeUUID = encounter.encounterType.uuid;
+            }
+          } else if(oldObjects[i].entityType === 'ProgramEncounter') {
+            const programEncounter = oldDB
+              .objects(ProgramEncounter.schema.name)
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+            if(programEncounter) {
+              newObjects[i].entityTypeUUID = programEncounter.encounterType.uuid;
+            }
+          }
+        }
+      }
     },
   };
 }
@@ -696,8 +751,10 @@ class EntityMappingConfig {
     this.realmConfig.schema = [];
     this.schemaEntityMap = new Map();
     entities.forEach((entity) => {
-      this.realmConfig.schema.push(entity.schema);
-      this.schemaEntityMap.set(entity.schema.name, entity);
+      if(_.isNil(this.schemaEntityMap.get(entity.schema.name))) {
+        this.realmConfig.schema.push(entity.schema);
+        this.schemaEntityMap.set(entity.schema.name, entity);
+      }
     });
   }
 

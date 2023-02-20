@@ -69,6 +69,11 @@ import TaskUnAssignment from "./task/TaskUnAssignment";
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
+import SubjectEntityApprovalStatus from './SubjectEntityApprovalStatus';
+import EncounterEntityApprovalStatus from './EncounterEntityApprovalStatus';
+import ProgramEncounterEntityApprovalStatus from './ProgramEncounterEntityApprovalStatus';
+import ProgramEnrolmentEntityApprovalStatus from './ProgramEnrolmentEntityApprovalStatus';
+import ChecklistItemEntityApprovalStatus from './ChecklistItemEntityApprovalStatus';
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   entityName: clazz.schema.name,
@@ -95,10 +100,12 @@ const txData = (
     privilegeEntity,
     privilegeName,
     queryParam,
-    hasMoreThanOneAssociation
+    hasMoreThanOneAssociation,
+    apiQueryParams
   } = {}
 ) => ({
-  entityName: clazz.schema.name,
+  schemaName: clazz.schema.name,
+  entityName: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? clazz.name : clazz.schema.name,
   entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
   resourceUrl: resUrl,
@@ -111,7 +118,8 @@ const txData = (
   privilegeEntity,
   privilegeName,
   queryParam,
-  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation
+  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
+  apiQueryParams
 });
 
 const checklistDetail = refData(ChecklistDetail, { syncWeight: 1 });
@@ -284,6 +292,36 @@ const standardReportCardType = refData(StandardReportCardType, { res: "standardR
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
 const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
+const subjectEntityApprovalStatus = txData(SubjectEntityApprovalStatus,
+  { res: "subjectEntityApprovalStatus",
+    resUrl: "entityApprovalStatus",
+    apiQueryParams: {"entityType": "Subject"},
+    privilegeParam: "entityTypeUuid",
+    syncWeight: 2 });
+const encounterEntityApprovalStatus = txData(EncounterEntityApprovalStatus,
+  { res: "encounterEntityApprovalStatus",
+    resUrl: "entityApprovalStatus",
+    apiQueryParams: {"entityType": "Encounter"},
+    privilegeParam: "entityTypeUuid",
+    syncWeight: 2 });
+const programEncounterEntityApprovalStatus = txData(ProgramEncounterEntityApprovalStatus,
+  { res: "programEncounterEntityApprovalStatus",
+    resUrl: "entityApprovalStatus",
+    apiQueryParams: {"entityType": "ProgramEncounter"},
+    privilegeParam: "entityTypeUuid",
+    syncWeight: 2 });
+const programEnrolmentEntityApprovalStatus = txData(ProgramEnrolmentEntityApprovalStatus,
+  { res: "programEnrolmentEntityApprovalStatus",
+    resUrl: "entityApprovalStatus",
+    apiQueryParams: {"entityType": "ProgramEnrolment"},
+    privilegeParam: "entityTypeUuid",
+    syncWeight: 2 });
+const checklistItemEntityApprovalStatus = txData(ChecklistItemEntityApprovalStatus,
+  { res: "checklistItemEntityApprovalStatus",
+    resUrl: "entityApprovalStatus",
+    apiQueryParams: {"entityType": "ChecklistItem"},
+    privilegeParam: "entityTypeUuid",
+    syncWeight: 2 });
 const news = txData(News, { syncWeight: 0 });
 const documentation = refData(Documentation, {res: 'documentations', syncWeight: 0});
 const documentationItem = refData(DocumentationItem, {res: 'documentationItems', parent: documentation, syncWeight: 0});
@@ -379,6 +417,11 @@ class EntityMetaData {
       comment,
       commentThread,
       entityApprovalStatus,
+      subjectEntityApprovalStatus,
+      encounterEntityApprovalStatus,
+      programEncounterEntityApprovalStatus,
+      programEnrolmentEntityApprovalStatus,
+      checklistItemEntityApprovalStatus,
       individualRelationship,
       checklistItem,
       checklist,
@@ -401,6 +444,7 @@ class EntityMetaData {
   static findByName(entityName) {
     return _.find(
       EntityMetaData.model(),
+      //TODO check if this works
       (entityMetadata) => entityMetadata.entityName === entityName
     );
   }

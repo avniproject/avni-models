@@ -13,8 +13,8 @@ class EntityApprovalStatus extends BaseEntity {
     properties: {
       uuid: "string",
       entityUUID: "string",
-      entityType: "string",
       approvalStatus: "ApprovalStatus",
+      entityTypeUUID: "string",
       approvalStatusComment: {type: "string", optional: true},
       statusDateTime: "date",
       autoApproved: {type: "bool", default: false},
@@ -39,6 +39,14 @@ class EntityApprovalStatus extends BaseEntity {
 
   set entityUUID(x) {
     this.that.entityUUID = x;
+  }
+
+  get entityTypeUUID() {
+    return this.that.entityTypeUUID;
+  }
+
+  set entityTypeUUID(x) {
+    this.that.entityTypeUUID = x;
   }
 
   get entityType() {
@@ -91,6 +99,7 @@ class EntityApprovalStatus extends BaseEntity {
     ]);
     resource["approvalStatusUuid"] = this.approvalStatus.uuid;
     resource["entityUuid"] = this.entityUUID;
+    resource["entityTypeUUID"] = this.entityTypeUUID;
     resource.statusDateTime = General.isoFormat(this.statusDateTime);
     return resource;
   }
@@ -106,13 +115,15 @@ class EntityApprovalStatus extends BaseEntity {
       ApprovalStatus.schema.name
     );
     entityApprovalStatus.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
+    entityApprovalStatus.entityTypeUUID = ResourceUtil.getUUIDFor(resource, "entityTypeUUID");
     return entityApprovalStatus;
   }
 
-  static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved) {
+  static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUUID) {
     const entityApprovalStatus = new EntityApprovalStatus();
     entityApprovalStatus.uuid = General.randomUUID();
     entityApprovalStatus.entityUUID = entityUUID;
+    entityApprovalStatus.entityTypeUUID = entityTypeUUID;
     entityApprovalStatus.entityType = entityType;
     entityApprovalStatus.approvalStatus = approvalStatus;
     entityApprovalStatus.approvalStatusComment = approvalStatusComment;
