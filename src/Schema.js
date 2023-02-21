@@ -702,35 +702,35 @@ function createRealmConfig() {
               .objects(Individual.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID);
             if(subject) {
-              newObjects[i].entityTypeUUID = subject.subjectType.uuid;
+              newObjects[i].entityTypeUuid = subject.subjectType.uuid;
             }
           } else if(oldObjects[i].entityType === 'ProgramEnrolment') {
             const programEnrolment = oldDB
               .objects(ProgramEnrolment.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID);
             if(programEnrolment) {
-              newObjects[i].entityTypeUUID = programEnrolment.program.uuid;
+              newObjects[i].entityTypeUuid = programEnrolment.program.uuid;
             }
           } else if(oldObjects[i].entityType === 'ChecklistItem') {
             const checklistItem = oldDB
               .objects(ChecklistItem.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID);
             if(checklistItem) {
-              newObjects[i].entityTypeUUID = checklistItem.checklist.programEnrolment.program.uuid;
+              newObjects[i].entityTypeUuid = checklistItem.checklist.programEnrolment.program.uuid;
             }
           } else if(oldObjects[i].entityType === 'Encounter') {
             const encounter = oldDB
               .objects(Encounter.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID);
             if(encounter) {
-              newObjects[i].entityTypeUUID = encounter.encounterType.uuid;
+              newObjects[i].entityTypeUuid = encounter.encounterType.uuid;
             }
           } else if(oldObjects[i].entityType === 'ProgramEncounter') {
             const programEncounter = oldDB
               .objects(ProgramEncounter.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID);
             if(programEncounter) {
-              newObjects[i].entityTypeUUID = programEncounter.encounterType.uuid;
+              newObjects[i].entityTypeUuid = programEncounter.encounterType.uuid;
             }
           }
         }

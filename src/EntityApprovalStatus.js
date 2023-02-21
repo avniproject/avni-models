@@ -14,7 +14,7 @@ class EntityApprovalStatus extends BaseEntity {
       uuid: "string",
       entityUUID: "string",
       approvalStatus: "ApprovalStatus",
-      entityTypeUUID: {type: "string", optional: true},
+      entityTypeUuid: {type: "string", optional: true},
       approvalStatusComment: {type: "string", optional: true},
       statusDateTime: "date",
       autoApproved: {type: "bool", default: false},
@@ -41,12 +41,12 @@ class EntityApprovalStatus extends BaseEntity {
     this.that.entityUUID = x;
   }
 
-  get entityTypeUUID() {
-    return this.that.entityTypeUUID;
+  get entityTypeUuid() {
+    return this.that.entityTypeUuid;
   }
 
-  set entityTypeUUID(x) {
-    this.that.entityTypeUUID = x;
+  set entityTypeUuid(x) {
+    this.that.entityTypeUuid = x;
   }
 
   get entityType() {
@@ -99,7 +99,7 @@ class EntityApprovalStatus extends BaseEntity {
     ]);
     resource["approvalStatusUuid"] = this.approvalStatus.uuid;
     resource["entityUuid"] = this.entityUUID;
-    resource["entityTypeUUID"] = this.entityTypeUUID;
+    resource["entityTypeUuid"] = this.entityTypeUuid;
     resource.statusDateTime = General.isoFormat(this.statusDateTime);
     return resource;
   }
@@ -107,7 +107,7 @@ class EntityApprovalStatus extends BaseEntity {
 
   static fromResource(resource, entityService) {
     const entityApprovalStatus = General.assignFields(resource, new EntityApprovalStatus(),
-      ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided"],
+      ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided", "entityTypeUuid"],
       ["statusDateTime"]);
     entityApprovalStatus.approvalStatus = entityService.findByKey(
       "uuid",
@@ -115,15 +115,14 @@ class EntityApprovalStatus extends BaseEntity {
       ApprovalStatus.schema.name
     );
     entityApprovalStatus.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
-    entityApprovalStatus.entityTypeUUID = ResourceUtil.getUUIDFor(resource, "entityTypeUUID");
     return entityApprovalStatus;
   }
 
-  static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUUID) {
+  static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUuid) {
     const entityApprovalStatus = new EntityApprovalStatus();
     entityApprovalStatus.uuid = General.randomUUID();
     entityApprovalStatus.entityUUID = entityUUID;
-    entityApprovalStatus.entityTypeUUID = entityTypeUUID;
+    entityApprovalStatus.entityTypeUuid = entityTypeUuid;
     entityApprovalStatus.entityType = entityType;
     entityApprovalStatus.approvalStatus = approvalStatus;
     entityApprovalStatus.approvalStatusComment = approvalStatusComment;

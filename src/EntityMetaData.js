@@ -76,6 +76,7 @@ import ProgramEnrolmentEntityApprovalStatus from './ProgramEnrolmentEntityApprov
 import ChecklistItemEntityApprovalStatus from './ChecklistItemEntityApprovalStatus';
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
+  schemaName: clazz.schema.name,
   entityName: clazz.schema.name,
   entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
@@ -106,7 +107,7 @@ const txData = (
 ) => ({
   schemaName: clazz.schema.name,
   entityName: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? clazz.name : clazz.schema.name,
-  entityClass: clazz,
+  entityClass: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? EntityApprovalStatus : clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
   resourceUrl: resUrl,
   type: "tx",
@@ -293,31 +294,31 @@ const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeig
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
 const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
 const subjectEntityApprovalStatus = txData(SubjectEntityApprovalStatus,
-  { res: "subjectEntityApprovalStatus",
+  { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "Subject"},
     privilegeParam: "entityTypeUuid",
     syncWeight: 2 });
 const encounterEntityApprovalStatus = txData(EncounterEntityApprovalStatus,
-  { res: "encounterEntityApprovalStatus",
+  { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "Encounter"},
     privilegeParam: "entityTypeUuid",
     syncWeight: 2 });
 const programEncounterEntityApprovalStatus = txData(ProgramEncounterEntityApprovalStatus,
-  { res: "programEncounterEntityApprovalStatus",
+  { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ProgramEncounter"},
     privilegeParam: "entityTypeUuid",
     syncWeight: 2 });
 const programEnrolmentEntityApprovalStatus = txData(ProgramEnrolmentEntityApprovalStatus,
-  { res: "programEnrolmentEntityApprovalStatus",
+  { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ProgramEnrolment"},
     privilegeParam: "entityTypeUuid",
     syncWeight: 2 });
 const checklistItemEntityApprovalStatus = txData(ChecklistItemEntityApprovalStatus,
-  { res: "checklistItemEntityApprovalStatus",
+  { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ChecklistItem"},
     privilegeParam: "entityTypeUuid",
