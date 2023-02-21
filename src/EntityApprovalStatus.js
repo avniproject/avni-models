@@ -14,7 +14,7 @@ class EntityApprovalStatus extends BaseEntity {
       uuid: "string",
       entityUUID: "string",
       approvalStatus: "ApprovalStatus",
-      entityTypeUUID: "string",
+      entityTypeUUID: {type: "string", optional: true},
       approvalStatusComment: {type: "string", optional: true},
       statusDateTime: "date",
       autoApproved: {type: "bool", default: false},
