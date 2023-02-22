@@ -733,6 +733,9 @@ function createRealmConfig() {
               newObjects[i].entityTypeUuid = programEncounter.encounterType.uuid;
             }
           }
+
+          const entityApprovalStatusSyncStatus = oldDB.objects("EntitySyncStatus").filtered("entityName = $0", "EntityApprovalStatus");
+          newDB.delete(entityApprovalStatusSyncStatus);
         }
       }
     },

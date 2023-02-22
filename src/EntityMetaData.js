@@ -292,7 +292,6 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: 
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
-const entityApprovalStatus = txData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
 const subjectEntityApprovalStatus = txData(SubjectEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -417,7 +416,6 @@ class EntityMetaData {
       groupSubject,
       comment,
       commentThread,
-      entityApprovalStatus,
       subjectEntityApprovalStatus,
       encounterEntityApprovalStatus,
       programEncounterEntityApprovalStatus,
