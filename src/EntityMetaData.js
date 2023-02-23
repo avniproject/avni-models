@@ -106,8 +106,8 @@ const txData = (
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
-  entityName: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? clazz.name : clazz.schema.name,
-  entityClass: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? EntityApprovalStatus : clazz,
+  entityName: clazz.schema.name,
+  entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
   resourceUrl: resUrl,
   type: "tx",
@@ -123,7 +123,42 @@ const txData = (
   apiQueryParams
 });
 
-const deprecatedData = (
+const virtualTxData = (
+  clazz,
+  {
+    res,
+    resUrl,
+    parent,
+    apiVersion,
+    syncWeight,
+    privilegeParam,
+    privilegeEntity,
+    privilegeName,
+    queryParam,
+    hasMoreThanOneAssociation,
+    apiQueryParams,
+    parentDbClass
+  } = {}
+) => ({
+  schemaName: clazz.schema.name,
+  entityName: clazz.name,
+  entityClass: parentDbClass,
+  resourceName: res || _.camelCase(clazz.schema.name),
+  resourceUrl: resUrl,
+  type: "virtualTx",
+  nameTranslated: false,
+  parent: parent,
+  apiVersion,
+  syncWeight: syncWeight,
+  privilegeParam,
+  privilegeEntity,
+  privilegeName,
+  queryParam,
+  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
+  apiQueryParams
+});
+
+const parentOfVirtualTxData = (
   clazz,
   {
     res,
@@ -132,10 +167,10 @@ const deprecatedData = (
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
-  entityName: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? clazz.name : clazz.schema.name,
-  entityClass: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? EntityApprovalStatus : clazz,
+  entityName: clazz.schema.name,
+  entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
-  type: "deprecated",
+  type: "parentOfVirtualTx",
   nameTranslated: false,
   syncWeight: syncWeight,
   hasMoreThanOneAssociation: !!hasMoreThanOneAssociation
@@ -310,36 +345,41 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: 
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
-const entityApprovalStatus = deprecatedData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
-const subjectEntityApprovalStatus = txData(SubjectEntityApprovalStatus,
+const entityApprovalStatus = parentOfVirtualTxData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
+const subjectEntityApprovalStatus = virtualTxData(SubjectEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "Subject"},
     privilegeParam: "entityTypeUuid",
+    parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
-const encounterEntityApprovalStatus = txData(EncounterEntityApprovalStatus,
+const encounterEntityApprovalStatus = virtualTxData(EncounterEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "Encounter"},
     privilegeParam: "entityTypeUuid",
+    parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
-const programEncounterEntityApprovalStatus = txData(ProgramEncounterEntityApprovalStatus,
+const programEncounterEntityApprovalStatus = virtualTxData(ProgramEncounterEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ProgramEncounter"},
     privilegeParam: "entityTypeUuid",
+    parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
-const programEnrolmentEntityApprovalStatus = txData(ProgramEnrolmentEntityApprovalStatus,
+const programEnrolmentEntityApprovalStatus = virtualTxData(ProgramEnrolmentEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ProgramEnrolment"},
     privilegeParam: "entityTypeUuid",
+    parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
-const checklistItemEntityApprovalStatus = txData(ChecklistItemEntityApprovalStatus,
+const checklistItemEntityApprovalStatus = virtualTxData(ChecklistItemEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ChecklistItem"},
     privilegeParam: "entityTypeUuid",
+    parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
 const news = txData(News, { syncWeight: 0 });
 const documentation = refData(Documentation, {res: 'documentations', syncWeight: 0});
