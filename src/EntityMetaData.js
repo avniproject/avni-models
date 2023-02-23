@@ -123,6 +123,24 @@ const txData = (
   apiQueryParams
 });
 
+const deprecatedData = (
+  clazz,
+  {
+    res,
+    syncWeight,
+    hasMoreThanOneAssociation,
+  } = {}
+) => ({
+  schemaName: clazz.schema.name,
+  entityName: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? clazz.name : clazz.schema.name,
+  entityClass: _.endsWith(clazz.schema.name, "EntityApprovalStatus") ? EntityApprovalStatus : clazz,
+  resourceName: res || _.camelCase(clazz.schema.name),
+  type: "deprecated",
+  nameTranslated: false,
+  syncWeight: syncWeight,
+  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation
+});
+
 const checklistDetail = refData(ChecklistDetail, { syncWeight: 1 });
 const rule = refData(Rule, { syncWeight: 3 });
 const ruleDependency = refData(RuleDependency, { syncWeight: 3 });
@@ -292,6 +310,7 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: 
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, { res: "approvalStatus", syncWeight: 0 });
 const groupDashboard = refData(GroupDashboard, { res: "groupDashboard", syncWeight: 0 });
+const entityApprovalStatus = deprecatedData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
 const subjectEntityApprovalStatus = txData(SubjectEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -416,6 +435,7 @@ class EntityMetaData {
       groupSubject,
       comment,
       commentThread,
+      entityApprovalStatus,
       subjectEntityApprovalStatus,
       encounterEntityApprovalStatus,
       programEncounterEntityApprovalStatus,
