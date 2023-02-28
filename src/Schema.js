@@ -696,45 +696,47 @@ function createRealmConfig() {
         const newObjects = newDB.objects("EntityApprovalStatus");
 
         for (let i = 0; i < oldObjects.length; i++) {
-          let entityApprovalStatus = oldObjects[i]
+          let entityApprovalStatus = oldObjects[i];
           if(oldObjects[i].entityType === 'Subject') {
             const subject = oldDB
               .objects(Individual.schema.name)
-              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
             if(subject) {
               newObjects[i].entityTypeUuid = subject.subjectType.uuid;
             }
           } else if(oldObjects[i].entityType === 'ProgramEnrolment') {
             const programEnrolment = oldDB
               .objects(ProgramEnrolment.schema.name)
-              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
             if(programEnrolment) {
               newObjects[i].entityTypeUuid = programEnrolment.program.uuid;
             }
           } else if(oldObjects[i].entityType === 'ChecklistItem') {
             const checklistItem = oldDB
               .objects(ChecklistItem.schema.name)
-              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
             if(checklistItem) {
               newObjects[i].entityTypeUuid = checklistItem.checklist.programEnrolment.program.uuid;
             }
           } else if(oldObjects[i].entityType === 'Encounter') {
             const encounter = oldDB
               .objects(Encounter.schema.name)
-              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
             if(encounter) {
               newObjects[i].entityTypeUuid = encounter.encounterType.uuid;
             }
           } else if(oldObjects[i].entityType === 'ProgramEncounter') {
             const programEncounter = oldDB
               .objects(ProgramEncounter.schema.name)
-              .filtered("uuid = $0", entityApprovalStatus.entityUUID);
+              .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
             if(programEncounter) {
               newObjects[i].entityTypeUuid = programEncounter.encounterType.uuid;
             }
           }
+        }
 
-          const entityApprovalStatusSyncStatus = oldDB.objects("EntitySyncStatus").filtered("entityName = $0", "EntityApprovalStatus");
+        const entityApprovalStatusSyncStatus = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0", "EntityApprovalStatus");
+        if(entityApprovalStatusSyncStatus[0]) {
           newDB.delete(entityApprovalStatusSyncStatus);
         }
       }
