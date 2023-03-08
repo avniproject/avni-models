@@ -137,6 +137,7 @@ const virtualTxData = (
     queryParam,
     hasMoreThanOneAssociation,
     apiQueryParams,
+    apiQueryParamKey,
     parentDbClass
   } = {}
 ) => ({
@@ -155,7 +156,8 @@ const virtualTxData = (
   privilegeName,
   queryParam,
   hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
-  apiQueryParams
+  apiQueryParams,
+  apiQueryParamKey
 });
 
 const parentOfVirtualTxData = (
@@ -350,35 +352,50 @@ const subjectEntityApprovalStatus = virtualTxData(SubjectEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "Subject"},
-    privilegeParam: "entityTypeUuid",
+    apiQueryParamKey: "entityTypeUuid",
+    privilegeParam: "subjectTypeUuid",
+    privilegeEntity: Privilege.privilegeEntityType.subject,
+    privilegeName: Privilege.privilegeName.viewSubject,
     parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
 const encounterEntityApprovalStatus = virtualTxData(EncounterEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "Encounter"},
-    privilegeParam: "entityTypeUuid",
+    apiQueryParamKey: "entityTypeUuid",
+    privilegeParam: "encounterTypeUuid",
+    privilegeEntity: Privilege.privilegeEntityType.encounter,
+    privilegeName: Privilege.privilegeName.viewVisit,
     parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
 const programEncounterEntityApprovalStatus = virtualTxData(ProgramEncounterEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ProgramEncounter"},
-    privilegeParam: "entityTypeUuid",
+    apiQueryParamKey: "entityTypeUuid",
+    privilegeParam: "programEncounterTypeUuid",
+    privilegeEntity: Privilege.privilegeEntityType.encounter,
+    privilegeName: Privilege.privilegeName.viewVisit,
     parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
 const programEnrolmentEntityApprovalStatus = virtualTxData(ProgramEnrolmentEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ProgramEnrolment"},
-    privilegeParam: "entityTypeUuid",
+    apiQueryParamKey: "entityTypeUuid",
+    privilegeParam: "programUuid",
+    privilegeEntity: Privilege.privilegeEntityType.enrolment,
+    privilegeName: Privilege.privilegeName.viewEnrolmentDetails,
     parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
 const checklistItemEntityApprovalStatus = virtualTxData(ChecklistItemEntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     apiQueryParams: {"entityType": "ChecklistItem"},
-    privilegeParam: "entityTypeUuid",
+    apiQueryParamKey: "entityTypeUuid",
+    privilegeParam: "checklistDetailUuid",
+    privilegeEntity: Privilege.privilegeEntityType.checklist,
+    privilegeName: Privilege.privilegeName.viewChecklist,
     parentDbClass: EntityApprovalStatus,
     syncWeight: 2 });
 const news = txData(News, { syncWeight: 0 });
