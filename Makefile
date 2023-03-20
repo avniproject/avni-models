@@ -1,20 +1,17 @@
-set_node_version:
-	. ${NVM_DIR}/nvm.sh && nvm use
-
 clean:
 	rm -rf node_modules
 
-deps: set_node_version
+deps:
 	@rm -f package-lock.json
 	yarn install
 
-tests: set_node_version
+tests:
 	yarn test
 
-build: set_node_version
+build:
 	yarn run build
 
-release: set_node_version
+release:
 	git pull --tags
 	git pull --rebase
 	@echo "Ensure version changes follow semantic versioning - https://classic.yarnpkg.com/en/docs/dependency-versions#toc-semantic-versioning"

@@ -35,7 +35,7 @@ class EntityQueue extends PersistedObject {
   }
 
   static create(entity, schema, savedAt = new Date()) {
-    var entityQueue = new EntityQueue();
+    const entityQueue = new EntityQueue();
     entityQueue.entityUUID = entity.uuid;
     entityQueue.entity = schema;
     entityQueue.savedAt = savedAt;
