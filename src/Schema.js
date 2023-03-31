@@ -192,7 +192,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 170,
+    schemaVersion: 171,
     migration: function (oldDB, newDB) {
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
@@ -740,6 +740,17 @@ function createRealmConfig() {
           newDB.delete(entityApprovalStatusSyncStatus);
         }
       }
+      // console.log('----------------oldDB.schemaVersion', oldDB.schemaVersion);
+      // if (oldDB.schemaVersion < 171) {
+      //   _.forEach([...newDB.objects("Settings")], (settings) => {
+      //       settings.idpType = "";
+      //       settings.keycloakGrantType = "";
+      //       settings.keycloakScope = "";
+      //       settings.keycloakClientId = "";
+      //       settings.keycloakAuthServerUrl = "";
+      //       settings.keycloakRealm = "";
+      //   });
+      // }
     },
   };
 }

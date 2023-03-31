@@ -19,9 +19,17 @@ class Settings extends BaseEntity {
       pageSize: "int",
       poolId: "string",
       clientId: "string",
+      idpType: {type: "string", optional: true},
+      keycloakAuthServerUrl: {type: "string", optional: true},
+      keycloakClientId: {type: "string", optional: true},
+      keycloakScope: {type: "string", optional: true},
+      keycloakGrantType: {type: "string", optional: true},
+      keycloakRealm: {type: "string", optional: true},
       devSkipValidation: {type: "bool", default: false},
       captureLocation: {type: "bool", default: true},
-      userId: {type: "string", optional: true}
+      userId: {type: "string", optional: true},
+      accessToken:  {type: "string", optional: true},
+      refreshToken:  {type: "string", optional: true},
     },
   };
 
@@ -99,6 +107,70 @@ class Settings extends BaseEntity {
 
   set userId(x) {
       this.that.userId = x;
+  }
+
+  get idpType() {
+     return this.that.idpType;
+  }
+
+  set idpType(x) {
+    this.that.idpType = x;
+  }
+
+  get keycloakAuthServerUrl() {
+     return this.that.keycloakAuthServerUrl;
+  }
+
+  set keycloakAuthServerUrl(x) {
+     this.that.keycloakAuthServerUrl = x;
+  }
+
+  get keycloakClientId() {
+     return this.that.keycloakClientId;
+  }
+
+  set keycloakClientId(x) {
+     this.that.keycloakClientId = x;
+  }
+
+  get keycloakRealm() {
+     return this.that.keycloakRealm;
+  }
+
+  set keycloakRealm(x) {
+     this.that.keycloakRealm = x;
+  }
+
+  get keycloakScope() {
+    return this.that.keycloakScope;
+  }
+
+  set keycloakScope(x) {
+    this.that.keycloakScope = x;
+  }
+
+  get keycloakGrantType() {
+    return this.that.keycloakGrantType;
+  }
+
+  set keycloakGrantType(x) {
+    this.that.keycloakGrantType = x;
+  }
+
+  get accessToken() {
+    return this.that.accessToken;
+  }
+
+  set accessToken(x) {
+    this.that.accessToken = x;
+  }
+
+  get refreshToken() {
+    return this.that.refreshToken;
+  }
+
+  set refreshToken(x) {
+    this.that.refreshToken = x;
   }
 
   clone() {
