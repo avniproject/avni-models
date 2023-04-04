@@ -87,11 +87,6 @@ import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
-import SubjectEntityApprovalStatus from './SubjectEntityApprovalStatus';
-import ProgramEncounterEntityApprovalStatus from './ProgramEncounterEntityApprovalStatus';
-import EncounterEntityApprovalStatus from './EncounterEntityApprovalStatus';
-import ProgramEnrolmentEntityApprovalStatus from './ProgramEnrolmentEntityApprovalStatus';
-import ChecklistItemEntityApprovalStatus from './ChecklistItemEntityApprovalStatus';
 
 const entities = [
   LocaleMapping,
@@ -164,11 +159,6 @@ const entities = [
   StandardReportCardType,
   ApprovalStatus,
   EntityApprovalStatus,
-  SubjectEntityApprovalStatus,
-  EncounterEntityApprovalStatus,
-  ProgramEncounterEntityApprovalStatus,
-  ProgramEnrolmentEntityApprovalStatus,
-  ChecklistItemEntityApprovalStatus,
   GroupDashboard,
   DashboardSection,
   News,
@@ -192,7 +182,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 171,
+    schemaVersion: 172,
     migration: function (oldDB, newDB) {
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
