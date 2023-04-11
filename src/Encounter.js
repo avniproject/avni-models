@@ -27,7 +27,7 @@ class Encounter extends AbstractEncounter {
       cancelObservations: { type: "list", objectType: "Observation" },
       cancelLocation: { type: "Point", optional: true },
       voided: { type: "bool", default: false },
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
     },
   };
 

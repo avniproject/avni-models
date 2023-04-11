@@ -34,7 +34,7 @@ class ProgramEnrolment extends BaseEntity {
       enrolmentLocation: { type: "Point", optional: true },
       exitLocation: { type: "Point", optional: true },
       voided: { type: "bool", default: false },
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
     },
   };
 
@@ -132,10 +132,6 @@ class ProgramEnrolment extends BaseEntity {
 
   get latestEntityApprovalStatus() {
       return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
-  }
-
-  set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   static createEmptyInstance({ individual, program } = {}) {
@@ -746,8 +742,7 @@ class ProgramEnrolment extends BaseEntity {
       encounters: this.encounters,
       checklists: this.checklists,
       individualUUID: this.individual.uuid,
-      voided: this.voided,
-      latestEntityApprovalStatus: this.latestEntityApprovalStatus,
+      voided: this.voided
     };
   }
 }

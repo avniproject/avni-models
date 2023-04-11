@@ -150,27 +150,6 @@ class EntityApprovalStatus extends BaseEntity {
       }
     ];
   }
-
-  static getLatestApprovalStatusByEntity(entityApprovalStatuses, entityService) {
-    const getSchema = (passedEntityType) => _.get(_.find(EntityApprovalStatus.getSchemaEntityTypeList(), ({entityType}) => entityType === passedEntityType), 'schema');
-    const maxEntityApprovalStatusesPerEntity = _.chain(entityApprovalStatuses)
-      .filter(({
-                 entityType,
-                 entityUUID
-               }) => !_.isEmpty(entityService.findByUUID(entityUUID, getSchema(entityType))))
-      .groupBy(({entityType, entityUUID}) => `${entityType}(${entityUUID})`)
-      .values()
-      .map(groupedEntities => _.maxBy(groupedEntities, 'statusDateTime'))
-      .value();
-    return _.map(maxEntityApprovalStatusesPerEntity, entityApprovalStatus => {
-      const schema = getSchema(entityApprovalStatus.entityType);
-      const existingEntity = entityService.findByUUID(entityApprovalStatus.entityUUID, schema);
-      let entity = General.pick(existingEntity, ["uuid", "latestEntityApprovalStatus"]);
-      entity.latestEntityApprovalStatus = _.maxBy([entity.latestEntityApprovalStatus, entityApprovalStatus], 'statusDateTime');
-      return ({schema, entity});
-    });
-  }
-
 }
 
 export default EntityApprovalStatus;

@@ -25,8 +25,7 @@ class DraftEncounter extends BaseEntity {
       cancelDateTime: {type: "date", optional: true},
       cancelObservations: {type: "list", objectType: "Observation"},
       cancelLocation: {type: "Point", optional: true},
-      voided: {type: "bool", default: false},
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
+      voided: {type: "bool", default: false}
     },
   };
 
@@ -126,10 +125,6 @@ class DraftEncounter extends BaseEntity {
       return this.toEntity("latestEntityApprovalStatus", ApprovalStatus);
   }
 
-  set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = this.fromObject(x);
-  }
-
   static create(encounter) {
     const draftEncounter = new DraftEncounter();
     draftEncounter.uuid = encounter.uuid;
@@ -145,7 +140,6 @@ class DraftEncounter extends BaseEntity {
     draftEncounter.cancelObservations = encounter.cancelObservations;
     draftEncounter.cancelLocation = encounter.cancelLocation;
     draftEncounter.voided = encounter.voided;
-    draftEncounter.latestEntityApprovalStatus = encounter.latestEntityApprovalStatus;
     draftEncounter.registrationLocation = encounter.registrationLocation;
     draftEncounter.updatedOn = new Date();
     return draftEncounter;
@@ -166,7 +160,6 @@ class DraftEncounter extends BaseEntity {
     encounter.cancelObservations = ObservationsHolder.clone(this.cancelObservations);
     encounter.cancelLocation = this.cancelLocation;
     encounter.voided = this.voided;
-    encounter.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     encounter.registrationLocation = this.registrationLocation;
     return encounter;
   }

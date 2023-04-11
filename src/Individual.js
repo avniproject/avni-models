@@ -45,9 +45,9 @@ class Individual extends BaseEntity {
       relationships: {type: "list", objectType: "IndividualRelationship"},
       groupSubjects: {type: "list", objectType: "GroupSubject"},
       registrationLocation: {type: "Point", optional: true},
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
       comments: {type: "list", objectType: "Comment"},
       groups: {type: "list", objectType: "GroupSubject"},
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
     },
   };
 
@@ -193,10 +193,6 @@ class Individual extends BaseEntity {
 
   get latestEntityApprovalStatus() {
     return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
-  }
-
-  set latestEntityApprovalStatus(x) {
-    this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   get comments() {
@@ -464,7 +460,7 @@ class Individual extends BaseEntity {
         entityService
       );
     }
-    var individual = BaseEntity.getParentEntity(
+    let individual = BaseEntity.getParentEntity(
       entityService,
       childEntityClass,
       childResource,
@@ -757,7 +753,6 @@ class Individual extends BaseEntity {
     individual.affiliatedGroups = this.affiliatedGroups;
     individual.encounters = this.encounters;
     individual.enrolments = this.enrolments;
-    individual.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     individual.comments = this.comments;
     return individual;
   }
@@ -1128,7 +1123,6 @@ class Individual extends BaseEntity {
       voided: this.voided,
       registrationLocation: this.registrationLocation,
       subjectType: this.subjectType,
-      latestEntityApprovalStatus: this.latestEntityApprovalStatus,
       comments: this.comments,
     };
   }

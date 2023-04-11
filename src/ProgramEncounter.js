@@ -36,7 +36,7 @@ class ProgramEncounter extends AbstractEncounter {
       encounterLocation: {type: "Point", optional: true},
       cancelLocation: {type: "Point", optional: true},
       voided: {type: "bool", default: false},
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
     },
   };
 
@@ -150,8 +150,7 @@ class ProgramEncounter extends AbstractEncounter {
       encounterDateTime: this.encounterDateTime,
       programEnrolmentUUID: this.programEnrolment.uuid,
       observations: this.observations,
-      voided: this.voided,
-      latestEntityApprovalStatus: this.latestEntityApprovalStatus,
+      voided: this.voided
     };
   }
 

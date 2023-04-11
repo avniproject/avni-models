@@ -21,7 +21,7 @@ class ChecklistItem extends BaseEntity {
       completionDate: { type: "date", optional: true },
       observations: { type: "list", objectType: "Observation" },
       checklist: "Checklist",
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
     },
   };
 
@@ -63,10 +63,6 @@ class ChecklistItem extends BaseEntity {
 
   get latestEntityApprovalStatus() {
       return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
-  }
-
-  set latestEntityApprovalStatus(x) {
-      this.that.latestEntityApprovalStatus = this.fromObject(x);
   }
 
   static create({ uuid = General.randomUUID(), observations = [], checklist, detail }) {
@@ -122,7 +118,6 @@ class ChecklistItem extends BaseEntity {
     checklistItem.completionDate = this.completionDate;
     checklistItem.checklist = this.checklist;
     checklistItem.observations = ObservationsHolder.clone(this.observations);
-    checklistItem.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return checklistItem;
   }
 

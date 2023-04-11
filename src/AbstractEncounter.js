@@ -25,10 +25,6 @@ class AbstractEncounter extends BaseEntity {
     return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
   }
 
-  set latestEntityApprovalStatus(x) {
-    this.that.latestEntityApprovalStatus = this.fromObject(x);
-  }
-
   get name() {
       return this.that.name;
   }
@@ -166,7 +162,6 @@ class AbstractEncounter extends BaseEntity {
       ? null
       : this.encounterLocation.clone();
     encounter.cancelLocation = _.isNil(this.cancelLocation) ? null : this.cancelLocation.clone();
-    encounter.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
     return encounter;
   }
 
