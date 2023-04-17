@@ -21,6 +21,13 @@ import Comment from "./Comment";
 import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
 
+const mergeMap = new Map([
+  [ProgramEnrolment, "enrolments"],
+  [Encounter, "encounters"],
+  [IndividualRelationship, "relationships"],
+  [EntityApprovalStatus, "approvalStatuses"],
+  [Comment, "comments"]]);
+
 class Individual extends BaseEntity {
   static schema = {
     name: SchemaNames.Individual,
@@ -47,8 +54,9 @@ class Individual extends BaseEntity {
       registrationLocation: {type: "Point", optional: true},
       comments: {type: "list", objectType: "Comment"},
       groups: {type: "list", objectType: "GroupSubject"},
-      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
-    },
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true} //Reporting purposes
+    }
   };
 
   constructor(that = null) {
@@ -192,7 +200,7 @@ class Individual extends BaseEntity {
   }
 
   get latestEntityApprovalStatus() {
-    return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+    return _.maxBy(this.approvalStatuses, 'statusDateTime')
   }
 
   get comments() {
@@ -209,6 +217,14 @@ class Individual extends BaseEntity {
 
   set groups(x) {
     this.that.groups = this.fromEntityList(x);
+  }
+
+  get approvalStatuses() {
+    return this.toEntityList("approvalStatuses", EntityApprovalStatus);
+  }
+
+  set approvalStatuses(x) {
+    this.that.approvalStatuses = this.fromEntityList(x);
   }
 
   static validationKeys = {
@@ -244,6 +260,7 @@ class Individual extends BaseEntity {
     individual.relationships = [];
     individual.groupSubjects = [];
     individual.groups = [];
+    individual.approvalStatuses = [];
     individual.lowestAddressLevel = AddressLevel.create({
       uuid: "",
       title: "",
@@ -375,15 +392,7 @@ class Individual extends BaseEntity {
     return this.gender.isFemale();
   }
 
-  static merge = (childEntityClass) =>
-    BaseEntity.mergeOn(
-      new Map([
-        [ProgramEnrolment, "enrolments"],
-        [Encounter, "encounters"],
-        [IndividualRelationship, "relationships"],
-        [Comment, "comments"],
-      ]).get(childEntityClass)
-    );
+  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
 
   static mergeMultipleParents = (childEntityClass, entities) => {
     if (childEntityClass === GroupSubject) {
@@ -460,25 +469,27 @@ class Individual extends BaseEntity {
         entityService
       );
     }
-    let individual = BaseEntity.getParentEntity(
+    const parentIdField = childEntityClass === EntityApprovalStatus ? "entityUUID" : "individualUUID";
+    let realmIndividual = BaseEntity.getParentEntity(
       entityService,
       childEntityClass,
       childResource,
-      "individualUUID",
+      parentIdField,
       Individual.schema.name
     );
-    individual = General.pick(
-      individual,
+    realmIndividual = General.pick(
+      realmIndividual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups", "approvalStatuses"]
     );
 
-    if (childEntityClass === ProgramEnrolment) BaseEntity.addNewChild(child, individual.enrolments);
-    else if (childEntityClass === Encounter) BaseEntity.addNewChild(child, individual.encounters);
-    else if (childEntityClass === Comment) BaseEntity.addNewChild(child, individual.comments);
-    else throw `${childEntityClass.name} not support by ${individual.nameString}`;
+    if (childEntityClass === ProgramEnrolment) BaseEntity.addNewChild(child, realmIndividual.enrolments);
+    else if (childEntityClass === Encounter) BaseEntity.addNewChild(child, realmIndividual.encounters);
+    else if (childEntityClass === Comment) BaseEntity.addNewChild(child, realmIndividual.comments);
+    else if (childEntityClass === EntityApprovalStatus) new Individual(realmIndividual).addUpdateApprovalStatus(child);
+    else throw `${childEntityClass.name} not support by ${realmIndividual.nameString}`;
 
-    return individual;
+    return realmIndividual;
   }
 
   setFirstName(firstName) {
@@ -726,6 +737,13 @@ class Individual extends BaseEntity {
     return this.enrolments.filter((x) => !x.voided);
   }
 
+  addUpdateApprovalStatus(approvalStatus) {
+    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
+      this.approvalStatuses.push(approvalStatus);
+    }
+    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
+  }
+
   cloneForEdit() {
     const individual = new Individual();
     individual.uuid = this.uuid;
@@ -754,6 +772,7 @@ class Individual extends BaseEntity {
     individual.encounters = this.encounters;
     individual.enrolments = this.enrolments;
     individual.comments = this.comments;
+    individual.approvalStatuses = this.approvalStatuses;
     return individual;
   }
 
@@ -1119,6 +1138,7 @@ class Individual extends BaseEntity {
       observations: this.observations,
       relationships: this.relationships,
       groupSubjects: this.groupSubjects,
+      approvalStatuses: this.approvalStatuses,
       groups: this.groups,
       voided: this.voided,
       registrationLocation: this.registrationLocation,

@@ -25,7 +25,7 @@ copy-dist-to-avni-client:
 	cp -r * ../avni-client/packages/openchs-android/node_modules/openchs-models/
 
 deploy-to-avni-client-only:
-	$(if $(local),$(call _deploy,$(local)/packages/openchs-android/node_modules/openchs-models))
+	$(call _deploy,../avni-client/packages/openchs-android/node_modules/openchs-models)
 
 deploy-to-avni-client: build deploy-to-avni-client-only
 
@@ -33,7 +33,7 @@ deploy-to-avni-project: build
 	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))
 
 deploy-as-source-to-avni-client:
-	$(if $(local),$(call _deploy_as_source,$(local)/packages/openchs-android/node_modules/openchs-models))
+	$(call _deploy_as_source,../avni-client/packages/openchs-android/node_modules/openchs-models)
 
 define _deploy_as_source
 	rm -rf $1/*

@@ -16,6 +16,12 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
 
+const mergeMap = new Map([
+  [ProgramEncounter, "encounters"],
+  [Checklist, "checklists"],
+  [EntityApprovalStatus, "approvalStatuses"]
+]);
+
 class ProgramEnrolment extends BaseEntity {
   static schema = {
     name: SchemaNames.ProgramEnrolment,
@@ -24,117 +30,126 @@ class ProgramEnrolment extends BaseEntity {
       uuid: "string",
       program: "Program",
       enrolmentDateTime: "date",
-      observations: { type: "list", objectType: "Observation" },
-      programExitDateTime: { type: "date", optional: true },
-      programExitObservations: { type: "list", objectType: "Observation" },
-      programOutcome: { type: "ProgramOutcome", optional: true },
-      encounters: { type: "list", objectType: SchemaNames.ProgramEncounter },
-      checklists: { type: "list", objectType: "Checklist" },
+      observations: {type: "list", objectType: "Observation"},
+      programExitDateTime: {type: "date", optional: true},
+      programExitObservations: {type: "list", objectType: "Observation"},
+      programOutcome: {type: "ProgramOutcome", optional: true},
+      encounters: {type: "list", objectType: SchemaNames.ProgramEncounter},
+      checklists: {type: "list", objectType: "Checklist"},
       individual: "Individual",
-      enrolmentLocation: { type: "Point", optional: true },
-      exitLocation: { type: "Point", optional: true },
-      voided: { type: "bool", default: false },
-      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
+      enrolmentLocation: {type: "Point", optional: true},
+      exitLocation: {type: "Point", optional: true},
+      voided: {type: "bool", default: false},
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}   //Reporting purposes
     },
   };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
   get program() {
-      return this.toEntity("program", Program);
+    return this.toEntity("program", Program);
   }
 
   set program(x) {
-      this.that.program = this.fromObject(x);
+    this.that.program = this.fromObject(x);
   }
 
   get enrolmentDateTime() {
-      return this.that.enrolmentDateTime;
+    return this.that.enrolmentDateTime;
   }
 
   set enrolmentDateTime(x) {
-      this.that.enrolmentDateTime = x;
+    this.that.enrolmentDateTime = x;
   }
 
   get observations() {
-      return this.toEntityList("observations", Observation);
+    return this.toEntityList("observations", Observation);
   }
 
   set observations(x) {
-      this.that.observations = this.fromEntityList(x);
+    this.that.observations = this.fromEntityList(x);
   }
 
   get programExitDateTime() {
-      return this.that.programExitDateTime;
+    return this.that.programExitDateTime;
   }
 
   set programExitDateTime(x) {
-      this.that.programExitDateTime = x;
+    this.that.programExitDateTime = x;
   }
 
   get programExitObservations() {
-      return this.toEntityList("programExitObservations", Observation);
+    return this.toEntityList("programExitObservations", Observation);
   }
 
   set programExitObservations(x) {
-      this.that.programExitObservations = this.fromEntityList(x);
+    this.that.programExitObservations = this.fromEntityList(x);
   }
 
   get programOutcome() {
-      return this.toEntity("programOutcome", ProgramOutcome);
+    return this.toEntity("programOutcome", ProgramOutcome);
   }
 
   set programOutcome(x) {
-      this.that.programOutcome = this.fromObject(x);
+    this.that.programOutcome = this.fromObject(x);
   }
 
   get encounters() {
-      return this.toEntityList("encounters", ProgramEncounter);
+    return this.toEntityList("encounters", ProgramEncounter);
   }
 
   set encounters(x) {
-      this.that.encounters = this.fromEntityList(x);
+    this.that.encounters = this.fromEntityList(x);
   }
 
   get checklists() {
-      return this.toEntityList("checklists", Checklist);
+    return this.toEntityList("checklists", Checklist);
   }
 
   set checklists(x) {
-      this.that.checklists = this.fromEntityList(x);
+    this.that.checklists = this.fromEntityList(x);
   }
 
   get individual() {
-      return this.toEntity("individual", Individual);
+    return this.toEntity("individual", Individual);
   }
 
   set individual(x) {
-      this.that.individual = this.fromObject(x);
+    this.that.individual = this.fromObject(x);
   }
 
   get enrolmentLocation() {
-      return this.toEntity("enrolmentLocation", Point);
+    return this.toEntity("enrolmentLocation", Point);
   }
 
   set enrolmentLocation(x) {
-      this.that.enrolmentLocation = this.fromObject(x);
+    this.that.enrolmentLocation = this.fromObject(x);
   }
 
   get exitLocation() {
-      return this.toEntity("exitLocation", Point);
+    return this.toEntity("exitLocation", Point);
   }
 
   set exitLocation(x) {
-      this.that.exitLocation = this.fromObject(x);
+    this.that.exitLocation = this.fromObject(x);
   }
 
   get latestEntityApprovalStatus() {
-      return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+    return _.maxBy(this.approvalStatuses, 'statusDateTime');
   }
 
-  static createEmptyInstance({ individual, program } = {}) {
+  get approvalStatuses() {
+    return this.toEntityList("approvalStatuses", EntityApprovalStatus);
+  }
+
+  set approvalStatuses(x) {
+    this.that.approvalStatuses = this.fromEntityList(x);
+  }
+
+  static createEmptyInstance({individual, program} = {}) {
     const programEnrolment = new ProgramEnrolment();
     programEnrolment.uuid = General.randomUUID();
     programEnrolment.enrolmentDateTime = new Date();
@@ -147,6 +162,7 @@ class ProgramEnrolment extends BaseEntity {
       : Individual.createEmptyInstance();
     programEnrolment.voided = false;
     programEnrolment.program = program;
+    programEnrolment.approvalStatuses = [];
     ObservationsHolder.convertObsForSave(programEnrolment.individual.observations);
     return programEnrolment;
   }
@@ -229,29 +245,26 @@ class ProgramEnrolment extends BaseEntity {
       [Checklist, "checklists"],
     ]);
 
-  static merge = (childEntityClass) =>
-    BaseEntity.mergeOn(
-      new Map([
-        [ProgramEncounter, "encounters"],
-        [Checklist, "checklists"],
-      ]).get(childEntityClass)
-    );
+  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
 
   static associateChild(child, childEntityClass, childResource, entityService) {
-    let programEnrolment = BaseEntity.getParentEntity(
+    const parentIdField = childEntityClass === EntityApprovalStatus ? "entityUUID" : "programEnrolmentUUID";
+    let realmProgramEnrolment = BaseEntity.getParentEntity(
       entityService,
       childEntityClass,
       childResource,
-      "programEnrolmentUUID",
+      parentIdField,
       ProgramEnrolment.schema.name
     );
-    programEnrolment = General.pick(programEnrolment, ["uuid"], ["encounters", "checklists"]);
+    realmProgramEnrolment = General.pick(realmProgramEnrolment, ["uuid"], ["encounters", "checklists", "approvalStatuses"]);
     if (childEntityClass === ProgramEncounter)
-      BaseEntity.addNewChild(child, programEnrolment.encounters);
+      BaseEntity.addNewChild(child, realmProgramEnrolment.encounters);
     else if (childEntityClass === Checklist)
-      BaseEntity.addNewChild(child, programEnrolment.checklists);
+      BaseEntity.addNewChild(child, realmProgramEnrolment.checklists);
+    else if (childEntityClass === EntityApprovalStatus)
+      new ProgramEnrolment(realmProgramEnrolment).addUpdateApprovalStatus(child);
     else throw `${childEntityClass.name} not support by ${ProgramEnrolment.name}`;
-    return programEnrolment;
+    return realmProgramEnrolment;
   }
 
   nonVoidedEncounters() {
@@ -283,7 +296,7 @@ class ProgramEnrolment extends BaseEntity {
       : this.enrolmentLocation.clone();
     programEnrolment.exitLocation = _.isNil(this.exitLocation) ? null : this.exitLocation.clone();
     programEnrolment.voided = this.voided;
-    programEnrolment.latestEntityApprovalStatus = this.latestEntityApprovalStatus;
+    programEnrolment.approvalStatuses = this.approvalStatuses;
     return programEnrolment;
   }
 
@@ -429,7 +442,7 @@ class ProgramEnrolment extends BaseEntity {
   findObservationValueInEntireEnrolment(conceptNameOrUuid, checkInEnrolment) {
     let encounters = _.reverse(this.getEncounters(true));
     let observationWithDate = this._findObservationWithDateFromEntireEnrolment(
-        conceptNameOrUuid,
+      conceptNameOrUuid,
       encounters,
       checkInEnrolment
     );
@@ -442,9 +455,9 @@ class ProgramEnrolment extends BaseEntity {
     return _.isNil(observationWithDate.observation)
       ? undefined
       : {
-          value: observationWithDate.observation.getReadableValue(),
-          date: observationWithDate.date,
-        };
+        value: observationWithDate.observation.getReadableValue(),
+        date: observationWithDate.date,
+      };
   }
 
   findObservationInEntireEnrolment(conceptNameOrUuid, currentEncounter, latest = false, parentConceptNameOrUuid) {
@@ -551,7 +564,7 @@ class ProgramEnrolment extends BaseEntity {
 
   _findObservationFromEntireEnrolment(conceptNameOrUuid, encounters, checkInEnrolment = true, parentConceptNameOrUuid) {
     return this._findObservationWithDateFromEntireEnrolment(
-        conceptNameOrUuid,
+      conceptNameOrUuid,
       encounters,
       checkInEnrolment,
       parentConceptNameOrUuid
@@ -565,7 +578,7 @@ class ProgramEnrolment extends BaseEntity {
       encounter = encounters[i];
       observation = encounters[i].findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
       if (!_.isNil(observation))
-        return { observation: observation, date: encounter.encounterDateTime };
+        return {observation: observation, date: encounter.encounterDateTime};
     }
 
     if (checkInEnrolment)
@@ -589,8 +602,8 @@ class ProgramEnrolment extends BaseEntity {
   }
 
   findGroupedObservation(parentConceptNameOrUuid) {
-    const groupedObservations =_.find(this.observations, (observation) =>
-        (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+    const groupedObservations = _.find(this.observations, (observation) =>
+      (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
     return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
   }
 
@@ -624,7 +637,7 @@ class ProgramEnrolment extends BaseEntity {
     return _.defaults(this.scheduledEncounters(true), [])
       .filter((encounter) => encounter.uuid !== currentEncounter.uuid)
       .map(_.identity)
-      .map(({ uuid, name, encounterType, earliestVisitDateTime, maxVisitDateTime }) => ({
+      .map(({uuid, name, encounterType, earliestVisitDateTime, maxVisitDateTime}) => ({
         name: name,
         encounterType: encounterType.name,
         earliestDate: earliestVisitDateTime,
@@ -730,6 +743,13 @@ class ProgramEnrolment extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
+  addUpdateApprovalStatus(approvalStatus) {
+    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
+      this.approvalStatuses.push(approvalStatus);
+    }
+    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,
@@ -738,11 +758,12 @@ class ProgramEnrolment extends BaseEntity {
       observations: this.observations,
       programExitDateTime: this.programExitDateTime,
       programExitObservations: this.programExitObservations,
-      programOutcome: { type: "ProgramOutcome", optional: true },
+      programOutcome: {type: "ProgramOutcome", optional: true},
       encounters: this.encounters,
       checklists: this.checklists,
       individualUUID: this.individual.uuid,
-      voided: this.voided
+      voided: this.voided,
+      approvalStatuses: this.approvalStatuses
     };
   }
 }

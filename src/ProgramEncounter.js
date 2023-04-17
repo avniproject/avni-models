@@ -7,6 +7,7 @@ import ValidationResult from "./application/ValidationResult";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
+import BaseEntity from "./BaseEntity";
 
 class ProgramEncounter extends AbstractEncounter {
   static fieldKeys = {
@@ -36,7 +37,8 @@ class ProgramEncounter extends AbstractEncounter {
       encounterLocation: {type: "Point", optional: true},
       cancelLocation: {type: "Point", optional: true},
       voided: {type: "bool", default: false},
-      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}  //Reporting purposes
     },
   };
 
@@ -150,6 +152,7 @@ class ProgramEncounter extends AbstractEncounter {
       encounterDateTime: this.encounterDateTime,
       programEnrolmentUUID: this.programEnrolment.uuid,
       observations: this.observations,
+      approvalStatuses: this.approvalStatuses,
       voided: this.voided
     };
   }
@@ -160,6 +163,18 @@ class ProgramEncounter extends AbstractEncounter {
       [ProgramEncounter.fieldKeys.SCHEDULED_DATE_TIME]: this.earliestVisitDateTime,
       [ProgramEncounter.fieldKeys.MAX_DATE_TIME]: this.maxVisitDateTime
     }
+  }
+
+  static associateChild(child, childEntityClass, childResource, entityService) {
+    let realmProgramEncounter = BaseEntity.getParentEntity(
+      entityService,
+      childEntityClass,
+      childResource,
+      "entityUUID",
+      ProgramEncounter.schema.name
+    );
+    realmProgramEncounter = General.pick(realmProgramEncounter, ["uuid"], ["approvalStatuses"]);
+    if (childEntityClass === EntityApprovalStatus) new ProgramEncounter(realmProgramEncounter).addUpdateApprovalStatus(child);
   }
 }
 

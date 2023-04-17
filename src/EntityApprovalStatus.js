@@ -6,7 +6,6 @@ import _ from 'lodash';
 import SchemaNames from "./SchemaNames";
 
 class EntityApprovalStatus extends BaseEntity {
-
   static schema = {
     name: "EntityApprovalStatus",
     primaryKey: "uuid",
@@ -22,6 +21,7 @@ class EntityApprovalStatus extends BaseEntity {
       voided: {type: "bool", default: false},
     },
   };
+
   static entityType = {
     Subject: "Subject",
     ProgramEnrolment: "ProgramEnrolment",
@@ -29,6 +29,21 @@ class EntityApprovalStatus extends BaseEntity {
     Encounter: "Encounter",
     ChecklistItem: "ChecklistItem",
   };
+
+  static getApprovalEntitiesSchema() {
+    return [
+      SchemaNames.Individual,
+      SchemaNames.ProgramEncounter,
+      SchemaNames.Encounter,
+      SchemaNames.ProgramEnrolment,
+      SchemaNames.ChecklistItem
+    ]
+  }
+
+  getApprovedEntitySchema() {
+    if (this.entityType === EntityApprovalStatus.entityType.Subject) return SchemaNames.Individual;
+    return SchemaNames[this.entityType];
+  }
 
   constructor(that = null) {
     super(that);

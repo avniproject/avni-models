@@ -180,6 +180,7 @@ class DraftSubject extends BaseEntity {
     individual.enrolments = [];
     individual.relationships = [];
     individual.groupSubjects = [];
+    individual.approvalStatuses = [];
     return individual;
   }
 }

@@ -8,6 +8,9 @@ import EncounterType from "./EncounterType";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
+import BaseEntity from "./BaseEntity";
+import ProgramEnrolment from "./ProgramEnrolment";
+import General from "./utility/General";
 
 class Encounter extends AbstractEncounter {
   static schema = {
@@ -27,7 +30,8 @@ class Encounter extends AbstractEncounter {
       cancelObservations: { type: "list", objectType: "Observation" },
       cancelLocation: { type: "Point", optional: true },
       voided: { type: "bool", default: false },
-      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}  //Reporting purposes
     },
   };
 
@@ -119,6 +123,20 @@ class Encounter extends AbstractEncounter {
 
   getAllScheduledVisits() {
     return this.individual.getAllScheduledVisits(this);
+  }
+
+  static associateChild(child, childEntityClass, childResource, entityService) {
+    let realmEncounter = BaseEntity.getParentEntity(
+      entityService,
+      childEntityClass,
+      childResource,
+      "entityUUID",
+      Encounter.schema.name
+    );
+    realmEncounter = General.pick(realmEncounter, ["uuid"], ["approvalStatuses"]);
+    const encounter = new Encounter(realmEncounter);
+    if (childEntityClass === EntityApprovalStatus) encounter.addUpdateApprovalStatus(child);
+    return encounter;
   }
 }
 

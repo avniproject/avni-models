@@ -34,7 +34,7 @@ class BaseEntity extends PersistedObject {
   static mergeOn(key) {
     return (entities) => {
       return entities.reduce((acc, entity) => {
-        let existingChildren = acc[key];
+        const existingChildren = acc[key];
         entity[key].forEach((child) => BaseEntity.addNewChild(child, existingChildren));
         entity[key] = existingChildren;
         return entity;

@@ -81,6 +81,7 @@ const refData = (clazz, { res, filter = "lastModified", translated, parent, sync
   parent: parent,
   syncWeight: syncWeight,
   resourceUrl: resUrl,
+  childToParentAssociation: true
 });
 const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, {...attrs, translated: true});
 
@@ -97,7 +98,8 @@ const txData = (
     privilegeName,
     queryParam,
     hasMoreThanOneAssociation,
-    apiQueryParams
+    apiQueryParams,
+    childToParentAssociation = true
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
@@ -134,6 +136,7 @@ const virtualTxData = (
     hasMoreThanOneAssociation,
     apiQueryParams,
     apiQueryParamKey,
+    childToParentAssociation = true
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
@@ -152,25 +155,8 @@ const virtualTxData = (
   queryParam,
   hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
   apiQueryParams,
-  apiQueryParamKey
-});
-
-const parentOfVirtualTxData = (
-  clazz,
-  {
-    res,
-    syncWeight,
-    hasMoreThanOneAssociation,
-  } = {}
-) => ({
-  schemaName: clazz.schema.name,
-  entityName: clazz.schema.name,
-  entityClass: clazz,
-  resourceName: res || _.camelCase(clazz.schema.name),
-  type: "parentOfVirtualTx",
-  nameTranslated: false,
-  syncWeight: syncWeight,
-  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation
+  apiQueryParamKey,
+  childToParentAssociation
 });
 
 const checklistDetail = refData(ChecklistDetail, {syncWeight: 1});
@@ -342,7 +328,6 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: 
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, {res: "approvalStatus", syncWeight: 0});
 const groupDashboard = refData(GroupDashboard, {res: "groupDashboard", syncWeight: 0});
-const entityApprovalStatus = parentOfVirtualTxData(EntityApprovalStatus, { res: "entityApprovalStatus", syncWeight: 2 });
 const subjectEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -352,6 +337,8 @@ const subjectEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeParam: "subjectTypeUuid",
     privilegeEntity: Privilege.privilegeEntityType.subject,
     privilegeName: Privilege.privilegeName.viewSubject,
+    parent: individual,
+    childToParentAssociation: false,
     syncWeight: 2 });
 const encounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
@@ -362,6 +349,8 @@ const encounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeParam: "encounterTypeUuid",
     privilegeEntity: Privilege.privilegeEntityType.encounter,
     privilegeName: Privilege.privilegeName.viewVisit,
+    parent: encounter,
+    childToParentAssociation: false,
     syncWeight: 2 });
 const programEncounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
@@ -372,6 +361,8 @@ const programEncounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeParam: "programEncounterTypeUuid",
     privilegeEntity: Privilege.privilegeEntityType.encounter,
     privilegeName: Privilege.privilegeName.viewVisit,
+    parent: programEncounter,
+    childToParentAssociation: false,
     syncWeight: 2 });
 const programEnrolmentEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
@@ -382,6 +373,8 @@ const programEnrolmentEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeParam: "programUuid",
     privilegeEntity: Privilege.privilegeEntityType.enrolment,
     privilegeName: Privilege.privilegeName.viewEnrolmentDetails,
+    parent: programEnrolment,
+    childToParentAssociation: false,
     syncWeight: 2 });
 const checklistItemEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
@@ -392,6 +385,8 @@ const checklistItemEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeParam: "checklistDetailUuid",
     privilegeEntity: Privilege.privilegeEntityType.checklist,
     privilegeName: Privilege.privilegeName.viewChecklist,
+    parent: checklistItem,
+    childToParentAssociation: false,
     syncWeight: 2 });
 const news = txData(News, {syncWeight: 0});
 const documentation = refData(Documentation, {res: 'documentations', syncWeight: 0});
@@ -498,7 +493,6 @@ class EntityMetaData {
       groupSubject,
       comment,
       commentThread,
-      entityApprovalStatus,
       subjectEntityApprovalStatus,
       encounterEntityApprovalStatus,
       programEncounterEntityApprovalStatus,

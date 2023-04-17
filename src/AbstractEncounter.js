@@ -11,50 +11,53 @@ import moment from "moment";
 import Observation from "./Observation";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 
+const mergeMap = new Map([
+  [EntityApprovalStatus, "approvalStatuses"]]);
+
 class AbstractEncounter extends BaseEntity {
   static fieldKeys = {
     ENCOUNTER_DATE_TIME: "ENCOUNTER_DATE_TIME",
     COMPLETION_DATE: "COMPLETION_DATE",
   };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
   get latestEntityApprovalStatus() {
-    return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+    return _.maxBy(this.approvalStatuses, 'statusDateTime');
   }
 
   get name() {
-      return this.that.name;
+    return this.that.name;
   }
 
   set name(x) {
-      this.that.name = x;
+    this.that.name = x;
   }
 
   get earliestVisitDateTime() {
-      return this.that.earliestVisitDateTime;
+    return this.that.earliestVisitDateTime;
   }
 
   set earliestVisitDateTime(x) {
-      this.that.earliestVisitDateTime = x;
+    this.that.earliestVisitDateTime = x;
   }
 
   get maxVisitDateTime() {
-      return this.that.maxVisitDateTime;
+    return this.that.maxVisitDateTime;
   }
 
   set maxVisitDateTime(x) {
-      this.that.maxVisitDateTime = x;
+    this.that.maxVisitDateTime = x;
   }
 
   get encounterType() {
-      return this.toEntity("encounterType", EncounterType);
+    return this.toEntity("encounterType", EncounterType);
   }
 
   set encounterType(x) {
-      this.that.encounterType = this.fromObject(x);
+    this.that.encounterType = this.fromObject(x);
   }
 
   get encounterDateTime() {
@@ -82,30 +85,38 @@ class AbstractEncounter extends BaseEntity {
   }
 
   get cancelObservations() {
-      return this.toEntityList("cancelObservations", Observation);
+    return this.toEntityList("cancelObservations", Observation);
   }
 
   set cancelObservations(x) {
-      this.that.cancelObservations = this.fromEntityList(x);
+    this.that.cancelObservations = this.fromEntityList(x);
   }
 
   get cancelDateTime() {
-      return this.that.cancelDateTime;
+    return this.that.cancelDateTime;
   }
 
   set cancelDateTime(x) {
-      this.that.cancelDateTime = x;
+    this.that.cancelDateTime = x;
+  }
+
+  get approvalStatuses() {
+    return this.toEntityList("approvalStatuses", EntityApprovalStatus);
+  }
+
+  set approvalStatuses(x) {
+    this.that.approvalStatuses = this.fromEntityList(x);
   }
 
   validate() {
     return _.isNil(this.encounterDateTime)
       ? [
-          new ValidationResult(
-            false,
-            AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME,
-            "emptyValidationMessage"
-          ),
-        ]
+        new ValidationResult(
+          false,
+          AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME,
+          "emptyValidationMessage"
+        ),
+      ]
       : [ValidationResult.successful(AbstractEncounter.fieldKeys.ENCOUNTER_DATE_TIME)];
   }
 
@@ -137,6 +148,7 @@ class AbstractEncounter extends BaseEntity {
     encounter.uuid = General.randomUUID();
     encounter.observations = [];
     encounter.cancelObservations = [];
+    encounter.approvalStatuses = [];
     encounter.encounterDateTime = new Date();
     encounter.voided = false;
     return encounter;
@@ -162,6 +174,7 @@ class AbstractEncounter extends BaseEntity {
       ? null
       : this.encounterLocation.clone();
     encounter.cancelLocation = _.isNil(this.cancelLocation) ? null : this.cancelLocation.clone();
+    encounter.approvalStatuses = this.approvalStatuses;
     return encounter;
   }
 
@@ -210,8 +223,8 @@ class AbstractEncounter extends BaseEntity {
   }
 
   findGroupedObservation(parentConceptNameOrUuid) {
-    const groupedObservations =_.find(this.observations, (observation) =>
-        (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+    const groupedObservations = _.find(this.observations, (observation) =>
+      (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
     return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
   }
 
@@ -307,23 +320,50 @@ class AbstractEncounter extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
-  getEncounterLabel(templateString, { conceptService, subjectService, addressLevelService, i18n, encounterService}) {
+  getEncounterLabel(templateString, {
+    conceptService,
+    subjectService,
+    addressLevelService,
+    i18n,
+    encounterService
+  }) {
     const conceptPattern = /{.*?}/g;
     let identifierTemplateString = templateString;
     _.forEach(templateString.match(conceptPattern), identifier => {
       const value = identifier === '{Date}' ? General.toDisplayDate(this.encounterDateTime) :
-          this.getValueForDisplay(identifier.replace(/[{}]/g, ''), { conceptService, subjectService, addressLevelService, i18n, encounterService});
+        this.getValueForDisplay(identifier.replace(/[{}]/g, ''), {
+          conceptService,
+          subjectService,
+          addressLevelService,
+          i18n,
+          encounterService
+        });
       identifierTemplateString = identifierTemplateString.replace(identifier, value);
     });
     return identifierTemplateString;
   }
 
-  getValueForDisplay(conceptName, { conceptService, subjectService, addressLevelService, i18n, encounterService}) {
+  getValueForDisplay(conceptName, {
+    conceptService,
+    subjectService,
+    addressLevelService,
+    i18n,
+    encounterService
+  }) {
     const observation = this.findObservation(conceptName);
-    if( _.isNil(observation)) return "";
-    const displayValue = Observation.valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n, encounterService} );
+    if (_.isNil(observation)) return "";
+    const displayValue = Observation.valueForDisplay({
+      observation,
+      conceptService,
+      subjectService,
+      addressLevelService,
+      i18n,
+      encounterService
+    });
     return displayValue.displayValue;
   }
+
+  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
 
   get subjectType() {
     return _.get(
@@ -332,6 +372,13 @@ class AbstractEncounter extends BaseEntity {
         ? "individual.subjectType"
         : "programEnrolment.individual.subjectType"
     );
+  }
+
+  addUpdateApprovalStatus(approvalStatus) {
+    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
+      this.approvalStatuses.push(approvalStatus);
+    }
+    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
   }
 }
 

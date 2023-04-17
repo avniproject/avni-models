@@ -11,6 +11,9 @@ import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
 import Observation from "./Observation";
 
+const mergeMap = new Map([
+  [EntityApprovalStatus, "approvalStatuses"]]);
+
 class ChecklistItem extends BaseEntity {
   static schema = {
     name: SchemaNames.ChecklistItem,
@@ -21,7 +24,8 @@ class ChecklistItem extends BaseEntity {
       completionDate: { type: "date", optional: true },
       observations: { type: "list", objectType: "Observation" },
       checklist: "Checklist",
-      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"}
+      approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
+      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}  //Reporting purposes
     },
   };
 
@@ -62,7 +66,7 @@ class ChecklistItem extends BaseEntity {
   }
 
   get latestEntityApprovalStatus() {
-      return this.toEntity("latestEntityApprovalStatus", EntityApprovalStatus);
+    return _.maxBy(this.approvalStatuses, 'statusDateTime');
   }
 
   static create({ uuid = General.randomUUID(), observations = [], checklist, detail }) {
@@ -117,6 +121,7 @@ class ChecklistItem extends BaseEntity {
     checklistItem.detail = this.detail;
     checklistItem.completionDate = this.completionDate;
     checklistItem.checklist = this.checklist;
+    checklistItem.approvalStatuses = this.approvalStatuses;
     checklistItem.observations = ObservationsHolder.clone(this.observations);
     return checklistItem;
   }
@@ -157,6 +162,14 @@ class ChecklistItem extends BaseEntity {
     return this.detail.concept.name;
   }
 
+  get approvalStatuses() {
+    return this.toEntityList("approvalStatuses", EntityApprovalStatus);
+  }
+
+  set approvalStatuses(x) {
+    this.that.approvalStatuses = this.fromEntityList(x);
+  }
+
   calculateApplicableState(currentDate = moment()) {
     if (this.completed) {
       return {
@@ -183,8 +196,6 @@ class ChecklistItem extends BaseEntity {
       }
       isLeadingItemExpired = leadingItemState.state === "Expired";
     }
-
-    let lastSetDate = null;
 
     let nonCompletedState = this.detail.stateConfig.find((status, index) => {
       if (!this.isDependent) {
@@ -290,6 +301,27 @@ class ChecklistItem extends BaseEntity {
 
   isRejectedEntity() {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
+  }
+
+  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
+
+  static associateChild(child, childEntityClass, childResource, entityService) {
+    let realmChecklistItem = BaseEntity.getParentEntity(
+      entityService,
+      childEntityClass,
+      childResource,
+      "entityUUID",
+      ChecklistItem.schema.name
+    );
+    realmChecklistItem = General.pick(realmChecklistItem, ["uuid"], ["approvalStatuses"]);
+    if (childEntityClass === EntityApprovalStatus) new ChecklistItem(realmChecklistItem).addUpdateApprovalStatus(child);
+  }
+
+  addUpdateApprovalStatus(approvalStatus) {
+    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
+      this.approvalStatuses.push(approvalStatus);
+    }
+    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
   }
 }
 

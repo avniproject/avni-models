@@ -121,10 +121,6 @@ class DraftEncounter extends BaseEntity {
       this.that.cancelLocation = this.fromObject(x);
   }
 
-  get latestEntityApprovalStatus() {
-      return this.toEntity("latestEntityApprovalStatus", ApprovalStatus);
-  }
-
   static create(encounter) {
     const draftEncounter = new DraftEncounter();
     draftEncounter.uuid = encounter.uuid;
@@ -161,6 +157,7 @@ class DraftEncounter extends BaseEntity {
     encounter.cancelLocation = this.cancelLocation;
     encounter.voided = this.voided;
     encounter.registrationLocation = this.registrationLocation;
+    encounter.approvalStatuses = [];
     return encounter;
   }
 }
