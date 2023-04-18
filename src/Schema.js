@@ -726,11 +726,6 @@ function createRealmConfig() {
             }
           }
         }
-
-        const entityApprovalStatusSyncStatus = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0", "EntityApprovalStatus");
-        if(entityApprovalStatusSyncStatus[0]) {
-          newDB.delete(entityApprovalStatusSyncStatus);
-        }
       }
 
       if (oldDB.schemaVersion < 173) {
@@ -752,6 +747,10 @@ function createRealmConfig() {
             entity.latestEntityApprovalStatus = _.maxBy(entity.approvalStatuses, 'statusDateTime');
           }
         });
+        const entityApprovalStatusSyncStatus = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0", "EntityApprovalStatus");
+        if(entityApprovalStatusSyncStatus[0]) {
+          newDB.delete(entityApprovalStatusSyncStatus);
+        }
       }
       // console.log('----------------oldDB.schemaVersion', oldDB.schemaVersion);
       // if (oldDB.schemaVersion < 171) {
