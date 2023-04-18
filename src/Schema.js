@@ -87,6 +87,7 @@ import DraftEncounter from './draft/DraftEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
+import SchemaNames from "./SchemaNames";
 
 const entities = [
   LocaleMapping,
@@ -182,8 +183,9 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 172,
+    schemaVersion: 173,
     migration: function (oldDB, newDB) {
+      console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");
         oldObjects.forEach((decisionConfig) => {
@@ -729,6 +731,27 @@ function createRealmConfig() {
         if(entityApprovalStatusSyncStatus[0]) {
           newDB.delete(entityApprovalStatusSyncStatus);
         }
+      }
+
+      if (oldDB.schemaVersion < 173) {
+        const entityApprovalStatuses = newDB.objects(EntityApprovalStatus.schema.name);
+        entityApprovalStatuses.forEach((entityApprovalStatus) => {
+          let schemaName;
+          switch (entityApprovalStatus.entityType) {
+            case EntityApprovalStatus.entityType.Subject:
+              schemaName = SchemaNames.Individual;
+              break;
+            default:
+              schemaName = entityApprovalStatus.entityType;
+              break;
+          }
+          const entities = newDB.objects(schemaName).filtered("uuid = $0", entityApprovalStatus.entityUUID);
+          if (entities.length === 1) {
+            const entity = entities[0];
+            entity.approvalStatuses.push(entityApprovalStatus);
+            entity.latestEntityApprovalStatus = _.maxBy(entity.approvalStatuses, 'statusDateTime');
+          }
+        });
       }
       // console.log('----------------oldDB.schemaVersion', oldDB.schemaVersion);
       // if (oldDB.schemaVersion < 171) {
