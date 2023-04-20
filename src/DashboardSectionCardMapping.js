@@ -1,6 +1,5 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
-import Dashboard from "./Dashboard";
 import ReportCard from "./ReportCard";
 import ResourceUtil from "./utility/ResourceUtil";
 import DashboardSection from "./DashboardSection";

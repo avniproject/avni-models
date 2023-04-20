@@ -98,6 +98,7 @@ import ApprovalStatus from "./ApprovalStatus";
 import StandardReportCardType from "./StandardReportCardType";
 import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
+import DashboardFilter from "./reports/DashboardFilter";
 import SyncError from "./error/SyncError";
 import News from "./News";
 import Comment from "./Comment";
@@ -222,6 +223,7 @@ export {
   StandardReportCardType,
   GroupDashboard,
   DashboardSection,
+  DashboardFilter,
   SyncError,
   News,
   Comment,

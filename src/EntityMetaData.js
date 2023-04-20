@@ -69,6 +69,7 @@ import TaskUnAssignment from "./task/TaskUnAssignment";
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
+import DashboardFilter from "./reports/DashboardFilter";
 
 const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
   schemaName: clazz.schema.name,
@@ -323,6 +324,7 @@ const groupRole = refData(GroupRole, {res: "groupRole", syncWeight: 0});
 const locationHierarchy = refData(LocationHierarchy, { res: "locations", resUrl: "locationHierarchy", syncWeight: 0 });
 const reportCard = refData(ReportCard, {res: "card", syncWeight: 0});
 const dashboard = refData(Dashboard, {res: "dashboard", syncWeight: 0});
+const dashboardFilter = refData(DashboardFilter, {res: 'dashboardFilter', parent: dashboard, syncWeight: 0});
 const dashboardSection = refData(DashboardSection, {res: "dashboardSection", syncWeight: 0});
 const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: "dashboardSectionCardMapping", syncWeight: 0 });
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
@@ -440,6 +442,7 @@ class EntityMetaData {
       approvalStatus,
       dashboardSectionCardMapping,
       dashboardSection,
+      dashboardFilter,
       dashboard,
       reportCard,
       standardReportCardType,
