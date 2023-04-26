@@ -13,6 +13,20 @@ class CustomFilter {
     GroupSubject: "GroupSubject",
   };
 
+  static getDashboardFilterTypes() {
+    const clonedTypes = {...CustomFilter.type};
+    delete clonedTypes.Name;
+    delete clonedTypes.Age;
+    delete clonedTypes.SearchAll;
+    return clonedTypes;
+  }
+
+  static getDashboardFilterWidgets() {
+    const cloned = {...CustomFilter.widget};
+    delete cloned.Relative;
+    return cloned
+  }
+
   static scope = {
     ProgramEncounter: "programEncounter",
     ProgramEnrolment: "programEnrolment",

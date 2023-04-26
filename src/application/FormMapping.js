@@ -175,6 +175,30 @@ class FormMapping extends BaseEntity {
         return {entityName:"", entityTypeUuid: ""};
     }
   }
+
+  get programUUID() {
+    return this.entityUUID;
+  }
+
+  set programUUID(x) {
+    this.entityUUID = x;
+  }
+
+  get encounterTypeUUID() {
+    return this.observationsTypeEntityUUID;
+  }
+
+  set encounterTypeUUID(x) {
+    this.observationsTypeEntityUUID = x;
+  }
+
+  // created for legacy reasons because the web app doesn't construct the domain model in the same way
+  get subjectTypeUUID() {
+    return this.subjectType.uuid;
+  }
+  get formType() {
+    return this.form.formType;
+  }
 }
 
 export default FormMapping;

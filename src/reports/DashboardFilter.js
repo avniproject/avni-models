@@ -10,7 +10,8 @@ class DashboardFilter extends BaseEntity {
     properties: {
       uuid: "string",
       dashboard: "Dashboard",
-      filter: "string",
+      name: "string",
+      filterConfig: "string",
       voided: {type: "bool", default: false}
     },
   };

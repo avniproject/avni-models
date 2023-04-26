@@ -122,6 +122,8 @@ import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import RealmProxy from "./framework/RealmProxy";
 import ah from "./framework/ArrayHelper";
 import {getUnderlyingRealmCollection, getUnderlyingRealmObject} from "./framework/RealmCollectionHelper";
+import DashboardFilterConfig, {GroupSubjectTypeFilter, ObservationBasedFilter} from './reports/DashboardFilterConfig';
+import MetaDataService from './service/MetaDataService';
 
 export {
   AbstractEncounter,
@@ -248,5 +250,9 @@ export {
   RealmProxy,
   ah,
   getUnderlyingRealmCollection,
-  getUnderlyingRealmObject
+  getUnderlyingRealmObject,
+  DashboardFilterConfig,
+  ObservationBasedFilter,
+  GroupSubjectTypeFilter,
+  MetaDataService
 };

@@ -27,7 +27,11 @@ copy-dist-to-avni-client:
 deploy-to-avni-client-only:
 	$(call _deploy,../avni-client/packages/openchs-android/node_modules/openchs-models)
 
+deploy-to-avni-web-only:
+	$(call _deploy,../avni-webapp/node_modules/openchs-models)
+
 deploy-to-avni-client: build deploy-to-avni-client-only
+deploy-to-avni-web: build deploy-to-avni-web-only
 
 deploy-to-avni-project: build
 	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))

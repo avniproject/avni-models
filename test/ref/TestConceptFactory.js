@@ -1,4 +1,3 @@
-import _ from "lodash";
 import {Concept} from "../../src";
 
 class TestConceptFactory {
