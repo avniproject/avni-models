@@ -28,7 +28,7 @@ export class ObservationBasedFilter {
   toServerRequest() {
     return {
       scope: this.scope,
-      concept: this.concept.uuid,
+      conceptUUID: this.concept.uuid,
       programUUIDs: this.programs.map((x) => x.uuid),
       encounterTypeUUIDs: this.encounterTypes.map((x) => x.uuid)
     }
