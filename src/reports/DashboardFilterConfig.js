@@ -81,12 +81,26 @@ export class GroupSubjectTypeFilter {
   }
 }
 
+const dateFilterTypes = [CustomFilter.type.RegistrationDate, CustomFilter.type.EnrolmentDate, CustomFilter.type.EncounterDate, CustomFilter.type.ProgramEncounterDate];
+
 class DashboardFilterConfig {
   subjectType;
   type;
   widget; //CustomFilter.widget
   groupSubjectTypeFilter;
   observationBasedFilter;
+
+  getInputDataType() {
+    if (this.isConceptTypeFilter()) {
+      return this.observationBasedFilter.concept.datatype;
+    } else if (this.isGroupSubjectTypeFilter()) {
+      return Concept.dataType.Subject;
+    } else if (dateFilterTypes.includes(this.type)) {
+      return Concept.dataType.Date;
+    } else {
+      return this.type;
+    }
+  }
 
   isConceptTypeFilter() {
     return this.type === CustomFilter.type.Concept;

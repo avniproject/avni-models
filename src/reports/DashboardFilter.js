@@ -20,6 +20,14 @@ class DashboardFilter extends BaseEntity {
     super(that);
   }
 
+  get name() {
+      return this.that.name;
+  }
+
+  set name(x) {
+      this.that.name = x;
+  }
+
   get dashboard() {
       return this.toEntity("dashboard", Dashboard);
   }
@@ -28,18 +36,18 @@ class DashboardFilter extends BaseEntity {
       this.that.dashboard = this.fromObject(x);
   }
 
-  get filter() {
-      return this.that.filter;
+  get filterConfig() {
+      return this.that.filterConfig;
   }
 
-  set filter(x) {
-      this.that.filter = x;
+  set filterConfig(x) {
+      this.that.filterConfig = x;
   }
 
   static fromResource(resource, entityService) {
     const dashboardFilter = General.assignFields(resource, new DashboardFilter(),
-      ["uuid", "voided"]);
-    dashboardFilter.filter = JSON.stringify(resource["filter"]);
+      ["uuid", "voided", "name"]);
+    dashboardFilter.filterConfig = JSON.stringify(resource["filterConfig"]);
     dashboardFilter.dashboard = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "dashboardUUID"),
