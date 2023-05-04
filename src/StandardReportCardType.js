@@ -48,7 +48,8 @@ class StandardReportCardType extends BaseEntity {
         Comments: "Comments",
         CallTasks: "Call tasks",
         OpenSubjectTasks: "Open subject tasks",
-    };
+        DueChecklist: "Due checklist",
+  };
 
     get iconName() {
         const typeIcon = {
@@ -92,7 +93,7 @@ class StandardReportCardType extends BaseEntity {
     }
 
     defaultTypes() {
-        return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total]
+      return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total, StandardReportCardType.type.DueChecklist]
     }
 
     isApprovalType() {
