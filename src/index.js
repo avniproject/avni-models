@@ -124,6 +124,7 @@ import ah from "./framework/ArrayHelper";
 import {getUnderlyingRealmCollection, getUnderlyingRealmObject} from "./framework/RealmCollectionHelper";
 import DashboardFilterConfig, {GroupSubjectTypeFilter, ObservationBasedFilter} from './reports/DashboardFilterConfig';
 import MetaDataService from './service/MetaDataService';
+import ArrayUtil from './utility/ArrayUtil';
 
 export {
   AbstractEncounter,
@@ -254,5 +255,6 @@ export {
   DashboardFilterConfig,
   ObservationBasedFilter,
   GroupSubjectTypeFilter,
-  MetaDataService
+  MetaDataService,
+  ArrayUtil
 };
