@@ -93,7 +93,7 @@ class StandardReportCardType extends BaseEntity {
     }
 
     defaultTypes() {
-      return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total, StandardReportCardType.type.DueChecklist]
+      return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total]
     }
 
     isApprovalType() {
@@ -106,6 +106,10 @@ class StandardReportCardType extends BaseEntity {
 
     isTaskType() {
         return _.includes([StandardReportCardType.type.CallTasks, StandardReportCardType.type.OpenSubjectTasks], this.name);
+    }
+
+    isChecklistType() {
+        return this.name === StandardReportCardType.type.DueChecklist;
     }
 
     getTaskTypeType() {
