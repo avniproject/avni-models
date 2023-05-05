@@ -21,13 +21,6 @@ import Comment from "./Comment";
 import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
 
-const mergeMap = new Map([
-  [ProgramEnrolment, "enrolments"],
-  [Encounter, "encounters"],
-  [IndividualRelationship, "relationships"],
-  [EntityApprovalStatus, "approvalStatuses"],
-  [Comment, "comments"]]);
-
 class Individual extends BaseEntity {
   static schema = {
     name: SchemaNames.Individual,
@@ -392,7 +385,16 @@ class Individual extends BaseEntity {
     return this.gender.isFemale();
   }
 
-  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
+  static merge = (childEntityClass) =>
+    BaseEntity.mergeOn(
+      new Map([
+        [ProgramEnrolment, "enrolments"],
+        [Encounter, "encounters"],
+        [IndividualRelationship, "relationships"],
+        [Comment, "comments"],
+      ]).get(childEntityClass)
+    );
+
 
   static mergeMultipleParents = (childEntityClass, entities) => {
     if (childEntityClass === GroupSubject) {
