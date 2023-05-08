@@ -278,6 +278,14 @@ class General {
   static isNumeric(str) {
     return !isNaN(parseFloat(str)) && isFinite(str);
   }
+
+  static isDeepEmpty(x) {
+    if (_.isEmpty(x)) return true;
+    if (!_.isArray(x)) {
+      return _.reduce(Object.values(x), (isEmpty, v) => _.isNil(v) && isEmpty, true);
+    }
+    return false;
+  }
 }
 
 export default General;

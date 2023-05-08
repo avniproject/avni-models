@@ -34,3 +34,11 @@ it('should assign obs field with QG', function () {
   assert.equal(5, groupObsValueWrapper.groupObservations[0].getValueWrapper().value);
   assert.equal("abc", groupObsValueWrapper.groupObservations[1].getValueWrapper().value);
 });
+
+it('is deep empty', function () {
+  assert.equal(General.isDeepEmpty({}), true);
+  assert.equal(General.isDeepEmpty(null), true);
+  assert.equal(General.isDeepEmpty([]), true);
+  assert.equal(General.isDeepEmpty({a: null}), true);
+  assert.equal(General.isDeepEmpty({a: "z"}), false);
+});

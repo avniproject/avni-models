@@ -125,6 +125,7 @@ import {getUnderlyingRealmCollection, getUnderlyingRealmObject} from "./framewor
 import DashboardFilterConfig, {GroupSubjectTypeFilter, ObservationBasedFilter} from './reports/DashboardFilterConfig';
 import MetaDataService from './service/MetaDataService';
 import ArrayUtil from './utility/ArrayUtil';
+import DateTimeUtil from "./utility/DateTimeUtil";
 
 export {
   AbstractEncounter,
@@ -256,5 +257,6 @@ export {
   ObservationBasedFilter,
   GroupSubjectTypeFilter,
   MetaDataService,
-  ArrayUtil
+  ArrayUtil,
+  DateTimeUtil
 };

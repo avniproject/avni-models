@@ -1,6 +1,7 @@
 import CustomFilter from "../CustomFilter";
 import Concept from "../Concept";
 import _ from 'lodash';
+import DateTimeUtil from "../utility/DateTimeUtil";
 
 const widgetConceptDataTypes = [
   Concept.dataType.Date,
@@ -178,6 +179,14 @@ class DashboardFilterConfig {
 
   willObservationBeInScopeOfEncounter() {
     return this.isConceptTypeFilter() && this.observationBasedFilter.willObservationBeInScopeOfEncounter();
+  }
+
+  validate(filterValue) {
+    const inputDataType = this.getInputDataType();
+    if ([Concept.dataType.Date, Concept.dataType.DateTime, Concept.dataType.Time].includes(inputDataType) && this.widget === CustomFilter.widget.Range) {
+      return DateTimeUtil.validateDateRange(filterValue.minValue, filterValue.maxValue);
+    }
+    return [true];
   }
 
   clone() {
