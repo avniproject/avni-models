@@ -209,13 +209,13 @@ class ObservationsHolder {
       const formElementStatus = _.find(formElementStatuses, (formElementStatus) => {
         return (fe.uuid === formElementStatus.uuid) && (_.isNil(fe.questionGroupIndex) || fe.questionGroupIndex === formElementStatus.questionGroupIndex);
       });
-      const {value, questionGroupIndex} = formElementStatus;
-      if (!_.isNil(value)) {
+      const {value, questionGroupIndex, initializedWithNullValueOnPurpose} = formElementStatus;
+      if (!_.isNil(value) || (!!initializedWithNullValueOnPurpose)) {
         const concept = fe.concept;
         if (fe.isQuestionGroup()) {
           const parentFormElement = _.find(applicableFormElements, ({uuid}) => fe.groupUuid === uuid);
           updateQuestionGroupObs(parentFormElement, questionGroupIndex, fe, value);
-        } else if (concept.isQuestionGroup() && _.isArray(value)) {
+        } else if (concept.isQuestionGroup() && !_.isNil(value)  && _.isArray(value)) {
           const observation = this.findObservation(concept);
           const questionGroup = observation && observation.getValueWrapper();
           const size = questionGroup ? questionGroup.size() : 0;
@@ -323,8 +323,10 @@ class ObservationsHolder {
           isSingleSelect ? new SingleCodedValue(value) : new MultipleCodedValues().push(value));
         childObservations.addObservation(observation);
       } else {
-        isSingleSelect ? observation.toggleSingleSelectAnswer(value) : observation.toggleMultiSelectAnswer(value);
-        if (observation.hasNoAnswer()) {
+        if (!_.isNil(value)) {
+          isSingleSelect ? observation.toggleSingleSelectAnswer(value) : observation.toggleMultiSelectAnswer(value);
+        }
+        if (observation.hasNoAnswer() || _.isNil(value)) {
           childObservations.removeExistingObs(childConcept);
         }
       }
