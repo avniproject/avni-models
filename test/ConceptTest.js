@@ -4,57 +4,7 @@ import ConceptAnswer from "../src/ConceptAnswer";
 import _ from "lodash";
 
 describe('ConceptTest', () => {
-    let createNumericConcept = function (lowAbsolute, hiAbsolute, lowNormal, hiNormal) {
-        const concept = new Concept();
-        concept.datatype = Concept.dataType.Numeric;
-        concept.lowAbsolute = lowAbsolute;
-        concept.hiAbsolute = hiAbsolute;
-        concept.lowNormal = lowNormal;
-        concept.hiNormal = hiNormal;
-        return concept;
-    };
 
-    function createConcept({uuid, name, datatype}) {
-      let concept = new Concept();
-      concept.uuid = uuid;
-      concept.name = name;
-      concept.datatype = datatype;
-      return concept;
-    };
-
-    function createAnswer({concept, answerOrder, abnormal}) {
-      let conceptAnswer = new ConceptAnswer();
-      conceptAnswer.concept = concept;
-      conceptAnswer.answerOrder = answerOrder;
-      conceptAnswer.abnormal = abnormal;
-      return conceptAnswer;
-    }
-
-    let createCodedConcept = function () {
-        const concept = new Concept();
-        concept.datatype = Concept.dataType.Coded;
-        concept.answers = [
-            createAnswer({
-                concept:
-                    createConcept({uuid: '5a738df9-b09a-4e7d-b683-189a9cdabcad', name: 'Pregnancy Induced Hypertension', datatype: 'NA'}),
-                answerOrder: 1,
-                abnormal: true
-            }),
-          createAnswer({
-                concept:
-                createConcept({uuid: Concept.StandardConcepts.OtherConceptUUID, name: 'Other', datatype: 'NA'}),
-                answerOrder: 2,
-                abnormal: true
-            }),
-          createAnswer({
-                concept:
-                  createConcept({uuid: '2f819f63-2a99-4719-a0c5-49e1386194a0', name: 'Underweight', datatype: 'NA'}),
-                answerOrder: 3,
-                abnormal: false
-            })
-        ];
-        return concept;
-    };
 
     it('violatesRange for concept with range', () => {
         const concept = createNumericConcept(10, 65);
@@ -121,3 +71,63 @@ describe('ConceptTest', () => {
     });
 
 });
+
+let createNumericConcept = function (lowAbsolute, hiAbsolute, lowNormal, hiNormal) {
+    const concept = new Concept();
+    concept.datatype = Concept.dataType.Numeric;
+    concept.lowAbsolute = lowAbsolute;
+    concept.hiAbsolute = hiAbsolute;
+    concept.lowNormal = lowNormal;
+    concept.hiNormal = hiNormal;
+    return concept;
+};
+
+function createConcept({uuid, name, datatype}) {
+    let concept = new Concept();
+    concept.uuid = uuid;
+    concept.name = name;
+    concept.datatype = datatype;
+    return concept;
+};
+
+function createAnswer({uuid, concept, answerOrder, abnormal}) {
+    let conceptAnswer = new ConceptAnswer();
+    conceptAnswer.uuid = uuid
+    conceptAnswer.concept = concept;
+    conceptAnswer.answerOrder = answerOrder;
+    conceptAnswer.abnormal = abnormal;
+    return conceptAnswer;
+}
+
+let createCodedConcept = function (name = '') {
+    const concept = new Concept();
+    concept.name = name;
+    concept.uuid = name;
+    concept.datatype = Concept.dataType.Coded;
+    concept.answers = [
+        createAnswer({
+            uuid: '5a738df9-b09a-4e7d-b683-189a9cdabcad',
+            concept:
+              createConcept({uuid: '5a738df9-b09a-4e7d-b683-189a9cdabcad', name: 'Pregnancy Induced Hypertension', datatype: 'NA'}),
+            answerOrder: 1,
+            abnormal: true
+        }),
+        createAnswer({
+            uuid: Concept.StandardConcepts.OtherConceptUUID,
+            concept:
+              createConcept({uuid: Concept.StandardConcepts.OtherConceptUUID, name: 'Other', datatype: 'NA'}),
+            answerOrder: 2,
+            abnormal: true
+        }),
+        createAnswer({
+            uuid: '2f819f63-2a99-4719-a0c5-49e1386194a0',
+            concept:
+              createConcept({uuid: '2f819f63-2a99-4719-a0c5-49e1386194a0', name: 'Underweight', datatype: 'NA'}),
+            answerOrder: 3,
+            abnormal: false
+        })
+    ];
+    return concept;
+};
+
+export {createCodedConcept};
