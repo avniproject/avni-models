@@ -1,18 +1,18 @@
 import _ from "lodash";
 class FormElementStatus {
   constructor(uuid, visibility, value, answersToSkip = [], validationErrors = [], answersToShow = [],
-              initializedWithNullValueOnPurpose = false) {
+              resetValueIfNull = false) {
     this.uuid = uuid;
     this.visibility = visibility;
     this.value = value;
     this.answersToSkip = answersToSkip;
     this.validationErrors = validationErrors;
     this.answersToShow = answersToShow;
-    this.initializedWithNullValueOnPurpose = initializedWithNullValueOnPurpose;
+    this.initializedWithNullValueOnPurpose = resetValueIfNull && _.isNil(value) ;
   }
 
-  static _resetIfValueIsNull(uuid, visibility, value, answersToSkip = [], validationErrors = [], answersToShow = []) {
-    return new FormElementStatus(uuid, visibility, value, answersToSkip, validationErrors, answersToShow, _.isNil(value));
+  static resetIfValueIsNull(uuid, visibility, value, answersToSkip = [], validationErrors = [], answersToShow = []) {
+    return new FormElementStatus(uuid, visibility, value, answersToSkip, validationErrors, answersToShow, true);
   }
 
   _bool(formElementStatus, op) {
