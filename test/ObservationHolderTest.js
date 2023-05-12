@@ -205,7 +205,7 @@ describe('ObservationHolderTest', () => {
             assert.equal(observationsHolder.getObservationReadableValue(concepts[index]), updatedValue);
 
             // 4. Validate null when we reset using _resetIfValueIsNull
-            formElementStatus = FormElementStatus._resetIfValueIsNull(uuid, visibility);
+            formElementStatus = FormElementStatus.resetIfValueIsNull(uuid, visibility);
             observationsHolder.updatePrimitiveCodedObs([applicableFormElements[index]], [formElementStatus]);
             assert.isNull(observationsHolder.getObservationReadableValue(concepts[index]));
         }
