@@ -85,7 +85,6 @@ export class GroupSubjectTypeFilter {
 const dateFilterTypes = [CustomFilter.type.RegistrationDate, CustomFilter.type.EnrolmentDate, CustomFilter.type.EncounterDate, CustomFilter.type.ProgramEncounterDate];
 
 class DashboardFilterConfig {
-  subjectType;
   type;
   widget; //CustomFilter.widget
   groupSubjectTypeFilter;
@@ -112,7 +111,7 @@ class DashboardFilterConfig {
   }
 
   isValid() {
-    const valid = !(_.isNil(this.type) || _.isNil(this.subjectType));
+    const valid = !(_.isNil(this.type));
     if (!valid) return valid;
 
     if (this.isConceptTypeFilter())
@@ -127,7 +126,6 @@ class DashboardFilterConfig {
 
   toServerRequest() {
     const request = {
-      subjectTypeUUID: this.subjectType.uuid,
       type: this.type,
       widget: this.widget
     };
@@ -161,18 +159,6 @@ class DashboardFilterConfig {
       (this.isConceptTypeFilter() && this.observationBasedFilter.isWidgetRequired());
   }
 
-  setSubjectType(subjectType) {
-    if (_.get(subjectType, "uuid") !== _.get(this.subjectType, "uuid")) {
-      this.subjectType = subjectType;
-      if (!_.isNil(this.observationBasedFilter)) {
-        this.observationBasedFilter.programs = [];
-        this.observationBasedFilter.encounterTypes = [];
-      } else if (!_.isNil(this.groupSubjectTypeFilter)) {
-        this.groupSubjectTypeFilter.subjectType = null;
-      }
-    }
-  }
-
   willObservationBeInScopeOfProgramEnrolment() {
     return this.isConceptTypeFilter() && this.observationBasedFilter.willObservationBeInScopeOfProgramEnrolment();
   }
@@ -192,7 +178,6 @@ class DashboardFilterConfig {
   clone() {
     const clone = new DashboardFilterConfig();
     clone.type = this.type;
-    clone.subjectType = this.subjectType;
     clone.widget = this.widget;
     clone.groupSubjectTypeFilter = this.groupSubjectTypeFilter;
     clone.observationBasedFilter = this.observationBasedFilter;
