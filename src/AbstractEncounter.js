@@ -10,9 +10,10 @@ import Point from "./geo/Point";
 import moment from "moment";
 import Observation from "./Observation";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import SchemaNames from './SchemaNames';
 
 const mergeMap = new Map([
-  [EntityApprovalStatus, "approvalStatuses"]]);
+  [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
 
 class AbstractEncounter extends BaseEntity {
   static fieldKeys = {

@@ -21,6 +21,13 @@ import Comment from "./Comment";
 import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
 
+const mergeMap = new Map([
+  [SchemaNames.ProgramEnrolment, "enrolments"],
+  [SchemaNames.Encounter, "encounters"],
+  [SchemaNames.IndividualRelationship, "relationships"],
+  [SchemaNames.Comment, "comments"],
+]);
+
 class Individual extends BaseEntity {
   static schema = {
     name: SchemaNames.Individual,
@@ -387,17 +394,12 @@ class Individual extends BaseEntity {
 
   static merge = (childEntityClass) =>
     BaseEntity.mergeOn(
-      new Map([
-        [ProgramEnrolment, "enrolments"],
-        [Encounter, "encounters"],
-        [IndividualRelationship, "relationships"],
-        [Comment, "comments"],
-      ]).get(childEntityClass)
+      mergeMap.get(childEntityClass)
     );
 
 
   static mergeMultipleParents = (childEntityClass, entities) => {
-    if (childEntityClass === GroupSubject) {
+    if (childEntityClass === GroupSubject.schema.name) {
       const individual = _.head(entities);
       const key = individual.subjectType.group ? 'groupSubjects' : 'groups';
       return BaseEntity.mergeOn(key)(entities);

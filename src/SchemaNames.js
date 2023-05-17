@@ -35,6 +35,7 @@ class SchemaNames {
   static ChecklistItemStatus = "ChecklistItemStatus";
   static Comment = "Comment";
   static Concept = "Concept";
+  static EntityApprovalStatus = "EntityApprovalStatus";
 }
 
 export default SchemaNames;

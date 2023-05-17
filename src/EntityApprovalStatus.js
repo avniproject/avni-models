@@ -7,7 +7,7 @@ import SchemaNames from "./SchemaNames";
 
 class EntityApprovalStatus extends BaseEntity {
   static schema = {
-    name: "EntityApprovalStatus",
+    name: SchemaNames.EntityApprovalStatus,
     primaryKey: "uuid",
     properties: {
       uuid: "string",

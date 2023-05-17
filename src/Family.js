@@ -10,6 +10,12 @@ import Individual from "./Individual";
 import _ from "lodash";
 import ObservationsHolder from "./ObservationsHolder";
 import Observation from "./Observation";
+import SchemaNames from './SchemaNames';
+
+const mergeMap = new Map([
+  [SchemaNames.ProgramEnrolment, "enrolments"],
+  [SchemaNames.Encounter, "encounters"],
+]);
 
 class Family extends BaseEntity {
   static schema = {
@@ -164,10 +170,7 @@ class Family extends BaseEntity {
 
   static merge = (childEntityClass) =>
     BaseEntity.mergeOn(
-      new Map([
-        [ProgramEnrolment, "enrolments"],
-        [Encounter, "encounters"],
-      ]).get(childEntityClass)
+      mergeMap.get(childEntityClass)
     );
 
   static associateChild(child, childEntityClass, childResource, entityService) {

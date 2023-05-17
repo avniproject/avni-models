@@ -12,7 +12,7 @@ import BaseEntity from "./BaseEntity";
 import Observation from "./Observation";
 
 const mergeMap = new Map([
-  [EntityApprovalStatus, "approvalStatuses"]]);
+  [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
 
 class ChecklistItem extends BaseEntity {
   static schema = {

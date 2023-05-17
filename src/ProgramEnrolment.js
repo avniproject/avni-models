@@ -17,9 +17,9 @@ import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
 
 const mergeMap = new Map([
-  [ProgramEncounter, "encounters"],
-  [Checklist, "checklists"],
-  [EntityApprovalStatus, "approvalStatuses"]
+  [SchemaNames.ProgramEncounter, "encounters"],
+  [SchemaNames.Checklist, "checklists"],
+  [SchemaNames.EntityApprovalStatus, "approvalStatuses"]
 ]);
 
 class ProgramEnrolment extends BaseEntity {
@@ -241,8 +241,8 @@ class ProgramEnrolment extends BaseEntity {
 
   static childAssociations = () =>
     new Map([
-      [ProgramEncounter, "encounters"],
-      [Checklist, "checklists"],
+      [SchemaNames.ProgramEncounter, "encounters"],
+      [SchemaNames.Checklist, "checklists"],
     ]);
 
   static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
