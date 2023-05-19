@@ -241,8 +241,8 @@ class ProgramEnrolment extends BaseEntity {
 
   static childAssociations = () =>
     new Map([
-      [SchemaNames.ProgramEncounter, "encounters"],
-      [SchemaNames.Checklist, "checklists"],
+      [ProgramEncounter, "encounters"],
+      [Checklist, "checklists"],
     ]);
 
   static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
