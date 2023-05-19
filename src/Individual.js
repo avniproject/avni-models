@@ -25,7 +25,8 @@ const mergeMap = new Map([
   [SchemaNames.ProgramEnrolment, "enrolments"],
   [SchemaNames.Encounter, "encounters"],
   [SchemaNames.IndividualRelationship, "relationships"],
-  [SchemaNames.Comment, "comments"],
+  [SchemaNames.EntityApprovalStatus, "approvalStatuses"],
+  [SchemaNames.Comment, "comments"]
 ]);
 
 class Individual extends BaseEntity {
