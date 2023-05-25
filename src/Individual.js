@@ -475,9 +475,8 @@ class Individual extends BaseEntity {
     );
     realmIndividual = General.pick(
       realmIndividual,
-      ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups", "approvalStatuses",
-      "latestEntityApprovalStatus"]
+      ["uuid", "latestEntityApprovalStatus"],
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups", "approvalStatuses"]
     );
 
     if (childEntityClass === ProgramEnrolment) BaseEntity.addNewChild(child, realmIndividual.enrolments);
