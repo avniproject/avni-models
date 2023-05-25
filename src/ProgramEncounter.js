@@ -173,8 +173,12 @@ class ProgramEncounter extends AbstractEncounter {
       "entityUUID",
       ProgramEncounter.schema.name
     );
-    realmProgramEncounter = General.pick(realmProgramEncounter, ["uuid"], ["approvalStatuses"]);
-    if (childEntityClass === EntityApprovalStatus) new ProgramEncounter(realmProgramEncounter).addUpdateApprovalStatus(child);
+    realmProgramEncounter = General.pick(realmProgramEncounter, ["uuid", "latestEntityApprovalStatus"], ["approvalStatuses"]);
+    if (childEntityClass === EntityApprovalStatus) {
+      BaseEntity.addNewChild(child, realmProgramEncounter.approvalStatuses);
+      realmProgramEncounter.latestEntityApprovalStatus = _.maxBy(realmProgramEncounter.approvalStatuses, 'statusDateTime');
+    }
+    return realmProgramEncounter;
   }
 }
 

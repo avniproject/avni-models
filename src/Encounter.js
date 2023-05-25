@@ -133,10 +133,12 @@ class Encounter extends AbstractEncounter {
       "entityUUID",
       Encounter.schema.name
     );
-    realmEncounter = General.pick(realmEncounter, ["uuid"], ["approvalStatuses"]);
-    const encounter = new Encounter(realmEncounter);
-    if (childEntityClass === EntityApprovalStatus) encounter.addUpdateApprovalStatus(child);
-    return encounter;
+    realmEncounter = General.pick(realmEncounter, ["uuid", "latestEntityApprovalStatus"], ["approvalStatuses"]);
+    if (childEntityClass === EntityApprovalStatus) {
+      BaseEntity.addNewChild(child, realmEncounter.approvalStatuses);
+      realmEncounter.latestEntityApprovalStatus = _.maxBy(realmEncounter.approvalStatuses, 'statusDateTime');
+    }
+    return realmEncounter;
   }
 }
 

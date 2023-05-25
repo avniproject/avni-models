@@ -485,13 +485,17 @@ class Individual extends BaseEntity {
     realmIndividual = General.pick(
       realmIndividual,
       ["uuid"],
-      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups", "approvalStatuses"]
+      ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups", "approvalStatuses",
+      "latestEntityApprovalStatus"]
     );
 
     if (childEntityClass === ProgramEnrolment) BaseEntity.addNewChild(child, realmIndividual.enrolments);
     else if (childEntityClass === Encounter) BaseEntity.addNewChild(child, realmIndividual.encounters);
     else if (childEntityClass === Comment) BaseEntity.addNewChild(child, realmIndividual.comments);
-    else if (childEntityClass === EntityApprovalStatus) new Individual(realmIndividual).addUpdateApprovalStatus(child);
+    else if (childEntityClass === EntityApprovalStatus) {
+        BaseEntity.addNewChild(child, realmIndividual.approvalStatuses);
+        realmIndividual.latestEntityApprovalStatus = _.maxBy(realmIndividual.approvalStatuses, 'statusDateTime');
+    }
     else throw `${childEntityClass.name} not support by ${realmIndividual.nameString}`;
 
     return realmIndividual;
@@ -740,13 +744,6 @@ class Individual extends BaseEntity {
 
   nonVoidedEnrolments() {
     return this.enrolments.filter((x) => !x.voided);
-  }
-
-  addUpdateApprovalStatus(approvalStatus) {
-    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
-      this.approvalStatuses.push(approvalStatus);
-    }
-    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
   }
 
   cloneForEdit() {

@@ -313,15 +313,12 @@ class ChecklistItem extends BaseEntity {
       "entityUUID",
       ChecklistItem.schema.name
     );
-    realmChecklistItem = General.pick(realmChecklistItem, ["uuid"], ["approvalStatuses"]);
-    if (childEntityClass === EntityApprovalStatus) new ChecklistItem(realmChecklistItem).addUpdateApprovalStatus(child);
-  }
-
-  addUpdateApprovalStatus(approvalStatus) {
-    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
-      this.approvalStatuses.push(approvalStatus);
+    realmChecklistItem = General.pick(realmChecklistItem, ["uuid", "latestEntityApprovalStatus"], ["approvalStatuses"]);
+    if (childEntityClass === EntityApprovalStatus) {
+      BaseEntity.addNewChild(child, realmChecklistItem.approvalStatuses);
+      realmChecklistItem.latestEntityApprovalStatus = _.maxBy(realmChecklistItem.approvalStatuses, 'statusDateTime');
     }
-    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
+    return realmChecklistItem;
   }
 }
 

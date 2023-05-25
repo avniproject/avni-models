@@ -256,13 +256,15 @@ class ProgramEnrolment extends BaseEntity {
       parentIdField,
       ProgramEnrolment.schema.name
     );
-    realmProgramEnrolment = General.pick(realmProgramEnrolment, ["uuid"], ["encounters", "checklists", "approvalStatuses"]);
+    realmProgramEnrolment = General.pick(realmProgramEnrolment, ["uuid", "latestEntityApprovalStatus"], ["encounters", "checklists", "approvalStatuses"]);
     if (childEntityClass === ProgramEncounter)
       BaseEntity.addNewChild(child, realmProgramEnrolment.encounters);
     else if (childEntityClass === Checklist)
       BaseEntity.addNewChild(child, realmProgramEnrolment.checklists);
-    else if (childEntityClass === EntityApprovalStatus)
-      new ProgramEnrolment(realmProgramEnrolment).addUpdateApprovalStatus(child);
+    else if (childEntityClass === EntityApprovalStatus) {
+        BaseEntity.addNewChild(child, realmProgramEnrolment.approvalStatuses);
+        realmProgramEnrolment.latestEntityApprovalStatus = _.maxBy(realmProgramEnrolment.approvalStatuses, 'statusDateTime');
+    }
     else throw `${childEntityClass.name} not support by ${ProgramEnrolment.name}`;
     return realmProgramEnrolment;
   }
@@ -741,13 +743,6 @@ class ProgramEnrolment extends BaseEntity {
 
   isRejectedEntity() {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
-  }
-
-  addUpdateApprovalStatus(approvalStatus) {
-    if (!BaseEntity.collectionHasEntity(this.approvalStatuses, approvalStatus)) {
-      this.approvalStatuses.push(approvalStatus);
-    }
-    this.that.latestEntityApprovalStatus = this.fromObject(this.latestEntityApprovalStatus);
   }
 
   toJSON() {
