@@ -65,11 +65,6 @@ class IndividualRelationGenderMapping extends BaseEntity{
     return individualRelationGenderMapping;
   }
 
-  static parentAssociations = () =>
-    new Map([
-      [IndividualRelation, "relationUUID"],
-      [Gender, "genderUUID"],
-    ]);
 }
 
 export default IndividualRelationGenderMapping;

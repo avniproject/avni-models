@@ -103,14 +103,6 @@ class ChecklistItemDetail extends BaseEntity {
       this.that.expiresAfter = x;
   }
 
-  static parentAssociations = () =>
-    new Map([
-      [ChecklistDetail, "checklistDetailUUID"],
-      [Form, "formUUID"],
-      [Concept, "conceptUUID"],
-      [ChecklistItemDetail, "leadDetailUUID"],
-    ]);
-
   static fromResource(checklistItemResource, entityService, resourcesInCurrentPage) {
     const checklistDetail = entityService.findByKey(
       "uuid",

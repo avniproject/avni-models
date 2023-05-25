@@ -135,8 +135,6 @@ class Form extends BaseEntity {
     })
   }
 
-  static childAssociations = () => new Map([[FormElementGroup, "formElementGroups"]]);
-
   static merge = () => BaseEntity.mergeOn("formElementGroups");
 
   static associateChild(child, childEntityClass, childResource, entityService) {

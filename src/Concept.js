@@ -173,8 +173,6 @@ export default class Concept extends BaseEntity {
     return concept;
   }
 
-  static childAssociations = () => new Map([[ConceptAnswer, "answers"]]);
-
   static associateChild(child, childEntityClass, childResource, entityService) {
     let concept = BaseEntity.getParentEntity(
       entityService,

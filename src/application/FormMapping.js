@@ -112,12 +112,6 @@ class FormMapping extends BaseEntity {
     return formMapping;
   }
 
-  static parentAssociations = () =>
-    new Map([
-      [Form, "formUUID"],
-      [SubjectType, "subjectTypeUUID"],
-    ]);
-
   getSchemaAndFilterQuery() {
     switch (this.form.formType) {
       case Form.formTypes.IndividualProfile :

@@ -128,8 +128,6 @@ class FormElement extends BaseEntity {
       this.that.documentation = this.fromObject(x);
   }
 
-  static parentAssociations = () => new Map([[FormElementGroup, "formElementGroupUUID"]]);
-
   static fromResource(resource, entityService) {
     const formElementGroup = entityService.findByKey(
       "uuid",

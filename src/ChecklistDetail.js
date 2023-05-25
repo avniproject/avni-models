@@ -44,8 +44,6 @@ class ChecklistDetail extends BaseEntity {
     return checklistDetail;
   }
 
-  static childAssociations = () => new Map([[ChecklistItemDetail, "items"]]);
-
   static merge = () => BaseEntity.mergeOn("items");
 
   static associateChild(child, childEntityClass, childResource, entityService) {

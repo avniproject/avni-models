@@ -162,12 +162,6 @@ class Family extends BaseEntity {
     return individual;
   }
 
-  static childAssociations = () =>
-    new Map([
-      [ProgramEnrolment, "enrolments"],
-      [Encounter, "encounters"],
-    ]);
-
   static merge = (childEntityClass) =>
     BaseEntity.mergeOn(
       mergeMap.get(childEntityClass)

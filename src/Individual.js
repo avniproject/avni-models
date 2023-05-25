@@ -445,15 +445,6 @@ class Individual extends BaseEntity {
     }
   }
 
-  static childAssociations = () =>
-    ([
-      [IndividualRelationship, "relationships"],
-      [ProgramEnrolment, "enrolments"],
-      [Encounter, "encounters"],
-      [GroupSubject, "groupSubjects"],
-      [Comment, "comments"],
-    ]);
-
   static associateChildToMultipleParents(child, childEntityClass, childResource, entityService) {
     if (childEntityClass === GroupSubject) {
       return Individual.associateGroupSubject(

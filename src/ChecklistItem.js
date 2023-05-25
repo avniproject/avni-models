@@ -102,7 +102,6 @@ class ChecklistItem extends BaseEntity {
     return checklistItem;
   }
 
-  static parentAssociations = () => new Map([[Checklist, "checklistUUID"]]);
   get toResource() {
     const resource = _.pick(this, ["uuid", "name"]);
     resource["completionDate"] = General.isoFormat(this.completionDate);

@@ -145,10 +145,6 @@ class FormElementGroup extends BaseEntity {
 
   static merge = () => BaseEntity.mergeOn("formElements");
 
-  static parentAssociations = () => new Map([[Form, "formUUID"]]);
-
-  static childAssociations = () => new Map([[FormElement, "formElements"]]);
-
   static associateChild(child, childEntityClass, childResource, entityService) {
     let formElementGroup = BaseEntity.getParentEntity(
       entityService,

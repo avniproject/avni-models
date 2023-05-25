@@ -67,5 +67,4 @@ export default class ConceptAnswer extends BaseEntity {
     return conceptAnswer;
   }
 
-  static parentAssociations = () => new Map([[Concept, "conceptUUID"]]);
 }

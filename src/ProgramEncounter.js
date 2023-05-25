@@ -64,8 +64,6 @@ class ProgramEncounter extends AbstractEncounter {
     return programEncounter;
   }
 
-  static parentAssociations = () => new Map([[ProgramEnrolment, "programEnrolmentUUID"]]);
-
   get toResource() {
     const resource = super.toResource;
     resource.programEnrolmentUUID = this.programEnrolment.uuid;

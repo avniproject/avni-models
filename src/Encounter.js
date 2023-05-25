@@ -67,8 +67,6 @@ class Encounter extends AbstractEncounter {
     return encounter;
   }
 
-  static parentAssociations = () => new Map([[Individual, "individualUUID"]]);
-
   get toResource() {
     const resource = super.toResource;
     resource.individualUUID = this.individual.uuid;

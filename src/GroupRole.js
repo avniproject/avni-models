@@ -130,7 +130,6 @@ class GroupRole extends BaseEntity{
     return groupRole;
   }
 
-  static parentAssociations = () => new Map([[SubjectType, "groupSubjectTypeUUID"]]);
 }
 
 export default GroupRole;
