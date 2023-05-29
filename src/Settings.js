@@ -173,6 +173,14 @@ class Settings extends BaseEntity {
     this.that.refreshToken = x;
   }
 
+  get devSkipValidation() {
+    return this.that.devSkipValidation;
+  }
+
+  set devSkipValidation(x) {
+    this.that.devSkipValidation = x;
+  }
+
   clone() {
     const settings = new Settings();
     settings.uuid = this.uuid;
@@ -185,6 +193,12 @@ class Settings extends BaseEntity {
     settings.devSkipValidation = this.devSkipValidation;
     settings.captureLocation = this.captureLocation;
     settings.userId = this.userId;
+    settings.idpType = this.idpType;
+    settings.keycloakRealm = this.keycloakRealm;
+    settings.keycloakScope = this.keycloakScope;
+    settings.keycloakAuthServerUrl = this.keycloakAuthServerUrl;
+    settings.keycloakClientId = this.keycloakClientId;
+    settings.keycloakGrantType = this.keycloakGrantType;
     return settings;
   }
 
@@ -201,6 +215,8 @@ class Settings extends BaseEntity {
       validationResults.addOrReplace(ValidationResult.failureForEmpty("locale"));
     if (!General.isNumeric(this.logLevel))
       validationResults.addOrReplace(ValidationResult.failureForNumeric("logLevel"));
+    if (_.isEmpty(this.idpType))
+      validationResults.addOrReplace(ValidationResult.failureForEmpty("idpType"));
 
     return validationResults;
   }
