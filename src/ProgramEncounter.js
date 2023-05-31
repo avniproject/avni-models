@@ -178,6 +178,10 @@ class ProgramEncounter extends AbstractEncounter {
     }
     return realmProgramEncounter;
   }
+
+  setLatestEntityApprovalStatus(entityApprovalStatus) {
+    this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+  }
 }
 
 export default ProgramEncounter;

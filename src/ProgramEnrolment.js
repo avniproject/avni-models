@@ -737,6 +737,10 @@ class ProgramEnrolment extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
+  setLatestEntityApprovalStatus(entityApprovalStatus) {
+    this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,

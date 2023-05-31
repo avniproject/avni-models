@@ -1114,6 +1114,10 @@ class Individual extends BaseEntity {
               _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid));
   }
 
+  setLatestEntityApprovalStatus(entityApprovalStatus) {
+    this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+  }
+
   toJSON() {
     return {
       uuid: this.uuid,

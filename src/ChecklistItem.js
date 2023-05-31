@@ -319,6 +319,10 @@ class ChecklistItem extends BaseEntity {
     }
     return realmChecklistItem;
   }
+
+  setLatestEntityApprovalStatus(entityApprovalStatus) {
+    this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+  }
 }
 
 export default ChecklistItem;

@@ -374,6 +374,10 @@ class AbstractEncounter extends BaseEntity {
         : "programEnrolment.individual.subjectType"
     );
   }
+
+  setLatestEntityApprovalStatus(entityApprovalStatus) {
+    this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+  }
 }
 
 export default AbstractEncounter;
