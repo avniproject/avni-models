@@ -26,6 +26,7 @@ class SubjectType extends ReferenceEntity {
       syncRegistrationConcept2: {type: "string", optional: true},
       allowProfilePicture: {type: 'bool', default: false},
       allowMiddleName: {type: 'bool', default: false},
+      lastNameOptional: {type: 'bool', default: false},
       directlyAssignable: {type: 'bool', default: false},
       nameHelpText: {type: "string", optional: true},
     }
@@ -163,6 +164,14 @@ class SubjectType extends ReferenceEntity {
       this.that.allowMiddleName = x;
   }
 
+  get lastNameOptional() {
+     return this.that.lastNameOptional;
+  }
+
+  set lastNameOptional(x) {
+     this.that.lastNameOptional = x;
+  }
+
   get nameHelpText() {
       return this.that.nameHelpText;
   }
@@ -210,6 +219,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.programEligibilityCheckRule = operationalSubjectType.programEligibilityCheckRule;
     subjectType.uniqueName = operationalSubjectType.uniqueName;
     subjectType.allowMiddleName = operationalSubjectType.allowMiddleName;
+    subjectType.lastNameOptional = operationalSubjectType.lastNameOptional;
     subjectType.directlyAssignable = operationalSubjectType.directlyAssignable;
     subjectType.allowProfilePicture = operationalSubjectType.allowProfilePicture;
     subjectType.validFirstNameFormat = Format.fromResource(operationalSubjectType["validFirstNameFormat"]);

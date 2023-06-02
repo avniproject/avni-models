@@ -660,7 +660,7 @@ class Individual extends BaseEntity {
   }
 
   validateLastName() {
-    return this.validateName(this.lastName, Individual.validationKeys.LAST_NAME, this.subjectType.validLastNameFormat);
+    return this.validateName(this.lastName, Individual.validationKeys.LAST_NAME, this.subjectType.validLastNameFormat, !this.subjectType.lastNameOptional);
   }
 
   validateRegistrationLocation() {

@@ -185,7 +185,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 174,
+    schemaVersion: 175,
     migration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
@@ -754,17 +754,12 @@ function createRealmConfig() {
           newDB.delete(entityApprovalStatusSyncStatus);
         }
       }
-      // console.log('----------------oldDB.schemaVersion', oldDB.schemaVersion);
-      // if (oldDB.schemaVersion < 171) {
-      //   _.forEach([...newDB.objects("Settings")], (settings) => {
-      //       settings.idpType = "";
-      //       settings.keycloakGrantType = "";
-      //       settings.keycloakScope = "";
-      //       settings.keycloakClientId = "";
-      //       settings.keycloakAuthServerUrl = "";
-      //       settings.keycloakRealm = "";
-      //   });
-      // }
+
+      if (oldDB.schemaVersion < 175) {
+        _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
+          sub.lastNameOptional = false;
+        });
+      }
     },
   };
 }

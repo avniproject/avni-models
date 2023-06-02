@@ -15,7 +15,7 @@ release:
 	git pull --tags
 	git pull --rebase
 	@echo "Ensure version changes follow semantic versioning - https://classic.yarnpkg.com/en/docs/dependency-versions#toc-semantic-versioning"
-	yarn version
+	yarn version --patch
 	@echo "   Now please run \nmake publish"
 
 publish:
