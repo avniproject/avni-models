@@ -41,4 +41,6 @@ it('is deep empty', function () {
   assert.equal(General.isDeepEmpty([]), true);
   assert.equal(General.isDeepEmpty({a: null}), true);
   assert.equal(General.isDeepEmpty({a: "z"}), false);
+  assert.equal(General.isDeepEmpty("abcd"), false);
+  assert.equal(General.isDeepEmpty(new Date()), false);
 });

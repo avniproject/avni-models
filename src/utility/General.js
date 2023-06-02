@@ -280,6 +280,8 @@ class General {
   }
 
   static isDeepEmpty(x) {
+    if (_.isNil(x)) return true;
+    if (_.isDate(x)) return false;
     if (_.isEmpty(x)) return true;
     if (!_.isArray(x)) {
       return _.reduce(Object.values(x), (isEmpty, v) => _.isNil(v) && isEmpty, true);
