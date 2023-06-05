@@ -245,6 +245,7 @@ class SubjectType extends ReferenceEntity {
     cloned.programEligibilityCheckRule = this.programEligibilityCheckRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
     cloned.allowMiddleName = this.allowMiddleName;
+    cloned.lastNameOptional = this.lastNameOptional;
     cloned.directlyAssignable = this.directlyAssignable;
     cloned.allowProfilePicture = this.allowProfilePicture;
     cloned.uniqueName = this.uniqueName;
