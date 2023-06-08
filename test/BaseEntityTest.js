@@ -52,5 +52,6 @@ describe('BaseEntityTest', () => {
         const individual2 = {encounters: [{uuid: "2"},{ uuid: "3"}]};
         const mergedIndividual = BaseEntity.mergeOn('encounters')([individual1, individual2]);
         expect(mergedIndividual.encounters.length).toEqual(3);
+        expect(mergedIndividual.encounters.map(enc => enc.uuid).sort()).toEqual(["1", "2", "3"]);
     });
 });
