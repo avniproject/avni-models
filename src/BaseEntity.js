@@ -33,12 +33,13 @@ class BaseEntity extends PersistedObject {
 
   static mergeOn(key) {
     return (entities) => {
-      return entities.reduce((acc, entity) => {
-        const existingChildren = acc[key];
-        entity[key].forEach((child) => BaseEntity.addNewChild(child, existingChildren));
-        entity[key] = existingChildren;
-        return entity;
-      });
+      const mergedUuidToChildMap = entities.reduce((accumulatedUuidToChildMap, entity) => {
+          entity[key].forEach(item => accumulatedUuidToChildMap[item.uuid] = item);
+          return accumulatedUuidToChildMap;
+        }, {});
+      const entityWithMergedChildren = entities[0]; //Set merged children to the first instance of parent entity
+      BaseEntity.replaceCollection(_.values(mergedUuidToChildMap), entityWithMergedChildren[key]);
+      return entityWithMergedChildren;
     };
   }
 
@@ -47,9 +48,20 @@ class BaseEntity extends PersistedObject {
    */
   static addNewChild(newChild, existingChildren) {
     if (!BaseEntity.collectionHasEntity(existingChildren, newChild)) {
-      const child = _.isNil(newChild.that) ? newChild : newChild.that;
-      existingChildren.push(child);
+      this._setChild(newChild, existingChildren);
     }
+  }
+
+  static replaceCollection(newChildren = [], existingChildren = []) {
+    existingChildren.splice(0,existingChildren.length); //Clear old entries
+    newChildren.forEach(newChild => {
+      this._setChild(newChild, existingChildren); //Add new entry
+    });
+  }
+
+  static _setChild(newChild, existingChildren) {
+    const child = _.isNil(newChild.that) ? newChild : newChild.that;
+    existingChildren.push(child);
   }
 
   static collectionHasEntity(collection, entity) {
