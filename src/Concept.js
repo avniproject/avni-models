@@ -348,6 +348,7 @@ export default class Concept extends BaseEntity {
       Concept.dataType.Date,
       Concept.dataType.DateTime,
       Concept.dataType.Location,
+      Concept.dataType.Notes
     ].includes(this.datatype)
   }
 
