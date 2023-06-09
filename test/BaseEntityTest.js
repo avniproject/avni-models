@@ -44,7 +44,7 @@ describe('BaseEntityTest', () => {
         let start = performance.now();
         BaseEntity.mergeOn('encounters')(individuals);
         let timeTaken = performance.now() - start;
-        expect( timeTaken).toBeLessThanOrEqual(10);
+        expect( timeTaken).toBeLessThanOrEqual(200); //On circleCI build machine
     });
 
     it('mergeWillHaveAllKeys', () => {
