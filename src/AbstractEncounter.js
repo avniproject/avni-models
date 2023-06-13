@@ -11,6 +11,7 @@ import moment from "moment";
 import Observation from "./Observation";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from './SchemaNames';
+import MergeUtil from "./utility/MergeUtil";
 
 const mergeMap = new Map([
   [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
@@ -364,7 +365,7 @@ class AbstractEncounter extends BaseEntity {
     return displayValue.displayValue;
   }
 
-  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
+  static merge = (childEntityName) => MergeUtil.getMergeFunction(childEntityName, mergeMap);
 
   get subjectType() {
     return _.get(

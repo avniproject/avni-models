@@ -20,6 +20,7 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import Comment from "./Comment";
 import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
+import MergeUtil from "./utility/MergeUtil";
 
 const mergeMap = new Map([
   [SchemaNames.ProgramEnrolment, "enrolments"],
@@ -393,11 +394,9 @@ class Individual extends BaseEntity {
     return this.gender.isFemale();
   }
 
-  static merge = (childEntityClass) =>
-    BaseEntity.mergeOn(
-      mergeMap.get(childEntityClass)
-    );
-
+  static merge = (childEntityName) => {
+    return MergeUtil.getMergeFunction(childEntityName, mergeMap);
+  }
 
   static mergeMultipleParents = (childEntityClass, entities) => {
     if (childEntityClass === GroupSubject.schema.name) {
@@ -483,9 +482,9 @@ class Individual extends BaseEntity {
     else if (childEntityClass === Encounter) BaseEntity.addNewChild(child, realmIndividual.encounters);
     else if (childEntityClass === Comment) BaseEntity.addNewChild(child, realmIndividual.comments);
     else if (childEntityClass === EntityApprovalStatus) {
-        BaseEntity.addNewChild(child, realmIndividual.approvalStatuses);
-        realmIndividual.latestEntityApprovalStatus = _.maxBy(realmIndividual.approvalStatuses, 'statusDateTime');
-    }
+      BaseEntity.addNewChild(child, realmIndividual.approvalStatuses);
+      realmIndividual.latestEntityApprovalStatus = _.maxBy(realmIndividual.approvalStatuses, 'statusDateTime');
+      }
     else throw `${childEntityClass.name} not support by ${realmIndividual.nameString}`;
 
     return realmIndividual;
@@ -1105,13 +1104,13 @@ class Individual extends BaseEntity {
 
   hasProgramEncounterOfType(encounterTypes) {
     return _.some(this.enrolments, (enrolment) =>
-              _.some(enrolment.encounters, (encounter) =>
-                  _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid)));
+      _.some(enrolment.encounters, (encounter) =>
+        _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid)));
   }
 
   hasEncounterOfType(encounterTypes) {
     return _.some(this.encounters, (encounter) =>
-              _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid));
+      _.some(encounterTypes, (encounterType) => encounterType.uuid === encounter.encounterType.uuid));
   }
 
   setLatestEntityApprovalStatus(entityApprovalStatus) {

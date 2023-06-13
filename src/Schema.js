@@ -185,7 +185,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 175,
+    schemaVersion: 176,
     migration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
@@ -758,6 +758,26 @@ function createRealmConfig() {
       if (oldDB.schemaVersion < 175) {
         _.forEach(newDB.objects(SubjectType.schema.name), (sub) => {
           sub.lastNameOptional = false;
+        });
+      }
+
+      if (oldDB.schemaVersion < 176) {
+        const entityApprovalStatuses = newDB.objects(EntityApprovalStatus.schema.name);
+        entityApprovalStatuses.forEach((entityApprovalStatus) => {
+          let parentSchemaName;
+          switch (entityApprovalStatus.entityType) {
+            case EntityApprovalStatus.entityType.Subject:
+              parentSchemaName = SchemaNames.Individual;
+              break;
+            default:
+              parentSchemaName = entityApprovalStatus.entityType;
+              break;
+          }
+          const parentEntities = newDB.objects(parentSchemaName).filtered("uuid = $0", entityApprovalStatus.entityUUID);
+          if (parentEntities.length === 1) {
+            const parentEntity = parentEntities[0];
+            parentEntity.latestEntityApprovalStatus = _.maxBy(parentEntity.approvalStatuses, 'statusDateTime');
+          }
         });
       }
     },

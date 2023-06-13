@@ -15,6 +15,7 @@ import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
+import MergeUtil from "./utility/MergeUtil";
 
 const mergeMap = new Map([
   [SchemaNames.ProgramEncounter, "encounters"],
@@ -237,7 +238,7 @@ class ProgramEnrolment extends BaseEntity {
     return programEnrolment;
   }
 
-  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
+  static merge = (childEntityName) => MergeUtil.getMergeFunction(childEntityName, mergeMap);
 
   static associateChild(child, childEntityClass, childResource, entityService) {
     const parentIdField = childEntityClass === EntityApprovalStatus ? "entityUUID" : "programEnrolmentUUID";
