@@ -10,6 +10,7 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
 import Observation from "./Observation";
+import MergeUtil from "./utility/MergeUtil";
 
 const mergeMap = new Map([
   [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
@@ -302,7 +303,7 @@ class ChecklistItem extends BaseEntity {
     return this.latestEntityApprovalStatus && this.latestEntityApprovalStatus.isRejected;
   }
 
-  static merge = (childEntityClass) => BaseEntity.mergeOn(mergeMap.get(childEntityClass));
+  static merge = (childEntityName) => MergeUtil.getMergeFunction(childEntityName, mergeMap);
 
   static associateChild(child, childEntityClass, childResource, entityService) {
     let realmChecklistItem = BaseEntity.getParentEntity(

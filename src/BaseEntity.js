@@ -5,6 +5,7 @@ import SyncError from "./error/SyncError";
 import {ErrorCodes} from "./error/ErrorCodes";
 import PersistedObject from "./PersistedObject";
 import ah from "./framework/ArrayHelper";
+import SchemaNames from "./SchemaNames";
 
 class BaseEntity extends PersistedObject {
   static fieldKeys = {
