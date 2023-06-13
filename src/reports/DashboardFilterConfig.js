@@ -169,8 +169,11 @@ class DashboardFilterConfig {
 
   validate(filterValue) {
     const inputDataType = this.getInputDataType();
-    if ([Concept.dataType.Date, Concept.dataType.DateTime, Concept.dataType.Time].includes(inputDataType) && this.widget === CustomFilter.widget.Range) {
+    if ([Concept.dataType.Date, Concept.dataType.DateTime].includes(inputDataType) && this.widget === CustomFilter.widget.Range) {
       return DateTimeUtil.validateDateRange(filterValue.minValue, filterValue.maxValue);
+    }
+    if (Concept.dataType.Time === inputDataType && this.widget === CustomFilter.widget.Range) {
+      return DateTimeUtil.validateTimeRange(filterValue.minValue, filterValue.maxValue);
     }
     return [true];
   }
