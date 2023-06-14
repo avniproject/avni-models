@@ -509,14 +509,14 @@ class Individual extends BaseEntity {
     //Keeping date of birth to be always entered and displayed as per the current date. It would be perhaps more error prone for users to put themselves in the past and enter age as of that date
     const ageInYears = this.getAgeInYears();
     if (ageInYears < 1) {
-      let ageInWeeks = moment().diff(this.dateOfBirth, "weeks");
+      let ageInWeeks = this.getAgeInWeeks();
       return ageInWeeks === 0
         ? Duration.inDay(moment().diff(this.dateOfBirth, "days")).toString(i18n)
         : Duration.inWeek(ageInWeeks).toString(i18n);
     } else if (ageInYears < 2) {
-      return Duration.inMonth(moment().diff(this.dateOfBirth, "months")).toString(i18n);
+      return Duration.inMonth(this.getAgeInMonths()).toString(i18n);
     } else if (ageInYears < 6) {
-      let ageInMonths = moment().diff(this.dateOfBirth, "months");
+      let ageInMonths = this.getAgeInMonths();
       let noOfYears = _.toInteger(ageInMonths / 12);
       let noOfMonths = ageInMonths % 12;
       let durationInYears = `${Duration.inYear(noOfYears).toString(i18n)}`;
