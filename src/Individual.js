@@ -515,6 +515,13 @@ class Individual extends BaseEntity {
         : Duration.inWeek(ageInWeeks).toString(i18n);
     } else if (ageInYears < 2) {
       return Duration.inMonth(moment().diff(this.dateOfBirth, "months")).toString(i18n);
+    } else if (ageInYears < 6) {
+      let ageInMonths = moment().diff(this.dateOfBirth, "months");
+      let noOfYears = _.toInteger(ageInMonths / 12);
+      let noOfMonths = ageInMonths % 12;
+      let durationInYears = `${Duration.inYear(noOfYears).toString(i18n)}`;
+      if(noOfMonths > 0) return `${durationInYears} ${Duration.inMonth(noOfMonths).toString(i18n)}`
+      return durationInYears;
     } else {
       return Duration.inYear(ageInYears).toString(i18n);
     }

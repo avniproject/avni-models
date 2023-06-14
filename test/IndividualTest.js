@@ -24,6 +24,38 @@ describe('IndividualTest', () => {
     assert.include(individual.getAge().toString(), "years");
   });
 
+  it('should display age in years and months when age is between 2 and 6 years', () => {
+    Date.now = jest.fn(() => new Date("2023-06-13T12:33:37.000Z"));
+    const i18n = {t: _.identity};
+    const individual = new Individual();
+    individual.dateOfBirth = '2021-04-15';
+    assert.equal(individual.getDisplayAge(i18n), "2 years 1 month");
+  });
+
+  it('should display age in years when age is exactly say 3 years', () => {
+    Date.now = jest.fn(() => new Date("2023-06-13T12:33:37.000Z"));
+    const i18n = {t: _.identity};
+    const individual = new Individual();
+    individual.dateOfBirth = '2020-06-13';
+    assert.equal(individual.getDisplayAge(i18n), "3 years");
+  });
+
+  it('should display age in months when age is less than 2 years', () => {
+    Date.now = jest.fn(() => new Date("2023-06-13T12:33:37.000Z"));
+    const i18n = {t: _.identity};
+    const individual = new Individual();
+    individual.dateOfBirth = '2021-07-10';
+    assert.equal(individual.getDisplayAge(i18n), "23 months");
+  });
+
+  it('should display age in years when age is more than 6 years', () => {
+    Date.now = jest.fn(() => new Date("2023-06-13T12:33:37.000Z"));
+    const i18n = {t: _.identity};
+    const individual = new Individual();
+    individual.dateOfBirth = '2015-07-10';
+    assert.equal(individual.getDisplayAge(i18n), "7 years");
+  });
+
   it('staticallyEligiblePrograms', () => {
     const enrolledProgram = EntityFactory.createProgram({});
     const allPrograms = [EntityFactory.createProgram({}), EntityFactory.createProgram({}), enrolledProgram];
