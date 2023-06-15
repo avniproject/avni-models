@@ -14,7 +14,7 @@ import Decision from "./Decision";
 import Duration from "./Duration";
 import Encounter from "./Encounter";
 import EncounterType from "./EncounterType";
-import EntityMetaData from "./EntityMetaData";
+import EntityMetaData, {EntityApprovalStatusMetaData} from "./EntityMetaData";
 import EntityQueue from "./EntityQueue";
 import EntityRule from "./EntityRule";
 import EntitySyncStatus from "./EntitySyncStatus";
@@ -258,5 +258,6 @@ export {
   GroupSubjectTypeFilter,
   MetaDataService,
   ArrayUtil,
-  DateTimeUtil
+  DateTimeUtil,
+  EntityApprovalStatusMetaData
 };

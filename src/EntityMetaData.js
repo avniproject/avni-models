@@ -326,6 +326,8 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, { res: 
 const standardReportCardType = refData(StandardReportCardType, { res: "standardReportCardType", syncWeight: 0 });
 const approvalStatus = refData(ApprovalStatus, {res: "approvalStatus", syncWeight: 0});
 const groupDashboard = refData(GroupDashboard, {res: "groupDashboard", syncWeight: 0});
+
+export const EntityApprovalStatusMetaData = txData(EntityApprovalStatus, { res: "entityApprovalStatus", entityName: "EntityApprovalStatus"});
 const subjectEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -512,11 +514,19 @@ class EntityMetaData {
   }
 
   static findByName(entityName) {
+    return EntityMetaData.findByNameIn(entityName, EntityMetaData.model());
+  }
+
+  static findByNameIn(entityName, modelCollection) {
     return _.find(
-      EntityMetaData.model(),
+      modelCollection,
       //TODO check if this works
       (entityMetadata) => entityMetadata.entityName === entityName
     );
+  }
+
+  static allModels() {
+    return _.concat(EntityApprovalStatusMetaData, EntityMetaData.model());
   }
 }
 
