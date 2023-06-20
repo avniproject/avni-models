@@ -83,6 +83,7 @@ class CustomDashboardCache extends BaseEntity{
   static getSelectedValuesFromState(state) {
     const filterCache = {
       date: state.date,
+      applied: false,
       selectedLocations: state.selectedLocations,
       selectedCustomFilters: state.selectedCustomFilters,
       selectedGenders: state.selectedGenders,
@@ -103,11 +104,17 @@ class CustomDashboardCache extends BaseEntity{
   }
 
   getRuleInput() {
-    return this.ruleInputJSON && JSON.parse(this.ruleInputJSON) || {};
+    return this.ruleInputJSON && JSON.parse(this.ruleInputJSON) || {ruleInputArray: null};
   }
 
   getTransformedFilters() {
-    return this.transformedFiltersJSON && JSON.parse(this.transformedFiltersJSON) || {};
+    return this.transformedFiltersJSON && JSON.parse(this.transformedFiltersJSON) || {
+      date: new Date(),
+      applied: false,
+      selectedLocations: [],
+      selectedCustomFilters: [],
+      selectedGenders: [],
+    };
   }
 }
 
