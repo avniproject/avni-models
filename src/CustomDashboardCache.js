@@ -11,6 +11,8 @@ class CustomDashboardCache extends BaseEntity{
       selectedValuesJSON: "string",
       filterApplied: {type: "bool", default: false},
       filterErrorsJSON: "string",
+      ruleInputJSON: "string",
+      transformedFiltersJSON: "string",
     },
   };
 
@@ -50,13 +52,31 @@ class CustomDashboardCache extends BaseEntity{
     this.that.filterErrorsJSON = x;
   }
 
-  static create(uuid, updatedAt, selectedValuesJSON, filterApplied, filterErrorsJSON) {
+  get ruleInputJSON() {
+    return this.that.ruleInputJSON;
+  }
+
+  set ruleInputJSON(x) {
+    this.that.ruleInputJSON = x;
+  }
+
+  get transformedFiltersJSON() {
+    return this.that.transformedFiltersJSON;
+  }
+
+  set transformedFiltersJSON(x) {
+    this.that.transformedFiltersJSON = x;
+  }
+
+  static create(uuid, updatedAt, selectedValuesJSON, filterApplied, filterErrorsJSON, ruleInputJSON, transformedFiltersJSON) {
     const customDashboardCache = new CustomDashboardCache();
     customDashboardCache.uuid = uuid;
     customDashboardCache.updatedAt = updatedAt;
     customDashboardCache.selectedValuesJSON = selectedValuesJSON;
     customDashboardCache.filterApplied = filterApplied;
     customDashboardCache.filterErrorsJSON = filterErrorsJSON;
+    customDashboardCache.ruleInputJSON = ruleInputJSON;
+    customDashboardCache.transformedFiltersJSON = transformedFiltersJSON;
     return customDashboardCache;
   }
 
@@ -80,6 +100,14 @@ class CustomDashboardCache extends BaseEntity{
 
   getFilterErrors() {
     return this.filterErrorsJSON && JSON.parse(this.filterErrorsJSON) || {};
+  }
+
+  getRuleInput() {
+    return this.ruleInputJSON && JSON.parse(this.ruleInputJSON) || {};
+  }
+
+  getTransformedFilters() {
+    return this.transformedFiltersJSON && JSON.parse(this.transformedFiltersJSON) || {};
   }
 }
 
