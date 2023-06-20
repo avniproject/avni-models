@@ -89,6 +89,7 @@ import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import SchemaNames from "./SchemaNames";
 import DashboardFilter from "./reports/DashboardFilter";
+import CustomDashboardCache from './CustomDashboardCache';
 
 const entities = [
   DashboardFilter,
@@ -154,6 +155,7 @@ const entities = [
   GroupRole,
   GroupSubject,
   DashboardCache,
+  CustomDashboardCache,
   LocationHierarchy,
   ReportCard,
   Dashboard,
@@ -185,7 +187,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 176,
+    schemaVersion: 177,
     migration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
