@@ -127,6 +127,7 @@ import MetaDataService from './service/MetaDataService';
 import ArrayUtil from './utility/ArrayUtil';
 import DateTimeUtil from "./utility/DateTimeUtil";
 import AgeUtil from "./utility/AgeUtil";
+import CustomDashboardCache from "./CustomDashboardCache";
 
 export {
   AbstractEncounter,
@@ -217,6 +218,7 @@ export {
   GroupRole,
   GroupSubject,
   DashboardCache,
+  CustomDashboardCache,
   LocationHierarchy,
   ReportCard,
   Dashboard,
