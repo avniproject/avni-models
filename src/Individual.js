@@ -21,6 +21,7 @@ import Comment from "./Comment";
 import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
 import MergeUtil from "./utility/MergeUtil";
+import AgeUtil from "./utility/AgeUtil";
 
 const mergeMap = new Map([
   [SchemaNames.ProgramEnrolment, "enrolments"],
@@ -505,37 +506,15 @@ class Individual extends BaseEntity {
     this.name = this.nameString;
   }
 
-  getDisplayAge(i18n) {
-    //Keeping date of birth to be always entered and displayed as per the current date. It would be perhaps more error prone for users to put themselves in the past and enter age as of that date
-    const ageInYears = this.getAgeInYears();
-    if (ageInYears < 1) {
-      let ageInWeeks = this.getAgeInWeeks();
-      return ageInWeeks === 0
-        ? Duration.inDay(moment().diff(this.dateOfBirth, "days")).toString(i18n)
-        : Duration.inWeek(ageInWeeks).toString(i18n);
-    } else if (ageInYears < 2) {
-      return Duration.inMonth(this.getAgeInMonths()).toString(i18n);
-    } else if (ageInYears < 6) {
-      let ageInMonths = this.getAgeInMonths();
-      let noOfYears = _.toInteger(ageInMonths / 12);
-      let noOfMonths = ageInMonths % 12;
-      let durationInYears = `${Duration.inYear(noOfYears).toString(i18n)}`;
-      if(noOfMonths > 0) return `${durationInYears} ${Duration.inMonth(noOfMonths).toString(i18n)}`
-      return durationInYears;
-    } else {
-      return Duration.inYear(ageInYears).toString(i18n);
-    }
-  }
-
   getAgeAndDateOfBirthDisplay(i18n) {
     if (this.dateOfBirthVerified)
-      return `${this.getDisplayAge(i18n)} (${General.toDisplayDate(this.dateOfBirth)})`;
-    return this.getDisplayAge(i18n);
+      return `${AgeUtil.getDisplayAge(this.dateOfBirth, i18n)} (${General.toDisplayDate(this.dateOfBirth)})`;
+    return AgeUtil.getDisplayAge(this.dateOfBirth, i18n);
   }
 
   getAge(asOnDate = moment()) {
-    if (this.getAgeInYears(asOnDate) > 0) return Duration.inYear(this.getAgeInYears());
-    if (this.getAgeInMonths(asOnDate) > 0)
+    if (AgeUtil.getAgeInYears(this.dateOfBirth, asOnDate) > 0) return Duration.inYear(AgeUtil.getAgeInYears(this.dateOfBirth));
+    if (AgeUtil.getAgeInMonths(this.dateOfBirth, asOnDate) > 0)
       return Duration.inMonth(asOnDate.diff(this.dateOfBirth, "months"));
     return Duration.inYear(0);
   }
@@ -560,23 +539,6 @@ class Individual extends BaseEntity {
     }
   }
 
-  getAgeIn(unit) {
-    return (asOnDate = moment(), precise = false) =>
-      moment(asOnDate).diff(this.dateOfBirth, unit, precise);
-  }
-
-  getAgeInMonths(asOnDate = moment(), precise = false) {
-    return this.getAgeIn("months")(asOnDate, precise);
-  }
-
-  getAgeInWeeks(asOnDate, precise) {
-    return this.getAgeIn("weeks")(asOnDate, precise);
-  }
-
-  getAgeInYears(asOnDate = moment(), precise = false) {
-    return this.getAgeIn("years")(asOnDate, precise);
-  }
-
   toSummaryString() {
     return `${this.name}, Age: ${this.getAge().toString()}, ${this.gender.name}`;
   }
@@ -598,7 +560,7 @@ class Individual extends BaseEntity {
       return ValidationResult.failure(Individual.validationKeys.DOB, "emptyValidationMessage");
     } else if (!moment(this.dateOfBirth).isValid()) {
       return ValidationResult.failure(Individual.validationKeys.DOB, "invalidDateFormat");
-    } else if (this.getAgeInYears() > 120) {
+    } else if (AgeUtil.getAgeInYears(this.dateOfBirth) > 120) {
       return ValidationResult.failure(Individual.validationKeys.DOB, "ageTooHigh");
     } else if (this.isRegistrationBeforeDateOfBirth) {
       return ValidationResult.failure(
@@ -959,12 +921,12 @@ class Individual extends BaseEntity {
   }
 
   userProfileSubtext2(i18n) {
-    return this.isPerson() ? this.getDisplayAge(i18n) : "";
+    return this.isPerson() ? AgeUtil.getDisplayAge(this.dateOfBirth, i18n) : "";
   }
 
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
   detail1(i18n) {
-    return this.isPerson() ? {label: "Age", value: this.getDisplayAge(i18n)} : {};
+    return this.isPerson() ? {label: "Age", value: AgeUtil.getDisplayAge(this.dateOfBirth, i18n)} : {};
   }
 
   detail2(i18n) {
