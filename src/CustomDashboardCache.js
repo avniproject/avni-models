@@ -7,6 +7,7 @@ class CustomDashboardCache extends BaseEntity{
     primaryKey: "uuid",
     properties: {
       uuid: "string",
+      checksum: "string",
       updatedAt: "date",
       selectedValuesJSON: "string",
       filterApplied: {type: "bool", default: false},
@@ -18,6 +19,14 @@ class CustomDashboardCache extends BaseEntity{
 
   constructor(that = null) {
     super(that);
+  }
+
+  get checksum() {
+    return this.that.checksum;
+  }
+
+  set checksum(x) {
+    this.that.checksum = x;
   }
 
   get updatedAt() {
@@ -68,9 +77,10 @@ class CustomDashboardCache extends BaseEntity{
     this.that.transformedFiltersJSON = x;
   }
 
-  static create(uuid, updatedAt, selectedValuesJSON, filterApplied, filterErrorsJSON, ruleInputJSON, transformedFiltersJSON) {
+  static create(uuid, checksum, updatedAt, selectedValuesJSON, filterApplied, filterErrorsJSON, ruleInputJSON, transformedFiltersJSON) {
     const customDashboardCache = new CustomDashboardCache();
     customDashboardCache.uuid = uuid;
+    customDashboardCache.checksum = checksum;
     customDashboardCache.updatedAt = updatedAt;
     customDashboardCache.selectedValuesJSON = selectedValuesJSON;
     customDashboardCache.filterApplied = filterApplied;
@@ -93,6 +103,10 @@ class CustomDashboardCache extends BaseEntity{
 
   static createEmptyInstance() {
     return new CustomDashboardCache();
+  }
+
+  getChecksum() {
+    return this.checksum;
   }
 
   getSelectedValues() {
