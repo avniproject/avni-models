@@ -1,4 +1,5 @@
 import BaseEntity from "./BaseEntity";
+import ParseUtil from './utility/ParseUtil';
 
 class CustomDashboardCache extends BaseEntity{
 
@@ -110,19 +111,19 @@ class CustomDashboardCache extends BaseEntity{
   }
 
   getSelectedValues() {
-    return this.selectedValuesJSON && JSON.parse(this.selectedValuesJSON) || {};
+    return this.selectedValuesJSON && ParseUtil.parse(this.selectedValuesJSON) || {};
   }
 
   getFilterErrors() {
-    return this.filterErrorsJSON && JSON.parse(this.filterErrorsJSON) || {};
+    return this.filterErrorsJSON && ParseUtil.parse(this.filterErrorsJSON) || {};
   }
 
   getRuleInput() {
-    return this.ruleInputJSON && JSON.parse(this.ruleInputJSON) || {ruleInputArray: null};
+    return this.ruleInputJSON && ParseUtil.parse(this.ruleInputJSON) || {ruleInputArray: null};
   }
 
   getTransformedFilters() {
-    return this.transformedFiltersJSON && JSON.parse(this.transformedFiltersJSON) || {
+    return this.transformedFiltersJSON && ParseUtil.parse(this.transformedFiltersJSON) || {
       date: new Date(),
       applied: false,
       selectedLocations: [],
