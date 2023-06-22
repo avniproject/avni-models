@@ -88,42 +88,8 @@ const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, {...attrs, t
 const txData = (
   clazz,
   {
-    res,
-    resUrl,
-    parent,
-    apiVersion,
-    syncWeight,
-    privilegeParam,
-    privilegeEntity,
-    privilegeName,
-    queryParam,
-    hasMoreThanOneAssociation,
-    apiQueryParams
-  } = {}
-) => ({
-  schemaName: clazz.schema.name,
-  entityName: clazz.schema.name,
-  entityClass: clazz,
-  resourceName: res || _.camelCase(clazz.schema.name),
-  resourceUrl: resUrl,
-  type: "tx",
-  nameTranslated: false,
-  parent: parent,
-  apiVersion,
-  syncWeight: syncWeight,
-  privilegeParam,
-  privilegeEntity,
-  privilegeName,
-  queryParam,
-  hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
-  apiQueryParams
-});
-
-const virtualTxData = (
-  clazz,
-  {
-    res,
     entityName,
+    res,
     resUrl,
     parent,
     apiVersion,
@@ -138,11 +104,11 @@ const virtualTxData = (
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
-  entityName: entityName,
+  entityName: entityName || clazz.schema.name,
   entityClass: clazz,
   resourceName: res || _.camelCase(clazz.schema.name),
   resourceUrl: resUrl,
-  type: "virtualTx",
+  type: "tx",
   nameTranslated: false,
   parent: parent,
   apiVersion,
@@ -327,8 +293,7 @@ const standardReportCardType = refData(StandardReportCardType, { res: "standardR
 const approvalStatus = refData(ApprovalStatus, {res: "approvalStatus", syncWeight: 0});
 const groupDashboard = refData(GroupDashboard, {res: "groupDashboard", syncWeight: 0});
 
-export const EntityApprovalStatusMetaData = txData(EntityApprovalStatus, { res: "entityApprovalStatus", entityName: "EntityApprovalStatus"});
-const subjectEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
+const subjectEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     entityName: 'SubjectEntityApprovalStatus',
@@ -339,7 +304,7 @@ const subjectEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeName: Privilege.privilegeName.viewSubject,
     parent: individual,
     syncWeight: 2 });
-const encounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
+const encounterEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     entityName: 'EncounterEntityApprovalStatus',
@@ -350,7 +315,7 @@ const encounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeName: Privilege.privilegeName.viewVisit,
     parent: encounter,
     syncWeight: 2 });
-const programEncounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
+const programEncounterEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     entityName: 'ProgramEncounterEntityApprovalStatus',
@@ -361,7 +326,7 @@ const programEncounterEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeName: Privilege.privilegeName.viewVisit,
     parent: programEncounter,
     syncWeight: 2 });
-const programEnrolmentEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
+const programEnrolmentEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     entityName: 'ProgramEnrolmentEntityApprovalStatus',
@@ -372,7 +337,7 @@ const programEnrolmentEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeName: Privilege.privilegeName.viewEnrolmentDetails,
     parent: programEnrolment,
     syncWeight: 2 });
-const checklistItemEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
+const checklistItemEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
     entityName: 'ChecklistItemEntityApprovalStatus',
@@ -383,6 +348,7 @@ const checklistItemEntityApprovalStatus = virtualTxData(EntityApprovalStatus,
     privilegeName: Privilege.privilegeName.viewChecklist,
     parent: checklistItem,
     syncWeight: 2 });
+const entityApprovalStatus = txData(EntityApprovalStatus, { res: 'entityApprovalStatus', syncWeight: 1 });
 const news = txData(News, {syncWeight: 0});
 const documentation = refData(Documentation, {res: 'documentations', syncWeight: 0});
 const documentationItem = refData(DocumentationItem, {res: 'documentationItems', parent: documentation, syncWeight: 0});
@@ -489,6 +455,7 @@ class EntityMetaData {
       groupSubject,
       comment,
       commentThread,
+      entityApprovalStatus,
       subjectEntityApprovalStatus,
       encounterEntityApprovalStatus,
       programEncounterEntityApprovalStatus,
@@ -514,19 +481,10 @@ class EntityMetaData {
   }
 
   static findByName(entityName) {
-    return EntityMetaData.findByNameIn(entityName, EntityMetaData.model());
-  }
-
-  static findByNameIn(entityName, modelCollection) {
     return _.find(
-      modelCollection,
-      //TODO check if this works
+      EntityMetaData.model(),
       (entityMetadata) => entityMetadata.entityName === entityName
     );
-  }
-
-  static allModels() {
-    return _.concat(EntityApprovalStatusMetaData, EntityMetaData.model());
   }
 }
 
