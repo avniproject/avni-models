@@ -15,6 +15,9 @@ release:
 	git pull --tags
 	git pull --rebase
 	@echo "Ensure version changes follow semantic versioning - https://classic.yarnpkg.com/en/docs/dependency-versions#toc-semantic-versioning"
+	@echo "\033[1mLatest openchs-models version across branches:"
+	npm view openchs-models version
+	@echo "\033[0m"
 	yarn version
 	@echo "   Now please run \nmake publish"
 
