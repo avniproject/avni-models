@@ -187,7 +187,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 177,
+    schemaVersion: 178,
     migration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
@@ -781,6 +781,14 @@ function createRealmConfig() {
             parentEntity.latestEntityApprovalStatus = _.maxBy(parentEntity.approvalStatuses, 'statusDateTime');
           }
         });
+      }
+
+      if (oldDB.schemaVersion < 178) {
+        const pushOnlyEntities = oldDB
+          .objects(EntitySyncStatus.schema.name)
+          .filtered("entityName = 'EntityApprovalStatus' OR entityName = 'SyncTelemetry' OR entityName = 'VideoTelemetric' OR entityName = 'RuleFailureTelemetry'");
+
+        _.forEach(pushOnlyEntities, (pushOnlyEntity) => newDB.delete(pushOnlyEntity));
       }
     },
   };

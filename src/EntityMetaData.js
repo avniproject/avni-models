@@ -71,7 +71,16 @@ import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import DashboardFilter from "./reports/DashboardFilter";
 
-const refData = (clazz, { res, filter = "lastModified", translated, parent, syncWeight, resUrl } = {}) => ({
+const refData = (clazz, {
+  res,
+  filter = "lastModified",
+  translated,
+  parent,
+  syncWeight,
+  resUrl,
+  syncPushRequired = true,
+  syncPullRequired = true
+} = {}) => ({
   schemaName: clazz.schema.name,
   entityName: clazz.schema.name,
   entityClass: clazz,
@@ -81,7 +90,9 @@ const refData = (clazz, { res, filter = "lastModified", translated, parent, sync
   resourceSearchFilterURL: filter,
   parent: parent,
   syncWeight: syncWeight,
-  resourceUrl: resUrl
+  resourceUrl: resUrl,
+  syncPushRequired,
+  syncPullRequired
 });
 const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, {...attrs, translated: true});
 
@@ -100,7 +111,9 @@ const txData = (
     queryParam,
     hasMoreThanOneAssociation,
     apiQueryParams,
-    apiQueryParamKey
+    apiQueryParamKey,
+    syncPushRequired = true,
+    syncPullRequired = true
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
@@ -119,7 +132,9 @@ const txData = (
   queryParam,
   hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
   apiQueryParams,
-  apiQueryParamKey
+  apiQueryParamKey,
+  syncPushRequired,
+  syncPullRequired
 });
 
 const checklistDetail = refData(ChecklistDetail, {syncWeight: 1});
@@ -258,10 +273,12 @@ const videoTelemetric = txData(VideoTelemetric, {
   res: "videotelemetric",
   parent: video,
   syncWeight: 0,
+  syncPullRequired: false
 });
 const syncTelemetry = txData(SyncTelemetry, {
   resUrl: "syncTelemetry",
   syncWeight: 1,
+  syncPullRequired: false
 });
 const userInfo = txData(UserInfo, {
   resUrl: "me",
@@ -272,6 +289,7 @@ const identifierAssignment = txData(IdentifierAssignment, {syncWeight: 0});
 const ruleFailureTelemetry = txData(RuleFailureTelemetry, {
   resUrl: "ruleFailureTelemetry",
   syncWeight: 0,
+  syncPullRequired: false
 });
 
 const groups = refData(Groups, {res: "groups", syncWeight: 0});
@@ -303,7 +321,8 @@ const subjectEntityApprovalStatus = txData(EntityApprovalStatus,
     privilegeEntity: Privilege.privilegeEntityType.subject,
     privilegeName: Privilege.privilegeName.viewSubject,
     parent: individual,
-    syncWeight: 2 });
+    syncWeight: 2,
+    syncPushRequired: false });
 const encounterEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -314,7 +333,8 @@ const encounterEntityApprovalStatus = txData(EntityApprovalStatus,
     privilegeEntity: Privilege.privilegeEntityType.encounter,
     privilegeName: Privilege.privilegeName.viewVisit,
     parent: encounter,
-    syncWeight: 2 });
+    syncWeight: 2,
+    syncPushRequired: false });
 const programEncounterEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -325,7 +345,8 @@ const programEncounterEntityApprovalStatus = txData(EntityApprovalStatus,
     privilegeEntity: Privilege.privilegeEntityType.encounter,
     privilegeName: Privilege.privilegeName.viewVisit,
     parent: programEncounter,
-    syncWeight: 2 });
+    syncWeight: 2,
+    syncPushRequired: false });
 const programEnrolmentEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -336,7 +357,8 @@ const programEnrolmentEntityApprovalStatus = txData(EntityApprovalStatus,
     privilegeEntity: Privilege.privilegeEntityType.enrolment,
     privilegeName: Privilege.privilegeName.viewEnrolmentDetails,
     parent: programEnrolment,
-    syncWeight: 2 });
+    syncWeight: 2,
+    syncPushRequired: false });
 const checklistItemEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -347,8 +369,13 @@ const checklistItemEntityApprovalStatus = txData(EntityApprovalStatus,
     privilegeEntity: Privilege.privilegeEntityType.checklist,
     privilegeName: Privilege.privilegeName.viewChecklist,
     parent: checklistItem,
-    syncWeight: 2 });
-const entityApprovalStatus = txData(EntityApprovalStatus, { res: 'entityApprovalStatus', syncWeight: 1 });
+    syncWeight: 2,
+    syncPushRequired: false });
+const entityApprovalStatus = txData(EntityApprovalStatus, {
+  res: 'entityApprovalStatus',
+  syncWeight: 1,
+  syncPullRequired: false
+});
 const news = txData(News, {syncWeight: 0});
 const documentation = refData(Documentation, {res: 'documentations', syncWeight: 0});
 const documentationItem = refData(DocumentationItem, {res: 'documentationItems', parent: documentation, syncWeight: 0});
@@ -485,6 +512,10 @@ class EntityMetaData {
       EntityMetaData.model(),
       (entityMetadata) => entityMetadata.entityName === entityName
     );
+  }
+
+  static getEntitiesToBePulled() {
+    return _.filter(EntityMetaData.model(), (entityMetadata) => entityMetadata.syncPullRequired)
   }
 }
 
