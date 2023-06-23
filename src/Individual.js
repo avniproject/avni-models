@@ -512,9 +512,21 @@ class Individual extends BaseEntity {
     return AgeUtil.getDisplayAge(this.dateOfBirth, i18n);
   }
 
+  getAgeInYears(asOnDate = moment(), precise = false) {
+    return AgeUtil.getAgeInYears(this.dateOfBirth, asOnDate, precise);
+  }
+
+  getAgeInMonths(asOnDate = moment(), precise = false) {
+    return AgeUtil.getAgeInMonths(this.dateOfBirth, asOnDate, precise);
+  }
+
+  getAgeInWeeks(asOnDate = moment(), precise = false) {
+    return AgeUtil.getAgeInWeeks(this.dateOfBirth, asOnDate, precise);
+  }
+
   getAge(asOnDate = moment()) {
-    if (AgeUtil.getAgeInYears(this.dateOfBirth, asOnDate) > 0) return Duration.inYear(AgeUtil.getAgeInYears(this.dateOfBirth));
-    if (AgeUtil.getAgeInMonths(this.dateOfBirth, asOnDate) > 0)
+    if (this.getAgeInYears(asOnDate) > 0) return Duration.inYear(this.getAgeInYears());
+    if (this.getAgeInMonths(asOnDate) > 0)
       return Duration.inMonth(asOnDate.diff(this.dateOfBirth, "months"));
     return Duration.inYear(0);
   }
@@ -560,7 +572,7 @@ class Individual extends BaseEntity {
       return ValidationResult.failure(Individual.validationKeys.DOB, "emptyValidationMessage");
     } else if (!moment(this.dateOfBirth).isValid()) {
       return ValidationResult.failure(Individual.validationKeys.DOB, "invalidDateFormat");
-    } else if (AgeUtil.getAgeInYears(this.dateOfBirth) > 120) {
+    } else if (this.getAgeInYears() > 120) {
       return ValidationResult.failure(Individual.validationKeys.DOB, "ageTooHigh");
     } else if (this.isRegistrationBeforeDateOfBirth) {
       return ValidationResult.failure(
