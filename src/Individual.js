@@ -936,6 +936,13 @@ class Individual extends BaseEntity {
     return this.isPerson() ? AgeUtil.getDisplayAge(this.dateOfBirth, i18n) : "";
   }
 
+  subjectAddressText(i18n) {
+    const parentAddress = _.get(this, 'lowestAddressLevel.locationMappings[0].parent.name');
+    let addressText = i18n.t(this.lowestAddressLevel.name);
+    if(!_.isNil(parentAddress)) addressText += ', ' + i18n.t(parentAddress);
+    return addressText;
+  }
+
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
   detail1(i18n) {
     return this.isPerson() ? {label: "Age", value: AgeUtil.getDisplayAge(this.dateOfBirth, i18n)} : {};
