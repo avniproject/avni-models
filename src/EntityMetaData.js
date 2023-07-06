@@ -311,6 +311,7 @@ const standardReportCardType = refData(StandardReportCardType, { res: "standardR
 const approvalStatus = refData(ApprovalStatus, {res: "approvalStatus", syncWeight: 0});
 const groupDashboard = refData(GroupDashboard, {res: "groupDashboard", syncWeight: 0});
 
+export const EntityApprovalStatusMetaData = txData(EntityApprovalStatus, { res: "entityApprovalStatus", entityName: "EntityApprovalStatus"});
 const subjectEntityApprovalStatus = txData(EntityApprovalStatus,
   { res: "entityApprovalStatus",
     resUrl: "entityApprovalStatus",
@@ -508,14 +509,22 @@ class EntityMetaData {
   }
 
   static findByName(entityName) {
+    return EntityMetaData.findByNameIn(entityName, EntityMetaData.model());
+  }
+
+  static findByNameIn(entityName, modelCollection) {
     return _.find(
-      EntityMetaData.model(),
+      modelCollection,
       (entityMetadata) => entityMetadata.entityName === entityName
     );
   }
 
   static getEntitiesToBePulled() {
     return _.filter(EntityMetaData.model(), (entityMetadata) => entityMetadata.syncPullRequired)
+  }
+
+  static allModels() {
+    return _.concat(EntityApprovalStatusMetaData, EntityMetaData.model());
   }
 }
 

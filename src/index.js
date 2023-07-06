@@ -14,7 +14,7 @@ import Decision from "./Decision";
 import Duration from "./Duration";
 import Encounter from "./Encounter";
 import EncounterType from "./EncounterType";
-import EntityMetaData from "./EntityMetaData";
+import EntityMetaData, {EntityApprovalStatusMetaData} from "./EntityMetaData";
 import EntityQueue from "./EntityQueue";
 import EntityRule from "./EntityRule";
 import EntitySyncStatus from "./EntitySyncStatus";
@@ -126,8 +126,8 @@ import DashboardFilterConfig, {GroupSubjectTypeFilter, ObservationBasedFilter} f
 import MetaDataService from './service/MetaDataService';
 import ArrayUtil from './utility/ArrayUtil';
 import DateTimeUtil from "./utility/DateTimeUtil";
-import AgeUtil from "./utility/AgeUtil";
 import CustomDashboardCache from "./CustomDashboardCache";
+import AgeUtil from "./utility/AgeUtil";
 
 export {
   AbstractEncounter,
@@ -262,5 +262,6 @@ export {
   MetaDataService,
   ArrayUtil,
   DateTimeUtil,
+  EntityApprovalStatusMetaData,
   AgeUtil
 };
