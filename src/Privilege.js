@@ -2,6 +2,8 @@ import BaseEntity from "./BaseEntity";
 import SchemaNames from "./SchemaNames";
 
 class Privilege extends BaseEntity {
+  privilegeType; //can be removed once we add it to the schema
+
   static schema = {
     name: "Privilege",
     primaryKey: "uuid",
@@ -13,32 +15,32 @@ class Privilege extends BaseEntity {
     },
   };
 
-   constructor(that = null) {
+  constructor(that = null) {
     super(that);
   }
 
   get name() {
-      return this.that.name;
+    return this.that.name;
   }
 
   set name(x) {
-      this.that.name = x;
+    this.that.name = x;
   }
 
   get description() {
-      return this.that.description;
+    return this.that.description;
   }
 
   set description(x) {
-      this.that.description = x;
+    this.that.description = x;
   }
 
   get entityType() {
-      return this.that.entityType;
+    return this.that.entityType;
   }
 
   set entityType(x) {
-      this.that.entityType = x;
+    this.that.entityType = x;
   }
 
   static privilegeName = {
@@ -66,36 +68,46 @@ class Privilege extends BaseEntity {
     approveChecklistItem: "Approve ChecklistItem",
   };
 
-   static PrivilegeType = {
-     ViewSubject: "ViewSubject",
-     RegisterSubject: "RegisterSubject",
-     EditSubject: "EditSubject",
-     VoidSubject: "VoidSubject",
-     EnrolSubject: "EnrolSubject",
-     ViewEnrolmentDetails: "ViewEnrolmentDetails",
-     EditEnrolmentDetails: "EditEnrolmentDetails",
-     ExitEnrolment: "ExitEnrolment",
-     ViewVisit: "ViewVisit",
-     ScheduleVisit: "ScheduleVisit",
-     PerformVisit: "PerformVisit",
-     EditVisit: "EditVisit",
-     CancelVisit: "CancelVisit",
-     VoidVisit: "VoidVisit",
-     ViewChecklist: "ViewChecklist",
-     EditChecklist: "EditChecklist",
-     AddMember: "AddMember",
-     EditMember: "EditMember",
-     RemoveMember: "RemoveMember",
-     ApproveSubject: "ApproveSubject",
-     RejectSubject: "RejectSubject",
-     ApproveEnrolment: "ApproveEnrolment",
-     RejectEnrolment: "RejectEnrolment",
-     ApproveEncounter: "ApproveEncounter",
-     RejectEncounter: "RejectEncounter",
-     ApproveChecklistitem: "ApproveChecklistitem",
-     RejectChecklistitem: "RejectChecklistitem",
-     UploadMetadataAndData: "UploadMetadataAndData"
-   }
+  static PrivilegeType = {
+    AddMember: "AddMember",
+    ApproveChecklistitem: "ApproveChecklistitem",
+    ApproveEncounter: "ApproveEncounter",
+    ApproveEnrolment: "ApproveEnrolment",
+    ApproveSubject: "ApproveSubject",
+    CancelVisit: "CancelVisit",
+    EditCatchment: "EditCatchment",
+    EditChecklist: "EditChecklist",
+    EditEnrolmentDetails: "EditEnrolmentDetails",
+    EditIdentifierSource: "EditIdentifierSource",
+    EditIdentifierUserAssignment: "EditIdentifierUserAssignment",
+    EditLanguage: "EditLanguage",
+    EditLocation: "EditLocation",
+    EditLocationType: "EditLocationType",
+    EditMember: "EditMember",
+    EditOrganisationConfiguration: "EditOrganisationConfiguration",
+    EditSubject: "EditSubject",
+    EditUserConfiguration: "EditUserConfiguration",
+    EditUserGroup: "EditUserGroup",
+    EditVisit: "EditVisit",
+    EnrolSubject: "EnrolSubject",
+    ExitEnrolment: "ExitEnrolment",
+    PerformVisit: "PerformVisit",
+    PhoneVerification: "PhoneVerification",
+    RegisterSubject: "RegisterSubject",
+    RejectChecklistitem: "RejectChecklistitem",
+    RejectEncounter: "RejectEncounter",
+    RejectEnrolment: "RejectEnrolment",
+    RejectSubject: "RejectSubject",
+    RemoveMember: "RemoveMember",
+    ScheduleVisit: "ScheduleVisit",
+    UploadMetadataAndData: "UploadMetadataAndData",
+    ViewChecklist: "ViewChecklist",
+    ViewEnrolmentDetails: "ViewEnrolmentDetails",
+    ViewSubject: "ViewSubject",
+    ViewVisit: "ViewVisit",
+    VoidSubject: "VoidSubject",
+    VoidVisit: "VoidVisit",
+  }
 
   static privilegeEntityType = {
     subject: "Subject",
