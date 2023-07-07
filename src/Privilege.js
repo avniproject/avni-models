@@ -66,6 +66,37 @@ class Privilege extends BaseEntity {
     approveChecklistItem: "Approve ChecklistItem",
   };
 
+   static PrivilegeType = {
+     ViewSubject: "ViewSubject",
+     RegisterSubject: "RegisterSubject",
+     EditSubject: "EditSubject",
+     VoidSubject: "VoidSubject",
+     EnrolSubject: "EnrolSubject",
+     ViewEnrolmentDetails: "ViewEnrolmentDetails",
+     EditEnrolmentDetails: "EditEnrolmentDetails",
+     ExitEnrolment: "ExitEnrolment",
+     ViewVisit: "ViewVisit",
+     ScheduleVisit: "ScheduleVisit",
+     PerformVisit: "PerformVisit",
+     EditVisit: "EditVisit",
+     CancelVisit: "CancelVisit",
+     VoidVisit: "VoidVisit",
+     ViewChecklist: "ViewChecklist",
+     EditChecklist: "EditChecklist",
+     AddMember: "AddMember",
+     EditMember: "EditMember",
+     RemoveMember: "RemoveMember",
+     ApproveSubject: "ApproveSubject",
+     RejectSubject: "RejectSubject",
+     ApproveEnrolment: "ApproveEnrolment",
+     RejectEnrolment: "RejectEnrolment",
+     ApproveEncounter: "ApproveEncounter",
+     RejectEncounter: "RejectEncounter",
+     ApproveChecklistitem: "ApproveChecklistitem",
+     RejectChecklistitem: "RejectChecklistitem",
+     UploadMetadataAndData: "UploadMetadataAndData"
+   }
+
   static privilegeEntityType = {
     subject: "Subject",
     enrolment: "Enrolment",
