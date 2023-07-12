@@ -326,17 +326,17 @@ class Form extends BaseEntity {
   }
 
   static formTypes = {
-    IndividualProfile: "IndividualProfile",
+    ChecklistItem: "ChecklistItem",
     Encounter: "Encounter",
+    IndividualEncounterCancellation: "IndividualEncounterCancellation",
+    IndividualProfile: "IndividualProfile",
+    ManualProgramEnrolmentEligibility : "ManualProgramEnrolmentEligibility",
     ProgramEncounter: "ProgramEncounter",
+    ProgramEncounterCancellation: "ProgramEncounterCancellation",
     ProgramEnrolment: "ProgramEnrolment",
     ProgramExit: "ProgramExit",
-    ProgramEncounterCancellation: "ProgramEncounterCancellation",
-    ChecklistItem: "ChecklistItem",
-    IndividualEncounterCancellation: "IndividualEncounterCancellation",
-    Task: "Task",
     SubjectEnrolmentEligibility : "SubjectEnrolmentEligibility",
-    ManualProgramEnrolmentEligibility : "ManualProgramEnrolmentEligibility",
+    Task: "Task",
   };
 }
 
