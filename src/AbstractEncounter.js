@@ -78,6 +78,14 @@ class AbstractEncounter extends BaseEntity {
     this.that.observations = this.fromEntityList(x);
   }
 
+  get encounterLocation() {
+      return this.toEntity("encounterLocation", Point);
+  }
+
+  set encounterLocation(x) {
+      this.that.encounterLocation = this.fromObject(x);
+  }
+
   get cancelLocation() {
     return this.toEntity("cancelLocation", Point);
   }
