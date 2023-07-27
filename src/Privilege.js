@@ -120,7 +120,8 @@ class Privilege extends BaseEntity {
     EditDocumentation: "EditDocumentation",
     EditNews: "EditNews",
     Analytics: "Analytics",
-    AssignSubject: "AssignSubject"
+    AssignSubject: "AssignSubject",
+    Messaging: "Messaging"
   }
 
   static privilegeEntityType = {
@@ -129,6 +130,10 @@ class Privilege extends BaseEntity {
     encounter: "Encounter",
     checklist: "Checklist",
     checklistItem: "ChecklistItem",
+    analytics: "Analytics",
+    messaging: "Messaging",
+    nonTransaction: "NonTransaction",
+    task: "Task"
   };
 
   static fromResource(resource) {
