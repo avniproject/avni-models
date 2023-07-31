@@ -937,17 +937,13 @@ class Individual extends BaseEntity {
   }
 
   subjectAddressText(i18n) {
-    const parentAddress = _.get(this, 'lowestAddressLevel.locationMappings[0].parent.name');
-    let addressText = i18n.t(this.lowestAddressLevel.name);
-    if(!_.isNil(parentAddress)) addressText += ', ' + i18n.t(parentAddress);
-    return addressText;
-  }
-
-  subjectAddressText(i18n) {
-    const parentAddress = _.get(this, 'lowestAddressLevel.locationMappings[0].parent.name');
-    let addressText = i18n.t(this.lowestAddressLevel.name);
-    if(!_.isNil(parentAddress)) addressText += ', ' + i18n.t(parentAddress);
-    return addressText;
+    if (!_.isNil(this.lowestAddressLevel)) {
+      let addressText =  i18n.t(this.lowestAddressLevel.name);
+      const parentAddress = _.get(this, 'lowestAddressLevel.locationMappings[0].parent.name');
+      if(!_.isNil(parentAddress)) addressText += ', ' + i18n.t(parentAddress);
+      return addressText;
+    }
+    return '';
   }
 
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
