@@ -91,6 +91,9 @@ import SchemaNames from "./SchemaNames";
 import DashboardFilter from "./reports/DashboardFilter";
 import CustomDashboardCache from './CustomDashboardCache';
 
+import * as Keychain from 'react-native-keychain';
+import base64 from 'base-64';
+
 const entities = [
   DashboardFilter,
   LocaleMapping,
@@ -795,10 +798,35 @@ function createRealmConfig() {
 }
 
 class EntityMappingConfig {
-  static getInstance() {
+  static async getInstance() {
     if (_.isNil(EntityMappingConfig.instance))
       EntityMappingConfig.instance = new EntityMappingConfig();
+
+    const encryptionKey = await EntityMappingConfig.getEncryptionKey();
+    if(!_.isNil(encryptionKey))
+      EntityMappingConfig.instance.realmConfig.encryptionKey = encryptionKey;
+
     return EntityMappingConfig.instance;
+  }
+
+  static async getEncryptionKey() {
+    function stringToByteArray(s) {
+      var result = new Uint8Array(s.length);
+      for (var i=0; i<s.length; i++){
+        result[i] = s.charCodeAt(i);
+      }
+      return result;
+    }
+
+    const CREDENTIAL_USERNAME = "avni-user";
+    const credentials = await Keychain.getGenericPassword();
+    let key = null;
+    if (credentials && credentials.username === CREDENTIAL_USERNAME) {
+      let rawDecodedString = base64.decode(credentials.password);
+      key = stringToByteArray(rawDecodedString);
+    }
+
+    return key;
   }
 
   constructor() {
@@ -823,6 +851,10 @@ class EntityMappingConfig {
 
   getEntities() {
     return entities;
+  }
+
+  resetEncryptionKey() {
+    delete EntityMappingConfig.instance.realmConfig.encryptionKey;
   }
 
   getSchemaVersion() {
