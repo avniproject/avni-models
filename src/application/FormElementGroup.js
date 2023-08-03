@@ -197,7 +197,7 @@ class FormElementGroup extends BaseEntity {
   getFormElementsOfType(type) {
     return _.filter(
       this.formElements,
-      (formElement) => formElement.concept.datatype === type || formElement.type === type
+      (formElement) => ((formElement.concept.datatype === type || formElement.type === type) && !formElement.voided)
     );
   }
 
