@@ -222,14 +222,6 @@ class Individual extends BaseEntity {
     this.that.groups = this.fromEntityList(x);
   }
 
-  get affiliatedGroups() {
-    return this.affiliatedGroups;
-  }
-
-  set affiliatedGroups(groupSubjects) {
-    this.affiliatedGroups = groupSubjects;
-  }
-
   get approvalStatuses() {
     return this.toEntityList("approvalStatuses", EntityApprovalStatus);
   }
