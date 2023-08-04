@@ -121,7 +121,9 @@ class Privilege extends BaseEntity {
     EditNews: "EditNews",
     Analytics: "Analytics",
     AssignSubject: "AssignSubject",
-    Messaging: "Messaging"
+    Messaging: "Messaging",
+    EditConcept: "EditConcept",
+    EditForm: "EditForm"
   }
 
   static privilegeEntityType = {
