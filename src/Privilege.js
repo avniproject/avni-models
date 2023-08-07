@@ -123,7 +123,8 @@ class Privilege extends BaseEntity {
     AssignSubject: "AssignSubject",
     Messaging: "Messaging",
     EditConcept: "EditConcept",
-    EditForm: "EditForm"
+    EditChecklistConfiguration: "EditChecklistConfiguration",
+    DownloadBundle: "DownloadBundle",
   }
 
   static privilegeEntityType = {
