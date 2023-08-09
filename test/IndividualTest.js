@@ -2,7 +2,6 @@ import {assert} from "chai";
 import EntityFactory from "./EntityFactory";
 import moment from "moment";
 import Individual from "../src/Individual";
-import Program from "../src/Program";
 import ProgramEnrolment from "../src/ProgramEnrolment";
 import _ from "lodash";
 import EncounterType from "../src/EncounterType";
@@ -10,6 +9,7 @@ import Concept from "../src/Concept";
 import Observation from "../src/Observation";
 import SingleCodedValue from "../src/observation/SingleCodedValue";
 import Encounter from "../src/Encounter";
+import AddressLevelFactory from "./ref/AddressLevelFactory";
 
 let createEnrolment = function (program) {
   const programEnrolment = new ProgramEnrolment();
@@ -153,6 +153,15 @@ describe('IndividualTest', () => {
     assert.equal(Individual.getFullName({firstName: 'F', lastName: 'L'}), 'F L');
     assert.equal(Individual.getFullName({firstName: 'F'}), 'F');
   });
+
+  it('should get full lineage', function() {
+    const individual = Individual.createEmptyInstance();
+    const state = AddressLevelFactory.create({name: "State1"})
+    const district = AddressLevelFactory.create({parent: state, name: "District3"});
+    individual.lowestAddressLevel = AddressLevelFactory.create({parent: district, name: "Block10"});
+    const fullAddress = individual.fullAddress({t: x=>x});
+    assert.equal(fullAddress, "State1, District3, Block10");
+  })
 });
 
 function createEncounter(date, name) {

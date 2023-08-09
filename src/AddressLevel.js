@@ -8,6 +8,14 @@ import SchemaNames from "./SchemaNames";
 const PARENT_LOCATION_UUID = "parentLocationUUID";
 const CHILD_LOCATION_UUID = "locationUUID";
 
+function appendLineage(addressLevel, accumulator) {
+  if (_.isNil(addressLevel)) return accumulator;
+
+  accumulator.push(addressLevel);
+  const parent = addressLevel.getParent();
+  return appendLineage(parent, accumulator);
+}
+
 export class LocationMapping extends BaseEntity {
   static schema = {
     name: SchemaNames.LocationMapping,
@@ -218,6 +226,17 @@ class AddressLevel extends BaseEntity {
 
   get translatedFieldValue() {
     return this.name;
+  }
+
+  getParent() {
+    return _.get(this, "locationMappings[0].parent");
+  }
+
+  /**
+   * return all parent
+   */
+  getLineage() {
+    return appendLineage(this, []);
   }
 }
 

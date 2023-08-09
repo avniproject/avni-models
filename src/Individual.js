@@ -936,14 +936,19 @@ class Individual extends BaseEntity {
     return this.isPerson() ? AgeUtil.getDisplayAge(this.dateOfBirth, i18n) : "";
   }
 
-  subjectAddressText(i18n) {
+  lowestTwoLevelAddress(i18n) {
     if (!_.isNil(this.lowestAddressLevel)) {
       let addressText =  i18n.t(this.lowestAddressLevel.name);
-      const parentAddress = _.get(this, 'lowestAddressLevel.locationMappings[0].parent.name');
+      const parentAddress = _.get(this.lowestAddressLevel.getParent(), "name");
       if(!_.isNil(parentAddress)) addressText += ', ' + i18n.t(parentAddress);
       return addressText;
     }
     return '';
+  }
+
+  fullAddress(i18n) {
+    let lineage = this.lowestAddressLevel.getLineage();
+    return _.join(_.reverse(lineage).map(x => i18n.t(x.name)), ", ");
   }
 
   //TODO these methods are slightly differece because of differece in UI on search result and my dashboard listing. Not taking the hit right now.
