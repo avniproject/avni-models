@@ -740,7 +740,6 @@ class Individual extends BaseEntity {
     individual.relationships = this.relationships;
     individual.groupSubjects = this.groupSubjects;
     individual.groups = this.groups;
-    individual.affiliatedGroups = this.affiliatedGroups;
     individual.encounters = this.encounters;
     individual.enrolments = this.enrolments;
     individual.comments = this.comments;
@@ -802,10 +801,6 @@ class Individual extends BaseEntity {
       this.groups = _.isEmpty(this.groups) ? [] : this.groups;
       this.groups.push(groupSubject);
     }
-  }
-
-  addAffiliatedGroups(groupSubjects = []) {
-    this.affiliatedGroups = groupSubjects;
   }
 
   addComment(comment) {
