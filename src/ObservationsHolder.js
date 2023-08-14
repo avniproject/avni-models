@@ -201,7 +201,7 @@ class ObservationsHolder {
 
   updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
     const updateQuestionGroupObs = (parentFormElement, questionGroupIndex, fe, value) => {
-      parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
+      parentFormElement && parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
         this.updateGroupQuestion(parentFormElement, fe, value);
     };
 
@@ -296,6 +296,9 @@ class ObservationsHolder {
   }
 
   updateGroupQuestion(parentFormElement, childFormElement, value, verified = false, skipVerification = false) {
+    if (_.isUndefined(parentFormElement) || _.isNull(parentFormElement)) {
+      return;
+    }
     const parentConcept = parentFormElement.concept;
     const parentObservation = this.getObservation(parentConcept);
     const childObservations = _.isEmpty(parentObservation) ? new QuestionGroup() : parentObservation.getValueWrapper();
