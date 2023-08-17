@@ -125,6 +125,7 @@ class Privilege extends BaseEntity {
     EditConcept: "EditConcept",
     EditChecklistConfiguration: "EditChecklistConfiguration",
     DownloadBundle: "DownloadBundle",
+    EditTaskType: "EditTaskType"
   }
 
   static privilegeEntityType = {
