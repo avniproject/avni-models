@@ -281,7 +281,6 @@ const syncTelemetry = txData(SyncTelemetry, {
   syncPullRequired: false
 });
 const userInfo = txData(UserInfo, {
-  res: "userInfoClientContracts",
   resUrl: "me",
   apiVersion: "v2",
   syncWeight: 1,
