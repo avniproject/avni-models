@@ -1,4 +1,5 @@
 class SchemaNames {
+  static EntitySyncStatus = "EntitySyncStatus";
   static Individual = "Individual";
   static ProgramEnrolment = "ProgramEnrolment";
   static ProgramEncounter = "ProgramEncounter";

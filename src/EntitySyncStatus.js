@@ -1,10 +1,11 @@
 import BaseEntity from "./BaseEntity";
+import SchemaNames from "./SchemaNames";
 
 class EntitySyncStatus extends BaseEntity {
   static REALLY_OLD_DATE = new Date("1900-01-01");
 
   static schema = {
-    name: "EntitySyncStatus",
+    name: SchemaNames.EntitySyncStatus,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
