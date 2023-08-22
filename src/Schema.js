@@ -784,11 +784,11 @@ function createRealmConfig() {
       }
 
       if (oldDB.schemaVersion < 178) {
-        const pushOnlyEntities = oldDB
+        const pushOnlyEntities = newDB
           .objects(EntitySyncStatus.schema.name)
           .filtered("entityName = 'EntityApprovalStatus' OR entityName = 'SyncTelemetry' OR entityName = 'VideoTelemetric' OR entityName = 'RuleFailureTelemetry'");
 
-        _.forEach(pushOnlyEntities, (pushOnlyEntity) => newDB.delete(pushOnlyEntity));
+        newDB.delete(pushOnlyEntities);
       }
     },
   };
