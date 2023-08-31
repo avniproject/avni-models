@@ -65,15 +65,15 @@ class RealmProxy {
     const entityClass = this.entityMappingConfig.getEntityClass(type);
     return new entityClass(this.realmDb.objectForPrimaryKey(type, key));
   }
-
   write(callback) {
     return this.realmDb.write(callback);
   }
 
-  writeCopyTo(pathOrConfig, encryptionKey) {
-    if (_.isNil(encryptionKey))
-      return this.realmDb.writeCopyTo(pathOrConfig);
-    return this.realmDb.writeCopyTo(pathOrConfig, encryptionKey);
+  writeCopyTo(config) {
+    if (_.isNil(config.encryptionKey)) {
+      delete config.encryptionKey;
+    }
+    return this.realmDb.writeCopyTo(config);
   }
 }
 
