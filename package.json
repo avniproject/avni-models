@@ -27,10 +27,10 @@
         ]
     },
     "license": "AGPL-3.0",
-    "dependencies": {},
     "peerDependencies": {
         "lodash": "*",
-        "moment": "*"
+        "moment": "*",
+        "flatted": "*"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",

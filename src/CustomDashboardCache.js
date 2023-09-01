@@ -1,5 +1,6 @@
 import BaseEntity from "./BaseEntity";
-import ParseUtil from './utility/ParseUtil';
+
+const {parse} = require('flatted');
 
 class CustomDashboardCache extends BaseEntity{
 
@@ -111,19 +112,19 @@ class CustomDashboardCache extends BaseEntity{
   }
 
   getSelectedValues() {
-    return this.selectedValuesJSON && ParseUtil.parse(this.selectedValuesJSON) || {};
+    return this.selectedValuesJSON && parse(this.selectedValuesJSON) || {};
   }
 
   getFilterErrors() {
-    return this.filterErrorsJSON && ParseUtil.parse(this.filterErrorsJSON) || {};
+    return this.filterErrorsJSON && parse(this.filterErrorsJSON) || {};
   }
 
   getRuleInput() {
-    return this.ruleInputJSON && ParseUtil.parse(this.ruleInputJSON) || {ruleInputArray: null};
+    return this.ruleInputJSON && parse(this.ruleInputJSON) || {ruleInputArray: null};
   }
 
   getTransformedFilters() {
-    return this.transformedFiltersJSON && ParseUtil.parse(this.transformedFiltersJSON) || {
+    return this.transformedFiltersJSON && parse(this.transformedFiltersJSON) || {
       date: new Date(),
       applied: false,
       selectedLocations: [],
