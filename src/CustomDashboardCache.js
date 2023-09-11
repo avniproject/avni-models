@@ -1,7 +1,6 @@
 import BaseEntity from "./BaseEntity";
 
-const {parse} = require('flatted');
-
+import {deserialize} from '@ungap/structured-clone';
 class CustomDashboardCache extends BaseEntity{
 
   static schema = {
@@ -112,19 +111,19 @@ class CustomDashboardCache extends BaseEntity{
   }
 
   getSelectedValues() {
-    return this.selectedValuesJSON && parse(this.selectedValuesJSON) || {};
+    return this.selectedValuesJSON && deserialize(JSON.parse(this.selectedValuesJSON)) || {};
   }
 
   getFilterErrors() {
-    return this.filterErrorsJSON && parse(this.filterErrorsJSON) || {};
+    return this.filterErrorsJSON && deserialize(JSON.parse(this.filterErrorsJSON)) || {};
   }
 
   getRuleInput() {
-    return this.ruleInputJSON && parse(this.ruleInputJSON) || {ruleInputArray: null};
+    return this.ruleInputJSON && deserialize(JSON.parse(this.ruleInputJSON)) || {ruleInputArray: null};
   }
 
   getTransformedFilters() {
-    return this.transformedFiltersJSON && parse(this.transformedFiltersJSON) || {
+    return this.transformedFiltersJSON && deserialize(JSON.parse(this.transformedFiltersJSON)) || {
       date: new Date(),
       applied: false,
       selectedLocations: [],

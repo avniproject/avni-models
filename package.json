@@ -28,11 +28,12 @@
     },
     "license": "AGPL-3.0",
     "peerDependencies": {
-        "flatted": "*",
         "lodash": "*",
-        "moment": "*"
+        "moment": "*",
+        "@ungap/structured-clone": "*"
     },
     "devDependencies": {
+        "@ungap/structured-clone": "1.2.0",
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.4.5",
         "@babel/plugin-proposal-class-properties": "^7.4.4",
@@ -53,7 +54,6 @@
         "jsdom-global": "3.0.2",
         "lodash": "^4.17.11",
         "moment": "^2.22.2",
-        "flatted": "^3.2.7",
         "nyc": "^14.1.1",
         "prettier": "2.0.5",
         "typedoc": "^0.17.4",
