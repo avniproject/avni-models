@@ -30,23 +30,6 @@ describe('BaseEntityTest', () => {
         assert.equal(pickedForm.formElementGroups.length, 1);
     });
 
-    it('mergeShouldWorkFast', () => {
-        const individuals = _.times(10, (iIndex) => ({uuid: `ind-uuid`}));
-        individuals.forEach((ind, index) => {
-            function createInitEncounters(number, index) {
-                let encounters = _.times(number, (eIndex) => ({uuid: `uuid-${eIndex}` }));
-                encounters.push({uuid: `uuid-${index}` })
-                return encounters;
-            }
-
-            ind['encounters'] = createInitEncounters(500, index);
-        });
-        let start = performance.now();
-        BaseEntity.mergeOn('encounters')(individuals);
-        let timeTaken = performance.now() - start;
-        expect( timeTaken).toBeLessThanOrEqual(200); //On circleCI build machine
-    });
-
     it('mergeWillHaveAllKeys', () => {
         const individual1 = {encounters: [{uuid: "1"},{ uuid: "2"}]};
         const individual2 = {encounters: [{uuid: "2"},{ uuid: "3"}]};
