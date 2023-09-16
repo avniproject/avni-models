@@ -4,7 +4,8 @@ import BaseEntity from "../BaseEntity";
 class ValidationResult {
   static ValidationTypes = {
     Form: "Form",
-    Rule: "Rule"
+    Rule: "Rule",
+    Database: "Database"
   }
 
   constructor(success, formIdentifier, messageKey, extra, questionGroupIndex, validationType = ValidationResult.ValidationTypes.Form) {
