@@ -4,7 +4,6 @@ import Concept from '../../src/Concept';
 import FormElement from "openchs-models/src/application/FormElement";
 import FormElementStatus from "../../src/application/FormElementStatus";
 import FormElementGroup from "../../src/application/FormElementGroup";
-import Form from "../../src/application/Form";
 import ObservationsHolder from "../../src/ObservationsHolder";
 
 describe('FormElementGroupTest', () => {
@@ -93,7 +92,7 @@ describe('FormElementGroupTest', () => {
         assert.isTrue(isEmpty);
     });
 
-    function createFormElement(uuid, answers = []) {
+  function createFormElement(uuid, answers = []) {
         let x = new FormElement();
         x.uuid = uuid;
         x.getRawAnswers = function () {

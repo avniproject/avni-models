@@ -1,9 +1,10 @@
-import { assert } from "chai";
+import {assert} from "chai";
 import EntityFactory from "../EntityFactory";
-import { Concept } from "../../src";
+import {Concept} from "../../src";
 import General from "../../src/utility/General";
-import moment from "moment";
 import Format from "../../src/application/Format";
+import TestFormElementFactory from "../ref/TestFormElementFactory";
+import TestKeyValueFactory from "../ref/TestKeyValueFactory";
 
 const createFormElement = (dataType, mandatory) => {
   const concept = EntityFactory.createConcept("Concept", dataType, General.randomUUID());
@@ -283,4 +284,8 @@ describe("FormElementTest", () => {
     });
   });
 
+  it('isUnique', function () {
+    const formElement = TestFormElementFactory.create({name: "foo", keyValues: [TestKeyValueFactory.create({key: "unique", value: true})]});
+    assert.equal(formElement.isUnique, true);
+  });
 });

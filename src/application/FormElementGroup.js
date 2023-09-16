@@ -161,6 +161,7 @@ class FormElementGroup extends BaseEntity {
   }
 
   addFormElement(formElement) {
+    formElement.formElementGroup = this;
     this.formElements.push(formElement);
   }
 
