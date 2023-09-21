@@ -28,7 +28,6 @@
     },
     "license": "AGPL-3.0",
     "peerDependencies": {
-        "@ungap/structured-clone": "*",
         "lodash": "*",
         "moment": "*"
     },
@@ -39,7 +38,6 @@
         "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
         "@babel/preset-env": "^7.4.5",
         "@babel/preset-typescript": "^7.7.7",
-        "@ungap/structured-clone": "1.2.0",
         "babel-jest": "^24.8.0",
         "babel-loader": "^8.0.0-beta.4",
         "babel-plugin-istanbul": "^5.1.0",
@@ -66,5 +64,8 @@
     "nyc": {
         "sourceMap": false,
         "instrument": false
+    },
+    "dependencies": {
+        "@ungap/structured-clone": "^1.2.0"
     }
 }
