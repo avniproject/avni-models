@@ -11,12 +11,7 @@ tests:
 build:
 	yarn run build
 
-release:
-	git pull --tags
-	git pull --rebase
-	@echo "Ensure version changes follow semantic versioning - https://classic.yarnpkg.com/en/docs/dependency-versions#toc-semantic-versioning"
-	@echo "\033[1mLatest openchs-models version across branches:"
-	npm view openchs-models version
+release: get-current-version
 	@echo "\033[0m"
 	yarn version
 	@echo "   Now please run \nmake publish"
@@ -55,3 +50,10 @@ define _deploy
 	cp -r dist/* $1/dist/
 	cp package.json $1/
 endef
+
+get-current-version:
+	git pull --tags
+	git pull --rebase
+	@echo "Ensure version changes follow semantic versioning - https://classic.yarnpkg.com/en/docs/dependency-versions#toc-semantic-versioning"
+	@echo "\033[1mLatest openchs-models version across branches:"
+	npm view openchs-models version
