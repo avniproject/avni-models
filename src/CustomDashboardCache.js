@@ -1,6 +1,5 @@
 import BaseEntity from "./BaseEntity";
 
-import {deserialize} from '@ungap/structured-clone';
 class CustomDashboardCache extends BaseEntity{
 
   static schema = {
@@ -111,7 +110,7 @@ class CustomDashboardCache extends BaseEntity{
   }
 
   getSelectedValues() {
-    return this.selectedValuesJSON && deserialize(JSON.parse(this.selectedValuesJSON)) || {};
+    return this.selectedValuesJSON && JSON.parse(this.selectedValuesJSON) || {};
   }
 
   getFilterErrors() {
