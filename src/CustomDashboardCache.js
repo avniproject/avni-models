@@ -1,6 +1,5 @@
 import BaseEntity from "./BaseEntity";
 
-import {deserialize} from '@ungap/structured-clone';
 class CustomDashboardCache extends BaseEntity{
 
   static schema = {
@@ -111,19 +110,19 @@ class CustomDashboardCache extends BaseEntity{
   }
 
   getSelectedValues() {
-    return this.selectedValuesJSON && deserialize(JSON.parse(this.selectedValuesJSON)) || {};
+    return this.selectedValuesJSON && JSON.parse(this.selectedValuesJSON) || {};
   }
 
   getFilterErrors() {
-    return this.filterErrorsJSON && deserialize(JSON.parse(this.filterErrorsJSON)) || {};
+    return this.filterErrorsJSON && JSON.parse(this.filterErrorsJSON) || {};
   }
 
   getRuleInput() {
-    return this.ruleInputJSON && deserialize(JSON.parse(this.ruleInputJSON)) || {ruleInputArray: null};
+    return this.ruleInputJSON && JSON.parse(this.ruleInputJSON) || {ruleInputArray: null};
   }
 
   getTransformedFilters() {
-    return this.transformedFiltersJSON && deserialize(JSON.parse(this.transformedFiltersJSON)) || {
+    return this.transformedFiltersJSON && JSON.parse(this.transformedFiltersJSON) || {
       date: new Date(),
       applied: false,
       selectedLocations: [],

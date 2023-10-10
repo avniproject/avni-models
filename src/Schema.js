@@ -188,7 +188,7 @@ function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
     schemaVersion: 178,
-    migration: function (oldDB, newDB) {
+    onMigration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
         const oldObjects = oldDB.objects("DecisionConfig");

@@ -10,4 +10,9 @@ describe('RealmResultsProxyTest', () => {
     let realmResultsProxyElement = realmResultsProxy[0];
     assert.equal(realmResultsProxyElement.that, "a");
   });
+
+  it('should get type info', function () {
+    const realmResultsProxy = RealmResultsProxy.create(["a"], EntitySyncStatus);
+    assert.equal(realmResultsProxy.constructor.name, "RealmResultsProxy");
+  });
 });
