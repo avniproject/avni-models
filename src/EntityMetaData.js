@@ -77,9 +77,7 @@ const refData = (clazz, {
   translated,
   parent,
   syncWeight,
-  resUrl,
-  syncPushRequired = true,
-  syncPullRequired = true
+  resUrl
 } = {}) => ({
   schemaName: clazz.schema.name,
   entityName: clazz.schema.name,
@@ -90,12 +88,16 @@ const refData = (clazz, {
   resourceSearchFilterURL: filter,
   parent: parent,
   syncWeight: syncWeight,
-  resourceUrl: resUrl,
-  syncPushRequired,
-  syncPullRequired
+  resourceUrl: resUrl
 });
 const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, {...attrs, translated: true});
-
+/*
+const userInfo = txData(UserInfo, {
+  resUrl: "me",
+  apiVersion: "v2",
+  syncWeight: 1,
+});
+ */
 const txData = (
   clazz,
   {
@@ -111,9 +113,7 @@ const txData = (
     queryParam,
     hasMoreThanOneAssociation,
     apiQueryParams,
-    apiQueryParamKey,
-    syncPushRequired = true,
-    syncPullRequired = true
+    apiQueryParamKey
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
@@ -132,9 +132,7 @@ const txData = (
   queryParam,
   hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
   apiQueryParams,
-  apiQueryParamKey,
-  syncPushRequired,
-  syncPullRequired
+  apiQueryParamKey
 });
 
 const checklistDetail = refData(ChecklistDetail, {syncWeight: 1});
@@ -280,10 +278,10 @@ const syncTelemetry = txData(SyncTelemetry, {
   syncWeight: 1,
   syncPullRequired: false
 });
-const userInfo = txData(UserInfo, {
-  resUrl: "me",
-  apiVersion: "v2",
+const userInfo = refData(UserInfo, {
+  resUrl: "v2/me",
   syncWeight: 1,
+  filter: ""
 });
 const identifierAssignment = txData(IdentifierAssignment, {syncWeight: 0});
 const ruleFailureTelemetry = txData(RuleFailureTelemetry, {
