@@ -77,7 +77,9 @@ const refData = (clazz, {
   translated,
   parent,
   syncWeight,
-  resUrl
+  resUrl,
+  syncPushRequired = true,
+  syncPullRequired = true
 } = {}) => ({
   schemaName: clazz.schema.name,
   entityName: clazz.schema.name,
@@ -88,16 +90,12 @@ const refData = (clazz, {
   resourceSearchFilterURL: filter,
   parent: parent,
   syncWeight: syncWeight,
-  resourceUrl: resUrl
+  resourceUrl: resUrl,
+  syncPushRequired,
+  syncPullRequired
 });
 const refDataNameTranslated = (clazz, attrs = {}) => refData(clazz, {...attrs, translated: true});
-/*
-const userInfo = txData(UserInfo, {
-  resUrl: "me",
-  apiVersion: "v2",
-  syncWeight: 1,
-});
- */
+
 const txData = (
   clazz,
   {
@@ -113,7 +111,9 @@ const txData = (
     queryParam,
     hasMoreThanOneAssociation,
     apiQueryParams,
-    apiQueryParamKey
+    apiQueryParamKey,
+    syncPushRequired = true,
+    syncPullRequired = true
   } = {}
 ) => ({
   schemaName: clazz.schema.name,
@@ -132,7 +132,9 @@ const txData = (
   queryParam,
   hasMoreThanOneAssociation: !!hasMoreThanOneAssociation,
   apiQueryParams,
-  apiQueryParamKey
+  apiQueryParamKey,
+  syncPushRequired,
+  syncPullRequired
 });
 
 const checklistDetail = refData(ChecklistDetail, {syncWeight: 1});
