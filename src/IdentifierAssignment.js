@@ -18,6 +18,7 @@ export default class IdentifierAssignment extends BaseEntity {
       individual: { type: "Individual", optional: true },
       voided: { type: "bool", default: false },
       programEnrolment: { type: "ProgramEnrolment", optional: true },
+      used: { type: "bool", default: false, optional: false}
     },
   };
 
@@ -63,6 +64,14 @@ export default class IdentifierAssignment extends BaseEntity {
 
   set programEnrolment(x) {
       this.that.programEnrolment = this.fromObject(x);
+  }
+
+  get used() {
+    return this.that.used;
+  }
+
+  set used(x) {
+    this.that.used = x;
   }
 
 
