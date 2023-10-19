@@ -66,6 +66,7 @@ class Privilege extends BaseEntity {
     approveEnrolment: "Approve Enrolment",
     approveEncounter: "Approve Encounter",
     approveChecklistItem: "Approve ChecklistItem",
+    viewEditEntitiesOnDataEntryApp: 'View Or Edit Entities On DataEntry App'
   };
 
   static PrivilegeType = {
@@ -125,7 +126,8 @@ class Privilege extends BaseEntity {
     EditConcept: "EditConcept",
     EditChecklistConfiguration: "EditChecklistConfiguration",
     DownloadBundle: "DownloadBundle",
-    EditTaskType: "EditTaskType"
+    EditTaskType: "EditTaskType",
+    ViewEditEntitiesOnDataEntryApp: "ViewEditEntitiesOnDataEntryApp"
   }
 
   static privilegeEntityType = {
@@ -137,7 +139,8 @@ class Privilege extends BaseEntity {
     analytics: "Analytics",
     messaging: "Messaging",
     nonTransaction: "NonTransaction",
-    task: "Task"
+    task: "Task",
+    transactionDataOnDataEntryApp: "TransactionDataOnDataEntryApp"
   };
 
   static fromResource(resource) {
