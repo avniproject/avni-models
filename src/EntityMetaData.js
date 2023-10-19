@@ -280,10 +280,10 @@ const syncTelemetry = txData(SyncTelemetry, {
   syncWeight: 1,
   syncPullRequired: false
 });
-const userInfo = refData(UserInfo, {
-  resUrl: "v2/me",
+const userInfo = txData(UserInfo, {
+  resUrl: "me",
+  apiVersion: "v2",
   syncWeight: 1,
-  filter: ""
 });
 const identifierAssignment = txData(IdentifierAssignment, {syncWeight: 0});
 const ruleFailureTelemetry = txData(RuleFailureTelemetry, {
