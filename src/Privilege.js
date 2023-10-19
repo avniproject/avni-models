@@ -140,7 +140,7 @@ class Privilege extends BaseEntity {
     messaging: "Messaging",
     nonTransaction: "NonTransaction",
     task: "Task",
-    transactionDataOnDataEntryApp: "TransactionDataOnDataEntryApp"
+    dataEntryApp: "DataEntryApp"
   };
 
   static fromResource(resource) {
