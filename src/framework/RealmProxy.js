@@ -38,10 +38,23 @@ class RealmProxy {
     return this.realmDb.close();
   }
 
-  create(type, properties, updateMode = "never") {
-    const createProperties = _.isNil(properties.that) ? properties : properties.that;
-    const entityClass = this.entityMappingConfig.getEntityClass(type);
-    const dbEntity = this.realmDb.create(type, createProperties, updateMode);
+  create(schemaName, properties, updateMode = "never") {
+    const underlyingObject = _.isNil(properties.that) ? properties : properties.that;
+    const entityClass = this.entityMappingConfig.getEntityClass(schemaName);
+    const mandatoryObjectSchemaProperties = this.entityMappingConfig.getMandatoryObjectSchemaProperties(schemaName);
+    const emptyMandatoryProperties = [];
+
+    const saveObjectKeys = Object.keys(underlyingObject);
+    if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys.length > 0)) {
+      saveObjectKeys.forEach((x) => {
+        const propertyValue = underlyingObject[x];
+        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x.propertyName);
+      });
+      if (emptyMandatoryProperties.length > 0) {
+        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, ${saveObjectKeys}`);
+      }
+    }
+    const dbEntity = this.realmDb.create(schemaName, underlyingObject, updateMode);
     return new entityClass(dbEntity);
   }
 
@@ -65,6 +78,7 @@ class RealmProxy {
     const entityClass = this.entityMappingConfig.getEntityClass(type);
     return new entityClass(this.realmDb.objectForPrimaryKey(type, key));
   }
+
   write(callback) {
     return this.realmDb.write(callback);
   }

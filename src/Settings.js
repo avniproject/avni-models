@@ -14,7 +14,7 @@ class Settings extends BaseEntity {
     properties: {
       uuid: "string",
       serverURL: "string",
-      locale: {type: "LocaleMapping"},
+      locale: {type: "LocaleMapping", optional: true},
       logLevel: "int",
       pageSize: "int",
       poolId: "string",

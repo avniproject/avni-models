@@ -48,6 +48,8 @@ class RealmResultsProxy {
   }
 
   getAt(index) {
+    if (this.realmCollection.length <= index) return null;
+
     const realmCollectionElement = this.realmCollection[index];
     if (_.isNil(realmCollectionElement)) return null;
     return this.createEntity(realmCollectionElement);

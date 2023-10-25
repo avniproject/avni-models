@@ -13,7 +13,7 @@ class ReportCard extends BaseEntity {
       name: "string",
       query: {type: "string", optional: true},
       description: {type: "string", optional: true},
-      standardReportCardType: {type: "StandardReportCardType", option: true},
+      standardReportCardType: {type: "StandardReportCardType", optional: true},
       colour: "string",
       voided: {type: "bool", default: false},
     },

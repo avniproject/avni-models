@@ -90,6 +90,7 @@ import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import SchemaNames from "./SchemaNames";
 import DashboardFilter from "./reports/DashboardFilter";
 import CustomDashboardCache from './CustomDashboardCache';
+import DefinedObjectSchema from "./framework/DefinedObjectSchema";
 
 const entities = [
   DashboardFilter,
@@ -693,39 +694,39 @@ function createRealmConfig() {
 
         for (let i = 0; i < oldObjects.length; i++) {
           let entityApprovalStatus = oldObjects[i];
-          if(oldObjects[i].entityType === 'Subject') {
+          if (oldObjects[i].entityType === 'Subject') {
             const subject = oldDB
               .objects(Individual.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
-            if(subject) {
+            if (subject) {
               newObjects[i].entityTypeUuid = subject.subjectType.uuid;
             }
-          } else if(oldObjects[i].entityType === 'ProgramEnrolment') {
+          } else if (oldObjects[i].entityType === 'ProgramEnrolment') {
             const programEnrolment = oldDB
               .objects(ProgramEnrolment.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
-            if(programEnrolment) {
+            if (programEnrolment) {
               newObjects[i].entityTypeUuid = programEnrolment.program.uuid;
             }
-          } else if(oldObjects[i].entityType === 'ChecklistItem') {
+          } else if (oldObjects[i].entityType === 'ChecklistItem') {
             const checklistItem = oldDB
               .objects(ChecklistItem.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
-            if(checklistItem) {
+            if (checklistItem) {
               newObjects[i].entityTypeUuid = checklistItem.checklist.programEnrolment.program.uuid;
             }
-          } else if(oldObjects[i].entityType === 'Encounter') {
+          } else if (oldObjects[i].entityType === 'Encounter') {
             const encounter = oldDB
               .objects(Encounter.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
-            if(encounter) {
+            if (encounter) {
               newObjects[i].entityTypeUuid = encounter.encounterType.uuid;
             }
-          } else if(oldObjects[i].entityType === 'ProgramEncounter') {
+          } else if (oldObjects[i].entityType === 'ProgramEncounter') {
             const programEncounter = oldDB
               .objects(ProgramEncounter.schema.name)
               .filtered("uuid = $0", entityApprovalStatus.entityUUID)[0];
-            if(programEncounter) {
+            if (programEncounter) {
               newObjects[i].entityTypeUuid = programEncounter.encounterType.uuid;
             }
           }
@@ -752,7 +753,7 @@ function createRealmConfig() {
           }
         });
         const entityApprovalStatusSyncStatus = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0", "EntityApprovalStatus");
-        if(entityApprovalStatusSyncStatus[0]) {
+        if (entityApprovalStatusSyncStatus[0]) {
           newDB.delete(entityApprovalStatusSyncStatus);
         }
       }
@@ -811,12 +812,17 @@ class EntityMappingConfig {
     this.realmConfig = createRealmConfig();
     this.realmConfig.schema = [];
     this.schemaEntityMap = new Map();
+    this.mandatoryObjectSchemaProperties = new Map();
     entities.forEach((entity) => {
-      if(_.isNil(this.schemaEntityMap.get(entity.schema.name))) {
+      if (_.isNil(this.schemaEntityMap.get(entity.schema.name))) {
         this.realmConfig.schema.push(entity.schema);
         this.schemaEntityMap.set(entity.schema.name, entity);
       }
     });
+    this.realmConfig.schema.forEach((x) => {
+      const nonOptionalObjectProperties = DefinedObjectSchema.getNonOptionalObjectProperties(x);
+      this.mandatoryObjectSchemaProperties.set(x.name, nonOptionalObjectProperties);
+    }, []);
   }
 
   getEntityClass(schemaName) {
@@ -833,6 +839,10 @@ class EntityMappingConfig {
 
   getSchemaVersion() {
     return this.getRealmConfig().schemaVersion;
+  }
+
+  getMandatoryObjectSchemaProperties(schemaName) {
+    return this.mandatoryObjectSchemaProperties.get(schemaName);
   }
 }
 
