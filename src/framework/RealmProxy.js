@@ -45,7 +45,7 @@ class RealmProxy {
     const emptyMandatoryProperties = [];
 
     const saveObjectKeys = Object.keys(underlyingObject);
-    if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys.length > 0)) {
+    if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
       saveObjectKeys.forEach((x) => {
         const propertyValue = underlyingObject[x];
         if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x.propertyName);
