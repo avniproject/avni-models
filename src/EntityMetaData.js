@@ -20,7 +20,6 @@ import FormMapping from "./application/FormMapping";
 import Checklist from "./Checklist";
 import ChecklistItem from "./ChecklistItem";
 import UserInfo from "./UserInfo";
-import ProgramConfig from "./ProgramConfig";
 import IndividualRelation from "./relationship/IndividualRelation";
 import IndividualRelationship from "./relationship/IndividualRelationship";
 import IndividualRelationshipType from "./relationship/IndividualRelationshipType";
@@ -162,7 +161,6 @@ const individualRelationshipType = refDataNameTranslated(IndividualRelationshipT
   syncWeight: 3,
 });
 const concept = refDataNameTranslated(Concept, {syncWeight: 4});
-const programConfig = refDataNameTranslated(ProgramConfig, {syncWeight: 1});
 const video = refDataNameTranslated(Video, {syncWeight: 0});
 const subjectType = refDataNameTranslated(SubjectType, {
   res: "operationalSubjectType",
@@ -443,7 +441,6 @@ class EntityMetaData {
       individualRelationshipType,
       individualRelationGenderMapping,
       individualRelation,
-      programConfig,
       formMapping,
       formElement,
       formElementGroup,
