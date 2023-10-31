@@ -30,7 +30,6 @@ import Checklist from "./Checklist";
 import ChecklistItem from "./ChecklistItem";
 import _ from "lodash";
 import UserInfo from "./UserInfo";
-import ProgramConfig from "./ProgramConfig";
 import StringKeyNumericValue from "./application/StringKeyNumericValue";
 import VisitScheduleInterval from "./VisitScheduleInterval";
 import VisitScheduleConfig from "./VisitScheduleConfig";
@@ -126,7 +125,6 @@ const entities = [
   StringKeyNumericValue,
   VisitScheduleInterval,
   VisitScheduleConfig,
-  ProgramConfig,
   Family,
   IndividualRelation,
   IndividualRelationGenderMapping,

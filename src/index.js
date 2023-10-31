@@ -42,7 +42,6 @@ import NullProgramEnrolment from "./application/NullProgramEnrolment";
 import Observation from "./Observation";
 import ObservationsHolder from "./ObservationsHolder";
 import PrimitiveValue from "./observation/PrimitiveValue";
-import ProgramConfig from "./ProgramConfig";
 import ProgramEncounter from "./ProgramEncounter";
 import ProgramEnrolment from "./ProgramEnrolment";
 import Program from "./Program";
@@ -175,7 +174,6 @@ export {
   Observation,
   ObservationsHolder,
   PrimitiveValue,
-  ProgramConfig,
   ProgramEncounter,
   ProgramEnrolment,
   Program,
