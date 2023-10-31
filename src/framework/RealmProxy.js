@@ -48,10 +48,10 @@ class RealmProxy {
     if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
       saveObjectKeys.forEach((x) => {
         const propertyValue = underlyingObject[x];
-        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x.propertyName);
+        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x);
       });
       if (emptyMandatoryProperties.length > 0) {
-        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, ${saveObjectKeys}`);
+        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}`);
       }
     }
     const dbEntity = this.realmDb.create(schemaName, underlyingObject, updateMode);
