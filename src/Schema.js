@@ -188,7 +188,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 179,
+    schemaVersion: 180,
     onMigration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
@@ -796,6 +796,15 @@ function createRealmConfig() {
             identifierAssignment.used = true;
           }
         });
+      }
+      if (oldDB.schemaVersion < 180) {
+        General.logDebug("Migration180", "Migration execution started")
+        const individualsOfInterest = newDB.objects(Individual.schema.name).filtered("lowestAddressLevel = null");
+        _.forEach(individualsOfInterest, (individual) => {
+          General.logDebug("Migration180", "Deleting individual " + individual.uuid)
+          newDB.delete(individual)
+        })
+        General.logDebug("Migration180", "Migration execution completed")
       }
     },
   };
