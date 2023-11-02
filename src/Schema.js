@@ -90,7 +90,7 @@ import SchemaNames from "./SchemaNames";
 import DashboardFilter from "./reports/DashboardFilter";
 import CustomDashboardCache from './CustomDashboardCache';
 import DefinedObjectSchema from "./framework/DefinedObjectSchema";
-
+import MigrationsHelper from "./MigrationsHelper";
 const entities = [
   DashboardFilter,
   LocaleMapping,
@@ -796,13 +796,13 @@ function createRealmConfig() {
         });
       }
       if (oldDB.schemaVersion < 180) {
-        General.logDebug("Migration180", "Migration execution started")
+        General.logInfo("Migration180", "Execution started")
         const individualsOfInterest = newDB.objects(Individual.schema.name).filtered("lowestAddressLevel = null");
         _.forEach(individualsOfInterest, (individual) => {
-          General.logDebug("Migration180", "Deleting individual " + individual.uuid)
-          newDB.delete(individual)
+          General.logInfo("Migration180", "Deleting individual " + individual.uuid + " and related entities")
+          MigrationsHelper.deleteIndividual(individual, newDB);
         })
-        General.logDebug("Migration180", "Migration execution completed")
+        General.logInfo("Migration180", "Execution completed")
       }
     },
   };
