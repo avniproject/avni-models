@@ -800,7 +800,7 @@ function createRealmConfig() {
       if (oldDB.schemaVersion < 180) {
         General.logInfo("Migration180", "Execution started")
         const individualsOfInterest = newDB.objects(Individual.schema.name).filtered("lowestAddressLevel = null");
-        _.forEach(individualsOfInterest, (individual) => {
+        individualsOfInterest && individualsOfInterest.forEach((individual) => {
           General.logInfo("Migration180", "Deleting individual " + individual.uuid + " and related entities")
           MigrationsHelper.deleteIndividual(individual, newDB);
         })
