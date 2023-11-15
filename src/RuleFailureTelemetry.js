@@ -14,6 +14,11 @@ class RuleFailureTelemetry extends BaseEntity {
       stacktrace: "string",
       closed: {type: "bool", default: false},
       errorDateTime: "date",
+      sourceType: "string",
+      sourceId: "string",
+      entityType: "string",
+      entityId: "string",
+      appType: "string",
     },
   };
 
@@ -69,7 +74,47 @@ class RuleFailureTelemetry extends BaseEntity {
       this.that.errorDateTime = x;
   }
 
-  static create({ruleUUID, individualUUID, errorMessage, stacktrace}) {
+  get sourceType() {
+    return this.that.sourceType;
+  }
+
+  set sourceType(x) {
+    this.that.sourceType = x;
+  }
+
+  get sourceId() {
+    return this.that.sourceId;
+  }
+
+  set sourceId(x) {
+    this.that.sourceId = x;
+  }
+
+  get entityType() {
+    return this.that.entityType;
+  }
+
+  set entityType(x) {
+    this.that.entityType = x;
+  }
+
+  get entityId() {
+    return this.that.entityId;
+  }
+
+  set entityId(x) {
+    this.that.entityId = x;
+  }
+
+  get appType() {
+    return this.that.appType;
+  }
+
+  set appType(x) {
+    this.that.appType = x;
+  }
+
+  static create({ruleUUID, individualUUID, errorMessage, stacktrace, sourceType, sourceId, entityType, entityId, appType}) {
     const ruleFailureTelemetry = new RuleFailureTelemetry();
     ruleFailureTelemetry.uuid = General.randomUUID();
     ruleFailureTelemetry.closed = false;
@@ -78,6 +123,11 @@ class RuleFailureTelemetry extends BaseEntity {
     ruleFailureTelemetry.errorMessage = errorMessage;
     ruleFailureTelemetry.stacktrace = stacktrace;
     ruleFailureTelemetry.errorDateTime = new Date();
+    ruleFailureTelemetry.sourceType = sourceType;
+    ruleFailureTelemetry.sourceId = sourceId;
+    ruleFailureTelemetry.entityType = entityType;
+    ruleFailureTelemetry.entityId = entityId;
+    ruleFailureTelemetry.appType = appType;
     return ruleFailureTelemetry;
   }
 
@@ -90,6 +140,11 @@ class RuleFailureTelemetry extends BaseEntity {
       "stacktrace",
       "closed",
       "errorDateTime",
+      "sourceType",
+      "sourceId",
+      "entityType",
+      "entityId",
+      "appType",
     ]);
   }
 
@@ -102,6 +157,11 @@ class RuleFailureTelemetry extends BaseEntity {
     ruleFailureTelemetry.stacktrace = this.stacktrace;
     ruleFailureTelemetry.closed = this.closed;
     ruleFailureTelemetry.errorDateTime = this.errorDateTime;
+    ruleFailureTelemetry.sourceType = this.sourceType;
+    ruleFailureTelemetry.sourceId = this.sourceId;
+    ruleFailureTelemetry.entityType = this.entityType;
+    ruleFailureTelemetry.entityId = this.entityId;
+    ruleFailureTelemetry.appType = this.appType;
     return ruleFailureTelemetry;
   }
 }
