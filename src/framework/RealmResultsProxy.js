@@ -14,6 +14,10 @@ class RealmResultsProxy {
     this.array = [];
   }
 
+  setLogQueries(value) {
+    this.logQueries = value;
+  }
+
   createEntity(object) {
     return new this.entityClass(object);
   }
@@ -44,6 +48,8 @@ class RealmResultsProxy {
   }
 
   filtered(query, ...args) {
+    if (this.logQueries)
+      console.log(this.entityClass, query, ...args);
     return RealmResultsProxy.create(this.realmCollection.filtered(query, ...args), this.entityClass);
   }
 

@@ -14,8 +14,14 @@ class RealmProxy {
     this.entityMappingConfig = entityMappingConfig;
   }
 
+  setLogQueries(value) {
+    this.logQueries = value;
+  }
+
   objects(type) {
-    return RealmResultsProxy.create(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
+    const realmResultsProxy = RealmResultsProxy.create(this.realmDb.objects(type), this.entityMappingConfig.getEntityClass(type));
+    realmResultsProxy.setLogQueries(this.logQueries);
+    return realmResultsProxy;
   }
 
   get isInTransaction() {

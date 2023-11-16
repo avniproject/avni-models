@@ -4,13 +4,12 @@ import AbstractEncounter from "./AbstractEncounter";
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
 import G from "./utility/General";
+import General from "./utility/General";
 import EncounterType from "./EncounterType";
 import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
-import ProgramEnrolment from "./ProgramEnrolment";
-import General from "./utility/General";
 
 class Encounter extends AbstractEncounter {
   static schema = {
