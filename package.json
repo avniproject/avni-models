@@ -64,5 +64,8 @@
     "nyc": {
         "sourceMap": false,
         "instrument": false
+    },
+    "dependencies": {
+        "uuid": "^9.0.1"
     }
 }

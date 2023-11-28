@@ -5,6 +5,7 @@ import Observation from "../Observation";
 import Concept from "../Concept";
 import QuestionGroup from "../observation/QuestionGroup";
 import RepeatableQuestionGroup from "../observation/RepeatableQuestionGroup";
+import { v4 as uuidv4 } from 'uuid';
 
 var currentLogLevel;
 
@@ -198,13 +199,8 @@ class General {
     return picked;
   }
 
-  //http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
   static randomUUID() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      const r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    return uuidv4();
   }
 
   static areEqualShallow(a, b) {
