@@ -4,10 +4,11 @@ import moment from "moment";
 import General from "../utility/General";
 
 class PrimitiveValue {
-  constructor(value, datatype) {
+  constructor(value, datatype, answerSource = General.AnswerSource.Manual) {
     this.value = value;
     this.datatype = datatype;
     this.answer = this._valueFromString();
+    this.answerSource = answerSource;
   }
 
   asDisplayDate() {
@@ -30,7 +31,7 @@ class PrimitiveValue {
   }
 
   cloneForEdit() {
-    return new PrimitiveValue(this.value, this.datatype);
+    return new PrimitiveValue(this.value, this.datatype, this.answerSource);
   }
 
   _valueFromString() {

@@ -1,8 +1,10 @@
 import _ from "lodash";
+import General from "../utility/General";
 
 class SingleCodedValue {
-  constructor(answerUUID) {
+  constructor(answerUUID, answerSource = General.AnswerSource.Manual) {
     this.answer = answerUUID;
+    this.answerSource = answerSource;
   }
 
   hasValue(answerUUID) {
@@ -24,6 +26,7 @@ class SingleCodedValue {
   cloneForEdit() {
     const singleCodedValue = new SingleCodedValue();
     singleCodedValue.answer = this.answer;
+    singleCodedValue.answerSource = this.answerSource;
     return singleCodedValue;
   }
 

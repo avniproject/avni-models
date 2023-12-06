@@ -284,6 +284,11 @@ class General {
     }
     return false;
   }
+
+  static AnswerSource = {
+    Manual: 'manual',
+    Auto: 'auto'
+  }
 }
 
 export default General;

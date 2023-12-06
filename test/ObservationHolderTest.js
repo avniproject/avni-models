@@ -10,6 +10,7 @@ import {FormElementStatus} from '../src';
 import {createCodedConcept} from './ConceptTest';
 import SingleCodedValue from '../src/observation/SingleCodedValue';
 import QuestionGroup from '../src/observation/QuestionGroup';
+import General from "../src/utility/General";
 
 describe('ObservationHolderTest', () => {
 
@@ -158,15 +159,16 @@ describe('ObservationHolderTest', () => {
                 questionGroupConcept,
                 EntityFactory.createConcept("Concept 8", Concept.dataType.Encounter, "concept-8"),];
             observations = [
-                Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id)),
-                Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad')),
-                Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image)),
-                Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text)),
-                Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric)),
-                Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber)),
+                Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id, General.AnswerSource.Auto)),
+                Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad', General.AnswerSource.Auto)),
+                Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image, General.AnswerSource.Auto)),
+                Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text, General.AnswerSource.Auto)),
+                Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric, General.AnswerSource.Auto)),
+                Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber, General.AnswerSource.Auto)),
                 Observation.create(concepts[6], new QuestionGroup(questionGroupConceptObservations)),
-                  Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter)),
+                  Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter, General.AnswerSource.Auto)),
             ];
+
             allFormElements = [
                 EntityFactory.createFormElement("Form Element 1", true, concepts[0], 1, "SingleSelect"),
                 EntityFactory.createFormElement("Form Element 2", true, concepts[1], 2, "SingleSelect"),
@@ -253,7 +255,122 @@ describe('ObservationHolderTest', () => {
         });
     });
 
-    //TODO "Remove Observations if FormElementStatus Value is set to null on purpose"
+  describe("Test updatePrimitiveCodedObs behaviour for variation in value for FormElementStatus returned for manually updated fields on evaluation of rule", () => {
+    let observations, concepts, allFormElements, applicableFormElements, groupObsValueWrapper;
+    const questionGroupConcept = TestConceptFactory.create({uuid: "group-concept-uuid-1", dataType: Concept.dataType.QuestionGroup});
+    const questionGroupChildConcept1 = TestConceptFactory.create({uuid: "concept-uuid-2", dataType: Concept.dataType.Numeric});
+    const questionGroupChildConcept2 = TestConceptFactory.create({uuid: "concept-uuid-3", dataType: Concept.dataType.Text});
+    const questionGroupConceptObservations = [
+      Observation.create(questionGroupChildConcept1, 5),
+      Observation.create(questionGroupChildConcept2, "abc")
+    ];
+    beforeEach(() => {
+      concepts = [EntityFactory.createConcept("Concept 1", Concept.dataType.Id, "Concept 1"),
+        createCodedConcept("Concept 2"),
+        EntityFactory.createConcept("Concept 3", Concept.dataType.Image, "concept-3"),
+        EntityFactory.createConcept("Concept 4", Concept.dataType.Text, "concept-4"),
+        EntityFactory.createConcept("Concept 5", Concept.dataType.Numeric, "concept-5"),
+        EntityFactory.createConcept("Concept 6", Concept.dataType.PhoneNumber, "concept-6"),
+        questionGroupConcept,
+        EntityFactory.createConcept("Concept 8", Concept.dataType.Encounter, "concept-8"),];
+      observations = [
+        Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id, General.AnswerSource.Manual)),
+        Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad', General.AnswerSource.Manual)),
+        Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image, General.AnswerSource.Manual)),
+        Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text, General.AnswerSource.Manual)),
+        Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric, General.AnswerSource.Manual)),
+        Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber, General.AnswerSource.Manual)),
+        Observation.create(concepts[6], new QuestionGroup(questionGroupConceptObservations)),
+        Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter, General.AnswerSource.Manual)),
+      ];
+
+      allFormElements = [
+        EntityFactory.createFormElement("Form Element 1", true, concepts[0], 1, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 2", true, concepts[1], 2, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 3", true, concepts[2], 3, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 4", true, concepts[3], 4, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 5", true, concepts[4], 5, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 6", true, concepts[5], 6, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 7", true, concepts[6], 7, "SingleSelect"),
+        EntityFactory.createFormElement("Form Element 8", true, concepts[7], 8, "SingleSelect"),
+      ];
+      applicableFormElements = [
+        ...allFormElements
+      ];
+
+      groupObsValueWrapper = observations[6].getValueWrapper();
+    });
+
+    const visibility = true;
+    let uuid = null;
+
+    function validate(index, initialValue, updatedValue, isQuestionGroupConcept = false) {
+      uuid = applicableFormElements[index].uuid;
+      const observationsHolder = new ObservationsHolder(observations);
+
+      // 1. Validate equality for initial value
+      assert.equal(observationsHolder.getObservationReadableValue(concepts[index]), initialValue);
+
+      // 2. Validate equality for updated value
+      let formElementStatus = new FormElementStatus(uuid, visibility, updatedValue);
+      observationsHolder.updatePrimitiveCodedObs([applicableFormElements[index]], [formElementStatus]);
+      assert.equal(observationsHolder.getObservationReadableValue(concepts[index]), initialValue);
+
+      // 3. Validate no change when we have FormElementStatus with null value due to default rule
+      formElementStatus = new FormElementStatus(uuid, visibility, null);
+      observationsHolder.updatePrimitiveCodedObs([applicableFormElements[index]], [formElementStatus]);
+      assert.equal(observationsHolder.getObservationReadableValue(concepts[index]), initialValue);
+
+      // 4. Validate no change when we reset using _resetIfValueIsNull
+      formElementStatus = FormElementStatus.resetIfValueIsNull(uuid, visibility);
+      observationsHolder.updatePrimitiveCodedObs([applicableFormElements[index]], [formElementStatus]);
+      assert.equal(observationsHolder.getObservationReadableValue(concepts[index]), initialValue);
+    }
+
+    it("Validate update of ID observation concept value based on FormElementStatus returned on executing rule", () => {
+      let index = 0; //ID
+      let initialValue = 123;
+      let updatedValue = 124;
+      validate(index, initialValue, updatedValue);
+    });
+
+    it("Validate update of Coded observation concept value based on FormElementStatus returned on executing rule", () => {
+      let index = 1; //Coded
+      let initialValue = 'Pregnancy Induced Hypertension';
+      let updatedValue =  'Other';
+      validate(index, initialValue, updatedValue);
+    });
+
+    it("Validate update of Image observation concept value based on FormElementStatus returned on executing rule", () => {
+      let index = 2; //Image
+      let initialValue = "file:://parent/child/file1.img";
+      let updatedValue =  "file:://parent/child/file2.img";
+      validate(index, initialValue, updatedValue);
+    });
+
+    it("Validate update of Text observation concept value based on FormElementStatus returned on executing rule", () => {
+      let index = 3; //Text
+      let initialValue = 'Yao';
+      let updatedValue =  'YaoUpdated';
+      validate(index, initialValue, updatedValue);
+    });
+
+    it("Validate update of Numeric observation concept value based on FormElementStatus returned on executing rule", () => {
+      let index = 4; //Numeric
+      let initialValue = '123';
+      let updatedValue =  '1234';
+      validate(index, initialValue, updatedValue);
+    });
+
+    it("Validate update of PhoneNumber observation concept value based on FormElementStatus returned on executing rule", () => {
+      let index = 5; //PhoneNumber
+      let initialValue = '1234343567';
+      let updatedValue =  '1234343566';
+      validate(index, initialValue, updatedValue);
+    });
+  });
+
+  //TODO "Remove Observations if FormElementStatus Value is set to null on purpose"
 
 
     it('has any answer', function () {

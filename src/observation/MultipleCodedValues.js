@@ -1,9 +1,11 @@
 import _ from "lodash";
 import ah from "../framework/ArrayHelper";
+import General from "../utility/General";
 
 class MultipleCodedValues {
-  constructor(answer) {
+  constructor(answer, answerSource = General.AnswerSource.Manual) {
     this.answer = _.isNil(answer) ? [] : answer;
+    this.answerSource = answerSource;
   }
 
   push(answerUUID) {
@@ -48,6 +50,7 @@ class MultipleCodedValues {
   cloneForEdit() {
     const multipleCodedValues = new MultipleCodedValues();
     multipleCodedValues.answer = this.answer;
+    multipleCodedValues.answerSource = this.answerSource;
     return multipleCodedValues;
   }
 

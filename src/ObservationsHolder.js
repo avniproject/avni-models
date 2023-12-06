@@ -87,9 +87,10 @@ class ObservationsHolder {
     }
   }
 
-  addOrUpdatePrimitiveObs(concept, value) {
+  addOrUpdatePrimitiveObs(concept, value, answerSource = General.AnswerSource.Manual) {
     let currentObservation = this.findObservation(concept);
     const currentValue = currentObservation && currentObservation.getValueWrapper() || {};
+    // if (currentValue.answerSource === General.AnswerSource.Manual) return;
     this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
       if (concept.isIdConcept()) {
@@ -99,7 +100,7 @@ class ObservationsHolder {
         })));
       } else {
         this.observations.push(
-          Observation.create(concept, new PrimitiveValue(value, concept.datatype))
+          Observation.create(concept, new PrimitiveValue(value, concept.datatype, answerSource))
         );
       }
     }
@@ -119,7 +120,7 @@ class ObservationsHolder {
       const answerUUID = isSingleSelect
         ? getConceptUUID(concept.getAnswerWithConceptName(value))
         : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
-      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID) : new MultipleCodedValues(answerUUID));
+      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, General.AnswerSource.Auto) : new MultipleCodedValues(answerUUID, General.AnswerSource.Auto));
       this.observations.push(observation);
     }
   }
@@ -238,9 +239,15 @@ class ObservationsHolder {
             })
           })
         } else {
+          const observation = this.findObservation(concept);
+
+          if (!_.isNil(observation) && observation.valueJSON.answerSource === General.AnswerSource.Manual) {
+            General.logDebug('ObservationsHolder', 'updatePrimitiveCodedObs: Not updating because answerSource is manual');
+            return;
+          }
           concept.isCodedConcept()
             ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
-            : this.addOrUpdatePrimitiveObs(concept, value);
+            : this.addOrUpdatePrimitiveObs(concept, value, General.AnswerSource.Auto);
         }
       }
     });
