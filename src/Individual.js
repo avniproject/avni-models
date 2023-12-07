@@ -408,14 +408,14 @@ class Individual extends BaseEntity {
   };
 
   static associateRelationship(child, childEntityClass, childResource, entityService) {
-    var individual = BaseEntity.getParentEntity(
-      entityService,
-      childEntityClass,
-      childResource,
-      "individualAUUID",
-      Individual.schema.name
-    );
-    individual = General.pick(
+      let individual = BaseEntity.getParentEntity(
+          entityService,
+          childEntityClass,
+          childResource,
+          "individualAUUID",
+          Individual.schema.name
+      );
+      individual = General.pick(
       individual,
       ["uuid"],
       ["enrolments", "encounters", "relationships", "groupSubjects", "comments", "groups"]
@@ -432,7 +432,7 @@ class Individual extends BaseEntity {
     BaseEntity.addNewChild(child, groupSubject.groupSubjects);
     //Don't associate voided member subjects if not found in the catchment
     try {
-      var memberSubject = getParentByUUID("memberSubjectUUID");
+      let memberSubject = getParentByUUID("memberSubjectUUID");
       memberSubject = copyFieldsForSubject(memberSubject);
       BaseEntity.addNewChild(child, memberSubject.groups);
       return [groupSubject, memberSubject];
@@ -1106,6 +1106,20 @@ class Individual extends BaseEntity {
 
   setLatestEntityApprovalStatus(entityApprovalStatus) {
     this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+  }
+
+  getMemberEntitiesWithLatestStatus(approvalStatus_status) {
+      let descendants = [];
+      if (!_.isNil(this.latestEntityApprovalStatus) && this.latestEntityApprovalStatus.hasStatus(approvalStatus_status))
+          descendants.push(this);
+      descendants = descendants.concat(EntityApprovalStatus.getMatchingApprovalStatusEntity(this.nonVoidedEnrolments(), approvalStatus_status));
+      descendants = descendants.concat(EntityApprovalStatus.getMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status));
+
+      this.nonVoidedEnrolments().forEach((enrolment) => {
+          descendants = descendants.concat(enrolment.getApprovalDescendantsWithLatestStatus(approvalStatus_status));
+      });
+
+      return descendants;
   }
 
   toJSON() {

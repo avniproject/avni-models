@@ -19,7 +19,6 @@ class ApprovalStatus extends BaseEntity {
     Rejected: "Rejected",
   };
 
-
   constructor(that = null) {
     super(that);
   }

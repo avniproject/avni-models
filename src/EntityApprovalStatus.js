@@ -30,6 +30,10 @@ class EntityApprovalStatus extends BaseEntity {
     ChecklistItem: "ChecklistItem",
   };
 
+  static getMatchingApprovalStatusEntity(entities, approvalStatus_status) {
+      return entities.filter((x) => !_.isNil(x.latestEntityApprovalStatus) && x.latestEntityApprovalStatus.hasStatus(approvalStatus_status));
+  }
+
   static getApprovalEntitiesSchema() {
     return [
       SchemaNames.Individual,
@@ -164,6 +168,10 @@ class EntityApprovalStatus extends BaseEntity {
         entityType: EntityApprovalStatus.entityType.ChecklistItem
       }
     ];
+  }
+
+  hasStatus(status) {
+      return this.approvalStatus.status === status;
   }
 }
 
