@@ -2,9 +2,10 @@ import _ from "lodash";
 import Concept from "../Concept";
 import moment from "moment";
 import General from "../utility/General";
+import Observation from "../Observation";
 
 class PrimitiveValue {
-  constructor(value, datatype, answerSource = General.AnswerSource.Manual) {
+  constructor(value, datatype, answerSource = Observation.AnswerSource.Manual) {
     this.value = value;
     this.datatype = datatype;
     this.answer = this._valueFromString();

@@ -10,7 +10,6 @@ import {FormElementStatus} from '../src';
 import {createCodedConcept} from './ConceptTest';
 import SingleCodedValue from '../src/observation/SingleCodedValue';
 import QuestionGroup from '../src/observation/QuestionGroup';
-import General from "../src/utility/General";
 
 describe('ObservationHolderTest', () => {
 
@@ -159,14 +158,14 @@ describe('ObservationHolderTest', () => {
                 questionGroupConcept,
                 EntityFactory.createConcept("Concept 8", Concept.dataType.Encounter, "concept-8"),];
             observations = [
-                Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id, General.AnswerSource.Auto)),
-                Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad', General.AnswerSource.Auto)),
-                Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image, General.AnswerSource.Auto)),
-                Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text, General.AnswerSource.Auto)),
-                Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric, General.AnswerSource.Auto)),
-                Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber, General.AnswerSource.Auto)),
+                Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id, Observation.AnswerSource.Auto)),
+                Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad', Observation.AnswerSource.Auto)),
+                Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image, Observation.AnswerSource.Auto)),
+                Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text, Observation.AnswerSource.Auto)),
+                Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric, Observation.AnswerSource.Auto)),
+                Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber, Observation.AnswerSource.Auto)),
                 Observation.create(concepts[6], new QuestionGroup(questionGroupConceptObservations)),
-                  Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter, General.AnswerSource.Auto)),
+                  Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter, Observation.AnswerSource.Auto)),
             ];
 
             allFormElements = [
@@ -274,14 +273,14 @@ describe('ObservationHolderTest', () => {
         questionGroupConcept,
         EntityFactory.createConcept("Concept 8", Concept.dataType.Encounter, "concept-8"),];
       observations = [
-        Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id, General.AnswerSource.Manual)),
-        Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad', General.AnswerSource.Manual)),
-        Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image, General.AnswerSource.Manual)),
-        Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text, General.AnswerSource.Manual)),
-        Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric, General.AnswerSource.Manual)),
-        Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber, General.AnswerSource.Manual)),
+        Observation.create(concepts[0], new PrimitiveValue(123, Concept.dataType.Id, Observation.AnswerSource.Manual)),
+        Observation.create(concepts[1], new SingleCodedValue('5a738df9-b09a-4e7d-b683-189a9cdabcad', Observation.AnswerSource.Manual)),
+        Observation.create(concepts[2], new PrimitiveValue("file:://parent/child/file1.img", Concept.dataType.Image, Observation.AnswerSource.Manual)),
+        Observation.create(concepts[3], new PrimitiveValue("Yao", Concept.dataType.Text, Observation.AnswerSource.Manual)),
+        Observation.create(concepts[4], new PrimitiveValue("123", Concept.dataType.Numeric, Observation.AnswerSource.Manual)),
+        Observation.create(concepts[5], new PrimitiveValue("1234343567", Concept.dataType.PhoneNumber, Observation.AnswerSource.Manual)),
         Observation.create(concepts[6], new QuestionGroup(questionGroupConceptObservations)),
-        Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter, General.AnswerSource.Manual)),
+        Observation.create(concepts[7], new PrimitiveValue("encounter-uuid", Concept.dataType.Encounter, Observation.AnswerSource.Manual)),
       ];
 
       allFormElements = [

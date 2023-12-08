@@ -87,10 +87,9 @@ class ObservationsHolder {
     }
   }
 
-  addOrUpdatePrimitiveObs(concept, value, answerSource = General.AnswerSource.Manual) {
+  addOrUpdatePrimitiveObs(concept, value, answerSource = Observation.AnswerSource.Manual) {
     let currentObservation = this.findObservation(concept);
     const currentValue = currentObservation && currentObservation.getValueWrapper() || {};
-    // if (currentValue.answerSource === General.AnswerSource.Manual) return;
     this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
       if (concept.isIdConcept()) {
@@ -120,7 +119,7 @@ class ObservationsHolder {
       const answerUUID = isSingleSelect
         ? getConceptUUID(concept.getAnswerWithConceptName(value))
         : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
-      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, General.AnswerSource.Auto) : new MultipleCodedValues(answerUUID, General.AnswerSource.Auto));
+      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, Observation.AnswerSource.Auto) : new MultipleCodedValues(answerUUID, Observation.AnswerSource.Auto));
       this.observations.push(observation);
     }
   }
@@ -241,13 +240,13 @@ class ObservationsHolder {
         } else {
           const observation = this.findObservation(concept);
 
-          if (!_.isNil(observation) && observation.valueJSON.answerSource === General.AnswerSource.Manual) {
+          if (!_.isNil(observation) && observation.valueJSON.answerSource === Observation.AnswerSource.Manual) {
             General.logDebug('ObservationsHolder', 'updatePrimitiveCodedObs: Not updating because answerSource is manual');
             return;
           }
           concept.isCodedConcept()
             ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
-            : this.addOrUpdatePrimitiveObs(concept, value, General.AnswerSource.Auto);
+            : this.addOrUpdatePrimitiveObs(concept, value, Observation.AnswerSource.Auto);
         }
       }
     });

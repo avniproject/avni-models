@@ -1,8 +1,8 @@
 import _ from "lodash";
-import General from "../utility/General";
+import Observation from "../Observation";
 
 class SingleCodedValue {
-  constructor(answerUUID, answerSource = General.AnswerSource.Manual) {
+  constructor(answerUUID, answerSource = Observation.AnswerSource.Manual) {
     this.answer = answerUUID;
     this.answerSource = answerSource;
   }
