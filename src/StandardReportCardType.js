@@ -1,9 +1,9 @@
 import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import TaskType from "./task/TaskType";
+import ApprovalStatus from "./ApprovalStatus";
 
 class StandardReportCardType extends BaseEntity {
-
     static schema = {
         name: "StandardReportCardType",
         primaryKey: "uuid",
@@ -15,27 +15,27 @@ class StandardReportCardType extends BaseEntity {
         },
     };
 
-   constructor(that = null) {
-    super(that);
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  get name() {
-      return this.that.name;
-  }
+    get name() {
+        return this.that.name;
+    }
 
-  set name(x) {
-      this.that.name = x;
-  }
+    set name(x) {
+        this.that.name = x;
+    }
 
-  get description() {
-      return this.that.description;
-  }
+    get description() {
+        return this.that.description;
+    }
 
-  set description(x) {
-      this.that.description = x;
-  }
+    set description(x) {
+        this.that.description = x;
+    }
 
-  static type = {
+    static type = {
         PendingApproval: "Pending approval",
         Approved: "Approved",
         Rejected: "Rejected",
@@ -49,7 +49,7 @@ class StandardReportCardType extends BaseEntity {
         CallTasks: "Call tasks",
         OpenSubjectTasks: "Open subject tasks",
         DueChecklist: "Due checklist",
-  };
+    };
 
     get iconName() {
         const typeIcon = {
@@ -93,7 +93,7 @@ class StandardReportCardType extends BaseEntity {
     }
 
     defaultTypes() {
-      return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total]
+        return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total]
     }
 
     isApprovalType() {
@@ -125,6 +125,15 @@ class StandardReportCardType extends BaseEntity {
         return _.includes(this.defaultTypes(), this.name);
     }
 
+    getApprovalStatusForType() {
+        return typeToStatusMap[this.name];
+    }
 }
+
+const typeToStatusMap = {
+    [StandardReportCardType.type.PendingApproval]: ApprovalStatus.statuses.Pending,
+    [StandardReportCardType.type.Approved]: ApprovalStatus.statuses.Approved,
+    [StandardReportCardType.type.Rejected]: ApprovalStatus.statuses.Rejected,
+};
 
 export default StandardReportCardType;

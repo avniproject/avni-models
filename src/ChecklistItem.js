@@ -324,6 +324,10 @@ class ChecklistItem extends BaseEntity {
   setLatestEntityApprovalStatus(entityApprovalStatus) {
     this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
   }
+
+    getSchemaName() {
+        return SchemaNames.ChecklistItem;
+    }
 }
 
 export default ChecklistItem;

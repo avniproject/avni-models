@@ -765,6 +765,10 @@ class ProgramEnrolment extends BaseEntity {
             approvalStatuses: this.approvalStatuses
         };
     }
+
+    getSchemaName() {
+        return SchemaNames.ProgramEnrolment;
+    }
 }
 
 export default ProgramEnrolment;

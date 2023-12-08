@@ -182,6 +182,10 @@ class ProgramEncounter extends AbstractEncounter {
   setLatestEntityApprovalStatus(entityApprovalStatus) {
     this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
   }
+
+    getSchemaName() {
+        return SchemaNames.ProgramEncounter;
+    }
 }
 
 export default ProgramEncounter;

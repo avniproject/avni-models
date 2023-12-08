@@ -137,6 +137,10 @@ class Encounter extends AbstractEncounter {
     }
     return realmEncounter;
   }
+
+    getSchemaName() {
+        return SchemaNames.Encounter;
+    }
 }
 
 export default Encounter;

@@ -1146,6 +1146,10 @@ class Individual extends BaseEntity {
       comments: this.comments,
     };
   }
+
+  getSchemaName() {
+      return SchemaNames.Individual;
+  }
 }
 
 export default Individual;
