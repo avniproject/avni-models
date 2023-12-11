@@ -112,14 +112,14 @@ class ObservationsHolder {
     }
   }
 
-  addOrUpdateCodedObs(concept, value, isSingleSelect) {
+  addOrUpdateCodedObs(concept, value, isSingleSelect, answerSource = Observation.AnswerSource.Auto) {
     this._removeExistingObs(concept);
     const getConceptUUID = (conceptAnswer) => conceptAnswer ? conceptAnswer.concept.uuid : undefined;
     if (!_.isEmpty(value)) {
       const answerUUID = isSingleSelect
         ? getConceptUUID(concept.getAnswerWithConceptName(value))
         : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
-      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, Observation.AnswerSource.Auto) : new MultipleCodedValues(answerUUID, Observation.AnswerSource.Auto));
+      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, answerSource) : new MultipleCodedValues(answerUUID, answerSource));
       this.observations.push(observation);
     }
   }
@@ -275,6 +275,7 @@ class ObservationsHolder {
         ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
         return null;
       }
+      observation.valueJSON.answerSource = Observation.AnswerSource.Manual;
       return observation;
     }
   }
