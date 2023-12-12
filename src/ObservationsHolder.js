@@ -238,12 +238,6 @@ class ObservationsHolder {
             })
           })
         } else {
-          const observation = this.findObservation(concept);
-
-          if (!_.isNil(observation) && observation.valueJSON.answerSource === Observation.AnswerSource.Manual) {
-            General.logDebug('ObservationsHolder', 'updatePrimitiveCodedObs: Not updating because answerSource is manual');
-            return;
-          }
           concept.isCodedConcept()
             ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
             : this.addOrUpdatePrimitiveObs(concept, value, Observation.AnswerSource.Auto);
