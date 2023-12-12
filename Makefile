@@ -13,7 +13,7 @@ build:
 
 release: get-current-version
 	@echo "\033[0m"
-	yarn version
+	@yarn version
 	@echo "   Now please run \nmake publish"
 
 publish:
