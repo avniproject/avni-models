@@ -12,5 +12,6 @@ export const ErrorCodes = Object.freeze({
     'Checklist-ProgramEnrolment-Association': 'Association error 11',
     'ChecklistItem-Checklist-Association': 'Association error 12',
     'VideoTelemetric-Video-Association': 'Association error 13',
-    'NoCatchmentFound': 'NoCatchmentFoundErrorMessage'
+    'NoCatchmentFound': 'NoCatchmentFoundErrorMessage',
+    'GroupSubjectMapping-GroupSubject-Association' : 'Ignorable Association error 01',
 });
