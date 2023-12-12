@@ -6,173 +6,192 @@ import _ from 'lodash';
 import SchemaNames from "./SchemaNames";
 
 class EntityApprovalStatus extends BaseEntity {
-  static schema = {
-    name: SchemaNames.EntityApprovalStatus,
-    primaryKey: "uuid",
-    properties: {
-      uuid: "string",
-      entityUUID: "string",
-      approvalStatus: "ApprovalStatus",
-      entityType: "string",
-      entityTypeUuid: {type: "string", optional: true},
-      approvalStatusComment: {type: "string", optional: true},
-      statusDateTime: "date",
-      autoApproved: {type: "bool", default: false},
-      voided: {type: "bool", default: false},
-    },
-  };
+    static schema = {
+        name: SchemaNames.EntityApprovalStatus,
+        primaryKey: "uuid",
+        properties: {
+            uuid: "string",
+            entityUUID: "string",
+            approvalStatus: "ApprovalStatus",
+            entityType: "string",
+            entityTypeUuid: {type: "string", optional: true},
+            approvalStatusComment: {type: "string", optional: true},
+            statusDateTime: "date",
+            autoApproved: {type: "bool", default: false},
+            voided: {type: "bool", default: false},
+        },
+    };
 
-  static entityType = {
-    Subject: "Subject",
-    ProgramEnrolment: "ProgramEnrolment",
-    ProgramEncounter: "ProgramEncounter",
-    Encounter: "Encounter",
-    ChecklistItem: "ChecklistItem",
-  };
+    static entityType = {
+        Subject: "Subject",
+        ProgramEnrolment: "ProgramEnrolment",
+        ProgramEncounter: "ProgramEncounter",
+        Encounter: "Encounter",
+        ChecklistItem: "ChecklistItem",
+    };
 
-  static getMatchingApprovalStatusEntity(entities, approvalStatus_status) {
-      return entities.filter((x) => !_.isNil(x.latestEntityApprovalStatus) && x.latestEntityApprovalStatus.hasStatus(approvalStatus_status));
-  }
+    static getMatchingApprovalStatusEntity(entities, approvalStatus_status, latestFieldPath) {
+        return _.max(entities.filter((x) => !_.isNil(x.latestEntityApprovalStatus) && x.latestEntityApprovalStatus.hasStatus(approvalStatus_status)), (y) => _.get(y, latestFieldPath));
+    }
 
-  static getApprovalEntitiesSchema() {
-    return [
-      SchemaNames.Individual,
-      SchemaNames.ProgramEncounter,
-      SchemaNames.Encounter,
-      SchemaNames.ProgramEnrolment,
-      SchemaNames.ChecklistItem
-    ]
-  }
+    static addMatchingApprovalStatusEntity(entities, approvalStatus_status, latestFieldPath, list, groupingByPath) {
+        Object.values(_.groupBy(entities, (x) => _.get(x, groupingByPath))).forEach((y) => {
+            const latestEntity = EntityApprovalStatus.getMatchingApprovalStatusEntity(y, approvalStatus_status, latestFieldPath)
+            if (!_.isNil(latestEntity))
+                list.push(latestEntity);
+        })
+    }
 
-  getApprovedEntitySchema() {
-    if (this.entityType === EntityApprovalStatus.entityType.Subject) return SchemaNames.Individual;
-    return SchemaNames[this.entityType];
-  }
+    static getApprovalEntitiesSchema() {
+        return [
+            SchemaNames.Individual,
+            SchemaNames.ProgramEncounter,
+            SchemaNames.Encounter,
+            SchemaNames.ProgramEnrolment,
+            SchemaNames.ChecklistItem
+        ]
+    }
 
-  constructor(that = null) {
-    super(that);
-  }
+    getApprovedEntitySchema() {
+        if (this.entityType === EntityApprovalStatus.entityType.Subject) return SchemaNames.Individual;
+        return SchemaNames[this.entityType];
+    }
 
-  get entityUUID() {
-    return this.that.entityUUID;
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  set entityUUID(x) {
-    this.that.entityUUID = x;
-  }
+    get entityUUID() {
+        return this.that.entityUUID;
+    }
 
-  get entityTypeUuid() {
-    return this.that.entityTypeUuid;
-  }
+    set entityUUID(x) {
+        this.that.entityUUID = x;
+    }
 
-  set entityTypeUuid(x) {
-    this.that.entityTypeUuid = x;
-  }
+    get entityTypeUuid() {
+        return this.that.entityTypeUuid;
+    }
 
-  get entityType() {
-    return this.that.entityType;
-  }
+    set entityTypeUuid(x) {
+        this.that.entityTypeUuid = x;
+    }
 
-  set entityType(x) {
-    this.that.entityType = x;
-  }
+    get entityType() {
+        return this.that.entityType;
+    }
 
-  get approvalStatus() {
-    return this.toEntity("approvalStatus", ApprovalStatus);
-  }
+    set entityType(x) {
+        this.that.entityType = x;
+    }
 
-  set approvalStatus(x) {
-    this.that.approvalStatus = this.fromObject(x);
-  }
+    get approvalStatus() {
+        return this.toEntity("approvalStatus", ApprovalStatus);
+    }
 
-  get approvalStatusComment() {
-    return this.that.approvalStatusComment;
-  }
+    set approvalStatus(x) {
+        this.that.approvalStatus = this.fromObject(x);
+    }
 
-  set approvalStatusComment(x) {
-    this.that.approvalStatusComment = x;
-  }
+    get approvalStatusComment() {
+        return this.that.approvalStatusComment;
+    }
 
-  get statusDateTime() {
-    return this.that.statusDateTime;
-  }
+    set approvalStatusComment(x) {
+        this.that.approvalStatusComment = x;
+    }
 
-  set statusDateTime(x) {
-    this.that.statusDateTime = x;
-  }
+    get statusDateTime() {
+        return this.that.statusDateTime;
+    }
 
-  get autoApproved() {
-    return this.that.autoApproved;
-  }
+    set statusDateTime(x) {
+        this.that.statusDateTime = x;
+    }
 
-  set autoApproved(x) {
-    this.that.autoApproved = x;
-  }
+    get autoApproved() {
+        return this.that.autoApproved;
+    }
 
-  get toResource() {
-    const resource = _.pick(this, [
-      "uuid",
-      "entityType",
-      "approvalStatusComment",
-      "autoApproved",
-      "voided"
-    ]);
-    resource["approvalStatusUuid"] = this.approvalStatus.uuid;
-    resource["entityUuid"] = this.entityUUID;
-    resource["entityTypeUuid"] = this.entityTypeUuid;
-    resource.statusDateTime = General.isoFormat(this.statusDateTime);
-    return resource;
-  }
+    set autoApproved(x) {
+        this.that.autoApproved = x;
+    }
 
+    get toResource() {
+        const resource = _.pick(this, [
+            "uuid",
+            "entityType",
+            "approvalStatusComment",
+            "autoApproved",
+            "voided"
+        ]);
+        resource["approvalStatusUuid"] = this.approvalStatus.uuid;
+        resource["entityUuid"] = this.entityUUID;
+        resource["entityTypeUuid"] = this.entityTypeUuid;
+        resource.statusDateTime = General.isoFormat(this.statusDateTime);
+        return resource;
+    }
 
-  static fromResource(resource, entityService) {
-    const entityApprovalStatus = General.assignFields(resource, new EntityApprovalStatus(),
-      ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided", "entityTypeUuid"],
-      ["statusDateTime"]);
-    entityApprovalStatus.approvalStatus = entityService.findByKey(
-      "uuid",
-      ResourceUtil.getUUIDFor(resource, "approvalStatusUUID"),
-      ApprovalStatus.schema.name
-    );
-    entityApprovalStatus.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
-    return entityApprovalStatus;
-  }
+    static fromResource(resource, entityService) {
+        const entityApprovalStatus = General.assignFields(resource, new EntityApprovalStatus(),
+            ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided", "entityTypeUuid"],
+            ["statusDateTime"]);
+        entityApprovalStatus.approvalStatus = entityService.findByKey(
+            "uuid",
+            ResourceUtil.getUUIDFor(resource, "approvalStatusUUID"),
+            ApprovalStatus.schema.name
+        );
+        entityApprovalStatus.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
+        return entityApprovalStatus;
+    }
 
-  static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUuid) {
-    const entityApprovalStatus = new EntityApprovalStatus();
-    entityApprovalStatus.uuid = General.randomUUID();
-    entityApprovalStatus.entityUUID = entityUUID;
-    entityApprovalStatus.entityTypeUuid = entityTypeUuid;
-    entityApprovalStatus.entityType = entityType;
-    entityApprovalStatus.approvalStatus = approvalStatus;
-    entityApprovalStatus.approvalStatusComment = approvalStatusComment;
-    entityApprovalStatus.autoApproved = autoApproved;
-    entityApprovalStatus.statusDateTime = new Date();
-    return entityApprovalStatus;
-  }
+    static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUuid) {
+        const entityApprovalStatus = new EntityApprovalStatus();
+        entityApprovalStatus.uuid = General.randomUUID();
+        entityApprovalStatus.entityUUID = entityUUID;
+        entityApprovalStatus.entityTypeUuid = entityTypeUuid;
+        entityApprovalStatus.entityType = entityType;
+        entityApprovalStatus.approvalStatus = approvalStatus;
+        entityApprovalStatus.approvalStatusComment = approvalStatusComment;
+        entityApprovalStatus.autoApproved = autoApproved;
+        entityApprovalStatus.statusDateTime = new Date();
+        return entityApprovalStatus;
+    }
 
-  static getSchemaEntityTypeList() {
-    return [
-      {schema: SchemaNames.Individual, entityType: EntityApprovalStatus.entityType.Subject},
-      {
-        schema: SchemaNames.ProgramEnrolment,
-        entityType: EntityApprovalStatus.entityType.ProgramEnrolment
-      },
-      {schema: SchemaNames.Encounter, entityType: EntityApprovalStatus.entityType.Encounter},
-      {
-        schema: SchemaNames.ProgramEncounter,
-        entityType: EntityApprovalStatus.entityType.ProgramEncounter
-      },
-      {
-        schema: SchemaNames.ChecklistItem,
-        entityType: EntityApprovalStatus.entityType.ChecklistItem
-      }
-    ];
-  }
+    static getSchemaEntityTypeList() {
+        return [
+            {schema: SchemaNames.Individual, entityType: EntityApprovalStatus.entityType.Subject},
+            {
+                schema: SchemaNames.ProgramEnrolment,
+                entityType: EntityApprovalStatus.entityType.ProgramEnrolment
+            },
+            {schema: SchemaNames.Encounter, entityType: EntityApprovalStatus.entityType.Encounter},
+            {
+                schema: SchemaNames.ProgramEncounter,
+                entityType: EntityApprovalStatus.entityType.ProgramEncounter
+            },
+            {
+                schema: SchemaNames.ChecklistItem,
+                entityType: EntityApprovalStatus.entityType.ChecklistItem
+            }
+        ];
+    }
 
-  hasStatus(status) {
-      return this.approvalStatus.status === status;
-  }
+    hasStatus(status) {
+        return this.approvalStatus.status === status;
+    }
+
+    get isRejected() {
+        return this.approvalStatus.isRejected;
+    }
+
+    get isApproved() {
+        return this.approvalStatus.isApproved;
+    }
+
+    get isPending() {
+        return this.approvalStatus.isPending;
+    }
 }
 
 export default EntityApprovalStatus;

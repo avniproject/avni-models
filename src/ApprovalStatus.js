@@ -32,15 +32,15 @@ class ApprovalStatus extends BaseEntity {
   }
 
   get isPending() {
-    return this.status === ApprovalStatus.statuses.Pending
+    return this.status === ApprovalStatus.statuses.Pending;
   }
 
   get isApproved() {
-    return this.status === ApprovalStatus.statuses.Approved
+    return this.status === ApprovalStatus.statuses.Approved;
   }
 
   get isRejected() {
-    return this.status === ApprovalStatus.statuses.Rejected
+    return this.status === ApprovalStatus.statuses.Rejected;
   }
 
   static fromResource(resource) {

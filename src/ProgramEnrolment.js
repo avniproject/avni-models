@@ -741,12 +741,11 @@ class ProgramEnrolment extends BaseEntity {
         this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
     }
 
-    getApprovalDescendantsWithLatestStatus(approvalStatus_status) {
-        let descendants = EntityApprovalStatus.getMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status);
+    addApprovalDescendantsWithLatestStatus(approvalStatus_status, list) {
+        EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status, "encounterDateTime", list, "encounterType.uuid");
         this.checklists.filter((x) => !x.voided).forEach((x) => {
-            descendants = descendants.concat(x.getApprovalDescendantsWithLatestStatus(approvalStatus_status));
+            x.addApprovalDescendantsWithLatestStatus(approvalStatus_status, list);
         });
-        return descendants;
     }
 
     toJSON() {
