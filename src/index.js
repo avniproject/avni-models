@@ -99,6 +99,7 @@ import GroupDashboard from "./GroupDashboard";
 import DashboardSection from "./DashboardSection";
 import DashboardFilter from "./reports/DashboardFilter";
 import SyncError from "./error/SyncError";
+import IgnorableSyncError from "./error/IgnorableSyncError";
 import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
@@ -158,6 +159,7 @@ export {
   Form,
   FormMapping,
   Gender,
+  IgnorableSyncError,
   Individual,
   IndividualRelation,
   IndividualRelationGenderMapping,
