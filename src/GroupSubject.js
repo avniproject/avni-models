@@ -5,9 +5,7 @@ import ResourceUtil from "./utility/ResourceUtil";
 import General from "./utility/General";
 import GroupRole from "./GroupRole";
 
-
 class GroupSubject extends BaseEntity {
-  static EXPLICIT_ERROR_CODE_KEY_FOR_MISSING_GROUP = 'GroupSubjectMapping-GroupSubject-Association';
   static schema = {
     name: "GroupSubject",
     primaryKey: "uuid",
@@ -115,9 +113,7 @@ class GroupSubject extends BaseEntity {
       childEntityClass,
       childResource,
       groupSubjectParentIdField,
-      parentSchema,
-      true,
-      GroupSubject.EXPLICIT_ERROR_CODE_KEY_FOR_MISSING_GROUP
+      parentSchema
     );
     const memberSubject = BaseEntity.getParentEntity(
       entityService,
