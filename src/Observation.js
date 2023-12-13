@@ -14,7 +14,8 @@ const clone = function (concept, valueJSON) {
 
 class Observation extends PersistedObject {
     static schema = {
-        name: "Observation",
+        name: "EmbeddedObservation",
+        embedded: true,
         properties: {
             concept: "Concept",
             valueJSON: "string",
@@ -41,7 +42,7 @@ class Observation extends PersistedObject {
         this.that.valueJSON = x;
     }
 
-    static create(concept, value, abnormal = false) {
+    static create(concept, value) {
         const observation = new Observation();
         observation.concept = concept;
         observation.valueJSON = value;

@@ -68,7 +68,6 @@ export class LocationMapping extends BaseEntity {
       voided: !!resource.voided,
     });
   }
-
 }
 
 class AddressLevel extends BaseEntity {
@@ -81,7 +80,7 @@ class AddressLevel extends BaseEntity {
       level: "double",
       type: {type: "string", optional: true},
       locationMappings: {type: "list", objectType: "LocationMapping"},
-      locationProperties: {type: "list", objectType: "Observation"},
+      locationProperties: {type: "list", objectType: "EmbeddedObservation"},
       titleLineage: {type: "string", optional: true},
       voided: {type: "bool", default: false},
       parentUuid: {type: "string", optional: true},

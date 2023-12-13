@@ -1,4 +1,4 @@
-import {SubjectType} from "openchs-models";
+import SubjectType from "../../src/SubjectType";
 
 class SubjectTypeFactory {
   static create({uuid, name}) {

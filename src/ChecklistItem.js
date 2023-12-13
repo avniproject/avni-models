@@ -23,7 +23,7 @@ class ChecklistItem extends BaseEntity {
             uuid: "string",
             detail: "ChecklistItemDetail",
             completionDate: {type: "date", optional: true},
-            observations: {type: "list", objectType: "Observation"},
+            observations: {type: "list", objectType: "EmbeddedObservation"},
             checklist: "Checklist",
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
             latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}  //Reporting purposes

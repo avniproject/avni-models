@@ -23,7 +23,7 @@ class DraftSubject extends BaseEntity {
       gender: {type: "Gender", optional: true},
       registrationDate: "date",
       lowestAddressLevel: "AddressLevel",
-      observations: {type: "list", objectType: "Observation"},
+      observations: {type: "list", objectType: "EmbeddedObservation"},
       registrationLocation: {type: "Point", optional: true},
       updatedOn: "date",
       totalMembers: {type: "string", optional: true}

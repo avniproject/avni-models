@@ -21,9 +21,9 @@ class Task extends BaseEntity {
             taskStatus: "TaskStatus",
             scheduledOn: {type: "date"},
             completedOn: {type: "date", optional: true},
-            metadata: {type: "list", objectType: "Observation"},
+            metadata: {type: "list", objectType: "EmbeddedObservation"},
             subject: {type: 'Individual', optional: true},
-            observations: {type: "list", objectType: "Observation"},
+            observations: {type: "list", objectType: "EmbeddedObservation"},
             voided: {type: 'bool', default: false},
         },
     };

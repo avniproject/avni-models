@@ -1,4 +1,4 @@
-import {Program} from "openchs-models";
+import Program from "../../src/Program";
 
 class ProgramFactory {
   static create({name, uuid}) {

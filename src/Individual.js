@@ -51,7 +51,7 @@ class Individual extends BaseEntity {
       voided: {type: "bool", default: false},
       enrolments: {type: "list", objectType: SchemaNames.ProgramEnrolment},
       encounters: {type: "list", objectType: SchemaNames.Encounter},
-      observations: {type: "list", objectType: "Observation"},
+      observations: {type: "list", objectType: "EmbeddedObservation"},
       relationships: {type: "list", objectType: "IndividualRelationship"},
       groupSubjects: {type: "list", objectType: "GroupSubject"},
       registrationLocation: {type: "Point", optional: true},
