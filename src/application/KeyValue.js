@@ -8,6 +8,7 @@ class KeyValue extends PersistedObject {
 
   static schema = {
     name: SchemaNames.KeyValue,
+    embedded: true,
     properties: {
       key: "string",
       value: "string",

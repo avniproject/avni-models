@@ -7,6 +7,7 @@ import SchemaNames from "./SchemaNames";
 class ChecklistItemStatus extends PersistedObject {
   static schema = {
     name: SchemaNames.ChecklistItemStatus,
+    embedded: true,
     properties: {
       state: "string",
       from: "StringKeyNumericValue",

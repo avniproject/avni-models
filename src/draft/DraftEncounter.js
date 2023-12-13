@@ -5,26 +5,26 @@ import EncounterType from "../EncounterType";
 import Individual from "../Individual";
 import {Observation} from "../index";
 import Point from "../geo/Point";
-import ApprovalStatus from "../ApprovalStatus";
+import SchemaNames from "../SchemaNames";
 
 
 class DraftEncounter extends BaseEntity {
   static schema = {
-    name: "DraftEncounter",
+    name: SchemaNames.DraftEncounter,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
       encounterType: "EncounterType",
       encounterDateTime: {type: "date", optional: true},
       individual: "Individual",
-      observations: {type: "list", objectType: "Observation"},
-      encounterLocation: {type: "Point", optional: true},
+      observations: {type: "list", objectType: "EmbeddedObservation"},
+      encounterLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
       name: {type: "string", optional: true},
       earliestVisitDateTime: {type: "date", optional: true},
       maxVisitDateTime: {type: "date", optional: true},
       cancelDateTime: {type: "date", optional: true},
-      cancelObservations: {type: "list", objectType: "Observation"},
-      cancelLocation: {type: "Point", optional: true},
+      cancelObservations: {type: "list", objectType: "EmbeddedObservation"},
+      cancelLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
       voided: {type: "bool", default: false}
     },
   };

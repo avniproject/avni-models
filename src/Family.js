@@ -19,7 +19,7 @@ const mergeMap = new Map([
 
 class Family extends BaseEntity {
   static schema = {
-    name: "Family",
+    name: SchemaNames.Family,
     primaryKey: "uuid",
     properties: {
       uuid: "string",
@@ -29,7 +29,7 @@ class Family extends BaseEntity {
       typeOfFamily: "string",
       householdNumber: "string",
       members: { type: "list", objectType: "Individual" },
-      observations: { type: "list", objectType: "Observation" },
+      observations: { type: "list", objectType: "EmbeddedObservation" },
     },
   };
 

@@ -1,4 +1,7 @@
 class SchemaNames {
+  static Family = "Family";
+  static AddressLevel = "AddressLevel";
+  static DraftEncounter = "DraftEncounter";
   static EntitySyncStatus = "EntitySyncStatus";
   static Individual = "Individual";
   static ProgramEnrolment = "ProgramEnrolment";
@@ -37,6 +40,7 @@ class SchemaNames {
   static Comment = "Comment";
   static Concept = "Concept";
   static EntityApprovalStatus = "EntityApprovalStatus";
+  static EmbeddedPoint = "EmbeddedPoint";
 }
 
 export default SchemaNames;

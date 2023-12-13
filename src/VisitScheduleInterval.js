@@ -5,6 +5,7 @@ import General from "./utility/General";
 class VisitScheduleInterval extends ReferenceEntity {
   static schema = {
     name: "VisitScheduleInterval",
+    embedded: true,
     properties: {
       from: "string",
       min: "StringKeyNumericValue",

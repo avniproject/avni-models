@@ -141,6 +141,13 @@ class RealmResultsProxy {
         };
         return _.isNil(thisArg) ? this.realmCollection.find(findFunc) : this.realmCollection.find(findFunc, thisArg);
     }
+
+    every(callback, [thisArg] = []) {
+        const everyFunc = (object, index, collection) => {
+            return callback(this.createEntity(object), index, collection);
+        };
+        return _.isNil(thisArg) ? this.realmCollection.every(everyFunc) : this.realmCollection.every(everyFunc, [thisArg]);
+    }
 }
 
 export default RealmResultsProxy;

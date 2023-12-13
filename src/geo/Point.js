@@ -2,7 +2,8 @@ import PersistedObject from "../PersistedObject";
 
 class Point extends PersistedObject {
   static schema = {
-    name: "Point",
+    name: "EmbeddedPoint",
+    embedded: true,
     properties: {
       x: "double",
       y: "double",

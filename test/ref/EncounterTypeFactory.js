@@ -1,4 +1,4 @@
-import {EncounterType} from "openchs-models";
+import EncounterType from "../../src/EncounterType";
 
 class EncounterTypeFactory {
   static create({name, uuid}) {

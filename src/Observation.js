@@ -14,17 +14,18 @@ const clone = function (concept, valueJSON) {
 
 class Observation extends PersistedObject {
     static schema = {
-        name: "Observation",
+        name: "EmbeddedObservation",
+        embedded: true,
         properties: {
             concept: "Concept",
             valueJSON: "string",
         },
     };
 
-  static AnswerSource = {
-    Manual: 'manual',
-    Auto: 'auto'
-  }
+    static AnswerSource = {
+        Manual: 'manual',
+        Auto: 'auto'
+    }
 
     constructor(that = null) {
         super(that);
@@ -46,7 +47,7 @@ class Observation extends PersistedObject {
         this.that.valueJSON = x;
     }
 
-    static create(concept, value, abnormal = false) {
+    static create(concept, value) {
         const observation = new Observation();
         observation.concept = concept;
         observation.valueJSON = value;
@@ -65,7 +66,14 @@ class Observation extends PersistedObject {
         }
     }
 
-    static valueForDisplay({observation, conceptService, subjectService, addressLevelService, i18n, encounterService}) {
+    static valueForDisplay({
+                               observation,
+                               conceptService,
+                               subjectService,
+                               addressLevelService,
+                               i18n,
+                               encounterService
+                           }) {
         const valueWrapper = observation.getValueWrapper();
 
         if (
@@ -82,7 +90,13 @@ class Observation extends PersistedObject {
             } else if (observation.concept.datatype === Concept.dataType.Encounter) {
                 const encounter = encounterService.findByUUID(valueWrapper.getValue());
                 const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
-        return [new Displayable(encounter.getEncounterLabel(identifier, {conceptService, subjectService, addressLevelService, i18n, encounterService}), encounter)];
+                return [new Displayable(encounter.getEncounterLabel(identifier, {
+                    conceptService,
+                    subjectService,
+                    addressLevelService,
+                    i18n,
+                    encounterService
+                }), encounter)];
             } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
                 return new Displayable(valueWrapper.getValue(), null);
             } else {
@@ -98,7 +112,13 @@ class Observation extends PersistedObject {
                 const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);
                 return valueWrapper.getValue().map(uuid => {
                     const encounter = encounterService.findByUUID(uuid);
-          return new Displayable(encounter.getEncounterLabel(identifier, {conceptService, subjectService, addressLevelService, i18n, encounterService}), encounter);
+                    return new Displayable(encounter.getEncounterLabel(identifier, {
+                        conceptService,
+                        subjectService,
+                        addressLevelService,
+                        i18n,
+                        encounterService
+                    }), encounter);
                 });
             } else if (Concept.dataType.Media.includes(observation.concept.datatype)) {
                 return new Displayable(valueWrapper.getValue(), null);
@@ -224,6 +244,10 @@ class Observation extends PersistedObject {
 
     isMobileNumberObs() {
         return this.concept.isMobileNo();
+    }
+
+    isForMedia(mediaName) {
+        return Concept.dataType.Media.includes(this.concept.datatype) && this.valueJSON.includes(mediaName);
     }
 }
 

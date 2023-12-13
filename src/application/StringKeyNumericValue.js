@@ -4,6 +4,7 @@ import SchemaNames from "../SchemaNames";
 class StringKeyNumericValue extends PersistedObject {
   static schema = {
     name: SchemaNames.StringKeyNumericValue,
+    embedded: true,
     properties: {
       key: "string",
       value: "double",
