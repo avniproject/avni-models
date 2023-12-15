@@ -6,6 +6,8 @@ import General from "./utility/General";
 import GroupRole from "./GroupRole";
 
 class GroupSubject extends BaseEntity {
+
+  static EXPLICIT_ERROR_CODE_KEY_FOR_MISSING_MEMBER = 'GroupSubjectMapping-MemberSubject-Association';
   static schema = {
     name: "GroupSubject",
     primaryKey: "uuid",
@@ -120,7 +122,9 @@ class GroupSubject extends BaseEntity {
       childEntityClass,
       childResource,
       memberSubjectParentIdField,
-      parentSchema
+      parentSchema,
+      true,
+      GroupSubject.EXPLICIT_ERROR_CODE_KEY_FOR_MISSING_MEMBER
     );
     const groupRole = entityService.findByKey(
       "uuid",
