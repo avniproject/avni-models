@@ -127,13 +127,13 @@ class DraftEncounter extends BaseEntity {
     draftEncounter.encounterType = encounter.encounterType;
     draftEncounter.encounterDateTime = encounter.encounterDateTime;
     draftEncounter.individual = encounter.individual;
-    draftEncounter.observations = encounter.observations;
+    draftEncounter.observations = ObservationsHolder.clone(encounter.observations);
     draftEncounter.encounterLocation = encounter.encounterLocation;
     draftEncounter.name = encounter.name;
     draftEncounter.earliestVisitDateTime = encounter.earliestVisitDateTime;
     draftEncounter.maxVisitDateTime = encounter.maxVisitDateTime;
     draftEncounter.cancelDateTime = encounter.cancelDateTime;
-    draftEncounter.cancelObservations = encounter.cancelObservations;
+    draftEncounter.cancelObservations = ObservationsHolder.clone(encounter.cancelObservations);
     draftEncounter.cancelLocation = encounter.cancelLocation;
     draftEncounter.voided = encounter.voided;
     draftEncounter.registrationLocation = encounter.registrationLocation;

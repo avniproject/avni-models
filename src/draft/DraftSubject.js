@@ -150,7 +150,7 @@ class DraftSubject extends BaseEntity {
     draftSubject.dateOfBirthVerified = subject.dateOfBirthVerified;
     draftSubject.gender = subject.gender;
     draftSubject.lowestAddressLevel = subject.lowestAddressLevel;
-    draftSubject.observations = subject.observations;
+    draftSubject.observations = ObservationsHolder.clone(subject.observations);
     draftSubject.registrationLocation = subject.registrationLocation;
     draftSubject.totalMembers = _.isEmpty(totalMembers) ? null : totalMembers;
     draftSubject.updatedOn = new Date();
