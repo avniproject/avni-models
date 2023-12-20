@@ -5,7 +5,7 @@ import SyncError from "./error/SyncError";
 import {ErrorCodes} from "./error/ErrorCodes";
 import PersistedObject from "./PersistedObject";
 import ah from "./framework/ArrayHelper";
-import SchemaNames from "./SchemaNames";
+import IgnorableSyncError from './error/IgnorableSyncError';
 
 class BaseEntity extends PersistedObject {
   static fieldKeys = {
@@ -103,7 +103,9 @@ class BaseEntity extends PersistedObject {
     childEntityClass,
     childResource,
     parentUUIDField,
-    parentSchema
+    parentSchema,
+    isIgnorable = false,
+    explicitErrorCodeKey = undefined
   ) {
     const childUuid = childResource.uuid;
     const parentUuid = ResourceUtil.getUUIDFor(childResource, parentUUIDField);
@@ -112,8 +114,19 @@ class BaseEntity extends PersistedObject {
     if (!_.isNil(parent)) {
       return parent;
     }
-    const errorCodeKey = `${childSchema}-${parentSchema}-Association`;
-    throw new SyncError(ErrorCodes[errorCodeKey], `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`);
+    BaseEntity.throwSyncError(childSchema, parentSchema, childUuid, parentUuid, isIgnorable, explicitErrorCodeKey);
+  }
+
+  static throwSyncError(childSchema, parentSchema, childUuid, parentUuid, isIgnorable, explicitErrorCodeKey) {
+    const errorCodeKey = explicitErrorCodeKey ? explicitErrorCodeKey : `${childSchema}-${parentSchema}-Association`;
+    const code = ErrorCodes[errorCodeKey];
+    const message = `${childSchema}{uuid='${childUuid}'} is unable to find ${parentSchema}{uuid='${parentUuid}'}`;
+
+    if (isIgnorable) {
+      throw new IgnorableSyncError(code, message);
+    } else {
+      throw new SyncError(code, message);
+    }
   }
 }
 export default BaseEntity;

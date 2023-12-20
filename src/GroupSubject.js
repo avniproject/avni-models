@@ -6,6 +6,8 @@ import General from "./utility/General";
 import GroupRole from "./GroupRole";
 
 class GroupSubject extends BaseEntity {
+
+  static EXPLICIT_ERROR_CODE_KEY_FOR_MISSING_MEMBER = 'GroupSubjectMapping-MemberSubject-Association';
   static schema = {
     name: "GroupSubject",
     primaryKey: "uuid",
@@ -102,15 +104,27 @@ class GroupSubject extends BaseEntity {
   }
 
   static fromResource(resource, entityService) {
-    const groupSubject = entityService.findByKey(
-      "uuid",
-      ResourceUtil.getUUIDFor(resource, "groupSubjectUUID"),
-      Individual.schema.name
+    const childResource = resource;
+    const childEntityClass = GroupSubject;
+    const parentSchema = Individual.schema.name;
+    const groupSubjectParentIdField = "groupSubjectUUID";
+    const memberSubjectParentIdField = "memberSubjectUUID";
+
+    const groupOrHouseholdSubject = BaseEntity.getParentEntity(
+      entityService,
+      childEntityClass,
+      childResource,
+      groupSubjectParentIdField,
+      parentSchema
     );
-    const memberSubject = entityService.findByKey(
-      "uuid",
-      ResourceUtil.getUUIDFor(resource, "memberSubjectUUID"),
-      Individual.schema.name
+    const memberSubject = BaseEntity.getParentEntity(
+      entityService,
+      childEntityClass,
+      childResource,
+      memberSubjectParentIdField,
+      parentSchema,
+      true,
+      GroupSubject.EXPLICIT_ERROR_CODE_KEY_FOR_MISSING_MEMBER
     );
     const groupRole = entityService.findByKey(
       "uuid",
@@ -123,7 +137,7 @@ class GroupSubject extends BaseEntity {
       ["uuid", "voided"],
       ["membershipStartDate", "membershipEndDate"]
     );
-    groupSubjectEntity.groupSubject = groupSubject;
+    groupSubjectEntity.groupSubject = groupOrHouseholdSubject;
     groupSubjectEntity.memberSubject = memberSubject;
     groupSubjectEntity.groupRole = groupRole;
     return groupSubjectEntity;

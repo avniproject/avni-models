@@ -87,10 +87,9 @@ class ObservationsHolder {
     }
   }
 
-  addOrUpdatePrimitiveObs(concept, value, answerSource = General.AnswerSource.Manual) {
+  addOrUpdatePrimitiveObs(concept, value, answerSource = Observation.AnswerSource.Manual) {
     let currentObservation = this.findObservation(concept);
     const currentValue = currentObservation && currentObservation.getValueWrapper() || {};
-    // if (currentValue.answerSource === General.AnswerSource.Manual) return;
     this._removeExistingObs(concept);
     if (!_.isEmpty(_.toString(value))) {
       if (concept.isIdConcept()) {
@@ -113,14 +112,14 @@ class ObservationsHolder {
     }
   }
 
-  addOrUpdateCodedObs(concept, value, isSingleSelect) {
+  addOrUpdateCodedObs(concept, value, isSingleSelect, answerSource = Observation.AnswerSource.Auto) {
     this._removeExistingObs(concept);
     const getConceptUUID = (conceptAnswer) => conceptAnswer ? conceptAnswer.concept.uuid : undefined;
     if (!_.isEmpty(value)) {
       const answerUUID = isSingleSelect
         ? getConceptUUID(concept.getAnswerWithConceptName(value))
         : value.map(v => getConceptUUID(concept.getAnswerWithConceptName(v)));
-      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, General.AnswerSource.Auto) : new MultipleCodedValues(answerUUID, General.AnswerSource.Auto));
+      const observation = Observation.create(concept, isSingleSelect ? new SingleCodedValue(answerUUID, answerSource) : new MultipleCodedValues(answerUUID, answerSource));
       this.observations.push(observation);
     }
   }
@@ -239,15 +238,9 @@ class ObservationsHolder {
             })
           })
         } else {
-          const observation = this.findObservation(concept);
-
-          if (!_.isNil(observation) && observation.valueJSON.answerSource === General.AnswerSource.Manual) {
-            General.logDebug('ObservationsHolder', 'updatePrimitiveCodedObs: Not updating because answerSource is manual');
-            return;
-          }
           concept.isCodedConcept()
             ? this.addOrUpdateCodedObs(concept, value, fe.isSingleSelect())
-            : this.addOrUpdatePrimitiveObs(concept, value, General.AnswerSource.Auto);
+            : this.addOrUpdatePrimitiveObs(concept, value, Observation.AnswerSource.Auto);
         }
       }
     });
@@ -276,6 +269,7 @@ class ObservationsHolder {
         ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
         return null;
       }
+      observation.valueJSON.answerSource = Observation.AnswerSource.Manual;
       return observation;
     }
   }

@@ -1,9 +1,9 @@
 import _ from "lodash";
 import ah from "../framework/ArrayHelper";
-import General from "../utility/General";
+import Observation from "../Observation";
 
 class MultipleCodedValues {
-  constructor(answer, answerSource = General.AnswerSource.Manual) {
+  constructor(answer, answerSource = Observation.AnswerSource.Manual) {
     this.answer = _.isNil(answer) ? [] : answer;
     this.answerSource = answerSource;
   }

@@ -21,6 +21,11 @@ class Observation extends PersistedObject {
         },
     };
 
+  static AnswerSource = {
+    Manual: 'manual',
+    Auto: 'auto'
+  }
+
     constructor(that = null) {
         super(that);
     }
