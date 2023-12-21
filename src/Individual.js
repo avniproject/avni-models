@@ -255,7 +255,7 @@ class Individual extends BaseEntity {
     const individual = new Individual();
     individual.uuid = General.randomUUID();
     individual.subjectType = SubjectType.create("");
-    individual.registrationDate = new Date();
+    individual.registrationDate = moment().startOf('day').toDate();
     individual.gender = Gender.create("");
     individual.observations = [];
     individual.encounters = [];
@@ -556,13 +556,14 @@ class Individual extends BaseEntity {
   }
 
   setDateOfBirth(date) {
-    this.dateOfBirth = date;
+    this.dateOfBirth = moment(date).startOf('day').toDate();
     this.dateOfBirthVerified = true;
   }
 
   setAge(age, isInYears) {
     this.dateOfBirth = moment()
       .subtract(age, isInYears ? "years" : "months")
+      .startOf('day')
       .toDate();
     this.dateOfBirthVerified = false;
   }
