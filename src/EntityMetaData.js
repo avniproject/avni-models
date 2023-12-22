@@ -496,8 +496,8 @@ class EntityMetaData {
       individual,
       extension,
       userInfo,
-      syncTelemetry,
       ruleFailureTelemetry,
+      syncTelemetry,
     ];
   }
 
