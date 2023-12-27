@@ -628,6 +628,12 @@ class ProgramEnrolment extends BaseEntity {
     );
   }
 
+  everScheduledEncountersOfType(encounterTypeName) {
+    return this.everScheduledEncounters().filter(
+      (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
+    );
+  }
+
   getAllScheduledVisits(currentEncounter) {
     return _.defaults(this.scheduledEncounters(true), [])
       .filter((encounter) => encounter.uuid !== currentEncounter.uuid)
