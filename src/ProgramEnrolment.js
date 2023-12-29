@@ -621,11 +621,24 @@ class ProgramEnrolment extends BaseEntity {
         );
     }
 
+  everScheduledEncounters() {
+    return _.filter(
+      this.getEncounters(true),
+      (encounter) => !_.isNil(encounter.earliestVisitDateTime) && _.isNil(encounter.cancelDateTime)
+    );
+  }
+
     scheduledEncountersOfType(encounterTypeName) {
         return this.scheduledEncounters().filter(
             (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
         );
     }
+
+  everScheduledEncountersOfType(encounterTypeName) {
+    return this.everScheduledEncounters().filter(
+      (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
+    );
+  }
 
     getAllScheduledVisits(currentEncounter) {
         return _.defaults(this.scheduledEncounters(true), [])
