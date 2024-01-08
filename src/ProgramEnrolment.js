@@ -755,7 +755,7 @@ class ProgramEnrolment extends BaseEntity {
     }
 
     addApprovalDescendantsWithLatestStatus(approvalStatus_status, list) {
-        EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status, "encounterDateTime", list, "encounterType.uuid");
+        EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status, list, "encounterType.uuid");
         this.checklists.filter((x) => !x.voided).forEach((x) => {
             x.addApprovalDescendantsWithLatestStatus(approvalStatus_status, list);
         });

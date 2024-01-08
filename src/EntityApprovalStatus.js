@@ -5,6 +5,10 @@ import ApprovalStatus from "./ApprovalStatus";
 import _ from 'lodash';
 import SchemaNames from "./SchemaNames";
 
+function getMatchingApprovalStatusEntities(entities, approvalStatus_status) {
+    return entities.filter((x) => !_.isNil(x.latestEntityApprovalStatus) && x.latestEntityApprovalStatus.hasStatus(approvalStatus_status));
+}
+
 class EntityApprovalStatus extends BaseEntity {
     static schema = {
         name: SchemaNames.EntityApprovalStatus,
@@ -30,15 +34,10 @@ class EntityApprovalStatus extends BaseEntity {
         ChecklistItem: "ChecklistItem",
     };
 
-    static getMatchingApprovalStatusEntity(entities, approvalStatus_status, latestFieldPath) {
-        return _.max(entities.filter((x) => !_.isNil(x.latestEntityApprovalStatus) && x.latestEntityApprovalStatus.hasStatus(approvalStatus_status)), (y) => _.get(y, latestFieldPath));
-    }
-
-    static addMatchingApprovalStatusEntity(entities, approvalStatus_status, latestFieldPath, list, groupingByPath) {
+    static addMatchingApprovalStatusEntity(entities, approvalStatus_status, list, groupingByPath) {
         Object.values(_.groupBy(entities, (x) => _.get(x, groupingByPath))).forEach((y) => {
-            const latestEntity = EntityApprovalStatus.getMatchingApprovalStatusEntity(y, approvalStatus_status, latestFieldPath)
-            if (!_.isNil(latestEntity))
-                list.push(latestEntity);
+            const latestEntitiesOfSameType = getMatchingApprovalStatusEntities(y, approvalStatus_status);
+            list.push(...latestEntitiesOfSameType.map((x) => _.identity(x)));
         })
     }
 

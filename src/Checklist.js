@@ -142,7 +142,7 @@ class Checklist extends BaseEntity {
     }
 
     addApprovalDescendantsWithLatestStatus(approvalStatus_status, list) {
-        EntityApprovalStatus.addMatchingApprovalStatusEntity(this.items, approvalStatus_status, "baseDate", list);
+        EntityApprovalStatus.addMatchingApprovalStatusEntity(this.items, approvalStatus_status, list, "uuid");
     }
 }
 

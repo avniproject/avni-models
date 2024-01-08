@@ -1113,8 +1113,8 @@ class Individual extends BaseEntity {
       let descendants = [];
       if (!_.isNil(this.latestEntityApprovalStatus) && this.latestEntityApprovalStatus.hasStatus(approvalStatus_status))
           descendants.push(this);
-      EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status, "encounterDateTime", descendants, "encounterType.uuid");
-      EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEnrolments(), approvalStatus_status, "enrolmentDateTime", descendants, "program.uuid");
+      EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEncounters(), approvalStatus_status, descendants, "encounterType.uuid");
+      EntityApprovalStatus.addMatchingApprovalStatusEntity(this.nonVoidedEnrolments(), approvalStatus_status, descendants, "program.uuid");
 
       this.nonVoidedEnrolments().forEach((enrolment) => {
           const latestEntity = enrolment.addApprovalDescendantsWithLatestStatus(approvalStatus_status, descendants)
