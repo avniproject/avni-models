@@ -136,8 +136,6 @@ class DraftEncounter extends BaseEntity {
     draftEncounter.cancelObservations = ObservationsHolder.clone(encounter.cancelObservations);
     draftEncounter.cancelLocation = encounter.cancelLocation;
     draftEncounter.voided = encounter.voided;
-    draftEncounter.registrationLocation = encounter.registrationLocation;
-    draftEncounter.updatedOn = new Date();
     return draftEncounter;
   }
 
@@ -156,7 +154,6 @@ class DraftEncounter extends BaseEntity {
     encounter.cancelObservations = ObservationsHolder.clone(this.cancelObservations);
     encounter.cancelLocation = this.cancelLocation;
     encounter.voided = this.voided;
-    encounter.registrationLocation = this.registrationLocation;
     encounter.approvalStatuses = [];
     return encounter;
   }
