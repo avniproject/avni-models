@@ -4,6 +4,7 @@ import ResourceUtil from "./utility/ResourceUtil";
 import ApprovalStatus from "./ApprovalStatus";
 import _ from 'lodash';
 import SchemaNames from "./SchemaNames";
+import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
 
 function getMatchingApprovalStatusEntities(entities, approvalStatus_status) {
     return entities.filter((x) => !_.isNil(x.latestEntityApprovalStatus) && x.latestEntityApprovalStatus.hasStatus(approvalStatus_status));
@@ -22,7 +23,8 @@ class EntityApprovalStatus extends BaseEntity {
             approvalStatusComment: {type: "string", optional: true},
             statusDateTime: "date",
             autoApproved: {type: "bool", default: false},
-            voided: {type: "bool", default: false}
+            voided: {type: "bool", default: false},
+            ...AuditFields
         },
     };
 
@@ -116,6 +118,38 @@ class EntityApprovalStatus extends BaseEntity {
         this.that.autoApproved = x;
     }
 
+    get createdBy() {
+        return this.that.createdBy;
+    }
+
+    set createdBy(x) {
+        this.that.createdBy = x;
+    }
+
+    get lastModifiedBy() {
+        return this.that.lastModifiedBy;
+    }
+
+    set lastModifiedBy(x) {
+        this.that.lastModifiedBy = x;
+    }
+
+    get createdByUUID() {
+        return this.that.createdByUUID;
+    }
+
+    set createdByUUID(x) {
+        this.that.createdByUUID = x;
+    }
+
+    get lastModifiedByUUID() {
+        return this.that.lastModifiedByUUID;
+    }
+
+    set lastModifiedByUUID(x) {
+        this.that.lastModifiedByUUID = x;
+    }
+
     get toResource() {
         const resource = _.pick(this, [
             "uuid",
@@ -141,6 +175,7 @@ class EntityApprovalStatus extends BaseEntity {
             ApprovalStatus.schema.name
         );
         entityApprovalStatus.entityUUID = ResourceUtil.getUUIDFor(resource, "entityUUID");
+        mapAuditFields(entityApprovalStatus, resource);
         return entityApprovalStatus;
     }
 

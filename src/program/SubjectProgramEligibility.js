@@ -25,58 +25,90 @@ class SubjectProgramEligibility extends BaseEntity {
         },
     };
 
-   constructor(that = null) {
-    super(that);
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  get subject() {
-      return this.toEntity("subject", Individual);
-  }
+    get subject() {
+        return this.toEntity("subject", Individual);
+    }
 
-  set subject(x) {
-      this.that.subject = this.fromObject(x);
-  }
+    set subject(x) {
+        this.that.subject = this.fromObject(x);
+    }
 
-  get program() {
-      return this.toEntity("program", Program);
-  }
+    get program() {
+        return this.toEntity("program", Program);
+    }
 
-  set program(x) {
-      this.that.program = this.fromObject(x);
-  }
+    set program(x) {
+        this.that.program = this.fromObject(x);
+    }
 
-  get checkDate() {
-      return this.that.checkDate;
-  }
+    get checkDate() {
+        return this.that.checkDate;
+    }
 
-  set checkDate(x) {
-      this.that.checkDate = x;
-  }
+    set checkDate(x) {
+        this.that.checkDate = x;
+    }
 
-  get eligible() {
-      return this.that.eligible;
-  }
+    get eligible() {
+        return this.that.eligible;
+    }
 
-  set eligible(x) {
-      this.that.eligible = x;
-  }
+    set eligible(x) {
+        this.that.eligible = x;
+    }
 
-  get observations() {
-      return this.toEntityList("observations", Observation);
-  }
+    get observations() {
+        return this.toEntityList("observations", Observation);
+    }
 
-  set observations(x) {
-      this.that.observations = this.fromEntityList(x);
-  }
+    set observations(x) {
+        this.that.observations = this.fromEntityList(x);
+    }
 
-  static createEmptyInstance(program, subject) {
-      const subjectProgramEligibility = new SubjectProgramEligibility();
-      subjectProgramEligibility.checkDate = new Date();
-      subjectProgramEligibility.uuid = General.randomUUID();
-      subjectProgramEligibility.observations = [];
-      subjectProgramEligibility.program = program;
-      subjectProgramEligibility.subject = subject;
-      return subjectProgramEligibility;
+    get createdBy() {
+        return this.that.createdBy;
+    }
+
+    set createdBy(x) {
+        this.that.createdBy = x;
+    }
+
+    get lastModifiedBy() {
+        return this.that.lastModifiedBy;
+    }
+
+    set lastModifiedBy(x) {
+        this.that.lastModifiedBy = x;
+    }
+
+    get createdByUUID() {
+        return this.that.createdByUUID;
+    }
+
+    set createdByUUID(x) {
+        this.that.createdByUUID = x;
+    }
+
+    get lastModifiedByUUID() {
+        return this.that.lastModifiedByUUID;
+    }
+
+    set lastModifiedByUUID(x) {
+        this.that.lastModifiedByUUID = x;
+    }
+
+    static createEmptyInstance(program, subject) {
+        const subjectProgramEligibility = new SubjectProgramEligibility();
+        subjectProgramEligibility.checkDate = new Date();
+        subjectProgramEligibility.uuid = General.randomUUID();
+        subjectProgramEligibility.observations = [];
+        subjectProgramEligibility.program = program;
+        subjectProgramEligibility.subject = subject;
+        return subjectProgramEligibility;
     }
 
     get toResource() {
@@ -160,25 +192,25 @@ class SubjectProgramEligibility extends BaseEntity {
         return subjectProgramEligibility;
     }
 
-  getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
-    const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
-    return _.isEmpty(observationForConcept)
-      ? observationForConcept
-      : observationForConcept.getReadableValue();
-  }
+    getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+        const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
+        return _.isEmpty(observationForConcept)
+            ? observationForConcept
+            : observationForConcept.getReadableValue();
+    }
 
-  findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
-    const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
-    return _.find(observations, (observation) => {
-      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
-    });
-  }
+    findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+        const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+        return _.find(observations, (observation) => {
+            return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
+        });
+    }
 
-  findGroupedObservation(parentConceptNameOrUuid) {
-    const groupedObservations = _.find(this.observations, (observation) =>
-      (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
-    return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
-  }
+    findGroupedObservation(parentConceptNameOrUuid) {
+        const groupedObservations = _.find(this.observations, (observation) =>
+            (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+        return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
+    }
 }
 
 export default SubjectProgramEligibility;

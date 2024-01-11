@@ -72,6 +72,38 @@ class ChecklistItem extends BaseEntity {
         return _.maxBy(this.approvalStatuses, 'statusDateTime');
     }
 
+    get createdBy() {
+        return this.that.createdBy;
+    }
+
+    set createdBy(x) {
+        this.that.createdBy = x;
+    }
+
+    get lastModifiedBy() {
+        return this.that.lastModifiedBy;
+    }
+
+    set lastModifiedBy(x) {
+        this.that.lastModifiedBy = x;
+    }
+
+    get createdByUUID() {
+        return this.that.createdByUUID;
+    }
+
+    set createdByUUID(x) {
+        this.that.createdByUUID = x;
+    }
+
+    get lastModifiedByUUID() {
+        return this.that.lastModifiedByUUID;
+    }
+
+    set lastModifiedByUUID(x) {
+        this.that.lastModifiedByUUID = x;
+    }
+
     static create({uuid = General.randomUUID(), observations = [], checklist, detail}) {
         return _.assignIn(new ChecklistItem(), {
             uuid,

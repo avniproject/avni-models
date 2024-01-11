@@ -9,6 +9,7 @@ import moment from "moment";
 import _ from 'lodash';
 import BaseEntity from "../BaseEntity";
 import SchemaNames from "../SchemaNames";
+import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 
 class Task extends BaseEntity {
     static schema = {
@@ -25,78 +26,111 @@ class Task extends BaseEntity {
             subject: {type: 'Individual', optional: true},
             observations: {type: "list", objectType: "Observation"},
             voided: {type: 'bool', default: false},
+            ...AuditFields
         },
     };
 
-  constructor(that = null) {
-    super(that);
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  get scheduledOn() {
-      return this.that.scheduledOn;
-  }
+    get scheduledOn() {
+        return this.that.scheduledOn;
+    }
 
-  set scheduledOn(x) {
-      this.that.scheduledOn = x;
-  }
+    set scheduledOn(x) {
+        this.that.scheduledOn = x;
+    }
 
-  get completedOn() {
-      return this.that.completedOn;
-  }
+    get completedOn() {
+        return this.that.completedOn;
+    }
 
-  set completedOn(x) {
-      this.that.completedOn = x;
-  }
+    set completedOn(x) {
+        this.that.completedOn = x;
+    }
 
-  get metadata() {
-      return this.toEntityList("metadata", Observation);
-  }
+    get metadata() {
+        return this.toEntityList("metadata", Observation);
+    }
 
-  set metadata(x) {
-      this.that.metadata = this.fromEntityList(x);
-  }
+    set metadata(x) {
+        this.that.metadata = this.fromEntityList(x);
+    }
 
-  get subject() {
-      return this.toEntity("subject", Individual);
-  }
+    get subject() {
+        return this.toEntity("subject", Individual);
+    }
 
-  set subject(x) {
-      this.that.subject = this.fromObject(x);
-  }
+    set subject(x) {
+        this.that.subject = this.fromObject(x);
+    }
 
-  get observations() {
-      return this.toEntityList("observations", Observation);
-  }
+    get observations() {
+        return this.toEntityList("observations", Observation);
+    }
 
-  set observations(x) {
-      this.that.observations = this.fromEntityList(x);
-  }
+    set observations(x) {
+        this.that.observations = this.fromEntityList(x);
+    }
 
-  get name() {
-      return this.that.name;
-  }
+    get name() {
+        return this.that.name;
+    }
 
-  set name(x) {
-      this.that.name = x;
-  }
+    set name(x) {
+        this.that.name = x;
+    }
 
-  get taskType() {
-      return this.toEntity("taskType", TaskType);
-  }
+    get taskType() {
+        return this.toEntity("taskType", TaskType);
+    }
 
-  set taskType(x) {
-      this.that.taskType = this.fromObject(x);
-  }
+    set taskType(x) {
+        this.that.taskType = this.fromObject(x);
+    }
 
-  get taskStatus() {
-      return this.toEntity("taskStatus", TaskStatus);
-  }
+    get taskStatus() {
+        return this.toEntity("taskStatus", TaskStatus);
+    }
 
-  set taskStatus(x) {
-      this.that.taskStatus = this.fromObject(x);
-  }
+    set taskStatus(x) {
+        this.that.taskStatus = this.fromObject(x);
+    }
 
-  get toResource() {
+    get createdBy() {
+        return this.that.createdBy;
+    }
+
+    set createdBy(x) {
+        this.that.createdBy = x;
+    }
+
+    get lastModifiedBy() {
+        return this.that.lastModifiedBy;
+    }
+
+    set lastModifiedBy(x) {
+        this.that.lastModifiedBy = x;
+    }
+
+    get createdByUUID() {
+        return this.that.createdByUUID;
+    }
+
+    set createdByUUID(x) {
+        this.that.createdByUUID = x;
+    }
+
+    get lastModifiedByUUID() {
+        return this.that.lastModifiedByUUID;
+    }
+
+    set lastModifiedByUUID(x) {
+        this.that.lastModifiedByUUID = x;
+    }
+
+    get toResource() {
         const taskResource = _.pick(this, ["uuid", "voided", "name"]);
         taskResource.observations = _.map(this.observations, "toResource");
         taskResource.metadata = _.map(this.metadata, "toResource");
@@ -137,6 +171,7 @@ class Task extends BaseEntity {
             ResourceUtil.getUUIDFor(resource, "subjectUUID"),
             Individual.schema.name
         );
+        mapAuditFields(task, resource);
         return task;
     }
 
