@@ -7,6 +7,7 @@ import ResourceUtil from "../utility/ResourceUtil";
 import ObservationsHolder from "../ObservationsHolder";
 import _ from 'lodash';
 import SchemaNames from "../SchemaNames";
+import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 
 class SubjectProgramEligibility extends BaseEntity {
     static schema = {
@@ -20,6 +21,7 @@ class SubjectProgramEligibility extends BaseEntity {
             eligible: {type: "bool", default: false},
             observations: {type: "list", objectType: "Observation"},
             voided: {type: "bool", default: false},
+            ...AuditFields
         },
     };
 
@@ -114,6 +116,7 @@ class SubjectProgramEligibility extends BaseEntity {
         );
         subjectProgramEligibility.program = program;
         subjectProgramEligibility.subject = subject;
+        mapAuditFields(subjectProgramEligibility, resource);
         return subjectProgramEligibility;
     }
 

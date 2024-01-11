@@ -1,6 +1,7 @@
 import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
 import ResourceUtil from "./utility/ResourceUtil";
+import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
 
 class SubjectMigration extends BaseEntity {
     static schema = {
@@ -17,6 +18,7 @@ class SubjectMigration extends BaseEntity {
             newSyncConcept2Value: {type: 'string', optional: true},
             subjectTypeUUID: 'string',
             hasMigrated: {type: 'bool', default: false},
+            ...AuditFields
         }
     };
 
@@ -121,6 +123,7 @@ class SubjectMigration extends BaseEntity {
         subjectMigration.newSyncConcept1Value = resource.newSyncConcept1Value;
         subjectMigration.oldSyncConcept2Value = resource.oldSyncConcept2Value;
         subjectMigration.newSyncConcept2Value = resource.newSyncConcept2Value;
+        mapAuditFields(subjectMigration, resource);
         return subjectMigration;
     }
 

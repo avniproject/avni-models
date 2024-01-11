@@ -11,6 +11,7 @@ import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
 import Observation from "./Observation";
 import MergeUtil from "./utility/MergeUtil";
+import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
     [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
@@ -26,7 +27,8 @@ class ChecklistItem extends BaseEntity {
             observations: {type: "list", objectType: "Observation"},
             checklist: "Checklist",
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}  //Reporting purposes
+            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},  //Reporting purposes
+            ...AuditFields
         },
     };
 
@@ -100,6 +102,7 @@ class ChecklistItem extends BaseEntity {
         );
         checklistItem.checklist = checklist;
         checklistItem.detail = checklistItemDetail;
+        mapAuditFields(checklistItem, checklistItemResource);
         return checklistItem;
     }
 

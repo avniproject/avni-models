@@ -1,6 +1,7 @@
 import BaseEntity from "../BaseEntity";
 import ResourceUtil from "../utility/ResourceUtil";
 import SchemaNames from "../SchemaNames";
+import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 
 class UserSubjectAssignment extends BaseEntity {
 
@@ -10,6 +11,7 @@ class UserSubjectAssignment extends BaseEntity {
         properties: {
             uuid: 'string',
             subjectUUID: 'string',
+            ...AuditFields
         }
     };
 
@@ -29,6 +31,7 @@ class UserSubjectAssignment extends BaseEntity {
         const userSubjectAssignment = new UserSubjectAssignment();
         userSubjectAssignment.uuid = resource.uuid;
         userSubjectAssignment.subjectUUID = ResourceUtil.getUUIDFor(resource, 'subjectUUID');
+        mapAuditFields(userSubjectAssignment, resource);
         return userSubjectAssignment;
     }
 

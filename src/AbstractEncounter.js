@@ -12,6 +12,7 @@ import Observation from "./Observation";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from './SchemaNames';
 import MergeUtil from "./utility/MergeUtil";
+import {mapAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
   [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
@@ -216,6 +217,7 @@ class AbstractEncounter extends BaseEntity {
     if (!_.isNil(resource.cancelLocation))
       encounter.cancelLocation = Point.fromResource(resource.cancelLocation);
 
+      mapAuditFields(encounter, resource);
     return encounter;
   }
 

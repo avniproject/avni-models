@@ -16,6 +16,7 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
 import MergeUtil from "./utility/MergeUtil";
+import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
     [SchemaNames.ProgramEncounter, "encounters"],
@@ -42,7 +43,8 @@ class ProgramEnrolment extends BaseEntity {
             exitLocation: {type: "Point", optional: true},
             voided: {type: "bool", default: false},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}   //Reporting purposes
+            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},   //Reporting purposes
+            ...AuditFields
         },
     };
 
@@ -235,6 +237,7 @@ class ProgramEnrolment extends BaseEntity {
         if (!_.isNil(resource.exitLocation))
             programEnrolment.exitLocation = Point.fromResource(resource.exitLocation);
 
+        mapAuditFields(programEnrolment, resource);
         return programEnrolment;
     }
 
@@ -621,12 +624,12 @@ class ProgramEnrolment extends BaseEntity {
         );
     }
 
-  everScheduledEncounters() {
-    return _.filter(
-      this.getEncounters(true),
-      (encounter) => !_.isNil(encounter.earliestVisitDateTime) && _.isNil(encounter.cancelDateTime)
-    );
-  }
+    everScheduledEncounters() {
+        return _.filter(
+            this.getEncounters(true),
+            (encounter) => !_.isNil(encounter.earliestVisitDateTime) && _.isNil(encounter.cancelDateTime)
+        );
+    }
 
     scheduledEncountersOfType(encounterTypeName) {
         return this.scheduledEncounters().filter(
@@ -634,11 +637,11 @@ class ProgramEnrolment extends BaseEntity {
         );
     }
 
-  everScheduledEncountersOfType(encounterTypeName) {
-    return this.everScheduledEncounters().filter(
-      (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
-    );
-  }
+    everScheduledEncountersOfType(encounterTypeName) {
+        return this.everScheduledEncounters().filter(
+            (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
+        );
+    }
 
     getAllScheduledVisits(currentEncounter) {
         return _.defaults(this.scheduledEncounters(true), [])

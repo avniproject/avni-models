@@ -22,7 +22,7 @@ class EntityApprovalStatus extends BaseEntity {
             approvalStatusComment: {type: "string", optional: true},
             statusDateTime: "date",
             autoApproved: {type: "bool", default: false},
-            voided: {type: "bool", default: false},
+            voided: {type: "bool", default: false}
         },
     };
 

@@ -7,6 +7,7 @@ import ChecklistItem from "./ChecklistItem";
 import ChecklistDetail from "./ChecklistDetail";
 import SchemaNames from "./SchemaNames";
 import EntityApprovalStatus from "./EntityApprovalStatus";
+import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
 
 class Checklist extends BaseEntity {
     static schema = {
@@ -18,6 +19,7 @@ class Checklist extends BaseEntity {
             baseDate: "date",
             items: {type: "list", objectType: "ChecklistItem"},
             programEnrolment: "ProgramEnrolment",
+            ...AuditFields
         },
     };
 
@@ -83,6 +85,7 @@ class Checklist extends BaseEntity {
         );
         checklist.programEnrolment = programEnrolment;
         checklist.detail = checklistDetail;
+        mapAuditFields(checklist, checklistResource);
         return checklist;
     }
 
