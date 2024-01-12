@@ -40,7 +40,9 @@ class ProgramEncounter extends AbstractEncounter {
             voided: {type: "bool", default: false},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
             latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},  //Reporting purposes
-            ...AuditFields
+            ...AuditFields,
+            filledBy: {type: "string", optional: true},
+            filledByUUID: {type: "string", optional: true}
         },
     };
 

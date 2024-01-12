@@ -151,6 +151,22 @@ class AbstractEncounter extends BaseEntity {
         this.that.lastModifiedByUUID = x;
     }
 
+    get filledBy() {
+        return this.that.filledBy;
+    }
+
+    set filledBy(x) {
+        this.that.filledBy = x;
+    }
+
+    get filledByUUID() {
+        return this.that.filledByUUID;
+    }
+
+    set filledByUUID(x) {
+        this.that.filledByUUID = x;
+    }
+
     validate() {
         return _.isNil(this.encounterDateTime)
             ? [
@@ -250,6 +266,8 @@ class AbstractEncounter extends BaseEntity {
             encounter.cancelLocation = Point.fromResource(resource.cancelLocation);
 
         mapAuditFields(encounter, resource);
+        encounter.filledBy = ResourceUtil.getFieldValue(resource, "filledBy");
+        encounter.filledByUUID = ResourceUtil.getFieldValue(resource, "filledByUUID");
         return encounter;
     }
 

@@ -2,118 +2,128 @@ import _ from "lodash";
 import BaseEntity from "./BaseEntity";
 
 class UserInfo extends BaseEntity {
-  static UUID = "ce9ad8ee-193e-49ee-8626-49802c8b4bd7";
-  static DEFAULT_SETTINGS = '{"trackLocation": false, "locale": "en", "disableAutoRefresh": false, "disableAutoSync": false}';
+    static UUID = "ce9ad8ee-193e-49ee-8626-49802c8b4bd7";
+    static DEFAULT_SETTINGS = '{"trackLocation": false, "locale": "en", "disableAutoRefresh": false, "disableAutoSync": false}';
 
-  static schema = {
-    name: "UserInfo",
-    primaryKey: "uuid",
-    properties: {
-      uuid: "string",
-      username: "string",
-      organisationName: "string",
-      settings: "string",
-      name: {type:"string", optional:true},
-      syncSettings: {type:"string", optional:true},
-    },
-  };
+    static schema = {
+        name: "UserInfo",
+        primaryKey: "uuid",
+        properties: {
+            uuid: "string",
+            username: "string",
+            organisationName: "string",
+            settings: "string",
+            name: {type: "string", optional: true},
+            syncSettings: {type: "string", optional: true},
+            userUUID: {type: "string", optional: true}
+        },
+    };
 
-   constructor(that = null) {
-    super(that);
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  get username() {
-      return this.that.username;
-  }
+    get username() {
+        return this.that.username;
+    }
 
-  set username(x) {
-      this.that.username = x;
-  }
+    set username(x) {
+        this.that.username = x;
+    }
 
-  get organisationName() {
-      return this.that.organisationName;
-  }
+    get organisationName() {
+        return this.that.organisationName;
+    }
 
-  set organisationName(x) {
-      this.that.organisationName = x;
-  }
+    set organisationName(x) {
+        this.that.organisationName = x;
+    }
 
-  get settings() {
-      return this.that.settings;
-  }
+    get settings() {
+        return this.that.settings;
+    }
 
-  set settings(x) {
-      this.that.settings = x;
-  }
+    set settings(x) {
+        this.that.settings = x;
+    }
 
-  get name() {
-      return this.that.name;
-  }
+    get name() {
+        return this.that.name;
+    }
 
-  set name(x) {
-      this.that.name = x;
-  }
+    set name(x) {
+        this.that.name = x;
+    }
 
-  get syncSettings() {
-      return this.that.syncSettings;
-  }
+    get syncSettings() {
+        return this.that.syncSettings;
+    }
 
-  set syncSettings(x) {
-      this.that.syncSettings = x;
-  }
+    set syncSettings(x) {
+        this.that.syncSettings = x;
+    }
 
-  static fromResource(resource) {
-    let userInfo = new UserInfo();
-    userInfo.username = resource.username;
-    userInfo.uuid = UserInfo.UUID;
-    userInfo.organisationName = resource.organisationName;
-    userInfo.settings = _.isNil(resource.settings)
-      ? UserInfo.DEFAULT_SETTINGS
-      : JSON.stringify(resource.settings);
-    userInfo.name = resource.name;
-    userInfo.syncSettings = _.isNil(resource.syncSettings) ? '{}' : JSON.stringify(resource.syncSettings);
-    return userInfo;
-  }
+    get userUUID() {
+        return this.that.userUUID;
+    }
 
-  setSettings(settingsObject) {
-    this.settings = JSON.stringify(settingsObject);
-  }
+    set userUUID(x) {
+        this.that.userUUID = x;
+    }
 
-  getSettings() {
-    return JSON.parse(this.settings);
-  }
+    static fromResource(resource) {
+        let userInfo = new UserInfo();
+        userInfo.username = resource.username;
+        userInfo.uuid = UserInfo.UUID;
+        userInfo.organisationName = resource.organisationName;
+        userInfo.settings = _.isNil(resource.settings)
+            ? UserInfo.DEFAULT_SETTINGS
+            : JSON.stringify(resource.settings);
+        userInfo.name = resource.name;
+        userInfo.syncSettings = _.isNil(resource.syncSettings) ? '{}' : JSON.stringify(resource.syncSettings);
+        userInfo.userUUID = resource.userUUID;
+        return userInfo;
+    }
 
-  getSyncSettings() {
-    return JSON.parse(this.syncSettings);
-  }
+    setSettings(settingsObject) {
+        this.settings = JSON.stringify(settingsObject);
+    }
 
-  getDisplayUsername() {
-    return _.isNil(this.name) ? this.username : this.name;
-  }
+    getSettings() {
+        return JSON.parse(this.settings);
+    }
 
-  get toResource() {
-    const resource = _.pick(this, ["uuid"]);
-    resource.settings = this.getSettings();
-    return resource;
-  }
+    getSyncSettings() {
+        return JSON.parse(this.syncSettings);
+    }
 
-  clone() {
-    let userInfo = new UserInfo();
-    userInfo.username = this.username;
-    userInfo.uuid = this.uuid;
-    userInfo.organisationName = this.organisationName;
-    userInfo.settings = this.settings;
-    userInfo.syncSettings = this.syncSettings;
-    userInfo.name = this.name;
-    return userInfo;
-  }
+    getDisplayUsername() {
+        return _.isNil(this.name) ? this.username : this.name;
+    }
 
-  static createEmptyInstance() {
-    const userInfo = new UserInfo();
-    userInfo.settings = UserInfo.DEFAULT_SETTINGS;
-    userInfo.syncSettings = '{}';
-    return userInfo;
-  }
+    get toResource() {
+        const resource = _.pick(this, ["uuid"]);
+        resource.settings = this.getSettings();
+        return resource;
+    }
+
+    clone() {
+        let userInfo = new UserInfo();
+        userInfo.username = this.username;
+        userInfo.uuid = this.uuid;
+        userInfo.organisationName = this.organisationName;
+        userInfo.settings = this.settings;
+        userInfo.syncSettings = this.syncSettings;
+        userInfo.name = this.name;
+        return userInfo;
+    }
+
+    static createEmptyInstance() {
+        const userInfo = new UserInfo();
+        userInfo.settings = UserInfo.DEFAULT_SETTINGS;
+        userInfo.syncSettings = '{}';
+        return userInfo;
+    }
 }
 
 export default UserInfo;
