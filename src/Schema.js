@@ -186,7 +186,7 @@ const entities = [
 function createRealmConfig() {
   return {
     //order is important, should be arranged according to the dependency
-    schemaVersion: 181,
+    schemaVersion: 182,
     onMigration: function (oldDB, newDB) {
       console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
       if (oldDB.schemaVersion < 10) {
@@ -810,6 +810,12 @@ function createRealmConfig() {
           rft.sourceId = null;
           rft.entityType = null;
           rft.entityId = null;
+        });
+      }
+      if (oldDB.schemaVersion < 182) {
+        _.forEach(newDB.objects(ReportCard.schema.name), (rc) => {
+          rc.nested = false;
+          rc.initCountOfCards = 1;
         });
       }
     },

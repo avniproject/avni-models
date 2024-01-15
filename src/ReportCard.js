@@ -2,6 +2,11 @@ import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
 import StandardReportCardType from "./StandardReportCardType";
+import _ from 'lodash';
+
+function throwInvalidIndexError(index, reportCardsLength) {
+  throw new Error(`Invalid index ${index} specified for reportCard with length ${reportCardsLength}`);
+}
 
 class ReportCard extends BaseEntity {
 
@@ -16,6 +21,8 @@ class ReportCard extends BaseEntity {
       standardReportCardType: {type: "StandardReportCardType", optional: true},
       colour: "string",
       voided: {type: "bool", default: false},
+      nested: {type: "bool", default: false, optional: true},
+      initCountOfCards: {type: "int", default: 1, optional: true}, //Used only by nested ReportCards
     },
   };
 
@@ -63,6 +70,22 @@ class ReportCard extends BaseEntity {
     this.that.colour = x;
   }
 
+  get nested() {
+    return this.that.nested;
+  }
+
+  set nested(x) {
+    this.that.nested = x;
+  }
+
+  get initCountOfCards() {
+    return this.that.initCountOfCards;
+  }
+
+  set initCountOfCards(x) {
+    this.that.initCountOfCards = x;
+  }
+
   get iconName() {
     //TODO: right now not syncing the icon name uploaded from app designer.
     return _.isNil(this.standardReportCardType) ? null : this.standardReportCardType.iconName;
@@ -76,9 +99,25 @@ class ReportCard extends BaseEntity {
     return _.isNil(this.standardReportCardType) ? '#ffffff' : this.standardReportCardType.textColor;
   }
 
+  getCardId(index = 0) {
+    return this.uuid + '#' + index;
+  }
+
+  getCardName(response, index = 0) {
+    return _.get(response, `reportCards[${index}].name`) || this.name;
+  }
+
+  getCardColor(response, index = 0) {
+    return _.get(response, `reportCards[${index}].cardColor`) || this.cardColor;
+  }
+
+  getTextColor(response, index = 0) {
+    return _.get(response, `reportCards[${index}].textColor`) || this.textColor;
+  }
+
   static fromResource(resource, entityService) {
     const reportCard = General.assignFields(resource, new ReportCard(),
-      ["uuid", "name", "query", "description", "colour", "voided"]);
+      ["uuid", "name", "query", "description", "colour", "voided", "nested", "initCountOfCards"]);
     reportCard.standardReportCardType = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "standardReportCardUUID"),
@@ -87,9 +126,9 @@ class ReportCard extends BaseEntity {
     return reportCard;
   }
 
-    isStandardTaskType() {
-      return _.isNil(this.standardReportCardType) ? false : this.standardReportCardType.isTaskType();
-    }
+  isStandardTaskType() {
+    return _.isNil(this.standardReportCardType) ? false : this.standardReportCardType.isTaskType();
+  }
 }
 
 export default ReportCard;
