@@ -28,8 +28,12 @@ deploy-to-avni-client-only:
 deploy-to-avni-web-only:
 	$(call _deploy,../avni-webapp/node_modules/openchs-models)
 
+deploy-to-avni-rule-server-only:
+	$(call _deploy,../rule-server/node_modules/openchs-models)
+
 deploy-to-avni-client: build deploy-to-avni-client-only
 deploy-to-avni-web: build deploy-to-avni-web-only
+deploy-to-avni-rule-server: build deploy-to-avni-rule-server-only
 
 deploy-to-avni-project: build
 	$(if $(local),$(call _deploy,$(local)/node_modules/openchs-models))

@@ -40,53 +40,9 @@ class ObservationsHolder {
     return _.find(this.observations, (observation) => observation.getValue() === value);
   }
 
-  updateObs(formElement, value) {
-    const currentValue = this.getObservation(formElement.concept);
-    ah.remove(this.observations, (obs) => obs.concept.uuid === formElement.concept.uuid);
-
-    if (formElement.concept.isPrimitive() && isNil(formElement.durationOptions)) {
-      this.addOrUpdatePrimitiveObs(formElement.concept, value);
-    }
-
-    if (formElement.getType() === Concept.dataType.Id) {
-      if (!_.isEmpty(value)) {
-        this.observations.push(Observation.create(formElement.concept, Identifier.fromObs({
-          ...currentValue,
-          value
-        })));
-      }
-    }
-
-    if (formElement.isSingleSelect()) {
-      if (!_.isEmpty(value)) {
-        const observation = Observation.create(formElement.concept, new SingleCodedValue(value));
-        this.observations.push(observation);
-      }
-    }
-    if (formElement.isMultiSelect()) {
-      if (!_.isEmpty(value)) {
-        const observation = Observation.create(formElement.concept, new MultipleCodedValues(value));
-        this.observations.push(observation);
-      }
-    }
-    if (
-      formElement.getType() === Concept.dataType.Duration &&
-      !isNil(formElement.durationOptions)
-    ) {
-      if (!_.isEmpty(value) && !_.isEmpty(value.durations)) {
-        const observation = Observation.create(
-          formElement.concept,
-          CompositeDuration.fromObs(value)
-        );
-        this.observations.push(observation);
-      }
-    }
-    if (formElement.getType() === Concept.dataType.PhoneNumber) {
-      const observation = Observation.create(formElement.concept, PhoneNumber.fromObs(value));
-      this.observations.push(observation);
-    }
-  }
-
+  /*
+  Called from the wizard on changes done by the user for primitive fields (including Date)
+   */
   addOrUpdatePrimitiveObs(concept, value, answerSource = Observation.AnswerSource.Manual) {
     let currentObservation = this.findObservation(concept);
     const currentValue = currentObservation && currentObservation.getValueWrapper() || {};
@@ -105,6 +61,7 @@ class ObservationsHolder {
     }
   }
 
+  //private
   _removeExistingObs(concept) {
     const observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
@@ -112,6 +69,7 @@ class ObservationsHolder {
     }
   }
 
+  //private
   addOrUpdateCodedObs(concept, value, isSingleSelect, answerSource = Observation.AnswerSource.Auto) {
     this._removeExistingObs(concept);
     const getConceptUUID = (conceptAnswer) => conceptAnswer ? conceptAnswer.concept.uuid : undefined;
@@ -124,6 +82,9 @@ class ObservationsHolder {
     }
   }
 
+  /*
+  called during edit of form element by the user and when the page transition takes place
+   */
   removeNonApplicableObs(allFormElements, applicableFormElements) {
     const formElementsIncludingRepeatableElements = [];
     _.forEach(allFormElements, fe => {
@@ -158,7 +119,8 @@ class ObservationsHolder {
     return _.flatten(inApplicableFormElements.map(fe => this._removeObs(fe))).filter(obs => !_.isEmpty(obs));
   }
 
-  removeNonApplicableAnswersFromQuestionGroup(fe, isSingleSelect, allFormElements) {
+  //private
+  removeNonApplicableAnswersFromQuestionGroup(fe, isSingleSelect) {
     const questionGroup = this.getQuestionGroups(fe);
     const questionGroupObservation = questionGroup && questionGroup.getGroupObservationAtIndex(fe.questionGroupIndex);
     const observation = questionGroupObservation && questionGroupObservation.getObservation(fe.concept);
@@ -172,6 +134,7 @@ class ObservationsHolder {
     }
   }
 
+  //private
   _removeObs(formElement) {
     if (formElement.isQuestionGroup()) {
       const questionGroup = this.getQuestionGroups(formElement);
@@ -188,6 +151,7 @@ class ObservationsHolder {
     return questionGroupObservations && questionGroupObservations.getValueWrapper();
   }
 
+  //private
   removeNonApplicableAnswers(fe, isSingleSelect, observation) {
     if (!_.isEmpty(observation)) {
       ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
@@ -199,6 +163,9 @@ class ObservationsHolder {
     }
   }
 
+  /*
+  Called from wizard after the update of the fields is called for all types. This is to sync up the coded fields based on the rules.
+   */
   updatePrimitiveCodedObs(applicableFormElements, formElementStatuses) {
     const updateQuestionGroupObs = (parentFormElement, questionGroupIndex, fe, value) => {
       parentFormElement && parentFormElement.repeatable ? this.updateRepeatableGroupQuestion(questionGroupIndex, parentFormElement, fe, value) :
@@ -215,7 +182,7 @@ class ObservationsHolder {
         if (fe.isQuestionGroup()) {
           const parentFormElement = _.find(applicableFormElements, ({uuid}) => fe.groupUuid === uuid);
           updateQuestionGroupObs(parentFormElement, questionGroupIndex, fe, value);
-        } else if (concept.isQuestionGroup() && !_.isNil(value)  && _.isArray(value)) {
+        } else if (concept.isQuestionGroup() && !_.isNil(value) && _.isArray(value)) {
           const observation = this.findObservation(concept);
           const questionGroup = observation && observation.getValueWrapper();
           const size = questionGroup ? questionGroup.size() : 0;
@@ -246,10 +213,14 @@ class ObservationsHolder {
     });
   }
 
+  /*
+  called for direct edit of single select field
+   */
   toggleSingleSelectAnswer(concept, answerUUID) {
     return this.toggleCodedAnswer(concept, answerUUID, true);
   }
 
+  //private
   toggleCodedAnswer(concept, answerUUID, isSingleSelect) {
     let observation = this.getObservation(concept);
     if (_.isEmpty(observation)) {
@@ -274,6 +245,9 @@ class ObservationsHolder {
     }
   }
 
+  /*
+  called for direct edit of duration field
+   */
   updateCompositeDurationValue(concept, duration) {
     let observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
@@ -285,6 +259,9 @@ class ObservationsHolder {
     return observation;
   }
 
+  /*
+  called for direct edit of phone number field
+   */
   updatePhoneNumberValue(concept, phoneNumber, verified = false, skipVerification = false) {
     let observation = this.getObservation(concept);
     if (!_.isEmpty(observation)) {
@@ -310,6 +287,7 @@ class ObservationsHolder {
     }
   }
 
+  //private
   updateChildObservations(childFormElement, childObservations, value, verified = false, skipVerification = false) {
     const childConcept = childFormElement.concept;
     if (childConcept.isPrimitive()) {
@@ -381,12 +359,13 @@ class ObservationsHolder {
 
   static convertObsForSave(observations) {
     observations.forEach(observation => {
-      if(observation.valueJSON && typeof (observation.valueJSON) !== "string") {
+      if (observation.valueJSON && typeof (observation.valueJSON) !== "string") {
         observation.valueJSON = JSON.stringify(observation.valueJSON);
       }
     });
   }
 
+  //private
   getObservationReadableValue(concept) {
     let obs = this.getObservation(concept);
     return obs ? obs.getReadableValue() : null;
@@ -403,6 +382,7 @@ class ObservationsHolder {
     }
   }
 
+  //private
   updateObservationBasedOnValue(oldValue, newValue) {
     const observation = this.findObservationByValue(oldValue);
     if (observation) {
@@ -429,22 +409,6 @@ class ObservationsHolder {
     }
   }
 
-  migrateMultiSelectMediaObservations(form) {
-    _.forEach(form.nonVoidedFormElementGroups(), feg => {
-      _.forEach(feg.getFormElements(), fe => {
-        const concept = fe.concept;
-        const observation = this.getObservation(concept);
-        if (_.includes(Concept.dataType.Media, fe.getType()) && observation && fe.isMultiSelect()) {
-          const valueWrapper = observation.getValueWrapper();
-          if (!_.isArray(valueWrapper.getValue())) {
-            General.logDebug("ObservationHolder", `Found string value ${valueWrapper.getValue()} for multi select media element, doing migration`);
-            observation.valueJSON = new MultipleCodedValues([valueWrapper.getValue()]);
-          }
-        }
-      })
-    })
-  }
-
   toString(I18n) {
     let display = "";
     this.observations.forEach((obs) => {
@@ -456,7 +420,7 @@ class ObservationsHolder {
   // it uses only underlying realm model and not avni model
   static hasAnyAnswer(obsHolder, conceptUuid, answerUuids) {
     return _.some(obsHolder.observations, (obs) => obs.concept.uuid === conceptUuid && obs.valueJSON
-                                                          && _.some(answerUuids, (ansUuid) => obs.valueJSON.includes(ansUuid)));
+      && _.some(answerUuids, (ansUuid) => obs.valueJSON.includes(ansUuid)));
   }
 }
 
