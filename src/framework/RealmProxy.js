@@ -57,7 +57,7 @@ class RealmProxy {
         if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x);
       });
       if (emptyMandatoryProperties.length > 0) {
-        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}`);
+        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}. UUID: ${underlyingObject.uuid}`);
       }
     }
     const dbEntity = this.realmDb.create(schemaName, underlyingObject, updateMode);

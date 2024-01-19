@@ -128,6 +128,7 @@ import ArrayUtil from './utility/ArrayUtil';
 import DateTimeUtil from "./utility/DateTimeUtil";
 import CustomDashboardCache from "./CustomDashboardCache";
 import AgeUtil from "./utility/AgeUtil";
+import DashboardCacheFilter from './application/DashboardCacheFilter';
 
 export {
   AbstractEncounter,
@@ -263,5 +264,6 @@ export {
   ArrayUtil,
   DateTimeUtil,
   EntityApprovalStatusMetaData,
-  AgeUtil
+  AgeUtil,
+  DashboardCacheFilter
 };
