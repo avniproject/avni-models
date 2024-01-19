@@ -1,5 +1,6 @@
 import BaseEntity from "./BaseEntity";
 import DashboardCacheFilter from "./application/DashboardCacheFilter";
+import _ from 'lodash';
 
 class DashboardCache extends BaseEntity {
   static rowUUID = '176d5284-7927-422e-909a-a546f5001c84';
@@ -9,7 +10,6 @@ class DashboardCache extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      updatedAt: "date",
       cardJSON: "string",
       filterJSON: "string",
     },
@@ -17,14 +17,6 @@ class DashboardCache extends BaseEntity {
 
   constructor(that = null) {
     super(that);
-  }
-
-  get updatedAt() {
-    return this.that.updatedAt;
-  }
-
-  set updatedAt(x) {
-    this.that.updatedAt = x;
   }
 
   get cardJSON() {
@@ -48,7 +40,6 @@ class DashboardCache extends BaseEntity {
     dashboardCache.uuid = this.rowUUID;
     dashboardCache.filterJSON =  JSON.stringify(DashboardCacheFilter.createEmptyInstance());
     dashboardCache.cardJSON = "{}";
-    dashboardCache.updatedAt = new Date();
     return dashboardCache;
   }
 
@@ -57,7 +48,11 @@ class DashboardCache extends BaseEntity {
   }
 
   getFilter() {
-    return this.filterJSON && JSON.parse(this.filterJSON) || {};
+    const filter = this.filterJSON && JSON.parse(this.filterJSON) || {};
+    if (!_.isEmpty(filter.filterDate)) {
+      filter.filterDate = new Date(filter.filterDate);
+    }
+    return filter;
   }
 
   setFilter(value) {

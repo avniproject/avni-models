@@ -6,7 +6,7 @@ function overwriteField(field, source, destination, force) {
 }
 
 class DashboardCacheFilter {
-  date;
+  filterDate;
   selectedPrograms;
   selectedEncounterTypes;
   selectedGeneralEncounterTypes;
@@ -22,7 +22,7 @@ class DashboardCacheFilter {
   selectedAddressesInfo;
 
   static overwriteFields(from, dashboardCacheFilter, force) {
-    overwriteField("date", from, dashboardCacheFilter, force);
+    overwriteField("filterDate", from, dashboardCacheFilter, force);
     overwriteField("selectedPrograms", from, dashboardCacheFilter, force);
     overwriteField("selectedEncounterTypes", from, dashboardCacheFilter, force);
     overwriteField("selectedGeneralEncounterTypes", from, dashboardCacheFilter, force);
