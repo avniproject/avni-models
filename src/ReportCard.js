@@ -22,7 +22,7 @@ class ReportCard extends BaseEntity {
       colour: "string",
       voided: {type: "bool", default: false},
       nested: {type: "bool", default: false, optional: true},
-      initCountOfCards: {type: "int", default: 1, optional: true}, //Used only by nested ReportCards
+      countOfCards: {type: "int", default: 1, optional: true}, //Used only by nested ReportCards
     },
   };
 
@@ -78,12 +78,12 @@ class ReportCard extends BaseEntity {
     this.that.nested = x;
   }
 
-  get initCountOfCards() {
-    return this.that.initCountOfCards;
+  get countOfCards() {
+    return this.that.countOfCards;
   }
 
-  set initCountOfCards(x) {
-    this.that.initCountOfCards = x;
+  set countOfCards(x) {
+    this.that.countOfCards = x;
   }
 
   get iconName() {
@@ -117,7 +117,7 @@ class ReportCard extends BaseEntity {
 
   static fromResource(resource, entityService) {
     const reportCard = General.assignFields(resource, new ReportCard(),
-      ["uuid", "name", "query", "description", "colour", "voided", "nested", "initCountOfCards"]);
+      ["uuid", "name", "query", "description", "colour", "voided", "nested", "countOfCards"]);
     reportCard.standardReportCardType = entityService.findByKey(
       "uuid",
       ResourceUtil.getUUIDFor(resource, "standardReportCardUUID"),

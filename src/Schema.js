@@ -815,7 +815,7 @@ function createRealmConfig() {
       if (oldDB.schemaVersion < 182) {
         _.forEach(newDB.objects(ReportCard.schema.name), (rc) => {
           rc.nested = false;
-          rc.initCountOfCards = 1;
+          rc.countOfCards = 1;
         });
       }
       if (newDB.schemaVersion < 183) {
