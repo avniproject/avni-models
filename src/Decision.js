@@ -3,7 +3,6 @@ import PersistedObject from "./PersistedObject";
 class Decision extends PersistedObject {
   static schema = {
     name: "Decision",
-    embedded: true,
     properties: {
       name: "string",
       code: "string",

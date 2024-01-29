@@ -10,8 +10,8 @@ class ChecklistItemStatus extends PersistedObject {
     embedded: true,
     properties: {
       state: "string",
-      from: "StringKeyNumericValue",
-      to: "StringKeyNumericValue",
+      from: SchemaNames.StringKeyNumericValue,
+      to: SchemaNames.StringKeyNumericValue,
       color: { type: "string", default: "yellow" },
       displayOrder: "double",
       start: "int",

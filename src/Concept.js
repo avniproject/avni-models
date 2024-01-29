@@ -33,7 +33,7 @@ export default class Concept extends BaseEntity {
             lowNormal: {type: "double", optional: true},
             hiNormal: {type: "double", optional: true},
             unit: {type: "string", optional: true},
-            keyValues: {type: "list", objectType: "KeyValue"},
+            keyValues: {type: "list", objectType: SchemaNames.KeyValue},
             voided: {type: "bool", default: false},
         },
     };

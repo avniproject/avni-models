@@ -2,6 +2,7 @@ import ReferenceEntity from "./ReferenceEntity";
 import General from "./utility/General";
 import Format from "./application/Format";
 import ResourceUtil from "./utility/ResourceUtil";
+import SchemaNames from "./SchemaNames";
 
 class SubjectType extends ReferenceEntity {
   static schema = {
@@ -18,9 +19,9 @@ class SubjectType extends ReferenceEntity {
       subjectSummaryRule: {type: 'string', optional: true},
       programEligibilityCheckRule: {type: 'string', optional: true},
       uniqueName: {type: 'bool', default: false},
-      validFirstNameFormat: { type: "Format", optional: true },
-      validMiddleNameFormat: { type: "Format", optional: true },
-      validLastNameFormat: { type: "Format", optional: true },
+      validFirstNameFormat: { type: SchemaNames.Format, optional: true },
+      validMiddleNameFormat: { type: SchemaNames.Format, optional: true },
+      validLastNameFormat: { type: SchemaNames.Format, optional: true },
       iconFileS3Key: {type: "string", optional: true},
       syncRegistrationConcept1: {type: "string", optional: true},
       syncRegistrationConcept2: {type: "string", optional: true},

@@ -15,7 +15,7 @@ class ChecklistItemDetail extends BaseEntity {
     properties: {
       uuid: "string",
       concept: "Concept",
-      stateConfig: { type: "list", objectType: "ChecklistItemStatus" },
+      stateConfig: { type: "list", objectType: SchemaNames.ChecklistItemStatus },
       form: { type: "Form", optional: true },
       checklistDetail: "ChecklistDetail",
       voided: { type: "bool", default: false },

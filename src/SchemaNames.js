@@ -11,13 +11,13 @@ class SchemaNames {
   static Extension = "Extension";
   static Identifier = "Identifier";
   static Form = "Form";
-  static Format = "Format";
+  static Format = "EmbeddedFormat";
   static FormElement = "FormElement";
   static FormElementGroup = "FormElementGroup";
   static FormMapping = "FormMapping";
-  static KeyValue = "KeyValue";
+  static KeyValue = "EmbeddedKeyValue";
   static MenuItem = "MenuItem";
-  static StringKeyNumericValue = "StringKeyNumericValue";
+  static StringKeyNumericValue = "EmbeddedStringKeyNumericValue";
   static UserSubjectAssignment = "UserSubjectAssignment";
   static DraftSubject = "DraftSubject";
   static SubjectProgramEligibility = "SubjectProgramEligibility";
@@ -36,7 +36,7 @@ class SchemaNames {
   static Checklist = "Checklist";
   static ChecklistDetail = "ChecklistDetail";
   static ChecklistItemDetail = "ChecklistItemDetail";
-  static ChecklistItemStatus = "ChecklistItemStatus";
+  static ChecklistItemStatus = "EmbeddedChecklistItemStatus";
   static Comment = "Comment";
   static Concept = "Concept";
   static EntityApprovalStatus = "EntityApprovalStatus";

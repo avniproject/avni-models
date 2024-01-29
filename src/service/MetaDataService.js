@@ -25,26 +25,49 @@ pointHolders.set(SchemaNames.Individual, ["registrationLocation"]);
 pointHolders.set(SchemaNames.ProgramEncounter, ["encounterLocation", "cancelLocation"]);
 pointHolders.set(SchemaNames.ProgramEnrolment, ["enrolmentLocation", "exitLocation"]);
 
+const formatHolders = new Map();
+formatHolders.set("SubjectType", ["validFirstNameFormat", "validMiddleNameFormat", "validLastNameFormat"]);
+formatHolders.set(SchemaNames.FormElement, ["validFormat"]);
+
+const keyValueHolders = new Map();
+keyValueHolders.set(SchemaNames.FormElement, ["keyValues"]);
+keyValueHolders.set(SchemaNames.Concept, ["keyValues"]);
+
+const checklistItemStatusHolders = new Map();
+checklistItemStatusHolders.set(SchemaNames.ChecklistItemDetail, ["stateConfig"]);
+
+function forEachField(fn, holders) {
+    holders.forEach((fields, schemaName) => {
+        fields.forEach((field) => {
+            fn(field, schemaName);
+        });
+    });
+}
+
 class MetaDataService {
     static forEachPointField(fn) {
-        pointHolders.forEach((pointFields, schemaName) => {
-            pointFields.forEach((observationField) => {
-                fn(observationField, schemaName);
-            })
-        });
+        forEachField(fn, pointHolders);
     }
 
     static forEachObservationField(fn) {
-        observationHolders.forEach((observationFields, schemaName) => {
-            observationFields.forEach((observationField) => {
-                fn(observationField, schemaName);
-            })
-        });
+        forEachField(fn, observationHolders);
+    }
+
+    static forEachFormatField(fn) {
+        forEachField(fn, formatHolders);
+    }
+
+    static forEachKeyValueField(fn) {
+        forEachField(fn, keyValueHolders);
+    }
+
+    static forEachChecklistItemStatusField(fn) {
+        forEachField(fn, checklistItemStatusHolders);
     }
 
     static everyObservationField(fn) {
-        const schemaAndObsFields = Array.from(observationHolders, ([schema, observationFields]) => ({ schema, observationFields }));
-        return schemaAndObsFields.every(({ schema, observationFields }) => {
+        const schemaAndObsFields = Array.from(observationHolders, ([schema, observationFields]) => ({schema, observationFields}));
+        return schemaAndObsFields.every(({schema, observationFields}) => {
             return observationFields.every((observationField) => {
                 return fn(observationField, schema);
             });

@@ -61,8 +61,6 @@ import ValidationResult from "./application/ValidationResult";
 import ValidationResults from "./application/ValidationResults";
 import Video from "./videos/Video";
 import VideoTelemetric from "./videos/VideoTelemetric";
-import VisitScheduleConfig from "./VisitScheduleConfig";
-import VisitScheduleInterval from "./VisitScheduleInterval";
 import MediaQueue from "./MediaQueue";
 import Point from "./geo/Point";
 import SubjectType from "./SubjectType";
@@ -196,8 +194,6 @@ export {
   ValidationResults,
   Video,
   VideoTelemetric,
-  VisitScheduleConfig,
-  VisitScheduleInterval,
   Point,
   SubjectType,
   SyncTelemetry,

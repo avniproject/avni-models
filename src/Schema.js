@@ -31,8 +31,6 @@ import ChecklistItem from "./ChecklistItem";
 import _ from "lodash";
 import UserInfo from "./UserInfo";
 import StringKeyNumericValue from "./application/StringKeyNumericValue";
-import VisitScheduleInterval from "./VisitScheduleInterval";
-import VisitScheduleConfig from "./VisitScheduleConfig";
 import IndividualRelation from "./relationship/IndividualRelation";
 import IndividualRelationship from "./relationship/IndividualRelationship";
 import IndividualRelationshipType from "./relationship/IndividualRelationshipType";
@@ -125,8 +123,6 @@ const entities = [
     Format,
     UserInfo,
     StringKeyNumericValue,
-    VisitScheduleInterval,
-    VisitScheduleConfig,
     Family,
     IndividualRelation,
     IndividualRelationGenderMapping,
@@ -185,30 +181,75 @@ const entities = [
     UserSubjectAssignment
 ];
 
+function migrateObjectTypeFieldToEmbedded(newDB, oldDB, schemaName, field, creatorFn) {
+    console.log(`schema: ${schemaName}, field: ${field}`);
+    newDB.objects(schemaName).forEach((newDbParentEntity) => {
+        const oldFieldValue = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0][field];
+        if (!_.isNil(oldFieldValue)) {
+            newDbParentEntity[field] = creatorFn(oldFieldValue);
+        }
+    });
+}
+
+function migrateListTypeFieldToEmbedded(newDB, oldDB, schemaName, field, creatorFn) {
+    console.log(`schema: ${schemaName}, field: ${field}`);
+    newDB.objects(schemaName).forEach((newDbParentEntity) => {
+        const newList = [];
+        const oldFieldValues = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0][field];
+        oldFieldValues.forEach((oldFieldValue) => {
+            newList.push(creatorFn(oldFieldValue));
+        });
+        newDbParentEntity[field] = newList;
+    });
+}
+
 function migrateEmbeddedObjects(oldDB, newDB,) {
     MetaDataService.forEachObservationField((observationField, schemaName) => {
-        newDB.objects(schemaName).forEach((newDbParentEntity) => {
-            const newObservations = [];
-            const oldObservations = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0][observationField];
-            oldObservations.forEach((oldObservation) => {
-                const newConcept = newDB.objects("Concept").filtered(`uuid = "${oldObservation.concept.uuid}"`)[0];
-                console.log(`Schema: ${schemaName}, newDbParentEntity: ${newDbParentEntity.uuid}, newConcept: ${newConcept.uuid}`);
-                newObservations.push({concept: newConcept, valueJSON: oldObservation.valueJSON});
-            });
-            newDbParentEntity[observationField] = newObservations;
+        migrateListTypeFieldToEmbedded(newDB, oldDB, schemaName, observationField, (old) => {
+            const newConcept = newDB.objects("Concept").filtered(`uuid = "${old.concept.uuid}"`)[0];
+            return {concept: newConcept, valueJSON: old.valueJSON};
         });
     });
     newDB.deleteModel("Observation");
 
-    MetaDataService.forEachPointField((pointField, schemaName) => {
-        newDB.objects(schemaName).forEach((newDbParentEntity) => {
-            const oldPoint = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0][pointField];
-            const newPoint = {x: oldPoint.x, y: oldPoint.y};
-            console.log(`Schema: ${schemaName}, newDbParentEntity: ${newDbParentEntity.uuid}`);
-            newDbParentEntity[pointField] = newPoint;
+    MetaDataService.forEachPointField((field, schemaName) => {
+        migrateObjectTypeFieldToEmbedded(newDB, oldDB, schemaName, field, (old) => {
+            return {x: old.x, y: old.y}
         });
     });
     newDB.deleteModel("Point");
+
+    MetaDataService.forEachFormatField((field, schemaName) => {
+        migrateObjectTypeFieldToEmbedded(newDB, oldDB, schemaName, field, (old) => {
+            return {regex: old.regex, descriptionKey: old.descriptionKey}
+        });
+    });
+    newDB.deleteModel("Format");
+
+    MetaDataService.forEachKeyValueField((field, schemaName) => {
+        migrateListTypeFieldToEmbedded(newDB, oldDB, schemaName, field, (old) => {
+            return {key: old.key, value: old.value}
+        });
+    });
+    newDB.deleteModel("KeyValue");
+
+    MetaDataService.forEachChecklistItemStatusField((field, schemaName) => {
+        migrateListTypeFieldToEmbedded(newDB, oldDB, schemaName, field, (old) => {
+            return {
+                state: old.state,
+                from: {key: old.from.key, value: old.from.value},
+                to: {key: old.to.key, value: old.to.value},
+                color: old.color,
+                displayOrder: old.displayOrder,
+                start: old.start,
+                end: old.end
+            }
+        });
+    });
+    console.log(`deleting model: ChecklistItemStatus`);
+    newDB.deleteModel("ChecklistItemStatus");
+    // console.log(`deleting model: StringKeyNumericValue`);
+    // newDB.deleteModel("StringKeyNumericValue");
 }
 
 function createRealmConfig() {
@@ -217,10 +258,6 @@ function createRealmConfig() {
         schemaVersion: 184,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
-            if (oldDB.schemaVersion < 184) {
-                migrateEmbeddedObjects(oldDB, newDB);
-            }
-
             if (oldDB.schemaVersion < 10) {
                 const oldObjects = oldDB.objects("DecisionConfig");
                 oldObjects.forEach((decisionConfig) => {
@@ -853,6 +890,9 @@ function createRealmConfig() {
             if (newDB.schemaVersion < 183) {
                 const newObjects = newDB.objects("DashboardCache");
                 newDB.delete(newObjects);
+            }
+            if (oldDB.schemaVersion < 184) {
+                migrateEmbeddedObjects(oldDB, newDB);
             }
         },
     };
