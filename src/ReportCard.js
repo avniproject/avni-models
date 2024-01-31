@@ -99,6 +99,13 @@ class ReportCard extends BaseEntity {
     return _.isNil(this.standardReportCardType) ? '#ffffff' : this.standardReportCardType.textColor;
   }
 
+  /**
+   * Helper method used to generate unique key value for Nested Report Cards using UUID and Index of the Report Card.
+   * The Nested Report Card's query responses would be mapped to the corresponding Dashboard Report cards using the UUID and Index.
+   *
+   * @param index
+   * @returns {string}
+   */
   getCardId(index = 0) {
     return this.uuid + '#' + index;
   }
