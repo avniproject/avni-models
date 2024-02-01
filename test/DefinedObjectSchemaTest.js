@@ -1,5 +1,6 @@
 import DefinedObjectSchema from "../src/framework/DefinedObjectSchema";
 import {assert} from 'chai';
+import SchemaNames from '../src/SchemaNames';
 
 const schema = {
   name: "Foo",
@@ -17,7 +18,7 @@ const schema = {
     registrationDate: "date",
     lowestAddressLevel: {type: "AddressLevel", optional: false},
     enrolments: {type: "list", objectType: "Bar"},
-    registrationLocation: {type: "Point", optional: true}
+    registrationLocation: {type: SchemaNames.EmbeddedPoint, optional: true}
   }
 };
 

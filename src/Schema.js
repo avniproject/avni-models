@@ -248,8 +248,15 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     });
     console.log(`deleting model: ChecklistItemStatus`);
     newDB.deleteModel("ChecklistItemStatus");
-    // console.log(`deleting model: StringKeyNumericValue`);
-    // newDB.deleteModel("StringKeyNumericValue");
+
+    console.log(`deleting model: VisitScheduleConfig`);
+    newDB.deleteModel("VisitScheduleConfig");
+
+    console.log(`deleting model: VisitScheduleInterval`);
+    newDB.deleteModel("VisitScheduleInterval");
+
+    console.log(`deleting model: StringKeyNumericValue`);
+    newDB.deleteModel("StringKeyNumericValue");
 }
 
 function createRealmConfig() {
