@@ -249,6 +249,9 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     console.log(`deleting model: ChecklistItemStatus`);
     newDB.deleteModel("ChecklistItemStatus");
 
+    console.log(`deleting model: ProgramConfig`);
+    newDB.deleteModel("ProgramConfig");
+
     console.log(`deleting model: VisitScheduleConfig`);
     newDB.deleteModel("VisitScheduleConfig");
 
