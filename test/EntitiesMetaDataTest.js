@@ -7,6 +7,7 @@ describe('EntitiesMetaDataTest', () => {
     it('entitiesLoadedFromServer', () => {
         var entitiesLoadedFromServer = EntityMetaData.entitiesLoadedFromServer();
         assert.notIncludeMembers(entitiesLoadedFromServer, [Settings, Individual]);
+        assert.notIncludeMembers(entitiesLoadedFromServer, EntityMetaData.embeddedEntities());
     });
 
   describe('model', function () {

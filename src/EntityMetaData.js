@@ -69,6 +69,12 @@ import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import DashboardFilter from "./reports/DashboardFilter";
+import KeyValue from "./application/KeyValue";
+import Observation from "./Observation";
+import Format from "./application/Format";
+import StringKeyNumericValue from "./application/StringKeyNumericValue";
+import ChecklistItemStatus from "./ChecklistItemStatus";
+import Point from "./geo/Point";
 
 const refData = (clazz, {
   res,
@@ -502,7 +508,11 @@ class EntityMetaData {
   }
 
   static entitiesLoadedFromServer() {
-    return _.differenceBy(EntityMappingConfig.getInstance().getEntities(), [Settings, LocaleMapping], "schema.name");
+    return _.differenceBy(EntityMappingConfig.getInstance().getEntities(), [Settings, LocaleMapping].concat(EntityMetaData.embeddedEntities()), "schema.name");
+  }
+
+  static embeddedEntities() {
+    return [KeyValue, Observation, Format, StringKeyNumericValue, ChecklistItemStatus, Point];
   }
 
   static findByName(entityName) {
