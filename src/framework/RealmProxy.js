@@ -44,6 +44,13 @@ class RealmProxy {
     return this.realmDb.close();
   }
 
+  /**
+   *
+   * @param schemaName
+   * @param properties
+   * @param updateMode , all === true, modified , never === false
+   * @returns {*}
+   */
   create(schemaName, properties, updateMode = "never") {
     const underlyingObject = _.isNil(properties.that) ? properties : properties.that;
     const entityClass = this.entityMappingConfig.getEntityClass(schemaName);

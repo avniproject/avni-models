@@ -18,7 +18,7 @@ class KeyValue extends PersistedObject {
   static fromResource(resource) {
     const keyValue = new KeyValue();
     keyValue.key = resource.key;
-    keyValue.value = JSON.stringify(resource.value);
+    keyValue.value = typeof (resource.value) !== "string" ? JSON.stringify(resource.value): resource.value;
     return keyValue;
   }
 
