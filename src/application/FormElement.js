@@ -155,8 +155,6 @@ class FormElement extends BaseEntity {
     );
     formElement.concept = concept;
 
-    //remove orphan keyValues (because KeyValue doesn't have primary key
-    // entityService.deleteObjects(resource["uuid"], FormElement.schema.name, "keyValues");
     formElement.keyValues = _.map(resource.keyValues, KeyValue.fromResource);
     formElement.validFormat = Format.fromResource(resource["validFormat"]);
     return formElement;
