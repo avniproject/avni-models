@@ -69,12 +69,6 @@ import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import DashboardFilter from "./reports/DashboardFilter";
-import KeyValue from "./application/KeyValue";
-import Observation from "./Observation";
-import Format from "./application/Format";
-import StringKeyNumericValue from "./application/StringKeyNumericValue";
-import ChecklistItemStatus from "./ChecklistItemStatus";
-import Point from "./geo/Point";
 
 const refData = (clazz, {
   res,
@@ -512,7 +506,7 @@ class EntityMetaData {
   }
 
   static embeddedEntities() {
-    return [KeyValue, Observation, Format, StringKeyNumericValue, ChecklistItemStatus, Point];
+    return _.filter(EntityMappingConfig.getInstance().getEntities(), entity => entity.schema.embedded);
   }
 
   static findByName(entityName) {
