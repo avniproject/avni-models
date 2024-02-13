@@ -162,7 +162,7 @@ class Observation extends PersistedObject {
     }
 
     cloneForEdit() {
-        return clone(this.concept.cloneForReference(), this.getValueWrapper().cloneForEdit());
+        return clone(this.concept, this.getValueWrapper().cloneForEdit());
     }
 
     shallowClone() {

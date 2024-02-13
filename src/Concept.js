@@ -166,9 +166,6 @@ export default class Concept extends BaseEntity {
         concept.hiNormal = conceptResource.highNormal;
         concept.unit = conceptResource.unit;
         concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
-        //remove orphan keyValues (because KeyValue doesn't have primary key
-        entityService &&
-        entityService.deleteObjects(conceptResource["uuid"], Concept.schema.name, "keyValues");
         concept.keyValues = _.map(conceptResource.keyValues, KeyValue.fromResource);
         return concept;
     }
@@ -200,20 +197,17 @@ export default class Concept extends BaseEntity {
         concept.name = name;
         concept.datatype = dataType;
         concept.uuid = uuid;
-        concept.keyValues = keyValues;
+        concept.keyValues = _.map(keyValues, KeyValue.fromResource);
         return concept;
     }
 
+    /**
+     * This should never be cloned and used for reference as this is metadata which is not to be modified during transactional data operations
+     *
+     * @returns {Concept}
+     */
     cloneForReference() {
-        const concept = Concept.create(this.name, this.datatype, this.keyValues);
-        concept.uuid = this.uuid;
-        concept.unit = this.unit;
-        concept.lowAbsolute = this.lowAbsolute;
-        concept.lowNormal = this.lowNormal;
-        concept.hiNormal = this.hiNormal;
-        concept.hiAbsolute = this.hiAbsolute;
-        concept.answers = this.answers || [];
-        return concept;
+        return this;
     }
 
     _valuePresent(value) {

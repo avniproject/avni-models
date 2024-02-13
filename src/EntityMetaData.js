@@ -502,7 +502,11 @@ class EntityMetaData {
   }
 
   static entitiesLoadedFromServer() {
-    return _.differenceBy(EntityMappingConfig.getInstance().getEntities(), [Settings, LocaleMapping], "schema.name");
+    return _.differenceBy(EntityMappingConfig.getInstance().getEntities(), [Settings, LocaleMapping].concat(EntityMetaData.embeddedEntities()), "schema.name");
+  }
+
+  static embeddedEntities() {
+    return _.filter(EntityMappingConfig.getInstance().getEntities(), entity => entity.schema.embedded);
   }
 
   static findByName(entityName) {
