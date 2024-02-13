@@ -19,6 +19,7 @@ class Form extends BaseEntity {
       name: "string",
       formElementGroups: { type: "list", objectType: "FormElementGroup" },
       decisionRule: { type: "string", optional: true },
+      editFormRule: { type: "string", optional: true },
       visitScheduleRule: { type: "string", optional: true },
       validationRule: { type: "string", optional: true },
       checklistsRule: { type: "string", optional: true },
@@ -60,6 +61,14 @@ class Form extends BaseEntity {
 
   set decisionRule(x) {
       this.that.decisionRule = x;
+  }
+
+  get editFormRule() {
+      return this.that.editFormRule;
+  }
+
+  set editFormRule(x) {
+      this.that.editFormRule = x;
   }
 
   get visitScheduleRule() {
@@ -118,6 +127,7 @@ class Form extends BaseEntity {
       "name",
       "formType",
       "decisionRule",
+      "editFormRule",
       "visitScheduleRule",
       "taskScheduleRule",
       "validationRule",
