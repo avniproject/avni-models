@@ -204,21 +204,6 @@ function migrateListTypeFieldToEmbedded(newDB, oldDB, schemaName, field, creator
 }
 
 function migrateEmbeddedObjects(oldDB, newDB,) {
-    MetaDataService.forEachObservationField((observationField, schemaName) => {
-        migrateListTypeFieldToEmbedded(newDB, oldDB, schemaName, observationField, (old) => {
-            const newConcept = newDB.objects("Concept").filtered(`uuid = "${old.concept.uuid}"`)[0];
-            return {concept: newConcept, valueJSON: old.valueJSON};
-        });
-    });
-    newDB.deleteModel("Observation");
-
-    MetaDataService.forEachPointField((field, schemaName) => {
-        migrateObjectTypeFieldToEmbedded(newDB, oldDB, schemaName, field, (old) => {
-            return {x: old.x, y: old.y}
-        });
-    });
-    newDB.deleteModel("Point");
-
     MetaDataService.forEachFormatField((field, schemaName) => {
         migrateObjectTypeFieldToEmbedded(newDB, oldDB, schemaName, field, (old) => {
             return {regex: old.regex, descriptionKey: old.descriptionKey}
@@ -246,6 +231,7 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
             }
         });
     });
+
     console.log(`deleting model: ChecklistItemStatus`);
     newDB.deleteModel("ChecklistItemStatus");
 
@@ -259,13 +245,71 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     newDB.deleteModel("VisitScheduleInterval");
 
     console.log(`deleting model: StringKeyNumericValue`);
-    newDB.deleteModel("StringKeyNumericValue");
+    newDB.deleteModel("StringKeyNumericValue")
+}
+
+function flush(db) {
+    db.commitTransaction();
+    db.beginTransaction();
+}
+
+function shouldFlush(numberOfRecords) {
+    const batchSize = 100;
+    return (numberOfRecords % batchSize) === (batchSize - 1);
+}
+
+function migrateGeoLocation(oldDB, newDB) {
+    flush(newDB);
+    let recordCounter = 0;
+
+    MetaDataService.forEachPointField((field, schemaName) => {
+        console.log(`schema: ${schemaName}, field: ${field}`);
+        newDB.objects(schemaName).forEach((newDbParentEntity) => {
+            if (shouldFlush(recordCounter)) {
+                flush(newDB);
+            }
+
+            const oldFieldValue = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0][field];
+            if (!_.isNil(oldFieldValue)) {
+                newDbParentEntity[field] = {x: oldFieldValue.x, y: oldFieldValue.y};
+            }
+            recordCounter++;
+        });
+    });
+    flush(newDB);
+    newDB.deleteModel("Point");
+}
+
+function migrateObservationsToEmbedded(oldDB, newDB) {
+    flush(newDB);
+    let recordCounter = 0;
+    MetaDataService.forEachObservationField((observationField, schemaName) => {
+        console.log(`schema: ${schemaName}, field: ${observationField}`);
+
+        newDB.objects(schemaName).forEach((newDbParentEntity) => {
+            if (shouldFlush(recordCounter)) {
+                flush(newDB);
+            }
+
+            const newList = [];
+            const oldFieldValues = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0][observationField];
+            oldFieldValues.forEach((oldFieldValue) => {
+                const newConcept = newDB.objects("Concept").filtered(`uuid = "${oldFieldValue.concept.uuid}"`)[0];
+                newList.push({concept: newConcept, valueJSON: oldFieldValue.valueJSON});
+            });
+            newDbParentEntity[observationField] = newList;
+
+            recordCounter++;
+        });
+    });
+    flush(newDB);
+    newDB.deleteModel("Observation");
 }
 
 function createRealmConfig() {
     return {
         //order is important, should be arranged according to the dependency
-        schemaVersion: 184,
+        schemaVersion: 186,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion < 10) {
@@ -903,6 +947,12 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 184) {
                 migrateEmbeddedObjects(oldDB, newDB);
+            }
+            if (oldDB.schemaVersion < 185) {
+                migrateGeoLocation(oldDB, newDB);
+            }
+            if (oldDB.schemaVersion < 186) {
+                migrateObservationsToEmbedded(oldDB, newDB);
             }
         },
     };
