@@ -1,5 +1,5 @@
 import AbstractEncounter from "./AbstractEncounter";
-import AddressLevel from "./AddressLevel";
+import AddressLevel, {LocationMapping} from "./AddressLevel";
 import BaseEntity from "./BaseEntity";
 import ChecklistDetail from "./ChecklistDetail";
 import Checklist from "./Checklist";
@@ -166,6 +166,7 @@ export {
   IndividualRelationshipType,
   IndividualRelative,
   KeyValue,
+  LocationMapping,
   LocaleMapping,
   MediaQueue,
   MultipleCodedValues,
