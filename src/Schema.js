@@ -327,6 +327,11 @@ function migrateAllEmbeddedForTxnData(oldDB, newDB) {
 
 function createRealmConfig() {
     return {
+        shouldCompact: function (totalBytes, usedBytes) {
+            const doCompact = (totalBytes / usedBytes) > 1.1;
+            console.log("Should compact", totalBytes, usedBytes, doCompact);
+            return doCompact;
+        },
         //order is important, should be arranged according to the dependency
         schemaVersion: 185,
         onMigration: function (oldDB, newDB) {
