@@ -1,4 +1,3 @@
-import _ from "lodash";
 import {Observation} from "../../src";
 
 class TestObservationFactory {
