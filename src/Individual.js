@@ -1014,6 +1014,25 @@ class Individual extends BaseEntity {
     );
   }
 
+  everScheduledEncounters() {
+    return _.filter(
+      this.getEncounters(true),
+      (encounter) => !_.isNil(encounter.earliestVisitDateTime) && _.isNil(encounter.cancelDateTime)
+    );
+  }
+
+  scheduledEncountersOfType(encounterTypeName) {
+    return this.scheduledEncounters().filter(
+      (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
+    );
+  }
+
+  everScheduledEncountersOfType(encounterTypeName) {
+    return this.everScheduledEncounters().filter(
+      (scheduledEncounter) => scheduledEncounter.encounterType.name === encounterTypeName
+    );
+  }
+
   findObservationInLastEncounter(conceptNameOrUuid, currentEncounter) {
     const lastEncounter = this.findLastEncounterOfType(currentEncounter, _.get(currentEncounter, 'encounterType'));
     return lastEncounter ? lastEncounter.findObservation(conceptNameOrUuid) : null;
