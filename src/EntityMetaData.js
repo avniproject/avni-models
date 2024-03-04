@@ -12,7 +12,6 @@ import ProgramEnrolment from "./ProgramEnrolment";
 import ProgramEncounter from "./ProgramEncounter";
 import EncounterType from "./EncounterType";
 import Encounter from "./Encounter";
-import ProgramOutcome from "./ProgramOutcome";
 import Form from "./application/Form";
 import FormElementGroup from "./application/FormElementGroup";
 import FormElement from "./application/FormElement";
@@ -149,7 +148,6 @@ const program = refDataNameTranslated(Program, {
   res: "operationalProgram",
   syncWeight: 3,
 });
-const programOutcome = refDataNameTranslated(ProgramOutcome, {syncWeight: 3});
 const gender = refDataNameTranslated(Gender, {syncWeight: 1});
 const individualRelation = refDataNameTranslated(IndividualRelation, {
   syncWeight: 3,
@@ -458,7 +456,6 @@ class EntityMetaData {
       taskType,
       encounterType,
       program,
-      programOutcome,
       gender,
       groupRole,
       subjectType,

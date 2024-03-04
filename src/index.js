@@ -45,7 +45,6 @@ import PrimitiveValue from "./observation/PrimitiveValue";
 import ProgramEncounter from "./ProgramEncounter";
 import ProgramEnrolment from "./ProgramEnrolment";
 import Program from "./Program";
-import ProgramOutcome from "./ProgramOutcome";
 import ReferenceEntity from "./ReferenceEntity";
 import RuleDependency from "./RuleDependency";
 import Rule from "./Rule";
@@ -179,7 +178,6 @@ export {
   ProgramEncounter,
   ProgramEnrolment,
   Program,
-  ProgramOutcome,
   ReferenceEntity,
   RuleDependency,
   Rule,

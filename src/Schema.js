@@ -14,7 +14,6 @@ import Program from "./Program";
 import Observation from "./Observation";
 import Encounter from "./Encounter";
 import EncounterType from "./EncounterType";
-import ProgramOutcome from "./ProgramOutcome";
 import FormElement from "./application/FormElement";
 import FormElementGroup from "./application/FormElementGroup";
 import Form from "./application/Form";
@@ -110,7 +109,6 @@ const entities = [
     FormElement,
     SubjectType,
     Individual,
-    ProgramOutcome,
     Program,
     ProgramEnrolment,
     Observation,

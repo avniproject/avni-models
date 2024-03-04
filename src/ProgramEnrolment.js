@@ -1,7 +1,6 @@
 import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
 import Program from "./Program";
-import ProgramOutcome from "./ProgramOutcome";
 import ProgramEncounter from "./ProgramEncounter";
 import BaseEntity from "./BaseEntity";
 import Individual from "./Individual";
@@ -35,7 +34,6 @@ class ProgramEnrolment extends BaseEntity {
             observations: {type: "list", objectType: "EmbeddedObservation"},
             programExitDateTime: {type: "date", optional: true},
             programExitObservations: {type: "list", objectType: "EmbeddedObservation"},
-            programOutcome: {type: "ProgramOutcome", optional: true},
             encounters: {type: "list", objectType: SchemaNames.ProgramEncounter},
             checklists: {type: "list", objectType: "Checklist"},
             individual: "Individual",
@@ -90,14 +88,6 @@ class ProgramEnrolment extends BaseEntity {
 
     set programExitObservations(x) {
         this.that.programExitObservations = this.fromEntityList(x);
-    }
-
-    get programOutcome() {
-        return this.toEntity("programOutcome", ProgramOutcome);
-    }
-
-    set programOutcome(x) {
-        this.that.programOutcome = this.fromObject(x);
     }
 
     get encounters() {
@@ -207,7 +197,6 @@ class ProgramEnrolment extends BaseEntity {
         resource["programUUID"] = this.program.uuid;
         resource.enrolmentDateTime = General.isoFormat(this.enrolmentDateTime);
         resource.programExitDateTime = General.isoFormat(this.programExitDateTime);
-        resource["programOutcomeUUID"] = _.isNil(this.programOutcome) ? null : this.programOutcome.uuid;
         resource["individualUUID"] = this.individual.uuid;
         if (!_.isNil(this.checklist)) resource["checklistUUID"] = this.checklist.uuid;
 
@@ -237,7 +226,6 @@ class ProgramEnrolment extends BaseEntity {
             ResourceUtil.getUUIDFor(resource, "programUUID"),
             Program.schema.name
         );
-        const programOutcomeUUID = ResourceUtil.getUUIDFor(resource, "programOutcomeUUID");
         const individual = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "individualUUID"),
@@ -254,14 +242,6 @@ class ProgramEnrolment extends BaseEntity {
         );
         programEnrolment.program = program;
         programEnrolment.individual = individual;
-
-        if (!_.isNil(programOutcomeUUID)) {
-            programEnrolment.programOutcome = entityService.findByKey(
-                "uuid",
-                programOutcomeUUID,
-                ProgramOutcome.schema.name
-            );
-        }
 
         if (!_.isNil(resource.enrolmentLocation))
             programEnrolment.enrolmentLocation = Point.fromResource(resource.enrolmentLocation);
@@ -310,9 +290,6 @@ class ProgramEnrolment extends BaseEntity {
         programEnrolment.program = _.isNil(this.program) ? null : this.program.clone();
         programEnrolment.enrolmentDateTime = this.enrolmentDateTime;
         programEnrolment.programExitDateTime = this.programExitDateTime;
-        programEnrolment.programOutcome = _.isNil(this.programOutcome)
-            ? null
-            : this.programOutcome.clone();
         programEnrolment.individual = this.individual;
         programEnrolment.observations = ObservationsHolder.clone(this.observations);
         programEnrolment.programExitObservations = ObservationsHolder.clone(
@@ -804,7 +781,6 @@ class ProgramEnrolment extends BaseEntity {
             observations: this.observations,
             programExitDateTime: this.programExitDateTime,
             programExitObservations: this.programExitObservations,
-            programOutcome: {type: "ProgramOutcome", optional: true},
             encounters: this.encounters,
             checklists: this.checklists,
             individualUUID: this.individual.uuid,
