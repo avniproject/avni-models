@@ -5,7 +5,6 @@ import ConceptAnswer from "./ConceptAnswer";
 import Individual from "./Individual";
 import Family from "./Family";
 import AddressLevel, {LocationMapping} from "./AddressLevel";
-import UserDefinedIndividualProperty from "./UserDefinedIndividualProperty";
 import Gender from "./Gender";
 import EntitySyncStatus from "./EntitySyncStatus";
 import ProgramEnrolment from "./ProgramEnrolment";
@@ -21,7 +20,6 @@ import KeyValue from "./application/KeyValue";
 import Format from "./application/Format";
 import EntityQueue from "./EntityQueue";
 import FormMapping from "./application/FormMapping";
-import ConfigFile from "./ConfigFile";
 import ChecklistItemStatus from "./ChecklistItemStatus";
 import ChecklistItemDetail from "./ChecklistItemDetail";
 import ChecklistDetail from "./ChecklistDetail";
@@ -99,7 +97,6 @@ const entities = [
     Concept,
     EncounterType,
     Gender,
-    UserDefinedIndividualProperty,
     LocationMapping,
     AddressLevel,
     KeyValue,
@@ -116,7 +113,6 @@ const entities = [
     Encounter,
     EntitySyncStatus,
     EntityQueue,
-    ConfigFile,
     Checklist,
     ChecklistItem,
     Format,
@@ -326,19 +322,9 @@ function migrateAllEmbeddedForTxnData(oldDB, newDB) {
 function createRealmConfig() {
     return {
         //order is important, should be arranged according to the dependency
-        schemaVersion: 185,
+        schemaVersion: 186,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
-            if (oldDB.schemaVersion < 10) {
-                const oldObjects = oldDB.objects("DecisionConfig");
-                oldObjects.forEach((decisionConfig) => {
-                    newDB.create(
-                        ConfigFile.schema.name,
-                        ConfigFile.create(decisionConfig.fileName, decisionConfig.decisionCode),
-                        true
-                    );
-                });
-            }
             if (oldDB.schemaVersion < 17) {
                 const oldObjects = oldDB.objects("AddressLevel");
                 const newObjects = newDB.objects("AddressLevel");
@@ -967,6 +953,12 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 185) {
                 migrateAllEmbeddedForTxnData(oldDB, newDB);
+            }
+            if (oldDB.schemaVersion < 186) {
+                newDB.deleteModel("UserDefinedIndividualProperty");
+                newDB.deleteModel("ConfigFile");
+                newDB.deleteModel("Decision");
+                newDB.deleteModel("ProgramOutcome");
             }
         },
     };

@@ -9,8 +9,6 @@ import ChecklistItemStatus from "./ChecklistItemStatus";
 import CompositeDuration from "./CompositeDuration";
 import Concept from "./Concept";
 import ConceptAnswer from "./ConceptAnswer";
-import ConfigFile from "./ConfigFile";
-import Decision from "./Decision";
 import Duration from "./Duration";
 import Encounter from "./Encounter";
 import EncounterType from "./EncounterType";
@@ -54,7 +52,6 @@ import SingleCodedValue from "./observation/SingleCodedValue";
 import SingleSelectFilter from "./application/SingleSelectFilter";
 import StaticFormElementGroup from "./application/StaticFormElementGroup";
 import StringKeyNumericValue from "./application/StringKeyNumericValue";
-import UserDefinedIndividualProperty from "./UserDefinedIndividualProperty";
 import UserInfo from "./UserInfo";
 import ValidationResult from "./application/ValidationResult";
 import ValidationResults from "./application/ValidationResults";
@@ -139,8 +136,6 @@ export {
   CompositeDuration,
   Concept,
   ConceptAnswer,
-  ConfigFile,
-  Decision,
   Duration,
   Encounter,
   EncounterType,
@@ -187,7 +182,6 @@ export {
   SingleSelectFilter,
   StaticFormElementGroup,
   StringKeyNumericValue,
-  UserDefinedIndividualProperty,
   UserInfo,
   ValidationResult,
   ValidationResults,
