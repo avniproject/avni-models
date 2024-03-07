@@ -16,7 +16,7 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
 import MergeUtil from "./utility/MergeUtil";
-import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
+import {AuditFields, mapAuditFields, updateAudit, updateAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
     [SchemaNames.ProgramEncounter, "encounters"],
@@ -815,6 +815,10 @@ class ProgramEnrolment extends BaseEntity {
 
     getSchemaName() {
         return SchemaNames.ProgramEnrolment;
+    }
+
+    updateAudit(userInfo, isNew) {
+        updateAuditFields(this, userInfo, isNew);
     }
 }
 

@@ -12,7 +12,7 @@ import Observation from "./Observation";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from './SchemaNames';
 import MergeUtil from "./utility/MergeUtil";
-import {mapAuditFields} from "./utility/AuditUtil";
+import {mapAuditFields, updateAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
     [SchemaNames.EntityApprovalStatus, "approvalStatuses"]]);
@@ -438,6 +438,14 @@ class AbstractEncounter extends BaseEntity {
 
     setLatestEntityApprovalStatus(entityApprovalStatus) {
         this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
+    }
+
+    updateAudit(userInfo, isNew) {
+        updateAuditFields(this, userInfo, isNew);
+        if (_.isNil(this.filledByUUID)) {
+            this.filledByUUID = userInfo.userUUID;
+            this.filledBy = userInfo.name;
+        }
     }
 }
 

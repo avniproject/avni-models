@@ -4,7 +4,6 @@ import ProgramEnrolment from "./ProgramEnrolment";
 import AbstractEncounter from "./AbstractEncounter";
 import _ from "lodash";
 import ValidationResult from "./application/ValidationResult";
-import Point from "./geo/Point";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
