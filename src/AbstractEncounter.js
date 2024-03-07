@@ -440,12 +440,16 @@ class AbstractEncounter extends BaseEntity {
         this.that.latestEntityApprovalStatus = this.fromObject(entityApprovalStatus);
     }
 
-    updateAudit(userInfo, isNew) {
+    updateAudit(userInfo, isNew, isGettingFilled) {
         updateAuditFields(this, userInfo, isNew);
-        if (_.isNil(this.filledByUUID)) {
+        if (_.isNil(this.filledByUUID) && isGettingFilled) {
             this.filledByUUID = userInfo.userUUID;
             this.filledBy = userInfo.name;
         }
+    }
+
+    isFilled() {
+        return !_.isNil(this.encounterDateTime);
     }
 }
 

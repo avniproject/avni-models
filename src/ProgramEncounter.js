@@ -7,7 +7,7 @@ import ValidationResult from "./application/ValidationResult";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
-import {AuditFields} from "./utility/AuditUtil";
+import {AuditFields, updateAuditFields} from "./utility/AuditUtil";
 
 class ProgramEncounter extends AbstractEncounter {
     static fieldKeys = {
