@@ -30,6 +30,7 @@ class SubjectType extends ReferenceEntity {
       lastNameOptional: {type: 'bool', default: false},
       directlyAssignable: {type: 'bool', default: false},
       nameHelpText: {type: "string", optional: true},
+      settings: {type: "string", default: '{}'}
     }
   };
 
@@ -189,12 +190,25 @@ class SubjectType extends ReferenceEntity {
     this.that.directlyAssignable = x;
   }
 
+  get settings() {
+     return this.that.settings;
+  }
+
+  set settings(x) {
+     this.that.settings = x;
+  }
+
   static types = {
     Person: 'Person',
     Individual: 'Individual',
     Group: 'Group',
     Household: 'Household',
   };
+
+    static settingKeys = {
+        displayRegistrationDetails: 'displayRegistrationDetails',
+        displayPlannedEncounters: 'displayPlannedEncounters'
+    };
 
   static create(name, group = false, household = false, type) {
     let subjectType = new SubjectType();
@@ -230,6 +244,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.syncRegistrationConcept1 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept1');
     subjectType.syncRegistrationConcept2 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept2');
     subjectType.nameHelpText = ResourceUtil.getUUIDFor(operationalSubjectType, 'nameHelpText');
+    subjectType.settings = !_.isNil(operationalSubjectType.settings) ? JSON.stringify(operationalSubjectType.settings) : '{}';
     return subjectType;
   }
 
@@ -257,6 +272,7 @@ class SubjectType extends ReferenceEntity {
     cloned.syncRegistrationConcept1 = this.syncRegistrationConcept1;
     cloned.syncRegistrationConcept2 = this.syncRegistrationConcept2;
     cloned.nameHelpText = this.nameHelpText;
+    cloned.settings = this.settings;
     return cloned;
   }
 
@@ -282,6 +298,14 @@ class SubjectType extends ReferenceEntity {
 
   isIconSetup() {
     return !_.isNil(this.iconFileS3Key);
+  }
+
+  getSettings() {
+      return JSON.parse(this.settings);
+  }
+
+  getSetting(settingName) {
+      return this.getSettings()[settingName];
   }
 }
 
