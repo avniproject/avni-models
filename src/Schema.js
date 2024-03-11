@@ -955,10 +955,10 @@ function createRealmConfig() {
                 migrateAllEmbeddedForTxnData(oldDB, newDB);
             }
             if (oldDB.schemaVersion < 186) {
-                newDB.deleteModel("UserDefinedIndividualProperty");
-                newDB.deleteModel("ConfigFile");
-                newDB.deleteModel("Decision");
-                newDB.deleteModel("ProgramOutcome");
+                // newDB.deleteModel("UserDefinedIndividualProperty");
+                // newDB.deleteModel("ConfigFile");
+                // newDB.deleteModel("Decision");
+                // newDB.deleteModel("ProgramOutcome");
             }
         },
     };
