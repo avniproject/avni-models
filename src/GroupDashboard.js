@@ -11,42 +11,51 @@ class GroupDashboard extends BaseEntity {
         properties: {
             uuid: "string",
             primaryDashboard: {type: "bool", default: false},
+            secondaryDashboard: {type: "bool", default: false},
             group: {type: "Groups", optional: true},
             dashboard: "Dashboard",
             voided: {type: "bool", default: false}
         },
     };
 
-   constructor(that = null) {
-    super(that);
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  get primaryDashboard() {
-      return this.that.primaryDashboard;
-  }
+    get primaryDashboard() {
+        return this.that.primaryDashboard;
+    }
 
-  set primaryDashboard(x) {
-      this.that.primaryDashboard = x;
-  }
+    set primaryDashboard(x) {
+        this.that.primaryDashboard = x;
+    }
 
-  get group() {
-      return this.toEntity("group", Groups);
-  }
+    get secondaryDashboard() {
+        return this.that.secondaryDashboard;
+    }
 
-  set group(x) {
-      this.that.group = this.fromObject(x);
-  }
+    set secondaryDashboard(x) {
+        this.that.secondaryDashboard = x;
+    }
 
-  get dashboard() {
-      return this.toEntity("dashboard", Dashboard);
-  }
+    get group() {
+        return this.toEntity("group", Groups);
+    }
 
-  set dashboard(x) {
-      this.that.dashboard = this.fromObject(x);
-  }
+    set group(x) {
+        this.that.group = this.fromObject(x);
+    }
 
-  static fromResource(resource, entityService) {
-        const groupDashboard = General.assignFields(resource, new GroupDashboard(), ["uuid", "primaryDashboard", "voided"]);
+    get dashboard() {
+        return this.toEntity("dashboard", Dashboard);
+    }
+
+    set dashboard(x) {
+        this.that.dashboard = this.fromObject(x);
+    }
+
+    static fromResource(resource, entityService) {
+        const groupDashboard = General.assignFields(resource, new GroupDashboard(), ["uuid", "primaryDashboard", "secondaryDashboard", "voided"]);
         groupDashboard.group = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "groupUUID"),
