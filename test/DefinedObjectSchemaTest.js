@@ -18,7 +18,7 @@ const schema = {
     registrationDate: "date",
     lowestAddressLevel: {type: "AddressLevel", optional: false},
     enrolments: {type: "list", objectType: "Bar"},
-    registrationLocation: {type: SchemaNames.EmbeddedPoint, optional: true}
+    registrationLocation: {type: SchemaNames.Point, optional: true}
   }
 };
 

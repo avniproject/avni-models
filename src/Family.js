@@ -29,7 +29,7 @@ class Family extends BaseEntity {
       typeOfFamily: "string",
       householdNumber: "string",
       members: { type: "list", objectType: "Individual" },
-      observations: { type: "list", objectType: "EmbeddedObservation" },
+      observations: { type: "list", objectType: "Observation" },
     },
   };
 

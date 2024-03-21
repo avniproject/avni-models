@@ -249,82 +249,6 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     newDB.deleteModel("StringKeyNumericValue")
 }
 
-function flush(db) {
-    db.commitTransaction();
-    db.beginTransaction();
-}
-
-function shouldFlush(numberOfRecords) {
-    const batchSize = 100;
-    return (numberOfRecords % batchSize) === (batchSize - 1);
-}
-
-export function createTransactionDataMapForEmbeddedFields() {
-    const map = new Map();
-    MetaDataService.forEachPointField((fieldName, schemaName) => {
-        if (map.has(schemaName)) {
-            map.get(schemaName).push({fieldName, fieldType: "Point"});
-        } else {
-            map.set(schemaName, [{fieldName, fieldType: "Point"}]);
-        }
-    });
-    MetaDataService.forEachObservationField((fieldName, schemaName) => {
-        if (map.has(schemaName)) {
-            map.get(schemaName).push({fieldName, fieldType: "Obs"});
-        } else {
-            map.set(schemaName, [{fieldName, fieldType: "Obs"}]);
-        }
-    });
-    return map;
-}
-
-function migrateAllEmbeddedForTxnData(oldDB, newDB) {
-    const startTime = new Date();
-    flush(newDB);
-    const map = createTransactionDataMapForEmbeddedFields();
-
-    let recordCounter = 0;
-    const conceptMap = new Map();
-    map.forEach((fields, schemaName) => {
-        console.log(`schema: ${schemaName}, fields: ${fields.length}`);
-        newDB.objects(schemaName).forEach((newDbParentEntity) => {
-            if (shouldFlush(recordCounter)) {
-                flush(newDB);
-            }
-            fields.forEach((field) => {
-                const oldEntity = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0];
-                const oldValue = oldEntity[field.fieldName];
-                if (!_.isNil(oldValue)) {
-                    if (field.fieldType === "Point")
-                        newDbParentEntity[field.fieldName] = {x: oldValue.x, y: oldValue.y};
-                    else {
-                        const newObsList = [];
-                        oldValue.forEach((oldItemValue) => {
-                            let newConcept = conceptMap.get(oldItemValue.concept.uuid);
-                            if (_.isNil(newConcept)) {
-                                newConcept = newDB.objects("Concept").filtered(`uuid = "${oldItemValue.concept.uuid}"`)[0];
-                                conceptMap.set(oldItemValue.concept.uuid, newConcept);
-                            }
-                            newObsList.push({
-                                concept: newConcept,
-                                valueJSON: oldItemValue.valueJSON
-                            });
-                        });
-                        newDbParentEntity[field.fieldName] = newObsList;
-                    }
-                }
-            });
-            recordCounter++;
-        });
-    });
-    flush(newDB);
-    newDB.deleteModel("Point");
-    newDB.deleteModel("Observation");
-    const endTime = new Date();
-    const diff = moment(endTime).diff(startTime, "seconds", true);
-    console.log("Total Time Taken", diff, "seconds");
-}
-
 function createRealmConfig() {
     return {
         shouldCompact: function (totalBytes, usedBytes) {
@@ -333,7 +257,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 185,
+        schemaVersion: 186,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion < 10) {
@@ -973,7 +897,7 @@ function createRealmConfig() {
                 migrateEmbeddedObjects(oldDB, newDB);
             }
             if (oldDB.schemaVersion < 185) {
-                migrateAllEmbeddedForTxnData(oldDB, newDB);
+                // removed migration code. keeping the version number in case this number is required for any checks later
             }
         },
     };

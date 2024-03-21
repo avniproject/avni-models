@@ -80,7 +80,7 @@ class AddressLevel extends BaseEntity {
       level: "double",
       type: {type: "string", optional: true},
       locationMappings: {type: "list", objectType: "LocationMapping"},
-      locationProperties: {type: "list", objectType: "EmbeddedObservation"},
+      locationProperties: {type: "list", objectType: "Observation"},
       titleLineage: {type: "string", optional: true},
       voided: {type: "bool", default: false},
       parentUuid: {type: "string", optional: true},
