@@ -251,6 +251,33 @@ class Form extends BaseEntity {
     return orderedObservations.concat(extraObs);
   }
 
+  //TODO add tests
+  orderObservationsPerFEG(observations) {
+    const orderedObservations = [];
+    const formElementOrdering = _.sortBy(this.formElementGroups, (feg) => feg.displayOrder)
+      .map(feg => {
+        let fegOrderedObservations = [];
+        const returnValue = {};
+        returnValue.uuid = feg.uuid;
+        returnValue.feg = feg;
+        returnValue.sortedObservationsArray = fegOrderedObservations;
+        this.orderObservationsWithinAFEG(feg.getFormElements(), observations, fegOrderedObservations);
+        orderedObservations.concat(fegOrderedObservations);
+        return returnValue;
+      });
+    return formElementOrdering;
+  }
+
+  orderObservationsWithinAFEG(formElements, observations, orderedObservations) {
+    _.sortBy(formElements, (fe) => fe.displayOrder)
+      .forEach(formElement => this.addSortedObservations(formElement, observations, orderedObservations));
+    const extraObs = observations.filter((obs) =>
+      _.isNil(orderedObservations.find((oobs) => oobs.concept.uuid === obs.concept.uuid))
+    );
+    orderedObservations.concat(extraObs);
+    return extraObs;
+  }
+
   sectionWiseOrderedObservations(observations) {
     const sections = [];
     const allObservations = [];
