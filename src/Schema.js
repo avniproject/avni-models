@@ -249,6 +249,8 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     newDB.deleteModel("StringKeyNumericValue")
 }
 
+const VersionWithEmbeddedMigrationProblem = 185;
+
 function createRealmConfig() {
     return {
         shouldCompact: function (totalBytes, usedBytes) {
@@ -260,6 +262,9 @@ function createRealmConfig() {
         schemaVersion: 186,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
+            if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
+                throw new Error(`Update from schema version ${VersionWithEmbeddedMigrationProblem} is not allowed. Please uninstall and install app.`);
+
             if (oldDB.schemaVersion < 10) {
                 const oldObjects = oldDB.objects("DecisionConfig");
                 oldObjects.forEach((decisionConfig) => {
@@ -896,7 +901,7 @@ function createRealmConfig() {
             if (oldDB.schemaVersion < 184) {
                 migrateEmbeddedObjects(oldDB, newDB);
             }
-            if (oldDB.schemaVersion < 185) {
+            if (oldDB.schemaVersion < VersionWithEmbeddedMigrationProblem) {
                 // removed migration code. keeping the version number in case this number is required for any checks later
             }
         },
