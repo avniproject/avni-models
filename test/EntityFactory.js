@@ -39,6 +39,7 @@ class EntityFactory {
 
     static createFormElementGroup(name, displayOrder, form) {
         const formElementGroup = EntityFactory.createSafeFormElementGroup(form);
+        formElementGroup.uuid = name;
         formElementGroup.name = name;
         formElementGroup.displayOrder = displayOrder;
         return formElementGroup;
