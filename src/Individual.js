@@ -22,7 +22,7 @@ import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
 import MergeUtil from "./utility/MergeUtil";
 import AgeUtil from "./utility/AgeUtil";
-import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
+import {AuditFields, mapAuditFields, updateAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
   [SchemaNames.ProgramEnrolment, "enrolments"],
@@ -1190,6 +1190,10 @@ class Individual extends BaseEntity {
   getSchemaName() {
     return SchemaNames.Individual;
   }
+
+    updateAudit(userInfo, isNew) {
+        updateAuditFields(this, userInfo, isNew);
+    }
 }
 
 export default Individual;
