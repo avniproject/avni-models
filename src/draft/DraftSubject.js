@@ -7,6 +7,7 @@ import AddressLevel from "../AddressLevel";
 import Observation from "../Observation";
 import Point from "../geo/Point";
 import SchemaNames from "../SchemaNames";
+import _ from "lodash";
 
 class DraftSubject extends BaseEntity {
   static schema = {
