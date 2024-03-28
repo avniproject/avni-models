@@ -15,7 +15,7 @@ import EntityApprovalStatus from "./EntityApprovalStatus";
 import Observation from "./Observation";
 import SchemaNames from "./SchemaNames";
 import MergeUtil from "./utility/MergeUtil";
-import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
+import {AuditFields, mapAuditFields, updateAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
     [SchemaNames.ProgramEncounter, "encounters"],
@@ -31,14 +31,14 @@ class ProgramEnrolment extends BaseEntity {
             uuid: "string",
             program: "Program",
             enrolmentDateTime: "date",
-            observations: {type: "list", objectType: "EmbeddedObservation"},
+            observations: {type: "list", objectType: "Observation"},
             programExitDateTime: {type: "date", optional: true},
-            programExitObservations: {type: "list", objectType: "EmbeddedObservation"},
+            programExitObservations: {type: "list", objectType: "Observation"},
             encounters: {type: "list", objectType: SchemaNames.ProgramEncounter},
             checklists: {type: "list", objectType: "Checklist"},
             individual: "Individual",
-            enrolmentLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
-            exitLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
+            enrolmentLocation: {type: SchemaNames.Point, optional: true},
+            exitLocation: {type: SchemaNames.Point, optional: true},
             voided: {type: "bool", default: false},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
             latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},   //Reporting purposes
@@ -791,6 +791,10 @@ class ProgramEnrolment extends BaseEntity {
 
     getSchemaName() {
         return SchemaNames.ProgramEnrolment;
+    }
+
+    updateAudit(userInfo, isNew) {
+        updateAuditFields(this, userInfo, isNew);
     }
 }
 

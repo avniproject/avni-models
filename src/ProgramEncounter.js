@@ -7,7 +7,7 @@ import ValidationResult from "./application/ValidationResult";
 import EntityApprovalStatus from "./EntityApprovalStatus";
 import SchemaNames from "./SchemaNames";
 import BaseEntity from "./BaseEntity";
-import {AuditFields} from "./utility/AuditUtil";
+import {AuditFields, updateAuditFields} from "./utility/AuditUtil";
 
 class ProgramEncounter extends AbstractEncounter {
     static fieldKeys = {
@@ -31,11 +31,11 @@ class ProgramEncounter extends AbstractEncounter {
             maxVisitDateTime: {type: "date", optional: true},
             encounterDateTime: {type: "date", optional: true},
             programEnrolment: SchemaNames.ProgramEnrolment,
-            observations: {type: "list", objectType: "EmbeddedObservation"},
+            observations: {type: "list", objectType: "Observation"},
             cancelDateTime: {type: "date", optional: true},
-            cancelObservations: {type: "list", objectType: "EmbeddedObservation"},
-            encounterLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
-            cancelLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
+            cancelObservations: {type: "list", objectType: "Observation"},
+            encounterLocation: {type: SchemaNames.Point, optional: true},
+            cancelLocation: {type: SchemaNames.Point, optional: true},
             voided: {type: "bool", default: false},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
             latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},  //Reporting purposes

@@ -22,9 +22,9 @@ class Task extends BaseEntity {
             taskStatus: "TaskStatus",
             scheduledOn: {type: "date"},
             completedOn: {type: "date", optional: true},
-            metadata: {type: "list", objectType: "EmbeddedObservation"},
+            metadata: {type: "list", objectType: "Observation"},
             subject: {type: 'Individual', optional: true},
-            observations: {type: "list", objectType: "EmbeddedObservation"},
+            observations: {type: "list", objectType: "Observation"},
             voided: {type: 'bool', default: false},
             ...AuditFields
         },

@@ -243,81 +243,7 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     newDB.deleteModel("StringKeyNumericValue")
 }
 
-function flush(db) {
-    db.commitTransaction();
-    db.beginTransaction();
-}
-
-function shouldFlush(numberOfRecords) {
-    const batchSize = 100;
-    return (numberOfRecords % batchSize) === (batchSize - 1);
-}
-
-export function createTransactionDataMapForEmbeddedFields() {
-    const map = new Map();
-    MetaDataService.forEachPointField((fieldName, schemaName) => {
-        if (map.has(schemaName)) {
-            map.get(schemaName).push({fieldName, fieldType: "Point"});
-        } else {
-            map.set(schemaName, [{fieldName, fieldType: "Point"}]);
-        }
-    });
-    MetaDataService.forEachObservationField((fieldName, schemaName) => {
-        if (map.has(schemaName)) {
-            map.get(schemaName).push({fieldName, fieldType: "Obs"});
-        } else {
-            map.set(schemaName, [{fieldName, fieldType: "Obs"}]);
-        }
-    });
-    return map;
-}
-
-function migrateAllEmbeddedForTxnData(oldDB, newDB) {
-    const startTime = new Date();
-    flush(newDB);
-    const map = createTransactionDataMapForEmbeddedFields();
-
-    let recordCounter = 0;
-    const conceptMap = new Map();
-    map.forEach((fields, schemaName) => {
-        console.log(`schema: ${schemaName}, fields: ${fields.length}`);
-        newDB.objects(schemaName).forEach((newDbParentEntity) => {
-            if (shouldFlush(recordCounter)) {
-                flush(newDB);
-            }
-            fields.forEach((field) => {
-                const oldEntity = oldDB.objects(schemaName).filtered(`uuid = "${newDbParentEntity.uuid}"`)[0];
-                const oldValue = oldEntity[field.fieldName];
-                if (!_.isNil(oldValue)) {
-                    if (field.fieldType === "Point")
-                        newDbParentEntity[field.fieldName] = {x: oldValue.x, y: oldValue.y};
-                    else {
-                        const newObsList = [];
-                        oldValue.forEach((oldItemValue) => {
-                            let newConcept = conceptMap.get(oldItemValue.concept.uuid);
-                            if (_.isNil(newConcept)) {
-                                newConcept = newDB.objects("Concept").filtered(`uuid = "${oldItemValue.concept.uuid}"`)[0];
-                                conceptMap.set(oldItemValue.concept.uuid, newConcept);
-                            }
-                            newObsList.push({
-                                concept: newConcept,
-                                valueJSON: oldItemValue.valueJSON
-                            });
-                        });
-                        newDbParentEntity[field.fieldName] = newObsList;
-                    }
-                }
-            });
-            recordCounter++;
-        });
-    });
-    flush(newDB);
-    newDB.deleteModel("Point");
-    newDB.deleteModel("Observation");
-    const endTime = new Date();
-    const diff = moment(endTime).diff(startTime, "seconds", true);
-    console.log("Total Time Taken", diff, "seconds");
-}
+const VersionWithEmbeddedMigrationProblem = 185;
 
 function createRealmConfig() {
     return {
@@ -330,6 +256,19 @@ function createRealmConfig() {
         schemaVersion: 188,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
+            if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
+                throw new Error(`Update from schema version ${VersionWithEmbeddedMigrationProblem} is not allowed. Please uninstall and install app.`);
+
+            if (oldDB.schemaVersion < 10) {
+                const oldObjects = oldDB.objects("DecisionConfig");
+                oldObjects.forEach((decisionConfig) => {
+                    newDB.create(
+                        ConfigFile.schema.name,
+                        ConfigFile.create(decisionConfig.fileName, decisionConfig.decisionCode),
+                        true
+                    );
+                });
+            }
             if (oldDB.schemaVersion < 17) {
                 const oldObjects = oldDB.objects("AddressLevel");
                 const newObjects = newDB.objects("AddressLevel");
@@ -956,8 +895,8 @@ function createRealmConfig() {
             if (oldDB.schemaVersion < 184) {
                 migrateEmbeddedObjects(oldDB, newDB);
             }
-            if (oldDB.schemaVersion < 185) {
-                migrateAllEmbeddedForTxnData(oldDB, newDB);
+            if (oldDB.schemaVersion < VersionWithEmbeddedMigrationProblem) {
+                // removed migration code. keeping the version number in case this number is required for any checks later
             }
             if (oldDB.schemaVersion < 186) {
                 // newDB.deleteModel("UserDefinedIndividualProperty");

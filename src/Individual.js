@@ -22,7 +22,7 @@ import SchemaNames from "./SchemaNames";
 import ah from "./framework/ArrayHelper";
 import MergeUtil from "./utility/MergeUtil";
 import AgeUtil from "./utility/AgeUtil";
-import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
+import {AuditFields, mapAuditFields, updateAuditFields} from "./utility/AuditUtil";
 
 const mergeMap = new Map([
   [SchemaNames.ProgramEnrolment, "enrolments"],
@@ -52,10 +52,10 @@ class Individual extends BaseEntity {
       voided: {type: "bool", default: false},
       enrolments: {type: "list", objectType: SchemaNames.ProgramEnrolment},
       encounters: {type: "list", objectType: SchemaNames.Encounter},
-      observations: {type: "list", objectType: "EmbeddedObservation"},
+      observations: {type: "list", objectType: "Observation"},
       relationships: {type: "list", objectType: "IndividualRelationship"},
       groupSubjects: {type: "list", objectType: "GroupSubject"},
-      registrationLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
+      registrationLocation: {type: SchemaNames.Point, optional: true},
       comments: {type: "list", objectType: "Comment"},
       groups: {type: "list", objectType: "GroupSubject"},
       approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
@@ -1209,6 +1209,10 @@ class Individual extends BaseEntity {
   getSchemaName() {
     return SchemaNames.Individual;
   }
+
+    updateAudit(userInfo, isNew) {
+        updateAuditFields(this, userInfo, isNew);
+    }
 }
 
 export default Individual;

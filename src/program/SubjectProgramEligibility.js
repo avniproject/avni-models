@@ -19,7 +19,7 @@ class SubjectProgramEligibility extends BaseEntity {
             program: "Program",
             checkDate: "date",
             eligible: {type: "bool", default: false},
-            observations: {type: "list", objectType: "EmbeddedObservation"},
+            observations: {type: "list", objectType: "Observation"},
             voided: {type: "bool", default: false},
             ...AuditFields
         },
