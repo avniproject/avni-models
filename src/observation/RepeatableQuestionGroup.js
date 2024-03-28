@@ -2,6 +2,8 @@ import _ from 'lodash';
 import QuestionGroup from "./QuestionGroup";
 
 class RepeatableQuestionGroup {
+    static TypeName = "RepeatableQuestionGroup";
+
     static actions = {
         add: 'add',
         remove: 'remove'
