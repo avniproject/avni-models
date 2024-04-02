@@ -40,7 +40,7 @@ class SchemaNames {
   static Comment = "Comment";
   static Concept = "Concept";
   static EntityApprovalStatus = "EntityApprovalStatus";
-  static EmbeddedPoint = "EmbeddedPoint";
+  static Point = "Point";
 }
 
 export default SchemaNames;

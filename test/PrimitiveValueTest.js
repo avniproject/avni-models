@@ -25,6 +25,22 @@ describe('getValue', () => {
       const primitiveValue = new PrimitiveValue("10", Concept.dataType.Numeric);
       expect(primitiveValue.getValue()).to.equal(10);
     });
+    it('should accept floating numbers', function () {
+      const primitiveValue = new PrimitiveValue("10.25", Concept.dataType.Numeric);
+      expect(primitiveValue.getValue()).to.equal(10.25);
+    });
+    it('should accept floating number without a whole number part', function () {
+      const primitiveValue = new PrimitiveValue(".023", Concept.dataType.Numeric);
+      expect(primitiveValue.getValue()).to.equal(0.023);
+    });
+    it('should accept floating number with negative number as the whole number part', function () {
+      const primitiveValue = new PrimitiveValue("-560.023", Concept.dataType.Numeric);
+      expect(primitiveValue.getValue()).to.equal(-560.023);
+    });
+    it('should accept floating number without a decimal part', function () {
+      const primitiveValue = new PrimitiveValue("123.", Concept.dataType.Numeric);
+      expect(primitiveValue.getValue()).to.equal(123);
+    });
   });
 });
 

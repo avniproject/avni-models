@@ -19,7 +19,7 @@ class IndividualRelationship extends BaseEntity {
             individualB: "Individual",
             enterDateTime: {type: "date", optional: true},
             exitDateTime: {type: "date", optional: true},
-            exitObservations: {type: "list", objectType: "EmbeddedObservation"},
+            exitObservations: {type: "list", objectType: "Observation"},
             voided: {type: "bool", default: false},
             ...AuditFields
         },

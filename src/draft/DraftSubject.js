@@ -7,6 +7,7 @@ import AddressLevel from "../AddressLevel";
 import Observation from "../Observation";
 import Point from "../geo/Point";
 import SchemaNames from "../SchemaNames";
+import _ from "lodash";
 
 class DraftSubject extends BaseEntity {
   static schema = {
@@ -23,8 +24,8 @@ class DraftSubject extends BaseEntity {
       gender: {type: "Gender", optional: true},
       registrationDate: "date",
       lowestAddressLevel: "AddressLevel",
-      observations: {type: "list", objectType: "EmbeddedObservation"},
-      registrationLocation: {type: SchemaNames.EmbeddedPoint, optional: true},
+      observations: {type: "list", objectType: "Observation"},
+      registrationLocation: {type: SchemaNames.Point, optional: true},
       updatedOn: "date",
       totalMembers: {type: "string", optional: true}
     },

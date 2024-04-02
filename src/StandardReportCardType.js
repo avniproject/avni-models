@@ -2,6 +2,7 @@ import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import TaskType from "./task/TaskType";
 import ApprovalStatus from "./ApprovalStatus";
+import _ from "lodash";
 
 class StandardReportCardType extends BaseEntity {
     static schema = {
