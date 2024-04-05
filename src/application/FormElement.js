@@ -435,6 +435,10 @@ class FormElement extends BaseEntity {
         return _.find(this.formElementGroup.getFormElements(), fe => fe.uuid === this.groupUuid)
     }
 
+    isRepeatableQuestionGroup() {
+        return this.concept.isQuestionGroup() && this.repeatable;
+    }
+
     clone() {
         const formElement = this.newFormElement();
         formElement.uuid = this.uuid;
