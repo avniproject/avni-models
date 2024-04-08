@@ -340,6 +340,11 @@ class FormElement extends BaseEntity {
         return _.isNil(repeatable) ? false : repeatable.getValue();
     }
 
+    get disableManualActions() {
+        const disableManualActions = this.recordByKey("disableManualActions");
+        return _.isNil(disableManualActions) ? false : disableManualActions.getValue();
+    }
+
     get datePickerMode() {
         const datePickerMode = this.recordByKey("datePickerMode");
         return _.isNil(datePickerMode) ? null : datePickerMode.getValue();
