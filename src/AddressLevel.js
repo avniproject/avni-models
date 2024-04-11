@@ -237,6 +237,27 @@ class AddressLevel extends BaseEntity {
   getLineage() {
     return appendLineage(this, []);
   }
+
+  findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+    const observations = _.isNil(parentConceptNameOrUuid) ? this.locationProperties : this.findGroupedObservation(parentConceptNameOrUuid);
+    return _.find(observations, (observation) => {
+      return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
+    });
+  }
+
+  findGroupedObservation(parentConceptNameOrUuid) {
+      const groupedObservations = _.find(this.locationProperties, (observation) =>
+          (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+      return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
+  }
+
+  getObservationReadableValue(conceptNameOrUuid, parentConceptNameOrUuid) {
+      const observationForConcept = this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
+      return _.isEmpty(observationForConcept)
+          ? observationForConcept
+          : observationForConcept.getReadableValue();
+  }
+
 }
 
 export default AddressLevel;
