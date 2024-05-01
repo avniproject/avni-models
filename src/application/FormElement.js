@@ -250,7 +250,7 @@ class FormElement extends BaseEntity {
             ((!this.mandatory && !_.isNil(value)) || (this.mandatory))) {
             failure.messageKey = "invalidTimeFormat";
 
-        } else if (this.concept.datatype === Concept.dataType.Date && !moment(value).isValid() &&
+        } else if (this.concept.datatype === Concept.dataType.Date && !moment(value, 'YYYY-MM-DD').isValid() &&
             ((!this.mandatory && !_.isNil(value)) || (this.mandatory))) {
             failure.messageKey = "invalidDateFormat";
         } else if (
