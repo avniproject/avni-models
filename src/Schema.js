@@ -87,7 +87,6 @@ import CustomDashboardCache from './CustomDashboardCache';
 import DefinedObjectSchema from "./framework/DefinedObjectSchema";
 import MigrationsHelper from "./MigrationsHelper";
 import MetaDataService from "./service/MetaDataService";
-import moment from "moment";
 
 const entities = [
     DashboardFilter,
@@ -253,7 +252,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 188,
+        schemaVersion: 189,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -903,6 +902,10 @@ function createRealmConfig() {
                 // newDB.deleteModel("ConfigFile");
                 // newDB.deleteModel("Decision");
                 // newDB.deleteModel("ProgramOutcome");
+            }
+            if (oldDB.schemaVersion < 189) {
+                // PlaceHolder for SubjectType.User changes, so that people with previous version of client
+                // are not able to use fastSync of version 189 and above
             }
         },
     };

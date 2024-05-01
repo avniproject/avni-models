@@ -150,6 +150,9 @@ class General {
   }
 
   static assignObsFields(source, dest, observationFields = [], entityService) {
+    if(!entityService) {
+      return dest;
+    }
     observationFields.forEach((observationField) => {
       const observations = [];
       if (!_.isNil(source[observationField])) {

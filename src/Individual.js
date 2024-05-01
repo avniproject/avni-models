@@ -32,6 +32,8 @@ const mergeMap = new Map([
   [SchemaNames.Comment, "comments"]
 ]);
 
+const ADDRESS_LEVEL_DUMMY_UUID = 'f71b2f45-2c11-427f-aa99-be6161a6b413';
+
 class Individual extends BaseEntity {
   static schema = {
     name: SchemaNames.Individual,
@@ -298,8 +300,15 @@ class Individual extends BaseEntity {
     individual.groupSubjects = [];
     individual.groups = [];
     individual.approvalStatuses = [];
-    individual.lowestAddressLevel = AddressLevel.create({
-      uuid: "",
+    individual.lowestAddressLevel = this.getPlaceholderAddressLevel();
+    individual.voided = false;
+    individual.comments = [];
+    return individual;
+  }
+
+  static getPlaceholderAddressLevel(entityService) {
+    return AddressLevel.create({
+      uuid: ADDRESS_LEVEL_DUMMY_UUID,
       title: "",
       level: 0,
       typeString: "",
@@ -308,10 +317,7 @@ class Individual extends BaseEntity {
       parentUuid: "",
       typeUuid: "",
       locationProperties: []
-    });
-    individual.voided = false;
-    individual.comments = [];
-    return individual;
+    }, entityService);
   }
 
   static createEmptySubjectInstance() {
@@ -381,8 +387,15 @@ class Individual extends BaseEntity {
     individual.dateOfBirth = dateOfBirth;
     individual.dateOfBirthVerified = dateOfBirthVerified;
     individual.gender = gender;
-    individual.lowestAddressLevel = lowestAddressLevel;
+    individual.lowestAddressLevel = this.initLowestAddressLevel(lowestAddressLevel, subjectType, null);
     return individual;
+  }
+
+  /**
+   * Init Lowest AddressLevel with Placeholder only if the Individual SubjectType is User
+   */
+  static initLowestAddressLevel(lowestAddressLevel, subjectType, entityService) {
+    return lowestAddressLevel || (subjectType && subjectType.isUser() && this.getPlaceholderAddressLevel(entityService));
   }
 
   static directCopyFields = ["uuid", "firstName", "middleName", "lastName", "profilePicture", "dateOfBirthVerified", "voided"];
@@ -413,7 +426,7 @@ class Individual extends BaseEntity {
       entityService
     );
     individual.gender = gender;
-    individual.lowestAddressLevel = addressLevel;
+    individual.lowestAddressLevel = this.initLowestAddressLevel(addressLevel, subjectType, entityService);
     individual.name = individual.nameString;
     if (!_.isNil(individualResource.registrationLocation))
       individual.registrationLocation = Point.fromResource(individualResource.registrationLocation);
