@@ -19,7 +19,7 @@ export default class IdentifierAssignment extends BaseEntity {
             individual: {type: "Individual", optional: true},
             voided: {type: "bool", default: false},
             programEnrolment: {type: "ProgramEnrolment", optional: true},
-            used: {type: "bool", default: false, optional: false},
+            used: {type: "bool", default: false, optional: false}, // required to maintain state for deleted (https://github.com/avniproject/avni-client/issues/1092#issuecomment-1767632083) and draft (https://github.com/avniproject/avni-client/issues/1356) entities
             ...AuditFields
         },
     };
@@ -112,7 +112,7 @@ export default class IdentifierAssignment extends BaseEntity {
         const identifierAssignment = General.assignFields(
             identifierAssignmentResource,
             new IdentifierAssignment(),
-            ["uuid", "identifier", "assignmentOrder", "voided"]
+            ["uuid", "identifier", "assignmentOrder", "voided", "used"]
         );
         identifierAssignment.identifierSource = entityService.findByKey(
             "uuid",
@@ -135,7 +135,7 @@ export default class IdentifierAssignment extends BaseEntity {
     }
 
     get toResource() {
-        const resource = _.pick(this, ["uuid", "identifier", "assignmentOrder", "voided"]);
+        const resource = _.pick(this, ["uuid", "identifier", "assignmentOrder", "voided", "used"]);
         resource.individualUUID = this.individual ? this.individual.uuid : null;
         resource.programEnrolmentUUID = this.programEnrolment ? this.programEnrolment.uuid : null;
         return resource;
