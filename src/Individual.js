@@ -578,8 +578,14 @@ class Individual extends BaseEntity {
     return Duration.inYear(0);
   }
 
+  getTranslatedNameString(i18n) {
+    return this.isPerson() ? Individual.getFullName(this)
+      : (this.subjectType.type === SubjectType.types.User ? `${this.firstName}(${i18n.t('you')})` : this.firstName);
+  }
+
   get nameString() {
-    return this.isPerson() ? Individual.getFullName(this) : this.firstName;
+    return this.isPerson() ? Individual.getFullName(this)
+      : (this.subjectType.type === SubjectType.types.User ? `${this.firstName}(You)` : this.firstName);
   }
 
   static getFullName(obj) {
