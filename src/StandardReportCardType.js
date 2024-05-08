@@ -52,6 +52,19 @@ class StandardReportCardType extends BaseEntity {
         DueChecklist: "Due checklist",
     };
 
+    static subjectTypeFilterSupported = {
+        [StandardReportCardType.type.ScheduledVisits]: true,
+        [StandardReportCardType.type.OverdueVisits]: true,
+        [StandardReportCardType.type.LatestRegistrations]: false,
+        [StandardReportCardType.type.LatestEnrolments]: false,
+        [StandardReportCardType.type.LatestVisits]: false,
+        [StandardReportCardType.type.Total]: false,
+        [StandardReportCardType.type.Comments]: false,
+        [StandardReportCardType.type.CallTasks]: false,
+        [StandardReportCardType.type.OpenSubjectTasks]: false,
+        [StandardReportCardType.type.DueChecklist]: false
+    };
+
     get iconName() {
         const typeIcon = {
             [StandardReportCardType.type.Approved]: 'check-circle',
