@@ -139,6 +139,10 @@ class ReportCard extends BaseEntity {
     isStandardReportType() {
         return !_.isNil(this.standardReportCardType);
     }
+
+    isSubjectTypeFilterSupported() {
+        return this.isStandardReportType() && this.standardReportCardType.isSubjectTypeFilterSupported();
+    }
 }
 
 export default ReportCard;
