@@ -84,8 +84,10 @@ class Observation extends PersistedObject {
             return new Displayable(valueWrapper.asDisplayTime(), null);
         } else if (valueWrapper.isSingleCoded) {
             if (observation.concept.datatype === Concept.dataType.Subject) {
-                const subject = subjectService.findByUUID(valueWrapper.getValue());
-                return [new Displayable(subject.nameStringWithUniqueAttribute, subject)];
+                const uuid = valueWrapper.getValue();
+                const subject = subjectService.findByUUID(uuid);
+                const displayName = (subject && subject.nameStringWithUniqueAttribute) || uuid;
+                return [new Displayable(displayName, subject)];
             } else if (observation.concept.datatype === Concept.dataType.Encounter) {
                 const encounter = encounterService.findByUUID(valueWrapper.getValue());
                 const identifier = observation.concept.recordValueByKey(Concept.keys.encounterIdentifier);

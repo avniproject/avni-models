@@ -252,7 +252,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 189,
+        schemaVersion: 190,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -904,8 +904,15 @@ function createRealmConfig() {
                 // newDB.deleteModel("ProgramOutcome");
             }
             if (oldDB.schemaVersion < 189) {
+                _.forEach(newDB.objects("SubjectType"), (subjectType) => {
+                    if (!subjectType.settings) {
+                        subjectType.settings = '{}'
+                    }
+                });
+            }
+            if (oldDB.schemaVersion < 190) {
                 // PlaceHolder for SubjectType.User changes, so that people with previous version of client
-                // are not able to use fastSync of version 189 and above
+                // are not able to use fastSync of version 190 and above
             }
         },
     };
