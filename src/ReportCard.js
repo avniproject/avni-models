@@ -3,10 +3,9 @@ import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
 import StandardReportCardType from "./StandardReportCardType";
 import _ from 'lodash';
-
-function throwInvalidIndexError(index, reportCardsLength) {
-    throw new Error(`Invalid index ${index} specified for reportCard with length ${reportCardsLength}`);
-}
+import SubjectType from "./SubjectType";
+import Program from "./Program";
+import EncounterType from "./EncounterType";
 
 class ReportCard extends BaseEntity {
     static schema = {
@@ -22,6 +21,9 @@ class ReportCard extends BaseEntity {
             voided: {type: "bool", default: false},
             nested: {type: "bool", default: false, optional: true},
             countOfCards: {type: "int", default: 1, optional: true}, //Used only by nested ReportCards
+            standardReportCardInputSubjectTypes: {type: "list", objectType: "SubjectType"},
+            standardReportCardInputPrograms: {type: "list", objectType: "Program"},
+            standardReportCardInputEncounterTypes: {type: "list", objectType: "EncounterType"}
         },
     };
 
@@ -96,6 +98,30 @@ class ReportCard extends BaseEntity {
 
     get textColor() {
         return _.isNil(this.standardReportCardType) ? '#ffffff' : this.standardReportCardType.textColor;
+    }
+
+    get standardReportCardInputSubjectTypes() {
+        return this.toEntityList("standardReportCardInputSubjectTypes", SubjectType);
+    }
+
+    set standardReportCardInputSubjectTypes(x) {
+        this.that.standardReportCardInputSubjectTypes = this.fromEntityList(x);
+    }
+
+    get standardReportCardInputPrograms() {
+        return this.toEntityList("standardReportCardInputPrograms", Program);
+    }
+
+    set standardReportCardInputPrograms(x) {
+        this.that.standardReportCardInputPrograms = this.fromEntityList(x);
+    }
+
+    get standardReportCardInputEncounterTypes() {
+        return this.toEntityList("standardReportCardInputEncounterTypes", EncounterType);
+    }
+
+    set standardReportCardInputEncounterTypes(x) {
+        this.that.standardReportCardInputEncounterTypes = this.fromEntityList(x);
     }
 
     /**
