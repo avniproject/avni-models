@@ -85,6 +85,7 @@ export class GroupSubjectTypeFilter {
 const dateFilterTypes = [CustomFilter.type.RegistrationDate, CustomFilter.type.EnrolmentDate, CustomFilter.type.EncounterDate, CustomFilter.type.ProgramEncounterDate];
 
 class DashboardFilterConfig {
+  subjectType;
   type;
   widget; //CustomFilter.widget
   groupSubjectTypeFilter;
@@ -110,6 +111,10 @@ class DashboardFilterConfig {
     return this.type === CustomFilter.type.GroupSubject;
   }
 
+  isSubjectTypeFilter() {
+    return this.type === CustomFilter.type.SubjectType;
+  }
+
   isValid() {
     const valid = !(_.isNil(this.type));
     if (!valid) return valid;
@@ -127,6 +132,7 @@ class DashboardFilterConfig {
   toServerRequest() {
     const request = {
       type: this.type,
+      subjectTypeUUID: this.subjectType && this.subjectType.uuid,
       widget: this.widget
     };
 
@@ -159,6 +165,12 @@ class DashboardFilterConfig {
       (this.isConceptTypeFilter() && this.observationBasedFilter.isWidgetRequired());
   }
 
+  setSubjectType(subjectType) {
+      if (_.get(subjectType, "uuid") !== _.get(this.subjectType, "uuid")) {
+          this.subjectType = subjectType;
+      }
+  }
+
   willObservationBeInScopeOfProgramEnrolment() {
     return this.isConceptTypeFilter() && this.observationBasedFilter.willObservationBeInScopeOfProgramEnrolment();
   }
@@ -181,6 +193,7 @@ class DashboardFilterConfig {
   clone() {
     const clone = new DashboardFilterConfig();
     clone.type = this.type;
+    clone.subjectType = this.subjectType;
     clone.widget = this.widget;
     clone.groupSubjectTypeFilter = this.groupSubjectTypeFilter;
     clone.observationBasedFilter = this.observationBasedFilter;
