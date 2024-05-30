@@ -27,6 +27,14 @@ class ReportCard extends BaseEntity {
         },
     };
 
+    static newReportCard() {
+        const reportCard = new ReportCard();
+        reportCard.standardReportCardInputSubjectTypes = [];
+        reportCard.standardReportCardInputPrograms = [];
+        reportCard.standardReportCardInputEncounterTypes = [];
+        return reportCard;
+    }
+
     constructor(that = null) {
         super(that);
     }
@@ -148,13 +156,23 @@ class ReportCard extends BaseEntity {
     }
 
     static fromResource(resource, entityService) {
-        const reportCard = General.assignFields(resource, new ReportCard(),
+        const reportCard = General.assignFields(resource, ReportCard.newReportCard(),
             ["uuid", "name", "query", "description", "colour", "voided", "nested", "countOfCards"]);
         reportCard.standardReportCardType = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "standardReportCardUUID"),
             StandardReportCardType.schema.name
         );
+        resource.standardReportCardInputSubjectTypes.forEach(uuid => {
+            reportCard.standardReportCardInputSubjectTypes.push(entityService.findByUUID(uuid, SubjectType.schema.name));
+        });
+        resource.standardReportCardInputPrograms.forEach(uuid => {
+            reportCard.standardReportCardInputPrograms.push(entityService.findByUUID(uuid, Program.schema.name));
+        });
+        resource.standardReportCardInputEncounterTypes.forEach(uuid => {
+            reportCard.standardReportCardInputEncounterTypes.push(entityService.findByUUID(uuid, EncounterType.schema.name));
+        });
+
         return reportCard;
     }
 

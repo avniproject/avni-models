@@ -252,7 +252,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 190,
+        schemaVersion: 191,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -913,6 +913,9 @@ function createRealmConfig() {
             if (oldDB.schemaVersion < 190) {
                 // PlaceHolder for SubjectType.User changes, so that people with previous version of client
                 // are not able to use fastSync of version 190 and above
+            }
+            if (oldDB.schemaVersion < 191) {
+                newDB.delete(newDB.objects("CustomDashboardCache"));
             }
         },
     };
