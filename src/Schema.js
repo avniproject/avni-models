@@ -904,8 +904,15 @@ function createRealmConfig() {
                 // newDB.deleteModel("ProgramOutcome");
             }
             if (oldDB.schemaVersion < 189) {
+                _.forEach(newDB.objects("SubjectType"), (subjectType) => {
+                    if (!subjectType.settings) {
+                        subjectType.settings = '{}'
+                    }
+                });
+            }
+            if (oldDB.schemaVersion < 190) {
                 // PlaceHolder for SubjectType.User changes, so that people with previous version of client
-                // are not able to use fastSync of version 189 and above
+                // are not able to use fastSync of version 190 and above
             }
         },
     };

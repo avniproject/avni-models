@@ -1229,9 +1229,13 @@ class Individual extends BaseEntity {
     return SchemaNames.Individual;
   }
 
-    updateAudit(userInfo, isNew) {
-        updateAuditFields(this, userInfo, isNew);
-    }
+  updateAudit(userInfo, isNew) {
+      updateAuditFields(this, userInfo, isNew);
+  }
+
+  static getAddressLevelDummyUUID() {
+    return ADDRESS_LEVEL_DUMMY_UUID;
+  }
 }
 
 export default Individual;

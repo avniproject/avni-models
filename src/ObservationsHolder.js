@@ -27,7 +27,7 @@ class ObservationsHolder {
     const observations = this.findObservation(parentFormElement.concept);
     const groupObservations = observations && observations.getValueWrapper();
     if (parentFormElement.repeatable) {
-      return groupObservations && groupObservations.getGroupObservationAtIndex(questionGroupIndex).getObservation(concept);
+      return groupObservations && groupObservations.size() > questionGroupIndex  && groupObservations.getGroupObservationAtIndex(questionGroupIndex).getObservation(concept);
     }
     return groupObservations && groupObservations.getObservation(concept);
   }
