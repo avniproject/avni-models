@@ -2,9 +2,7 @@ import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import Dashboard from "./Dashboard";
 
-
 class DashboardSection extends BaseEntity {
-
     static schema = {
         name: "DashboardSection",
         primaryKey: "uuid",
@@ -15,55 +13,55 @@ class DashboardSection extends BaseEntity {
             description: {type: "string", optional: true},
             viewType: "string",
             displayOrder: "double",
-            voided: {type: "bool", default: false},
+            voided: {type: "bool", default: false}
         },
     };
 
-   constructor(that = null) {
-    super(that);
-  }
+    constructor(that = null) {
+        super(that);
+    }
 
-  get dashboard() {
-      return this.toEntity("dashboard", Dashboard);
-  }
+    get dashboard() {
+        return this.toEntity("dashboard", Dashboard);
+    }
 
-  set dashboard(x) {
-      this.that.dashboard = this.fromObject(x);
-  }
+    set dashboard(x) {
+        this.that.dashboard = this.fromObject(x);
+    }
 
-  get name() {
-      return this.that.name;
-  }
+    get name() {
+        return this.that.name;
+    }
 
-  set name(x) {
-      this.that.name = x;
-  }
+    set name(x) {
+        this.that.name = x;
+    }
 
-  get description() {
-      return this.that.description;
-  }
+    get description() {
+        return this.that.description;
+    }
 
-  set description(x) {
-      this.that.description = x;
-  }
+    set description(x) {
+        this.that.description = x;
+    }
 
-  get viewType() {
-      return this.that.viewType;
-  }
+    get viewType() {
+        return this.that.viewType;
+    }
 
-  set viewType(x) {
-      this.that.viewType = x;
-  }
+    set viewType(x) {
+        this.that.viewType = x;
+    }
 
-  get displayOrder() {
-      return this.that.displayOrder;
-  }
+    get displayOrder() {
+        return this.that.displayOrder;
+    }
 
-  set displayOrder(x) {
-      this.that.displayOrder = x;
-  }
+    set displayOrder(x) {
+        this.that.displayOrder = x;
+    }
 
-  static viewTypeName = {
+    static viewTypeName = {
         Tile: 'Tile',
         List: 'List',
         Default: 'Default'

@@ -5,7 +5,6 @@ import ResourceUtil from "./utility/ResourceUtil";
 import DashboardSection from "./DashboardSection";
 
 class DashboardSectionCardMapping extends BaseEntity {
-
     static schema = {
         name: "DashboardSectionCardMapping",
         primaryKey: "uuid",
@@ -18,36 +17,35 @@ class DashboardSectionCardMapping extends BaseEntity {
         },
     };
 
+    constructor(that = null) {
+        super(that);
+    }
 
-   constructor(that = null) {
-    super(that);
-  }
+    get dashboardSection() {
+        return this.toEntity("dashboardSection", DashboardSection);
+    }
 
-  get dashboardSection() {
-      return this.toEntity("dashboardSection", DashboardSection);
-  }
+    set dashboardSection(x) {
+        this.that.dashboardSection = this.fromObject(x);
+    }
 
-  set dashboardSection(x) {
-      this.that.dashboardSection = this.fromObject(x);
-  }
+    get card() {
+        return this.toEntity("card", ReportCard);
+    }
 
-  get card() {
-      return this.toEntity("card", ReportCard);
-  }
+    set card(x) {
+        this.that.card = this.fromObject(x);
+    }
 
-  set card(x) {
-      this.that.card = this.fromObject(x);
-  }
+    get displayOrder() {
+        return this.that.displayOrder;
+    }
 
-  get displayOrder() {
-      return this.that.displayOrder;
-  }
+    set displayOrder(x) {
+        this.that.displayOrder = x;
+    }
 
-  set displayOrder(x) {
-      this.that.displayOrder = x;
-  }
-
-  static fromResource(resource, entityService) {
+    static fromResource(resource, entityService) {
         const dashboardSectionCardMapping = General.assignFields(resource, new DashboardSectionCardMapping(),
             ["uuid", "displayOrder", "voided"]);
         dashboardSectionCardMapping.dashboardSection = entityService.findByKey(
