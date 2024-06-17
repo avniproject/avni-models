@@ -124,6 +124,7 @@ import CustomDashboardCache from "./CustomDashboardCache";
 import AgeUtil from "./utility/AgeUtil";
 import DashboardCacheFilter from './application/DashboardCacheFilter';
 import {JSONStringify} from './utility/JsonStringify';
+import Locations from './location/Locations';
 
 export {
     AbstractEncounter,
@@ -256,5 +257,6 @@ export {
     EntityApprovalStatusMetaData,
     AgeUtil,
     DashboardCacheFilter,
-    JSONStringify
+    JSONStringify,
+    Locations
 };

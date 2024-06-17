@@ -35,6 +35,14 @@ class Dashboard extends BaseEntity {
         this.that.description = x;
     }
 
+    get filters() {
+        return this.toEntityList("filters", DashboardFilter);
+    }
+
+    set filters(x) {
+        this.that.filters = this.fromEntityList(x);
+    }
+
     static fromResource(resource) {
         return General.assignFields(resource, new Dashboard(),
             ["uuid", "name", "description", "voided"]);
