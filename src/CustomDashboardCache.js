@@ -2,6 +2,8 @@ import BaseEntity from "./BaseEntity";
 import Dashboard from "./Dashboard";
 import General from "./utility/General";
 
+const EmptyObjectHash = "99914b932bd37a50b983c5e7c90ae93b";
+
 class CustomDashboardCache extends BaseEntity {
     static schema = {
         name: "CustomDashboardCache",
@@ -11,7 +13,8 @@ class CustomDashboardCache extends BaseEntity {
             dashboard: "Dashboard",
             updatedAt: "date",
             selectedValuesJSON: "string",
-            filterApplied: "bool"
+            filterApplied: "bool",
+            dashboardFiltersHash: "string"
         }
     };
 
@@ -51,6 +54,14 @@ class CustomDashboardCache extends BaseEntity {
         this.that.dashboard = this.fromObject(x);
     }
 
+    get dashboardFiltersHash() {
+        return this.that.dashboardFiltersHash;
+    }
+
+    set dashboardFiltersHash(x) {
+        this.that.dashboardFiltersHash = x;
+    }
+
     static create(uuid, updatedAt, selectedValuesJSON = '{}', filterApplied) {
         const customDashboardCache = new CustomDashboardCache();
         customDashboardCache.uuid = uuid;
@@ -71,6 +82,7 @@ class CustomDashboardCache extends BaseEntity {
     reset() {
         this.filterApplied = false;
         this.selectedValuesJSON = JSON.stringify({});
+        this.dashboardFiltersHash = EmptyObjectHash;
         this.updatedAt = new Date();
     }
 
@@ -85,6 +97,7 @@ class CustomDashboardCache extends BaseEntity {
         customDashboardCache.updatedAt = this.updatedAt;
         customDashboardCache.selectedValuesJSON = this.selectedValuesJSON;
         customDashboardCache.filterApplied = this.filterApplied;
+        customDashboardCache.dashboardFiltersHash = this.dashboardFiltersHash;
         return customDashboardCache;
     }
 }

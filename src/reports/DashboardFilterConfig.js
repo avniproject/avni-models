@@ -2,6 +2,7 @@ import CustomFilter from "../CustomFilter";
 import Concept from "../Concept";
 import _ from 'lodash';
 import DateTimeUtil from "../utility/DateTimeUtil";
+import Range from "./Range";
 
 const widgetConceptDataTypes = [
     Concept.dataType.Date,
@@ -96,8 +97,10 @@ class DashboardFilterConfig {
             return this.observationBasedFilter.concept.datatype;
         } else if (this.isGroupSubjectTypeFilter()) {
             return Concept.dataType.Subject;
-        } else if (dateFilterTypes.includes(this.type)) {
+        } else if (dateFilterTypes.includes(this.type) && this.widget === CustomFilter.widget.Default) {
             return Concept.dataType.Date;
+        } else if (dateFilterTypes.includes(this.type) && this.widget === CustomFilter.widget.Range) {
+            return Range.DateRange;
         } else {
             return this.type;
         }
@@ -181,11 +184,8 @@ class DashboardFilterConfig {
 
     validate(filterValue) {
         const inputDataType = this.getInputDataType();
-        if ([Concept.dataType.Date, Concept.dataType.DateTime].includes(inputDataType) && this.widget === CustomFilter.widget.Range) {
+        if (Range.DateRange === inputDataType) {
             return DateTimeUtil.validateDateRange(filterValue.minValue, filterValue.maxValue);
-        }
-        if (Concept.dataType.Time === inputDataType && this.widget === CustomFilter.widget.Range) {
-            return DateTimeUtil.validateTimeRange(filterValue.minValue, filterValue.maxValue);
         }
         return [true];
     }

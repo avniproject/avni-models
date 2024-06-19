@@ -125,6 +125,7 @@ import AgeUtil from "./utility/AgeUtil";
 import DashboardCacheFilter from './application/DashboardCacheFilter';
 import {JSONStringify} from './utility/JsonStringify';
 import Locations from './location/Locations';
+import Range from './reports/Range';
 
 export {
     AbstractEncounter,
@@ -258,5 +259,6 @@ export {
     AgeUtil,
     DashboardCacheFilter,
     JSONStringify,
-    Locations
+    Locations,
+    Range
 };
