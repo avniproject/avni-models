@@ -3,6 +3,9 @@ import Concept from "../Concept";
 import _ from 'lodash';
 import DateTimeUtil from "../utility/DateTimeUtil";
 import Range from "./Range";
+import Gender from "../Gender";
+import AddressLevel from "../AddressLevel";
+import Individual from "../Individual";
 
 const widgetConceptDataTypes = [
     Concept.dataType.Date,
@@ -10,6 +13,11 @@ const widgetConceptDataTypes = [
     Concept.dataType.Time,
     Concept.dataType.Numeric
 ];
+
+const conceptEntityTypes = {
+    [Concept.dataType.Coded]: Concept.schema.name,
+    [Concept.dataType.Location]: AddressLevel.schema.name
+}
 
 export class ObservationBasedFilter {
     scope;
@@ -25,6 +33,16 @@ export class ObservationBasedFilter {
     isValid() {
         const {concept, programs, encounterTypes} = this;
         return !_.isNil(concept) && (!_.isEmpty(programs) || !_.isEmpty(encounterTypes) || this.scope === CustomFilter.scope.Registration);
+    }
+
+    isMultiEntityType() {
+        return [Concept.dataType.Coded, Concept.dataType.Location].includes(this.concept.datatype);
+    }
+
+    getEntityType() {
+        if (this.isMultiEntityType())
+            return conceptEntityTypes[this.concept.datatype];
+        throw new Error("Unsupported concept data type for getting entity type: " + this.concept.datatype);
     }
 
     toServerRequest() {
@@ -84,30 +102,117 @@ export class GroupSubjectTypeFilter {
 }
 
 const dateFilterTypes = [CustomFilter.type.RegistrationDate, CustomFilter.type.EnrolmentDate, CustomFilter.type.EncounterDate, CustomFilter.type.ProgramEncounterDate];
+const entityTypes = {
+    [CustomFilter.type.Gender]: Gender.schema.name,
+    [CustomFilter.type.Address]: AddressLevel.schema.name,
+    [CustomFilter.type.GroupSubject]: Individual.schema.name
+}
+
+function isDateDataType(dashboardFilterConfig) {
+    return dateFilterTypes.includes(dashboardFilterConfig.type) ||
+        (dashboardFilterConfig.isConceptTypeFilter() && dashboardFilterConfig.observationBasedFilter.concept.datatype === Concept.dataType.Date);
+}
+
+function isDateTimeDataType(dashboardFilterConfig) {
+    return dashboardFilterConfig.isConceptTypeFilter() && dashboardFilterConfig.observationBasedFilter.concept.datatype === Concept.dataType.DateTime;
+}
+
+function isTimeDataType(dashboardFilterConfig) {
+    return dashboardFilterConfig.isConceptTypeFilter() && dashboardFilterConfig.observationBasedFilter.concept.datatype === Concept.dataType.Time;
+}
 
 class DashboardFilterConfig {
+    static dataTypes = {
+        array: "array",
+        formMetaData: "formMetaData",
+    }
+
     subjectType;
     type;
     widget; //CustomFilter.widget
     groupSubjectTypeFilter;
     observationBasedFilter;
 
+    toDisplayText() {
+        let s = `Type: ${this.type}.`;
+        if (this.widget === CustomFilter.widget.Range) {
+            s += ` Widget: ${this.widget}.`;
+        }
+        if (this.isConceptTypeFilter()) {
+            s += ` Concept: ${this.observationBasedFilter.concept.name}. DataType: ${this.observationBasedFilter.concept.datatype}.`;
+        }
+        return s;
+    }
+
     getInputDataType() {
         if (this.isConceptTypeFilter()) {
             return this.observationBasedFilter.concept.datatype;
-        } else if (this.isGroupSubjectTypeFilter()) {
-            return Concept.dataType.Subject;
+        } else if ([CustomFilter.type.Gender, CustomFilter.type.Address, CustomFilter.type.GroupSubject].includes(this.type)) {
+            return DashboardFilterConfig.dataTypes.array;
         } else if (dateFilterTypes.includes(this.type) && this.widget === CustomFilter.widget.Default) {
             return Concept.dataType.Date;
         } else if (dateFilterTypes.includes(this.type) && this.widget === CustomFilter.widget.Range) {
             return Range.DateRange;
-        } else {
-            return this.type;
+        } else if (this.type === CustomFilter.type.SubjectType) {
+            return DashboardFilterConfig.dataTypes.formMetaData;
         }
+        throw new Error("Unsupported filter type: " + this.type);
+    }
+
+    isDateFilterType() {
+        return isDateDataType(this) && this.widget !== CustomFilter.widget.Range;
+    }
+
+    isDateRangeFilterType() {
+        return isDateDataType(this) && this.widget === CustomFilter.widget.Range;
+    }
+
+    isDateTimeFilterType() {
+        return isDateTimeDataType(this) && this.widget !== CustomFilter.widget.Range;
+    }
+
+    isDateTimeRangeFilterType() {
+        return isDateTimeDataType(this) && this.widget === CustomFilter.widget.Range;
+    }
+
+    isTimeFilterType() {
+        return isTimeDataType(this) && this.widget !== CustomFilter.widget.Range;
+    }
+
+    isTimeRangeFilterType() {
+        return isTimeDataType(this) && this.widget === CustomFilter.widget.Range;
+    }
+
+    isNumericRangeFilterType() {
+        return this.isConceptTypeFilter() && this.observationBasedFilter.concept.datatype === Concept.dataType.Numeric && this.widget === CustomFilter.widget.Range;
+    }
+
+    isDateLikeFilterType() {
+        return this.isDateFilterType() || this.isDateTimeFilterType() || this.isTimeFilterType();
+    }
+
+    isDateLikeRangeFilterType() {
+        return this.isDateRangeFilterType() || this.isDateTimeRangeFilterType() || this.isTimeRangeFilterType();
+    }
+
+    isMultiEntityType() {
+        return [CustomFilter.type.Gender, CustomFilter.type.Address, CustomFilter.type.GroupSubject].includes(this.type)
+            || (this.isConceptTypeFilter() && this.observationBasedFilter.isMultiEntityType());
+    }
+
+    getEntityType() {
+        if (this.isMultiEntityType()) {
+            return _.isNil(entityTypes[this.type]) ? this.observationBasedFilter.getEntityType() : entityTypes[this.type];
+        }
+        throw new Error("Unsupported filter type: " + this.type);
     }
 
     isConceptTypeFilter() {
         return this.type === CustomFilter.type.Concept;
+    }
+
+    isNonCodedObservationDataType() {
+        return this.isConceptTypeFilter() && this.observationBasedFilter.concept.datatype !== Concept.dataType.Coded;
     }
 
     isGroupSubjectTypeFilter() {
@@ -184,8 +289,11 @@ class DashboardFilterConfig {
 
     validate(filterValue) {
         const inputDataType = this.getInputDataType();
-        if (Range.DateRange === inputDataType) {
+        if (this.isDateRangeFilterType()) {
             return DateTimeUtil.validateDateRange(filterValue.minValue, filterValue.maxValue);
+        }
+        if (this.isTimeRangeFilterType()) {
+            return DateTimeUtil.validateTimeRange(filterValue.minValue, filterValue.maxValue);
         }
         return [true];
     }

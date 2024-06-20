@@ -3,10 +3,10 @@ import Form from '../../src/application/Form';
 import SubjectType from '../../src/SubjectType';
 
 class FormMappingFactory {
-  static createProgramEncounterTypeMapping({uuid, encounterTypeUUID, programUUID, subjectTypeUUID}) {
+  static createProgramEncounterTypeMapping({uuid, encounterTypeUUID, programUUID, subjectTypeUUID, formType = Form.formTypes.ProgramEncounter}) {
     const formMapping = new FormMapping();
     const form = new Form();
-    form.formType = Form.formTypes.ProgramEncounter;
+    form.formType = formType;
     formMapping.form = form;
     formMapping.uuid = uuid;
     formMapping.programUUID = programUUID;

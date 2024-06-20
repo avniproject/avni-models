@@ -99,6 +99,13 @@ class MetaDataService {
         );
     }
 
+    static getProgramEncounterFormMappingsForFormType(formMappings, formType) {
+        return _.filter(
+            formMappings,
+            formMapping => formMapping.formType === formType
+        );
+    }
+
     static getProgramsForSubjectType(allPrograms, subjectType, formMappings) {
         if (_.isNil(subjectType)) return allPrograms;
 
@@ -120,8 +127,8 @@ class MetaDataService {
     }
 
     static getEncounterTypesForPrograms(allEncounterTypes, programs, formMappings) {
-        const programEncounterTypeMappings = MetaDataService.getProgramEncounterFormMappings(formMappings);
-        const encounterTypeMappingsForPrograms = _.intersectionWith(programEncounterTypeMappings, programs, (etMapping, program) => etMapping.programUUID === program.uuid);
+        const programEncounterTypeMappings = MetaDataService.getProgramEncounterFormMappingsForFormType(formMappings, Form.formTypes.ProgramEncounter);
+        const encounterTypeMappingsForPrograms = _.filter(programEncounterTypeMappings, (formMapping) => _.some(programs, (program) => formMapping.programUUID === program.uuid));
         return encounterTypeMappingsForPrograms.map((x) => _.find(allEncounterTypes, (et) => et.uuid === x.encounterTypeUUID));
     }
 

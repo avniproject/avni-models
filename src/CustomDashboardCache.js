@@ -2,8 +2,6 @@ import BaseEntity from "./BaseEntity";
 import Dashboard from "./Dashboard";
 import General from "./utility/General";
 
-const EmptyObjectHash = "99914b932bd37a50b983c5e7c90ae93b";
-
 class CustomDashboardCache extends BaseEntity {
     static schema = {
         name: "CustomDashboardCache",
@@ -71,18 +69,18 @@ class CustomDashboardCache extends BaseEntity {
         return customDashboardCache;
     }
 
-    static newInstance(dashboard) {
+    static newInstance(dashboard, dashboardFiltersHash) {
         const customDashboardCache = new CustomDashboardCache();
         customDashboardCache.uuid = General.randomUUID();
         customDashboardCache.dashboard = dashboard;
-        customDashboardCache.reset();
+        customDashboardCache.reset(dashboardFiltersHash);
         return customDashboardCache;
     }
 
-    reset() {
+    reset(dashboardFiltersHash) {
         this.filterApplied = false;
         this.selectedValuesJSON = JSON.stringify({});
-        this.dashboardFiltersHash = EmptyObjectHash;
+        this.dashboardFiltersHash = dashboardFiltersHash;
         this.updatedAt = new Date();
     }
 
