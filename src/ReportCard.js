@@ -23,7 +23,8 @@ class ReportCard extends BaseEntity {
             countOfCards: {type: "int", default: 1, optional: true}, //Used only by nested ReportCards
             standardReportCardInputSubjectTypes: {type: "list", objectType: "SubjectType"},
             standardReportCardInputPrograms: {type: "list", objectType: "Program"},
-            standardReportCardInputEncounterTypes: {type: "list", objectType: "EncounterType"}
+            standardReportCardInputEncounterTypes: {type: "list", objectType: "EncounterType"},
+            standardReportCardInputRecentDurationJSON: {type: "string", optional: true}
         },
     };
 
@@ -32,6 +33,7 @@ class ReportCard extends BaseEntity {
         reportCard.standardReportCardInputSubjectTypes = [];
         reportCard.standardReportCardInputPrograms = [];
         reportCard.standardReportCardInputEncounterTypes = [];
+        reportCard.standardReportCardInputRecentDuration = null;
         return reportCard;
     }
 
@@ -132,6 +134,14 @@ class ReportCard extends BaseEntity {
         this.that.standardReportCardInputEncounterTypes = this.fromEntityList(x);
     }
 
+    get standardReportCardInputRecentDurationJSON() {
+        return JSON.parse(this.that.standardReportCardInputRecentDurationJSON);
+    }
+
+    set standardReportCardInputRecentDurationJSON(x) {
+        this.that.standardReportCardInputRecentDurationJSON = x;
+    }
+
     /**
      * Helper method used to generate unique key value for Nested Report Cards using UUID and Index of the Report Card.
      * The Nested Report Card's query responses would be mapped to the corresponding Dashboard Report cards using the UUID and Index.
@@ -172,6 +182,7 @@ class ReportCard extends BaseEntity {
         resource.standardReportCardInputEncounterTypes.forEach(uuid => {
             reportCard.standardReportCardInputEncounterTypes.push(entityService.findByUUID(uuid, EncounterType.schema.name));
         });
+        reportCard.standardReportCardInputRecentDurationJSON = resource.standardReportCardInputRecentDuration;
 
         return reportCard;
     }
@@ -186,6 +197,10 @@ class ReportCard extends BaseEntity {
 
     isSubjectTypeFilterSupported() {
         return this.isStandardReportType() && this.standardReportCardType.isSubjectTypeFilterSupported();
+    }
+
+    isRecentType() {
+        return this.isStandardReportType() && this.standardReportCardType.isRecentType();
     }
 }
 

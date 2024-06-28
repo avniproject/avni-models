@@ -42,15 +42,21 @@ class StandardReportCardType extends BaseEntity {
         Rejected: "Rejected",
         ScheduledVisits: "Scheduled visits",
         OverdueVisits: "Overdue visits",
-        LatestRegistrations: "Last 24 hours registrations",
-        LatestEnrolments: "Last 24 hours enrolments",
-        LatestVisits: "Last 24 hours visits",
+        RecentRegistrations: "Recent registrations",
+        RecentEnrolments: "Recent enrolments",
+        RecentVisits: "Recent visits",
         Total: "Total",
         Comments: "Comments",
         CallTasks: "Call tasks",
         OpenSubjectTasks: "Open subject tasks",
         DueChecklist: "Due checklist",
     };
+
+    static recentCardDurationUnits = [
+        "days",
+        "weeks",
+        "months"
+    ]
 
     get iconName() {
         const typeIcon = {
@@ -94,7 +100,7 @@ class StandardReportCardType extends BaseEntity {
     }
 
     defaultTypes() {
-        return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.LatestRegistrations, StandardReportCardType.type.LatestEnrolments, StandardReportCardType.type.LatestVisits, StandardReportCardType.type.Total]
+        return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.RecentRegistrations, StandardReportCardType.type.RecentEnrolments, StandardReportCardType.type.RecentVisits, StandardReportCardType.type.Total]
     }
 
     isApprovalType() {
@@ -131,7 +137,21 @@ class StandardReportCardType extends BaseEntity {
     }
 
     isSubjectTypeFilterSupported() {
-        return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits].includes(this.name);
+        return [
+            StandardReportCardType.type.ScheduledVisits,
+            StandardReportCardType.type.OverdueVisits,
+            StandardReportCardType.type.RecentRegistrations,
+            StandardReportCardType.type.RecentEnrolments,
+            StandardReportCardType.type.RecentVisits,
+        ].includes(this.name);
+    }
+
+    isRecentType() {
+        return [
+            StandardReportCardType.type.RecentRegistrations,
+            StandardReportCardType.type.RecentEnrolments,
+            StandardReportCardType.type.RecentVisits,
+        ].includes(this.name);
     }
 }
 
