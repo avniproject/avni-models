@@ -101,7 +101,7 @@ export class GroupSubjectTypeFilter {
     }
 }
 
-const dateFilterTypes = [CustomFilter.type.RegistrationDate, CustomFilter.type.EnrolmentDate, CustomFilter.type.EncounterDate, CustomFilter.type.ProgramEncounterDate];
+const dateFilterTypes = [CustomFilter.type.RegistrationDate, CustomFilter.type.EnrolmentDate, CustomFilter.type.EncounterDate, CustomFilter.type.ProgramEncounterDate, CustomFilter.type.AsOnDate];
 const entityTypes = {
     [CustomFilter.type.Gender]: Gender.schema.name,
     [CustomFilter.type.Address]: AddressLevel.schema.name,
@@ -135,7 +135,7 @@ class DashboardFilterConfig {
 
     toDisplayText() {
         let s = `Type: ${this.type}.`;
-        if (this.widget === CustomFilter.widget.Range) {
+        if (this.isRangeWidget()) {
             s += ` Widget: ${this.widget}.`;
         }
         if (this.isConceptTypeFilter()) {
@@ -144,14 +144,18 @@ class DashboardFilterConfig {
         return s;
     }
 
+    isRangeWidget() {
+        return this.widget === CustomFilter.widget.Range;
+    }
+
     getInputDataType() {
         if (this.isConceptTypeFilter()) {
             return this.observationBasedFilter.concept.datatype;
         } else if ([CustomFilter.type.Gender, CustomFilter.type.Address, CustomFilter.type.GroupSubject].includes(this.type)) {
             return DashboardFilterConfig.dataTypes.array;
-        } else if (dateFilterTypes.includes(this.type) && this.widget === CustomFilter.widget.Default) {
+        } else if (dateFilterTypes.includes(this.type) && !this.isRangeWidget()) {
             return Concept.dataType.Date;
-        } else if (dateFilterTypes.includes(this.type) && this.widget === CustomFilter.widget.Range) {
+        } else if (dateFilterTypes.includes(this.type) && this.isRangeWidget()) {
             return Range.DateRange;
         } else if (this.type === CustomFilter.type.SubjectType) {
             return DashboardFilterConfig.dataTypes.formMetaData;
@@ -160,31 +164,31 @@ class DashboardFilterConfig {
     }
 
     isDateFilterType() {
-        return isDateDataType(this) && this.widget !== CustomFilter.widget.Range;
+        return isDateDataType(this) && !this.isRangeWidget();
     }
 
     isDateRangeFilterType() {
-        return isDateDataType(this) && this.widget === CustomFilter.widget.Range;
+        return isDateDataType(this) && this.isRangeWidget();
     }
 
     isDateTimeFilterType() {
-        return isDateTimeDataType(this) && this.widget !== CustomFilter.widget.Range;
+        return isDateTimeDataType(this) && !this.isRangeWidget();
     }
 
     isDateTimeRangeFilterType() {
-        return isDateTimeDataType(this) && this.widget === CustomFilter.widget.Range;
+        return isDateTimeDataType(this) && this.isRangeWidget();
     }
 
     isTimeFilterType() {
-        return isTimeDataType(this) && this.widget !== CustomFilter.widget.Range;
+        return isTimeDataType(this) && !this.isRangeWidget();
     }
 
     isTimeRangeFilterType() {
-        return isTimeDataType(this) && this.widget === CustomFilter.widget.Range;
+        return isTimeDataType(this) && this.isRangeWidget();
     }
 
     isNumericRangeFilterType() {
-        return this.isConceptTypeFilter() && this.observationBasedFilter.concept.datatype === Concept.dataType.Numeric && this.widget === CustomFilter.widget.Range;
+        return this.isConceptTypeFilter() && this.observationBasedFilter.concept.datatype === Concept.dataType.Numeric && this.isRangeWidget();
     }
 
     isDateLikeFilterType() {
@@ -219,8 +223,8 @@ class DashboardFilterConfig {
         return this.type === CustomFilter.type.GroupSubject;
     }
 
-    isSubjectTypeFilter() {
-        return this.type === CustomFilter.type.SubjectType;
+    requiresSpecificSubjectType() {
+        return ![CustomFilter.type.SubjectType, CustomFilter.type.AsOnDate].includes(this.type);
     }
 
     isValid() {
@@ -288,7 +292,6 @@ class DashboardFilterConfig {
     }
 
     validate(filterValue) {
-        const inputDataType = this.getInputDataType();
         if (this.isDateRangeFilterType()) {
             return DateTimeUtil.validateDateRange(filterValue.minValue, filterValue.maxValue);
         }

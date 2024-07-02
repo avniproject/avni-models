@@ -11,7 +11,8 @@ class CustomFilter {
         Address: "Address",
         Concept: "Concept",
         GroupSubject: "GroupSubject",
-        SubjectType: "SubjectType"
+        SubjectType: "SubjectType",
+        AsOnDate: "AsOnDate",
     };
 
     static getDashboardFilterTypes() {
