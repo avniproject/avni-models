@@ -5,14 +5,17 @@ import General from "./utility/General";
 import Displayable from "./Displayable";
 import PersistedObject from "./PersistedObject";
 
-const clone = function (concept, valueJSON) {
+const clone = function (concept, valueJSON, abnormal) {
     const observation = new Observation();
     observation.concept = concept;
     observation.valueJSON = valueJSON;
+    observation.abnormal = abnormal;
     return observation;
 }
 
 class Observation extends PersistedObject {
+    abnormal;
+
     static schema = {
         name: "Observation",
         properties: {
@@ -46,10 +49,11 @@ class Observation extends PersistedObject {
         this.that.valueJSON = x;
     }
 
-    static create(concept, value) {
+    static create(concept, value, abnormal = false) {
         const observation = new Observation();
         observation.concept = concept;
         observation.valueJSON = value;
+        observation.abnormal = abnormal;
         return observation;
     }
 
