@@ -1,5 +1,6 @@
 import General from "./utility/General";
 import BaseEntity from "./BaseEntity";
+import _ from "lodash";
 
 class MediaQueue extends BaseEntity {
   static schema = {
@@ -69,7 +70,7 @@ class MediaQueue extends BaseEntity {
   }
 
   static create(entityUUID, entityName, fileName, type, entityTargetField, conceptUUID, uuid = General.randomUUID()) {
-    var mediaQueue = new MediaQueue();
+        const mediaQueue = new MediaQueue();
     mediaQueue.entityUUID = entityUUID;
     mediaQueue.uuid = uuid;
     mediaQueue.entityName = entityName;
@@ -91,6 +92,24 @@ class MediaQueue extends BaseEntity {
     mediaQueueItem.conceptUUID = this.conceptUUID;
     return mediaQueueItem;
   }
+
+    getDisplayText() {
+        // generate safe to string
+        let str = "";
+        if (!_.isNil(this.entityName))
+            str += "EntityName: " + this.entityName + ", ";
+        if (!_.isNil(this.entityUUID))
+            str += "EntityUUID: " + this.entityUUID + ", ";
+        if (!_.isNil(this.entityTargetField))
+            str += "EntityTargetField: " + this.entityTargetField + ", ";
+        if (!_.isNil(this.fileName))
+            str += "FileName: " + this.fileName + ", ";
+        if (!_.isNil(this.type))
+            str += "Type: " + this.type + ", ";
+        if (!_.isNil(this.conceptUUID))
+            str += "ConceptUUID: " + this.conceptUUID;
+        return str;
+    }
 }
 
 export default MediaQueue;
