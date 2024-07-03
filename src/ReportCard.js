@@ -6,6 +6,7 @@ import _ from 'lodash';
 import SubjectType from "./SubjectType";
 import Program from "./Program";
 import EncounterType from "./EncounterType";
+import Duration from "./Duration";
 
 class ReportCard extends BaseEntity {
     static schema = {
@@ -33,7 +34,6 @@ class ReportCard extends BaseEntity {
         reportCard.standardReportCardInputSubjectTypes = [];
         reportCard.standardReportCardInputPrograms = [];
         reportCard.standardReportCardInputEncounterTypes = [];
-        reportCard.standardReportCardInputRecentDuration = null;
         return reportCard;
     }
 
@@ -134,11 +134,12 @@ class ReportCard extends BaseEntity {
         this.that.standardReportCardInputEncounterTypes = this.fromEntityList(x);
     }
 
-    get standardReportCardInputRecentDurationJSON() {
-        return JSON.parse(this.that.standardReportCardInputRecentDurationJSON);
+    getStandardReportCardInputRecentDuration() {
+        const duration = JSON.parse(this.that.standardReportCardInputRecentDurationJSON);
+        return new Duration(duration.value, duration.unit);
     }
 
-    set standardReportCardInputRecentDurationJSON(x) {
+    setStandardReportCardInputRecentDurationJSON(x) {
         this.that.standardReportCardInputRecentDurationJSON = x;
     }
 
@@ -182,7 +183,7 @@ class ReportCard extends BaseEntity {
         resource.standardReportCardInputEncounterTypes.forEach(uuid => {
             reportCard.standardReportCardInputEncounterTypes.push(entityService.findByUUID(uuid, EncounterType.schema.name));
         });
-        reportCard.standardReportCardInputRecentDurationJSON = resource.standardReportCardInputRecentDuration;
+        reportCard.setStandardReportCardInputRecentDurationJSON(resource.standardReportCardInputRecentDuration);
 
         return reportCard;
     }

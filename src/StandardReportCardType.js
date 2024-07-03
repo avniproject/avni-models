@@ -3,6 +3,7 @@ import General from "./utility/General";
 import TaskType from "./task/TaskType";
 import ApprovalStatus from "./ApprovalStatus";
 import _ from "lodash";
+import Duration from "./Duration";
 
 class StandardReportCardType extends BaseEntity {
     static schema = {
@@ -53,9 +54,9 @@ class StandardReportCardType extends BaseEntity {
     };
 
     static recentCardDurationUnits = [
-        "days",
-        "weeks",
-        "months"
+        Duration.Day,
+        Duration.Week,
+        Duration.Month
     ]
 
     get iconName() {
