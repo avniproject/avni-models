@@ -246,7 +246,12 @@ class FormElementGroup extends BaseEntity {
   }
 
   nonVoidedFormElements() {
-    return _.filter(this.formElements, (formElement) => !formElement.voided);
+    return _.filter(this.formElements, (formElement) => {
+        let parentFormElement;
+        if (!_.isNil(formElement.groupUuid))
+            parentFormElement = _.find(this.formElements, (fe) => fe.uuid === formElement.groupUuid);
+        return !formElement.voided && (_.isNil(parentFormElement) || !parentFormElement.voided);
+    });
   }
 
   getFormElements() {
