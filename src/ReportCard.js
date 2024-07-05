@@ -203,6 +203,22 @@ class ReportCard extends BaseEntity {
     isRecentType() {
         return this.isStandardReportType() && this.standardReportCardType.isRecentType();
     }
+
+    hasInputForSubject() {
+        return this.standardReportCardInputSubjectTypes.length > 0;
+    }
+
+    hasInputForEnrolment() {
+        return this.standardReportCardInputPrograms.length > 0;
+    }
+
+    hasInputForProgramEncounter() {
+        return this.hasInputForEnrolment() && this.standardReportCardInputEncounterTypes.length > 0;
+    }
+
+    hasInputForGeneralEncounter() {
+        return this.standardReportCardInputEncounterTypes.length > 0;
+    }
 }
 
 export default ReportCard;

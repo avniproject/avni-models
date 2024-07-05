@@ -50,7 +50,7 @@ class StandardReportCardType extends BaseEntity {
         Comments: "Comments",
         CallTasks: "Call tasks",
         OpenSubjectTasks: "Open subject tasks",
-        DueChecklist: "Due checklist",
+        DueChecklist: "Due checklist"
     };
 
     static recentCardDurationUnits = [
@@ -144,6 +144,7 @@ class StandardReportCardType extends BaseEntity {
             StandardReportCardType.type.RecentRegistrations,
             StandardReportCardType.type.RecentEnrolments,
             StandardReportCardType.type.RecentVisits,
+            StandardReportCardType.type.Total,
         ].includes(this.name);
     }
 
