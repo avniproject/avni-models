@@ -126,6 +126,8 @@ import DashboardCacheFilter from './application/DashboardCacheFilter';
 import {JSONStringify} from './utility/JsonStringify';
 import Locations from './location/Locations';
 import Range from './reports/Range';
+import ReportCardResult from "./reports/ReportCardResult";
+import NestedReportCardResult from "./reports/NestedReportCardResult";
 
 export {
     AbstractEncounter,
@@ -260,5 +262,7 @@ export {
     DashboardCacheFilter,
     JSONStringify,
     Locations,
-    Range
+    Range,
+    ReportCardResult,
+    NestedReportCardResult
 };

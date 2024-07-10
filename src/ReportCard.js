@@ -7,6 +7,7 @@ import SubjectType from "./SubjectType";
 import Program from "./Program";
 import EncounterType from "./EncounterType";
 import Duration from "./Duration";
+import NestedReportCardResult from "./reports/NestedReportCardResult";
 
 class ReportCard extends BaseEntity {
     static schema = {
@@ -218,6 +219,14 @@ class ReportCard extends BaseEntity {
 
     hasInputForGeneralEncounter() {
         return this.standardReportCardInputEncounterTypes.length > 0;
+    }
+
+    createNestedErrorResults(primaryValue, secondaryValue) {
+        const reportCard = this;
+        return Array(this.card.countOfCards).map((index) => {
+            const itemKey = reportCard.getCardId(index);
+            return NestedReportCardResult.create(primaryValue, secondaryValue, false, true, itemKey);
+        });
     }
 }
 

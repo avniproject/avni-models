@@ -1,6 +1,9 @@
 import BaseEntity from "./BaseEntity";
 import Dashboard from "./Dashboard";
 import General from "./utility/General";
+import ReportCardResult from "./reports/ReportCardResult";
+import NestedReportCardResult from "./reports/NestedReportCardResult";
+import _ from 'lodash';
 
 class CustomDashboardCache extends BaseEntity {
     static schema = {
@@ -9,10 +12,12 @@ class CustomDashboardCache extends BaseEntity {
         properties: {
             uuid: "string",
             dashboard: "Dashboard",
-            updatedAt: "date",
+            updatedAt: {type: "date", optional: true},
             selectedValuesJSON: "string",
             filterApplied: "bool",
-            dashboardFiltersHash: "string"
+            dashboardFiltersHash: "string",
+            reportCardResults: {type: "list", objectType: "ReportCardResult"},
+            nestedReportCardResults: {type: "list", objectType: "NestedReportCardResult"}
         }
     };
 
@@ -60,13 +65,20 @@ class CustomDashboardCache extends BaseEntity {
         this.that.dashboardFiltersHash = x;
     }
 
-    static create(uuid, updatedAt, selectedValuesJSON = '{}', filterApplied) {
-        const customDashboardCache = new CustomDashboardCache();
-        customDashboardCache.uuid = uuid;
-        customDashboardCache.updatedAt = updatedAt;
-        customDashboardCache.selectedValuesJSON = selectedValuesJSON;
-        customDashboardCache.filterApplied = filterApplied;
-        return customDashboardCache;
+    get reportCardResults() {
+        return this.toEntityList("reportCardResults", ReportCardResult);
+    }
+
+    set reportCardResults(x) {
+        this.that.reportCardResults = this.fromEntityList(x);
+    }
+
+    get nestedReportCardResults() {
+        return this.toEntityList("nestedReportCardResults", NestedReportCardResult);
+    }
+
+    set nestedReportCardResults(x) {
+        this.that.nestedReportCardResults = this.fromEntityList(x);
     }
 
     static newInstance(dashboard, dashboardFiltersHash) {
@@ -81,11 +93,34 @@ class CustomDashboardCache extends BaseEntity {
         this.filterApplied = false;
         this.selectedValuesJSON = JSON.stringify({});
         this.dashboardFiltersHash = dashboardFiltersHash;
-        this.updatedAt = new Date();
+        this.updatedAt = null;
+        this.reportCardResults = [];
+        this.nestedReportCardResults = [];
     }
 
     getSelectedValues() {
         return JSON.parse(this.selectedValuesJSON);
+    }
+
+    getReportCardResult(reportCard) {
+        const result = this.reportCardResults.find(reportCardResult => reportCardResult.reportCard === reportCard.uuid && reportCardResult.dashboard === this.dashboard.uuid);
+        if (_.isNil(result)) {
+            return result;
+        } else {
+            result.clickable = true;
+            result.hasErrorMsg = false;
+            return result;
+        }
+    }
+
+    getNestedReportCardResults(reportCard) {
+        return this.nestedReportCardResults
+            .filter(nestedReportCardResult => nestedReportCardResult.reportCard === reportCard.uuid && nestedReportCardResult.dashboard === this.dashboard.uuid)
+            .map((x) => {
+                x.clickable = true;
+                x.hasErrorMsg = false;
+                return x;
+            });
     }
 
     clone() {
@@ -96,7 +131,21 @@ class CustomDashboardCache extends BaseEntity {
         customDashboardCache.selectedValuesJSON = this.selectedValuesJSON;
         customDashboardCache.filterApplied = this.filterApplied;
         customDashboardCache.dashboardFiltersHash = this.dashboardFiltersHash;
+        customDashboardCache.reportCardResults = this.reportCardResults;
+        customDashboardCache.nestedReportCardResults = this.nestedReportCardResults;
         return customDashboardCache;
+    }
+
+    matchNestedReportCardResult(nestedReportCardResult) {
+        return this.nestedReportCardResults.find(x => x.reportCard === nestedReportCardResult.reportCard && x.itemKey === nestedReportCardResult.itemKey && x.dashboard === this.dashboard.uuid);
+    }
+
+    matchReportCardResult(reportCardResult) {
+        return this.reportCardResults.find(x => x.reportCard === reportCardResult.reportCard && x.dashboard === this.dashboard.uuid);
+    }
+
+    isCachePopulated() {
+        return _.isNil(this.updatedAt);
     }
 }
 
