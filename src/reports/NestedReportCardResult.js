@@ -1,5 +1,6 @@
 import _ from "lodash";
 import BaseEntity from "../BaseEntity";
+import General from "../utility/General";
 
 class NestedReportCardResult extends BaseEntity {
     // transient state
@@ -29,7 +30,7 @@ class NestedReportCardResult extends BaseEntity {
 
     static create(primaryValue, secondaryValue, clickable, hasErrorMsg, itemKey) {
         const nestedReportCardResult = new NestedReportCardResult();
-        nestedReportCardResult.uuid = BaseEntity.randomUUID();
+        nestedReportCardResult.uuid = General.randomUUID();
         nestedReportCardResult.primaryValue = _.toString(primaryValue);
         nestedReportCardResult.secondaryValue = _.toString(secondaryValue);
         nestedReportCardResult.clickable = clickable;
