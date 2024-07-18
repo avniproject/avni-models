@@ -63,6 +63,14 @@ class Dashboard extends BaseEntity {
         if (childEntityClass === DashboardFilter) BaseEntity.addNewChild(child, dashboard.filters);
         return dashboard;
     }
+
+    getFilterOfType(filterType) {
+        return this.filters.find(filter => filter.filterConfig.type === filterType);
+    }
+
+    getFilter(filterUUID) {
+        return this.filters.find(filter => filter.uuid === filterUUID);
+    }
 }
 
 export default Dashboard;
