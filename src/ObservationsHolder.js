@@ -400,6 +400,8 @@ class ObservationsHolder {
       if (valueWrapper.isMultipleCoded) {
         const answers = valueWrapper.getValue();
         const oldValueIndex = _.indexOf(answers, oldValue);
+        if (oldValueIndex < 0) return; // due to race condition the old value might have been removed
+
         const newAnswers = _.reject(answers, answer => answer === oldValue);
         newAnswers.splice(oldValueIndex, 0, newValue);
         observation.valueJSON = new MultipleCodedValues(newAnswers);
