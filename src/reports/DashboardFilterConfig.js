@@ -227,6 +227,10 @@ class DashboardFilterConfig {
         return ![CustomFilter.type.SubjectType, CustomFilter.type.AsOnDate].includes(this.type);
     }
 
+    isAsOnDateFilter() {
+        return this.type === CustomFilter.type.AsOnDate;
+    }
+
     isValid() {
         const valid = !(_.isNil(this.type));
         if (!valid) return valid;
