@@ -156,6 +156,8 @@ class ChecklistItemDetail extends BaseEntity {
       } else {
         checklistItemDetail.dependentOn = createdLeadChecklistItemDetail;
       }
+    } else {
+      checklistItemDetail.dependentOn = null;
     }
     return checklistItemDetail;
   }
