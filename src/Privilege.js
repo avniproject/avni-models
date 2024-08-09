@@ -102,6 +102,7 @@ class Privilege extends BaseEntity {
     EditVideo: "EditVideo",
     EnrolSubject: "EnrolSubject",
     ExitEnrolment: "ExitEnrolment",
+    MultiTxEntityTypeUpdate: "MultiTxEntityTypeUpdate",
     PerformVisit: "PerformVisit",
     PhoneVerification: "PhoneVerification",
     RegisterSubject: "RegisterSubject",
@@ -127,7 +128,8 @@ class Privilege extends BaseEntity {
     EditChecklistConfiguration: "EditChecklistConfiguration",
     DownloadBundle: "DownloadBundle",
     EditTaskType: "EditTaskType",
-    ViewEditEntitiesOnDataEntryApp: "ViewEditEntitiesOnDataEntryApp"
+    ViewEditEntitiesOnDataEntryApp: "ViewEditEntitiesOnDataEntryApp",
+    DeleteOrganisationConfiguration: "DeleteOrganisationConfiguration",
   }
 
   static privilegeEntityType = {
