@@ -223,7 +223,7 @@ class ReportCard extends BaseEntity {
 
     createNestedErrorResults(primaryValue, secondaryValue) {
         const reportCard = this;
-        return Array(this.card.countOfCards).map((index) => {
+        return Array.from(Array(this.countOfCards).keys()).map(index => {
             const itemKey = reportCard.getCardId(index);
             return NestedReportCardResult.create(primaryValue, secondaryValue, false, true, itemKey);
         });
