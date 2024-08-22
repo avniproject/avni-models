@@ -150,10 +150,10 @@ class DashboardFilterConfig {
 
     getInputDataType() {
         if (this.isConceptTypeFilter()) {
-            if(!this.isDateLikeRangeFilterType()) {
-                return this.observationBasedFilter.concept.datatype;
-            } else {
+            if(this.isRangeWidget()) {
                 return Range.DateRange;
+            } else {
+                return this.observationBasedFilter.concept.datatype;
             }
         } else if ([CustomFilter.type.Gender, CustomFilter.type.Address, CustomFilter.type.GroupSubject].includes(this.type)) {
             return DashboardFilterConfig.dataTypes.array;
