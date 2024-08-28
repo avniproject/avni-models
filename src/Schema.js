@@ -256,7 +256,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 196,
+        schemaVersion: 197,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -920,6 +920,19 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 191) {
                 newDB.delete(newDB.objects("CustomDashboardCache"));
+            }
+            if (oldDB.schemaVersion < 197) {
+                const oldObjects = oldDB.objects(FormElementGroup.schema.name);
+                const newObjects = newDB.objects(FormElementGroup.schema.name);
+                // loop through all objects and set the name property in the
+                // new schema to display property
+                for (const objectIndex in oldObjects) {
+                    const oldObject = oldObjects[objectIndex];
+                    const newObject = newObjects[objectIndex];
+                    if(!_.isEmpty(oldObject.display) && oldObject.name !== oldObject.display) {
+                        newObject.name = oldObject.display;
+                    }
+                }
             }
         },
     };

@@ -16,7 +16,6 @@ class FormElementGroup extends BaseEntity {
       uuid: "string",
       name: "string",
       displayOrder: "double",
-      display: { type: "string", optional: true },
       formElements: { type: "list", objectType: "FormElement" },
       form: "Form",
       voided: { type: "bool", default: false },
@@ -47,14 +46,6 @@ class FormElementGroup extends BaseEntity {
 
   set displayOrder(x) {
       this.that.displayOrder = x;
-  }
-
-  get display() {
-      return this.that.display;
-  }
-
-  set display(x) {
-      this.that.display = x;
   }
 
   get formElements() {
@@ -126,7 +117,6 @@ class FormElementGroup extends BaseEntity {
       "uuid",
       "name",
       "displayOrder",
-      "display",
       "voided",
       "rule",
       "startTime",
@@ -263,7 +253,7 @@ class FormElementGroup extends BaseEntity {
   }
 
   get translatedFieldValue() {
-    return this.display;
+    return this.name;
   }
 
   removeFormElement(formElementName) {
@@ -306,7 +296,6 @@ class FormElementGroup extends BaseEntity {
       uuid: this.uuid,
       name: this.name,
       displayOrder: this.displayOrder,
-      display: this.display,
       formElements: this.formElements,
       formUUID: this.form.uuid,
       startTime: this.startTime,
