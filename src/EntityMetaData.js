@@ -313,7 +313,11 @@ const dashboardFilter = refData(DashboardFilter, {
     syncWeight: 0,
     apiVersion: "v2"
 });
-const dashboardSection = refData(DashboardSection, {res: "dashboardSection", syncWeight: 0, apiVersion: "v2"});
+const dashboardSection = refData(DashboardSection, {
+    res: "dashboardSection",
+    syncWeight: 0,
+    apiVersion: "v2"
+});
 const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, {
     res: "dashboardSectionCardMapping",
     syncWeight: 0,
@@ -321,11 +325,14 @@ const dashboardSectionCardMapping = refData(DashboardSectionCardMapping, {
 });
 const standardReportCardType = refData(StandardReportCardType, {
     res: "standardReportCardType",
+    syncWeight: 0
+});
+const approvalStatus = refData(ApprovalStatus, {res: "approvalStatus", syncWeight: 0});
+const groupDashboard = refData(GroupDashboard, {
+    res: "groupDashboard",
     syncWeight: 0,
     apiVersion: "v2"
 });
-const approvalStatus = refData(ApprovalStatus, {res: "approvalStatus", syncWeight: 0});
-const groupDashboard = refData(GroupDashboard, {res: "groupDashboard", syncWeight: 0});
 
 export const EntityApprovalStatusMetaData = txData(EntityApprovalStatus, {
     res: "entityApprovalStatus",
