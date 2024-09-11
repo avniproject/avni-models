@@ -921,6 +921,20 @@ function createRealmConfig() {
             if (oldDB.schemaVersion < 191) {
                 newDB.delete(newDB.objects("CustomDashboardCache"));
             }
+            if (oldDB.schemaVersion < 197) {
+                _.forEach(newDB.objects("StandardReportCardType"), (standardReportCardType) => {
+                    if (standardReportCardType.name === 'Last 24 hours registrations') {
+                        standardReportCardType.description = 'Recent registrations';
+                    }
+                    if (standardReportCardType.name === 'Last 24 hours enrolments') {
+                        standardReportCardType.description = 'Recent enrolments';
+                    }
+                    if (standardReportCardType.name === 'Last 24 hours visits') {
+                        standardReportCardType.description = 'Recent visits';
+                    }
+                    standardReportCardType.type = _.replace(_.startCase(standardReportCardType.description), new RegExp(' ', 'g'), '');
+                });
+            }
         },
     };
 }

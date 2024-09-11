@@ -13,7 +13,7 @@ class StandardReportCardType extends BaseEntity {
             uuid: "string",
             name: "string",
             description: {type: "string", optional: true},
-            type: {type: "string", optional: true},
+            type: {type: "string"},
             voided: {type: "bool", default: false},
         },
     };
