@@ -934,6 +934,10 @@ function createRealmConfig() {
                     }
                     standardReportCardType.type = _.replace(_.startCase(standardReportCardType.description), new RegExp(' ', 'g'), '');
                 });
+
+                //Reset MyDashboard cache because shape of filterJSON in cache has changed
+                const dashboardCache = newDB.objects("DashboardCache");
+                newDB.delete(dashboardCache);
             }
         },
     };
