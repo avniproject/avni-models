@@ -256,7 +256,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 197,
+        schemaVersion: 198,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -922,6 +922,24 @@ function createRealmConfig() {
                 newDB.delete(newDB.objects("CustomDashboardCache"));
             }
             if (oldDB.schemaVersion < 197) {
+                _.forEach(newDB.objects("StandardReportCardType"), (standardReportCardType) => {
+                    if (standardReportCardType.name === 'Last 24 hours registrations') {
+                        standardReportCardType.description = 'Recent registrations';
+                    }
+                    if (standardReportCardType.name === 'Last 24 hours enrolments') {
+                        standardReportCardType.description = 'Recent enrolments';
+                    }
+                    if (standardReportCardType.name === 'Last 24 hours visits') {
+                        standardReportCardType.description = 'Recent visits';
+                    }
+                    standardReportCardType.type = _.replace(_.startCase(standardReportCardType.description), new RegExp(' ', 'g'), '');
+                });
+
+                //Reset MyDashboard cache because shape of filterJSON in cache has changed
+                const dashboardCache = newDB.objects("DashboardCache");
+                newDB.delete(dashboardCache);
+            }
+            if (oldDB.schemaVersion < 198) {
                 const oldObjects = oldDB.objects(FormElementGroup.schema.name);
                 const newObjects = newDB.objects(FormElementGroup.schema.name);
                 // loop through all objects and set the name property in the

@@ -13,6 +13,7 @@ class StandardReportCardType extends BaseEntity {
             uuid: "string",
             name: "string",
             description: {type: "string", optional: true},
+            type: {type: "string"},
             voided: {type: "bool", default: false},
         },
     };
@@ -37,20 +38,28 @@ class StandardReportCardType extends BaseEntity {
         this.that.description = x;
     }
 
-    static type = {
-        PendingApproval: "Pending approval",
+    get type() {
+        return this.that.type;
+    }
+
+    set type(x) {
+        this.that.type = x;
+    }
+
+    static types = {
+        PendingApproval: "PendingApproval",
         Approved: "Approved",
         Rejected: "Rejected",
-        ScheduledVisits: "Scheduled visits",
-        OverdueVisits: "Overdue visits",
-        RecentRegistrations: "Recent registrations",
-        RecentEnrolments: "Recent enrolments",
-        RecentVisits: "Recent visits",
+        ScheduledVisits: "ScheduledVisits",
+        OverdueVisits: "OverdueVisits",
+        RecentRegistrations: "RecentRegistrations",
+        RecentEnrolments: "RecentEnrolments",
+        RecentVisits: "RecentVisits",
         Total: "Total",
         Comments: "Comments",
-        CallTasks: "Call tasks",
-        OpenSubjectTasks: "Open subject tasks",
-        DueChecklist: "Due checklist"
+        CallTasks: "CallTasks",
+        OpenSubjectTasks: "OpenSubjectTasks",
+        DueChecklist: "DueChecklist"
     };
 
     static recentCardDurationUnits = [
@@ -61,26 +70,26 @@ class StandardReportCardType extends BaseEntity {
 
     get iconName() {
         const typeIcon = {
-            [StandardReportCardType.type.Approved]: 'check-circle',
-            [StandardReportCardType.type.Rejected]: 'cancel',
-            [StandardReportCardType.type.PendingApproval]: 'av-timer',
-            [StandardReportCardType.type.Comments]: 'message',
-            [StandardReportCardType.type.CallTasks]: 'call',
-            [StandardReportCardType.type.OpenSubjectTasks]: 'sticky-note-2',
+            [StandardReportCardType.types.Approved]: 'check-circle',
+            [StandardReportCardType.types.Rejected]: 'cancel',
+            [StandardReportCardType.types.PendingApproval]: 'av-timer',
+            [StandardReportCardType.types.Comments]: 'message',
+            [StandardReportCardType.types.CallTasks]: 'call',
+            [StandardReportCardType.types.OpenSubjectTasks]: 'sticky-note-2',
         };
-        return typeIcon[this.name];
+        return typeIcon[this.type];
     }
 
     get cardColor() {
         const typeCardColor = {
-            [StandardReportCardType.type.Approved]: '#00897b',
-            [StandardReportCardType.type.Rejected]: '#bf360c',
-            [StandardReportCardType.type.PendingApproval]: '#6a1b9a',
-            [StandardReportCardType.type.Comments]: '#3949ab',
-            [StandardReportCardType.type.CallTasks]: '#69a672',
-            [StandardReportCardType.type.OpenSubjectTasks]: '#717cac',
+            [StandardReportCardType.types.Approved]: '#00897b',
+            [StandardReportCardType.types.Rejected]: '#bf360c',
+            [StandardReportCardType.types.PendingApproval]: '#6a1b9a',
+            [StandardReportCardType.types.Comments]: '#3949ab',
+            [StandardReportCardType.types.CallTasks]: '#69a672',
+            [StandardReportCardType.types.OpenSubjectTasks]: '#717cac',
         };
-        return typeCardColor[this.name];
+        return typeCardColor[this.type];
     }
 
     get textColor() {
@@ -89,78 +98,78 @@ class StandardReportCardType extends BaseEntity {
 
     static fromResource(resource) {
         return General.assignFields(resource, new StandardReportCardType(),
-            ["uuid", "name", "description", "voided"]);
+            ["uuid", "name", "description", "voided", "type"]);
     }
 
     isStandardCard() {
-        return _.includes([...this.approvalTypes(), StandardReportCardType.type.Comments, StandardReportCardType.type.CallTasks, StandardReportCardType.type.OpenSubjectTasks], this.name);
+        return _.includes([...this.approvalTypes(), StandardReportCardType.types.Comments, StandardReportCardType.types.CallTasks, StandardReportCardType.types.OpenSubjectTasks], this.type);
     }
 
     approvalTypes() {
-        return [StandardReportCardType.type.PendingApproval, StandardReportCardType.type.Approved, StandardReportCardType.type.Rejected]
+        return [StandardReportCardType.types.PendingApproval, StandardReportCardType.types.Approved, StandardReportCardType.types.Rejected]
     }
 
     defaultTypes() {
-        return [StandardReportCardType.type.ScheduledVisits, StandardReportCardType.type.OverdueVisits, StandardReportCardType.type.RecentRegistrations, StandardReportCardType.type.RecentEnrolments, StandardReportCardType.type.RecentVisits, StandardReportCardType.type.Total]
+        return [StandardReportCardType.types.ScheduledVisits, StandardReportCardType.types.OverdueVisits, StandardReportCardType.types.RecentRegistrations, StandardReportCardType.types.RecentEnrolments, StandardReportCardType.types.RecentVisits, StandardReportCardType.types.Total]
     }
 
     isApprovalType() {
-        return _.includes(this.approvalTypes(), this.name);
+        return _.includes(this.approvalTypes(), this.type);
     }
 
     isCommentType() {
-        return this.name === StandardReportCardType.type.Comments;
+        return this.type === StandardReportCardType.types.Comments;
     }
 
     isTaskType() {
-        return _.includes([StandardReportCardType.type.CallTasks, StandardReportCardType.type.OpenSubjectTasks], this.name);
+        return _.includes([StandardReportCardType.types.CallTasks, StandardReportCardType.types.OpenSubjectTasks], this.type);
     }
 
     isChecklistType() {
-        return this.name === StandardReportCardType.type.DueChecklist;
+        return this.type === StandardReportCardType.types.DueChecklist;
     }
 
     getTaskTypeType() {
-        switch (this.name) {
-            case StandardReportCardType.type.CallTasks:
+        switch (this.type) {
+            case StandardReportCardType.types.CallTasks:
                 return TaskType.TaskTypeName.Call;
-            case StandardReportCardType.type.OpenSubjectTasks:
+            case StandardReportCardType.types.OpenSubjectTasks:
                 return TaskType.TaskTypeName.OpenSubject;
         }
     }
 
     isDefaultType() {
-        return _.includes(this.defaultTypes(), this.name);
+        return _.includes(this.defaultTypes(), this.type);
     }
 
     getApprovalStatusForType() {
-        return typeToStatusMap[this.name];
+        return typeToStatusMap[this.type];
     }
 
     isSubjectTypeFilterSupported() {
         return [
-            StandardReportCardType.type.ScheduledVisits,
-            StandardReportCardType.type.OverdueVisits,
-            StandardReportCardType.type.RecentRegistrations,
-            StandardReportCardType.type.RecentEnrolments,
-            StandardReportCardType.type.RecentVisits,
-            StandardReportCardType.type.Total,
-        ].includes(this.name);
+            StandardReportCardType.types.ScheduledVisits,
+            StandardReportCardType.types.OverdueVisits,
+            StandardReportCardType.types.RecentRegistrations,
+            StandardReportCardType.types.RecentEnrolments,
+            StandardReportCardType.types.RecentVisits,
+            StandardReportCardType.types.Total,
+        ].includes(this.type);
     }
 
     isRecentType() {
         return [
-            StandardReportCardType.type.RecentRegistrations,
-            StandardReportCardType.type.RecentEnrolments,
-            StandardReportCardType.type.RecentVisits,
-        ].includes(this.name);
+            StandardReportCardType.types.RecentRegistrations,
+            StandardReportCardType.types.RecentEnrolments,
+            StandardReportCardType.types.RecentVisits,
+        ].includes(this.type);
     }
 }
 
 const typeToStatusMap = {
-    [StandardReportCardType.type.PendingApproval]: ApprovalStatus.statuses.Pending,
-    [StandardReportCardType.type.Approved]: ApprovalStatus.statuses.Approved,
-    [StandardReportCardType.type.Rejected]: ApprovalStatus.statuses.Rejected,
+    [StandardReportCardType.types.PendingApproval]: ApprovalStatus.statuses.Pending,
+    [StandardReportCardType.types.Approved]: ApprovalStatus.statuses.Approved,
+    [StandardReportCardType.types.Rejected]: ApprovalStatus.statuses.Rejected,
 };
 
 export default StandardReportCardType;
