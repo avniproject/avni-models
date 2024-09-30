@@ -136,9 +136,6 @@ class ReportCard extends BaseEntity {
     }
 
     getStandardReportCardInputRecentDuration() {
-        if (_.isEmpty(this.that.standardReportCardInputRecentDurationJSON)) {
-            return new Duration(1, Duration.Day);
-        }
         const duration = JSON.parse(this.that.standardReportCardInputRecentDurationJSON);
         return new Duration(duration.value, duration.unit);
     }
