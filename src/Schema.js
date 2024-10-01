@@ -922,6 +922,16 @@ function createRealmConfig() {
                 newDB.delete(newDB.objects("CustomDashboardCache"));
             }
             if (oldDB.schemaVersion < 197) {
+                _.forEach(newDB.objects("ReportCard"), (reportCard) => {
+                    if (reportCard.standardReportCardType &&
+                        ['Last 24 hours registrations', 'Last 24 hours enrolments', 'Last 24 hours visits']
+                            .includes(reportCard.standardReportCardType.name))
+                        reportCard.standardReportCardInputRecentDurationJSON = JSON.stringify({
+                            value: "1",
+                            unit: "days"
+                        });
+                });
+
                 _.forEach(newDB.objects("StandardReportCardType"), (standardReportCardType) => {
                     if (standardReportCardType.name === 'Last 24 hours registrations') {
                         standardReportCardType.description = 'Recent registrations';
@@ -933,12 +943,6 @@ function createRealmConfig() {
                         standardReportCardType.description = 'Recent visits';
                     }
                     standardReportCardType.type = _.replace(_.startCase(standardReportCardType.description), new RegExp(' ', 'g'), '');
-                });
-
-                _.forEach(newDB.objects(ReportCard.schema.name), (card) => {
-                    card.standardReportCardInputSubjectTypes = [];
-                    card.standardReportCardInputPrograms = [];
-                    card.standardReportCardInputEncounterTypes = [];
                 });
 
                 //Reset MyDashboard cache because shape of filterJSON in cache has changed
