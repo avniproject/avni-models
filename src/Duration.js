@@ -4,7 +4,7 @@ import moment from "moment";
 class Duration {
     constructor(durationValue, durationUnit) {
         this._durationValue = durationValue;
-        this.durationUnit = durationUnit;
+        this.durationUnit = durationUnit || Duration.Day;
     }
 
     static inDay(value) {
