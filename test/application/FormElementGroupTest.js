@@ -5,6 +5,7 @@ import FormElement from "openchs-models/src/application/FormElement";
 import FormElementStatus from "../../src/application/FormElementStatus";
 import FormElementGroup from "../../src/application/FormElementGroup";
 import ObservationsHolder from "../../src/ObservationsHolder";
+import _ from 'lodash';
 
 describe('FormElementGroupTest', () => {
     it('previous and next', () => {
@@ -92,12 +93,26 @@ describe('FormElementGroupTest', () => {
         assert.isTrue(isEmpty);
     });
 
-  function createFormElement(uuid, answers = []) {
+    it('findNonVoidedFormElements', () => {
+        let formElements = _.range(10000).map(idx => createFormElement('ABC'+idx, [],
+          idx % 10===0, idx % 5 === 0 && idx - 5 > 0 ? idx - 5 : null ));
+        let formElementGroup = new FormElementGroup();
+        formElementGroup.formElements = formElements;
+        let startTime = performance.now()
+        let nonVoidedFormElements = formElementGroup.nonVoidedFormElements();
+        let endTime = performance.now()
+        assert.equal(nonVoidedFormElements.length, 9000);
+        assert.isTrue(endTime - startTime < 100, 'Test should have completed within 100 milliseconds');
+    });
+
+  function createFormElement(uuid, answers = [], isVoided = false, parentGroupUuid = null) {
         let x = new FormElement();
         x.uuid = uuid;
         x.getRawAnswers = function () {
             return answers;
         }
+        x.voided = isVoided;
+        x.groupUuid = parentGroupUuid;
         return x;
     }
 });
