@@ -236,10 +236,11 @@ class FormElementGroup extends BaseEntity {
   }
 
   nonVoidedFormElements() {
+    const mapOfFormElementsByUUID = _.keyBy(this.formElements, 'uuid');
     return _.filter(this.formElements, (formElement) => {
         let parentFormElement;
         if (!_.isNil(formElement.groupUuid))
-            parentFormElement = _.find(this.formElements, (fe) => fe.uuid === formElement.groupUuid);
+            parentFormElement = mapOfFormElementsByUUID[formElement.groupUuid];
         return !formElement.voided && (_.isNil(parentFormElement) || !parentFormElement.voided);
     });
   }
