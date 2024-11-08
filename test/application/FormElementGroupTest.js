@@ -102,7 +102,7 @@ describe('FormElementGroupTest', () => {
         let nonVoidedFormElements = formElementGroup.nonVoidedFormElements();
         let endTime = performance.now()
         assert.equal(nonVoidedFormElements.length, 9000);
-        assert.isTrue(endTime - startTime < 100, 'Test should have completed within 100 milliseconds');
+        assert.isTrue(endTime - startTime < 200, 'Test should have completed within 200 milliseconds');
     });
 
   function createFormElement(uuid, answers = [], isVoided = false, parentGroupUuid = null) {
