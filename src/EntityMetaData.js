@@ -283,7 +283,7 @@ const userInfo = txData(UserInfo, {
     apiVersion: "v2",
     syncWeight: 1,
 });
-const identifierAssignment = txData(IdentifierAssignment, {syncWeight: 0});
+const identifierAssignment = txData(IdentifierAssignment, {apiQueryParams: {"deviceId": null}, syncWeight: 0});
 const ruleFailureTelemetry = txData(RuleFailureTelemetry, {
     resUrl: "ruleFailureTelemetry",
     syncWeight: 0,
