@@ -39,6 +39,10 @@ export default class WorkItem {
     if (this.type === WorkItem.type.PROGRAM_ENROLMENT) {
       this.ensureFieldExists("programName");
     }
+    if (this.type === WorkItem.type.PROGRAM_EXIT) {
+        this.ensureFieldExists("subjectUUID");
+        this.ensureFieldExists("programName");
+    }
     if (this.type === WorkItem.type.PROGRAM_ENCOUNTER) {
       this.ensureFieldExists("encounterType");
     }
