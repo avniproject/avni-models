@@ -321,11 +321,11 @@ class Form extends BaseEntity {
             })
         );
         const orderedFormElements = _.sortBy(childFormElements, fe => fe.displayOrder);
-        _.forEach(orderedFormElements, (formElement) => this.addSortedObservations(formElement, observations, orderedChildObs));
+        _.forEach(orderedFormElements, (formElement) => this.addSortedObservations(formElement, observations, orderedChildObs, true));
         return orderedChildObs;
     }
 
-    addSortedObservations(formElement, observations, orderedObservations) {
+    addSortedObservations(formElement, observations, orderedObservations, forQGChildren = false) {
         const concept = formElement.concept;
         const foundObs = observations.find((obs) => obs.concept.uuid === concept.uuid);
         if (!_.isNil(foundObs) && concept.isQuestionGroup()) {
@@ -340,7 +340,7 @@ class Form extends BaseEntity {
                 orderedObservations.push(clonedObs);
             }
         } else {
-            if (!_.isNil(foundObs)) {
+            if (!_.isNil(foundObs) && (_.isNil(formElement.groupUuid) || forQGChildren)) {
                 foundObs.styles = formElement.styles;
                 orderedObservations.push(foundObs);
             }
