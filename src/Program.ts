@@ -16,6 +16,7 @@ class Program extends ReferenceEntity {
       enrolmentSummaryRule: {type: 'string', optional: true},
       enrolmentEligibilityCheckRule: {type: 'string', optional: true},
       manualEligibilityCheckRequired: 'bool',
+      showGrowthChart: 'bool',
       manualEnrolmentEligibilityCheckRule: {type: 'string', optional: true},
       voided: {type: 'bool', default: false},
       active: {type: 'bool', default: true},
@@ -75,6 +76,14 @@ class Program extends ReferenceEntity {
       this.that.manualEligibilityCheckRequired = x;
   }
 
+  get showGrowthChart() {
+      return this.that.showGrowthChart;
+  }
+
+  set showGrowthChart(x) {
+    this.that.showGrowthChart = x;
+  }
+
   get enrolmentSummaryRule() {
       return this.that.enrolmentSummaryRule;
   }
@@ -130,6 +139,7 @@ class Program extends ReferenceEntity {
       operationalProgram.programSubjectLabel || operationalProgram.name || program.name;
     program.enrolmentSummaryRule = operationalProgram.enrolmentSummaryRule;
     program.manualEligibilityCheckRequired = operationalProgram.manualEligibilityCheckRequired;
+    program.showGrowthChart = operationalProgram.showGrowthChart;
     program.manualEnrolmentEligibilityCheckRule = operationalProgram.manualEnrolmentEligibilityCheckRule;
     program.enrolmentEligibilityCheckRule = operationalProgram.enrolmentEligibilityCheckRule;
     program.allowMultipleEnrolments = operationalProgram.allowMultipleEnrolments;
