@@ -582,14 +582,14 @@ class ProgramEnrolment extends BaseEntity {
         let encounter;
         for (let i = 0; i < encounters.length; i++) {
             encounter = encounters[i];
-            observation = encounters[i].findObservation(conceptNameOrUuid.toLowerCase(), parentConceptNameOrUuid);
+            observation = encounters[i].findObservation(conceptNameOrUuid, parentConceptNameOrUuid);
             if (!_.isNil(observation))
                 return {observation: observation, date: encounter.encounterDateTime};
         }
 
         if (checkInEnrolment)
             return {
-                observation: this.findObservation(conceptNameOrUuid.toLowerCase(), parentConceptNameOrUuid),
+                observation: this.findObservation(conceptNameOrUuid, parentConceptNameOrUuid),
                 date: this.enrolmentDateTime,
             };
         return {};
@@ -603,7 +603,7 @@ class ProgramEnrolment extends BaseEntity {
     findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
         const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
         return _.find(observations, (observation) => {
-            return (observation.concept.name.toLowerCase() === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
+            return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
         });
     }
 
