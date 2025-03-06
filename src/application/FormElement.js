@@ -312,8 +312,7 @@ class FormElement extends BaseEntity {
         groupSubjectRoleUUID: "groupSubjectRoleUUID",
         allowedTypes: "allowedTypes",
         allowedMaxSize: "allowedMaxSize",
-        displayAllGroupMembers: "displayAllGroupMembers",
-        searchOptions: "searchOptions",
+        displayAllGroupMembers: "displayAllGroupMembers"
     };
 
     static values = {
