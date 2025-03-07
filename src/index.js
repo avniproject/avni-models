@@ -23,6 +23,7 @@ import FormElementGroup from "./application/FormElementGroup";
 import FormElementStatus from "./application/FormElementStatus";
 import Form from "./application/Form";
 import FormMapping from "./application/FormMapping";
+import { findMediaObservations } from "./Media";
 import MenuItem from "./application/MenuItem";
 import Gender from "./Gender";
 import Individual from "./Individual";
@@ -149,6 +150,7 @@ export {
     EntityRule,
     EntitySyncStatus,
     Family,
+    findMediaObservations,
     Filter,
     Format,
     FormElement,
