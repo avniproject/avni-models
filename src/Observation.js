@@ -86,6 +86,8 @@ class Observation extends PersistedObject {
             return new Displayable(valueWrapper.asDisplayDate(), null);
         } else if (observation.concept.datatype === Concept.dataType.Time) {
             return new Displayable(valueWrapper.asDisplayTime(), null);
+        } else if (observation.concept.datatype === Concept.dataType.ImageV2) {
+            return new Displayable(JSON.parse(valueWrapper.getValue()), null);
         } else if (valueWrapper.isSingleCoded) {
             if (observation.concept.datatype === Concept.dataType.Subject) {
                 const uuid = valueWrapper.getValue();
