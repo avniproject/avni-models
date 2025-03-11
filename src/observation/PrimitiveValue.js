@@ -45,6 +45,8 @@ class PrimitiveValue {
       return new Date(Date.parse(this.value));
     } else if (this.datatype === Concept.dataType.Date) {
       return moment(this.value).startOf("day").toDate();
+    } else if (this.datatype === Concept.dataType.ImageV2) {
+        JSON.parse(this.value);
     }
 
     return this.value;

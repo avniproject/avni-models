@@ -313,8 +313,12 @@ export default class Concept extends BaseEntity {
         return _.includes([Concept.dataType.Image, Concept.dataType.Video, Concept.dataType.File], this.datatype);
     }
 
+    isMediaSelectConcept() {
+        return _.includes([Concept.dataType.Image, Concept.dataType.Video, Concept.dataType.File], this.datatype);
+    }
+
     isSelectConcept() {
-        return this.isCodedConcept() || this.isSubjectConcept() || this.isEncounterConcept() || this.isMediaConcept();
+        return this.isCodedConcept() || this.isSubjectConcept() || this.isEncounterConcept() || this.isMediaSelectConcept();
     }
 
     isDurationConcept() {
