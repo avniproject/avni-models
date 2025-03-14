@@ -256,7 +256,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 198,
+        schemaVersion: 199,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -961,6 +961,11 @@ function createRealmConfig() {
                         newObject.name = oldObject.display;
                     }
                 }
+            }
+            if (oldDB.schemaVersion < 199) {
+                _.forEach(newDB.objects("Program"), (program) => {
+                    program.showGrowthChart = _.toLower(program.name) === "child";
+                });
             }
         },
     };
