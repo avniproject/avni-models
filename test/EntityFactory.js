@@ -52,7 +52,7 @@ class EntityFactory {
         return form;
     }
 
-    static createFormElement(name, mandatory, concept, displayOrder, type) {
+    static createFormElement(name, mandatory, concept, displayOrder, type, formElementGroup) {
         const formElement = new FormElement();
         formElement.uuid = General.randomUUID();
         formElement.name = name;
@@ -60,6 +60,7 @@ class EntityFactory {
         formElement.concept = concept;
         formElement.displayOrder = displayOrder;
         formElement.type = type;
+        formElement.formElementGroup = formElementGroup;
         return formElement;
     }
 
@@ -94,6 +95,10 @@ class EntityFactory {
 
     static createObservation(concept, primitiveValue) {
         return Observation.create(concept, new PrimitiveValue(primitiveValue));
+    }
+
+    static createNonPrimitiveObservation(concept, value) {
+        return Observation.create(concept, value);
     }
 
     static createDecision(name, value) {
@@ -131,10 +136,6 @@ class EntityFactory {
         program.allowMultipleEnrolments = allowMultipleEnrolments;
         return program;
     };
-
-    static createConceptAnswer({concept, answerOrder, abnormal}) {
-
-    }
 }
 
 export default EntityFactory;
