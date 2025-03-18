@@ -38,41 +38,60 @@ describe('ObservationHolderTest', () => {
     });
 
     describe("Remove Observations not present in the form elements", () => {
-        let observations, concepts, allFormElements, applicableFormElements;
+        let observations, concepts, allFormElements, applicableFormElements, formElementGroup;
         beforeEach(() => {
             concepts = [EntityFactory.createConcept("Concept 1", Concept.dataType.Coded, "concept-1"),
                 EntityFactory.createConcept("Concept 2", Concept.dataType.Coded, "concept-2"),
-                EntityFactory.createConcept("Concept 3", Concept.dataType.Coded, "concept-3")];
+                EntityFactory.createConcept("Concept 3", Concept.dataType.Coded, "concept-3"),
+                EntityFactory.createConcept("Concept 4", Concept.dataType.QuestionGroup, "concept-4"),
+                EntityFactory.createConcept("Concept 4-1", Concept.dataType.Text, "concept-4-1"),
+            ];
             observations = [EntityFactory.createObservation(concepts[0], "Yao"),
                 EntityFactory.createObservation(concepts[1], "Ok"),
-                EntityFactory.createObservation(concepts[2], "No")];
-            allFormElements = [
-                EntityFactory.createFormElement("Form Element 1", true, concepts[0], 1, "SingleSelect"),
-                EntityFactory.createFormElement("Form Element 2", true, concepts[1], 2, "SingleSelect"),
-                EntityFactory.createFormElement("Form Element 3", true, concepts[2], 3, "SingleSelect"),
+                EntityFactory.createObservation(concepts[2], "No"),
+                EntityFactory.createNonPrimitiveObservation(concepts[3],
+                    new QuestionGroup([EntityFactory.createObservation(concepts[4], "Yao")]))
             ];
+            const formElementGroup = EntityFactory.createFormElementGroup("Form Element Group 1", 1, EntityFactory.createForm("Form 1"));
+            const qgFormElement = EntityFactory.createFormElement("Form Element 4", true, concepts[3], 4, "SingleSelect", formElementGroup);
+            const childFormElement = EntityFactory.createFormElement("Form Element 4-1", true, concepts[4], 5, "SingleSelect", formElementGroup);
+            childFormElement.groupUuid = qgFormElement.uuid;
+            allFormElements = [
+                EntityFactory.createFormElement("Form Element 1", true, concepts[0], 1, "SingleSelect", formElementGroup),
+                EntityFactory.createFormElement("Form Element 2", true, concepts[1], 2, "SingleSelect", formElementGroup),
+                EntityFactory.createFormElement("Form Element 3", true, concepts[2], 3, "SingleSelect", formElementGroup),
+                qgFormElement,
+                childFormElement,
+            ];
+            formElementGroup.formElements = allFormElements;
             applicableFormElements = [
                 ...allFormElements
             ];
         });
 
+        it('should remove qg observations if it not applicable any more', function () {
+            const observationsHolder = new ObservationsHolder(observations);
+            observationsHolder.removeNonApplicableObs(allFormElements, [allFormElements[0], allFormElements[1], allFormElements[2]]);
+            assert.equal(3, observationsHolder.observations.length);
+        });
+
         it("Shouldn't remove obs if there are no form elements for that particular Form element group", () => {
             const observationsHolder = new ObservationsHolder(observations);
-            assert.equal(3, observationsHolder.observations.length);
+            assert.equal(4, observationsHolder.observations.length);
             observationsHolder.removeNonApplicableObs([], []);
-            assert.equal(3, observationsHolder.observations.length);
+            assert.equal(4, observationsHolder.observations.length);
         });
 
         it("Shouldn't remove obs if all obs applicable", () => {
             const observationsHolder = new ObservationsHolder(observations);
-            assert.equal(3, observationsHolder.observations.length);
+            assert.equal(4, observationsHolder.observations.length);
             observationsHolder.removeNonApplicableObs(allFormElements, applicableFormElements);
-            assert.equal(3, observationsHolder.observations.length);
+            assert.equal(4, observationsHolder.observations.length);
         });
 
         it("Should remove non applicable obs", () => {
             const observationsHolder = new ObservationsHolder(observations);
-            assert.equal(3, observationsHolder.observations.length);
+            assert.equal(4, observationsHolder.observations.length);
             observationsHolder.removeNonApplicableObs(allFormElements, applicableFormElements.slice(0, 2));
             assert.equal(2, observationsHolder.observations.length);
             assert.isTrue(observationsHolder.observations.some((obs) =>
@@ -85,9 +104,9 @@ describe('ObservationHolderTest', () => {
 
         it("Should remove non applicable obs only based on the diff of that form element", () => {
             const observationsHolder = new ObservationsHolder(observations);
-            assert.equal(3, observationsHolder.observations.length);
+            assert.equal(4, observationsHolder.observations.length);
             observationsHolder.removeNonApplicableObs(allFormElements.slice(0, 2), applicableFormElements.slice(0, 1));
-            assert.equal(2, observationsHolder.observations.length);
+            assert.equal(3, observationsHolder.observations.length);
             assert.isTrue(observationsHolder.observations.some((obs) =>
                 obs.concept.uuid === applicableFormElements[0].concept.uuid));
             assert.isFalse(observationsHolder.observations.some((obs) =>
