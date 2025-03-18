@@ -2,10 +2,14 @@
     "name": "openchs-models",
     "description": "OpenCHS data model to be used by front end clients",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "version": "1.32.35",
 =======
     "version": "1.32.34",
 >>>>>>> c56b7b6 (v1.32.34)
+=======
+    "version": "1.32.37",
+>>>>>>> 12a61ef (v1.32.37)
     "private": false,
     "repository": {
         "type": "git",
