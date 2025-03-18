@@ -140,6 +140,7 @@ export default class Concept extends BaseEntity {
         Notes: "Notes",
         NA: "NA",
         Image: "Image",
+        ImageV2: "ImageV2",
         Video: "Video",
         Audio: "Audio",
         Id: "Id",
@@ -151,7 +152,7 @@ export default class Concept extends BaseEntity {
         File: "File",
         Encounter: "Encounter",
         get Media() {
-            return [this.Image, this.Video, this.Audio, this.File];
+            return [this.Image, this.ImageV2, this.Video, this.Audio, this.File];
         },
     };
 
@@ -310,11 +311,15 @@ export default class Concept extends BaseEntity {
     }
 
     isMediaConcept() {
+        return _.includes([Concept.dataType.Image, Concept.dataType.ImageV2, Concept.dataType.Video, Concept.dataType.File], this.datatype);
+    }
+
+    isMediaSelectConcept() {
         return _.includes([Concept.dataType.Image, Concept.dataType.Video, Concept.dataType.File], this.datatype);
     }
 
     isSelectConcept() {
-        return this.isCodedConcept() || this.isSubjectConcept() || this.isEncounterConcept() || this.isMediaConcept();
+        return this.isCodedConcept() || this.isSubjectConcept() || this.isEncounterConcept() || this.isMediaSelectConcept();
     }
 
     isDurationConcept() {

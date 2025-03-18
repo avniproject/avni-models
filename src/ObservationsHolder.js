@@ -398,7 +398,16 @@ class ObservationsHolder {
     const observation = _.find(this.observations, (observation) => observation.concept.uuid === conceptUUID);
     if (observation) {
       const valueWrapper = observation.getValueWrapper();
-      if (valueWrapper.isMultipleCoded) {
+      if (observation.concept.datatype === Concept.dataType.ImageV2) {
+          const mediaObjects = JSON.parse(valueWrapper.getValue());
+          const newAnswers = _.map(mediaObjects, mediaObject => {
+              if (mediaObject.uri === oldValue) {
+                  mediaObject.uri = newValue
+              }
+              return mediaObject;
+          });
+          observation.valueJSON = new PrimitiveValue(JSON.stringify(newAnswers), Concept.dataType.ImageV2);
+      } else if (valueWrapper.isMultipleCoded) {
         const answers = valueWrapper.getValue();
         const oldValueIndex = _.indexOf(answers, oldValue);
         if (oldValueIndex < 0) return; // due to race condition the old value might have been removed
