@@ -100,8 +100,10 @@ class ObservationsHolder {
             formElementsIncludingRepeatableElements.push(newFormElement);
           })
         })
+        formElementsIncludingRepeatableElements.push(fe);
+      } else if (_.isNil(fe.groupUuid)) {
+        formElementsIncludingRepeatableElements.push(fe);
       }
-      formElementsIncludingRepeatableElements.push(fe);
     });
     const inApplicableFormElements = _.differenceWith(
       formElementsIncludingRepeatableElements,
