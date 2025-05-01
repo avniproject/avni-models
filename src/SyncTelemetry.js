@@ -17,6 +17,7 @@ class SyncTelemetry extends BaseEntity {
       entityStatus: "string",
       syncSource: 'string?',
       deviceInfo: "string",
+      appInfo: "string"
     },
   };
 
@@ -96,6 +97,14 @@ class SyncTelemetry extends BaseEntity {
       this.that.deviceInfo = x;
   }
 
+  get appInfo() {
+      return this.that.appInfo;
+  }
+
+  set appInfo(x) {
+      this.that.appInfo = x;
+  }
+
   static fromResource() {
     throw new Error(
       "This should never be called because server always returns an empty array for this resource"
@@ -136,6 +145,10 @@ class SyncTelemetry extends BaseEntity {
     return this.deviceInfo === '' ? {}: JSON.parse(this.deviceInfo);
   }
 
+  getAppInfo() {
+    return JSON.parse(this.appInfo);
+  }
+
   get toResource() {
     const resource = _.pick(this, [
       "uuid",
@@ -149,6 +162,7 @@ class SyncTelemetry extends BaseEntity {
     ]);
     resource.entityStatus = this.getEntityStatus();
     resource.deviceInfo = this.getDeviceInfo();
+    resource.appInfo = this.getAppInfo();
     return resource;
   }
 
@@ -164,6 +178,7 @@ class SyncTelemetry extends BaseEntity {
     syncTelemetry.androidVersion = this.androidVersion;
     syncTelemetry.deviceName = this.deviceName;
     syncTelemetry.deviceInfo = this.deviceInfo;
+    syncTelemetry.appInfo = this.appInfo;
     syncTelemetry.syncSource = this.syncSource;
     return syncTelemetry;
   }
