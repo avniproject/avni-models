@@ -35,6 +35,8 @@ export default class Concept extends BaseEntity {
             unit: {type: "string", optional: true},
             keyValues: {type: "list", objectType: SchemaNames.KeyValue},
             voided: {type: "bool", default: false},
+            mediaUrl: {type: "string", optional: true},
+            mediaType: {type: "string", optional: true},
         },
     };
 
@@ -80,6 +82,22 @@ export default class Concept extends BaseEntity {
 
     set unit(x) {
         this.that.unit = x;
+    }
+
+    get mediaUrl() {
+        return this.that.mediaUrl;
+    }
+
+    set mediaUrl(x) {
+        this.that.mediaUrl = x;
+    }
+
+    get mediaType() {
+        return this.that.mediaType;
+    }
+
+    set mediaType(x) {
+        this.that.mediaType = x;
     }
 
     get name() {
@@ -168,6 +186,8 @@ export default class Concept extends BaseEntity {
         concept.unit = conceptResource.unit;
         concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
         concept.keyValues = _.map(conceptResource.keyValues, KeyValue.fromResource);
+        concept.mediaUrl = conceptResource.mediaUrl;
+        concept.mediaType = conceptResource.mediaType;
         return concept;
     }
 
@@ -393,4 +413,28 @@ export default class Concept extends BaseEntity {
         const keyValue = this.recordValueByKey(KeyValue.PrimaryContactKey) || this.recordValueByKey(KeyValue.ContactNumberKey);
         return (keyValue === KeyValue.ContactYesValue);
     }
+
+    isMediaTypeImage() {
+        return this.mediaType === MediaType.Image;
+    }
+
+    hasMediaType() {
+        return !_.isNil(this.mediaType);
+    }
+
+    hasMediaUrl() {
+        return !_.isNil(this.mediaUrl) && this.mediaUrl !== '';
+    }
+
+    hasAnswersWithMedia() {
+        return _.some(this.answers, (answer) => answer.concept.hasMediaUrl() || answer.concept.hasMediaType());
+    }
+
+    hasMedia() {
+        return this.hasMediaUrl() || this.hasMediaType() || this.hasAnswersWithMedia();
+    }
 }
+
+export const MediaType = {
+    Image: "Image"
+};
