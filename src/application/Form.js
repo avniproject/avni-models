@@ -117,11 +117,6 @@ class Form extends BaseEntity {
     }
 
     static fromResource(resource, entityService) {
-        const formSyncStatus = entityService.findByCriteria(`entityName = 'Form'`, EntitySyncStatus.schema.name);
-        if (resource.formType === this.formTypes.IndividualProfile && formSyncStatus
-            && moment(formSyncStatus.loadedSince).isBefore(moment(resource.lastModifiedDateTime))) {
-            this.deleteOutOfSyncDrafts(entityService, resource.uuid);
-        }
         return General.assignFields(resource, new Form(), [
             "uuid",
             "name",
@@ -134,15 +129,6 @@ class Form extends BaseEntity {
             "checklistsRule",
             "taskScheduleRule"
         ]);
-    }
-
-    static deleteOutOfSyncDrafts(entityService, formUUID) {
-        const formMappings = entityService.findAllByCriteria(`form.uuid = '${formUUID}'`, FormMapping.schema.name);
-        _.forEach(formMappings, ({subjectType}) => {
-            const outOfSyncDrafts = entityService.findAll("DraftSubject")
-                .filtered(`subjectType.uuid = $0`, subjectType.uuid);
-            entityService.deleteEntities(outOfSyncDrafts);
-        })
     }
 
     static merge = () => BaseEntity.mergeOn("formElementGroups");
