@@ -12,6 +12,50 @@ import General from "./utility/General";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 import ah from "./framework/ArrayHelper";
 
+// Helper function to find media observation by value
+const findMediaObservationByValue = (observations, targetValue) => {
+    if (!observations || !Array.isArray(observations)) return null;
+    
+    return _.find(observations, obs => {
+        // Check direct value
+        if (obs.getValue && obs.getValue() === targetValue) return true;
+        
+        // Check coded values (for MultipleCodedValues)
+        const valueJSON = obs.valueJSON;
+        if (valueJSON && valueJSON.answer && Array.isArray(valueJSON.answer)) {
+            return valueJSON.answer.includes(targetValue);
+        }
+        
+        return false;
+    });
+};
+
+// Helper function to update media value
+const updateMediaValue = (mediaObs, oldVal, newVal) => {
+    if (!mediaObs) return false;
+    
+    // For coded values, we need to update the array content
+    if (mediaObs.valueJSON && mediaObs.valueJSON.answer && Array.isArray(mediaObs.valueJSON.answer)) {
+        const answerIndex = mediaObs.valueJSON.answer.indexOf(oldVal);
+        if (answerIndex >= 0) {
+            mediaObs.valueJSON.answer[answerIndex] = newVal;
+            return true;
+        }
+    } else {
+        // Regular value update
+        mediaObs.setValue(mediaObs.concept.getValueWrapperFor(newVal));
+        return true;
+    }
+    
+    return false;
+};
+
+// Process each question group observation
+const processQuestionGroupObservations = (observations, oldVal, newVal) => {
+    const mediaObs = findMediaObservationByValue(observations, oldVal);
+    return mediaObs ? updateMediaValue(mediaObs, oldVal, newVal) : false;
+};
+
 class ObservationsHolder {
     constructor(observations) {
         this.observations = observations;
@@ -389,10 +433,49 @@ class ObservationsHolder {
 
     //private
     updateObservationBasedOnValue(oldValue, newValue) {
+        // Try to find at top level first
         const observation = this.findObservationByValue(oldValue);
         if (observation) {
             observation.setValue(observation.concept.getValueWrapperFor(newValue));
+            return true;
         }
+        
+        // Search in nested structures if not found at top level
+        let updated = false;
+
+        // Iterate through all observations
+        _.forEach(this.observations, obs => {
+            // Skip non-question group observations
+            if (obs.concept.datatype !== Concept.dataType.QuestionGroup) return;
+            
+            const valueWrapper = obs.getValueWrapper && obs.getValueWrapper();
+            if (!valueWrapper) return;
+            
+            // Handle RepeatableQuestionGroup
+            if (valueWrapper.isRepeatable && valueWrapper.isRepeatable()) {
+                const allGroups = valueWrapper.getAllQuestionGroupObservations && 
+                                valueWrapper.getAllQuestionGroupObservations();
+                
+                if (allGroups && allGroups.length) {
+                    // Check each group in the repeatable question group
+                    allGroups.forEach(group => {
+                        const groupObservations = group.getValue && group.getValue();
+                        if (processQuestionGroupObservations(groupObservations, oldValue, newValue)) {
+                            updated = true;
+                        }
+                    });
+                }
+            }
+            // Handle regular QuestionGroup
+            else {
+                const groupObservations = valueWrapper.getValue && valueWrapper.getValue();
+                if (processQuestionGroupObservations(groupObservations, oldValue, newValue)) {
+                    updated = true;
+                }
+            }
+        });
+        
+        return updated;
     }
 
     // Helper method to update media value in an observation

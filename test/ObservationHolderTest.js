@@ -11,6 +11,7 @@ import SingleCodedValue from '../src/observation/SingleCodedValue';
 import QuestionGroup from '../src/observation/QuestionGroup';
 import MultipleCodedValues from "../src/observation/MultipleCodedValues";
 import FormElementStatus from "../src/application/FormElementStatus";
+import RepeatableQuestionGroup from "../src/observation/RepeatableQuestionGroup";
 
 function getMediaAnswerElement(observationsHolder, index) {
     return getMediaAnswer(observationsHolder)[index];
@@ -34,6 +35,124 @@ describe('ObservationHolderTest', () => {
             assert.equal(getMediaAnswerElement(observationsHolder, 0), "a1");
             assert.equal(getMediaAnswerElement(observationsHolder, 1), "a4");
             assert.equal(getMediaAnswer(observationsHolder).length, 2);
+        });
+        
+        it('should replace media in a QuestionGroup', function () {
+            // Create concepts for QuestionGroup and media observation
+            const qgConcept = EntityFactory.createConcept("Question Group", Concept.dataType.QuestionGroup, "qg-concept");
+            const mediaConcept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            
+            // Create a media observation to be inside the question group
+            const mediaObservation = TestObservationFactory.create({
+                concept: mediaConcept, 
+                valueJSON: new MultipleCodedValues(["img1.jpg", "img2.jpg"])
+            });
+            
+            // Create a question group containing the media observation
+            const questionGroup = new QuestionGroup([mediaObservation]);
+            
+            // Create the observation with the question group
+            const qgObservation = new Observation();
+            qgObservation.concept = qgConcept;
+            qgObservation.valueJSON = questionGroup;
+            
+            // Add the question group observation to the holder
+            const observationsHolder = new ObservationsHolder([qgObservation]);
+            
+            // Replace a media value in the question group
+            observationsHolder.replaceMediaObservation("img2.jpg", "img2_updated.jpg", mediaConcept.uuid);
+            
+            // Verify the replacement worked
+            const updatedQG = observationsHolder.observations[0].valueJSON;
+            const updatedMediaObs = updatedQG.groupObservations[0];
+            const mediaValues = updatedMediaObs.valueJSON.answer;
+            
+            assert.equal(mediaValues[0], "img1.jpg");
+            assert.equal(mediaValues[1], "img2_updated.jpg");
+            assert.equal(mediaValues.length, 2);
+        });
+        
+        it('should replace media in a RepeatableQuestionGroup', function () {
+            // Create concepts for RepeatableQuestionGroup and media observation
+            const rqgConcept = EntityFactory.createConcept("Repeatable Question Group", Concept.dataType.QuestionGroup, "rqg-concept");
+            const mediaConcept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            
+            // Create media observations for each group in the repeatable group
+            const mediaObs1 = TestObservationFactory.create({
+                concept: mediaConcept, 
+                valueJSON: new MultipleCodedValues(["group1_img.jpg"])
+            });
+            
+            const mediaObs2 = TestObservationFactory.create({
+                concept: mediaConcept, 
+                valueJSON: new MultipleCodedValues(["group2_img.jpg"])
+            });
+            
+            // Create two question groups with different media observations
+            const group1 = new QuestionGroup([mediaObs1]);
+            const group2 = new QuestionGroup([mediaObs2]);
+            
+            // Create the repeatable question group containing both groups
+            const repeatableGroup = new RepeatableQuestionGroup([group1, group2]);
+            
+            // Create the observation with the repeatable question group
+            const rqgObservation = new Observation();
+            rqgObservation.concept = rqgConcept;
+            rqgObservation.valueJSON = repeatableGroup;
+            
+            // Add the repeatable question group observation to the holder
+            const observationsHolder = new ObservationsHolder([rqgObservation]);
+            
+            // Replace a media value in the second group
+            observationsHolder.replaceMediaObservation("group2_img.jpg", "group2_updated.jpg", mediaConcept.uuid);
+            
+            // Verify the replacement worked
+            const updatedRQG = observationsHolder.observations[0].valueJSON;
+            const groups = updatedRQG.repeatableObservations;
+            
+            // First group should be unchanged
+            const group1MediaObs = groups[0].groupObservations[0];
+            assert.equal(group1MediaObs.valueJSON.answer[0], "group1_img.jpg");
+            
+            // Second group should have updated media
+            const group2MediaObs = groups[1].groupObservations[0];
+            assert.equal(group2MediaObs.valueJSON.answer[0], "group2_updated.jpg");
+        });
+        
+        it('should replace media in nested structure by value when concept UUID is not provided', function () {
+            // Create concepts for RepeatableQuestionGroup and media observation
+            const rqgConcept = EntityFactory.createConcept("Repeatable Question Group", Concept.dataType.QuestionGroup, "rqg-concept");
+            const mediaConcept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            
+            // Create a media observation
+            const mediaObs = TestObservationFactory.create({
+                concept: mediaConcept, 
+                valueJSON: new MultipleCodedValues(["find_by_value.jpg"])
+            });
+            
+            // Create a question group with the media observation
+            const group = new QuestionGroup([mediaObs]);
+            
+            // Create the repeatable question group containing the group
+            const repeatableGroup = new RepeatableQuestionGroup([group]);
+            
+            // Create the observation with the repeatable question group
+            const rqgObservation = new Observation();
+            rqgObservation.concept = rqgConcept;
+            rqgObservation.valueJSON = repeatableGroup;
+            
+            // Add the repeatable question group observation to the holder
+            const observationsHolder = new ObservationsHolder([rqgObservation]);
+            
+            // Replace media by value without providing concept UUID
+            observationsHolder.replaceMediaObservation("find_by_value.jpg", "found_and_updated.jpg");
+            
+            // Verify the replacement worked even without concept UUID
+            const updatedRQG = observationsHolder.observations[0].valueJSON;
+            const updatedGroup = updatedRQG.repeatableObservations[0];
+            const updatedMediaObs = updatedGroup.groupObservations[0];
+            
+            assert.equal(updatedMediaObs.valueJSON.answer[0], "found_and_updated.jpg");
         });
     });
 
