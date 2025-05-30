@@ -395,35 +395,148 @@ class ObservationsHolder {
         }
     }
 
-    replaceMediaObservation(oldValue, newValue, conceptUUID) {
-        if (_.isNil(conceptUUID)) {
-            return this.updateObservationBasedOnValue(oldValue, newValue);
+    // Helper method to update media value in an observation
+_updateMediaValueInObservation(observation, oldValue, newValue) {
+    if (!observation) return false;
+    
+    const valueWrapper = observation.getValueWrapper && observation.getValueWrapper();
+    if (!valueWrapper) return false;
+    
+    // Handle ImageV2 type
+    if (observation.concept.datatype === Concept.dataType.ImageV2) {
+        const mediaObjects = JSON.parse(valueWrapper.getValue());
+        let updated = false;
+        
+        const newAnswers = _.map(mediaObjects, mediaObject => {
+            if (mediaObject.uri === oldValue) {
+                mediaObject.uri = newValue;
+                updated = true;
+            }
+            return mediaObject;
+        });
+        
+        if (updated) {
+            observation.valueJSON = new PrimitiveValue(JSON.stringify(newAnswers), Concept.dataType.ImageV2);
+            return true;
         }
-        const observation = _.find(this.observations, (observation) => observation.concept.uuid === conceptUUID);
-        if (observation) {
-            const valueWrapper = observation.getValueWrapper();
-      if (observation.concept.datatype === Concept.dataType.ImageV2) {
-          const mediaObjects = JSON.parse(valueWrapper.getValue());
-          const newAnswers = _.map(mediaObjects, mediaObject => {
-              if (mediaObject.uri === oldValue) {
-                  mediaObject.uri = newValue
-              }
-              return mediaObject;
-          });
-          observation.valueJSON = new PrimitiveValue(JSON.stringify(newAnswers), Concept.dataType.ImageV2);
-      } else if (valueWrapper.isMultipleCoded) {
-                const answers = valueWrapper.getValue();
-                const oldValueIndex = _.indexOf(answers, oldValue);
-                if (oldValueIndex < 0) return; // due to race condition the old value might have been removed
+    } 
+    // Handle multiple coded values
+    else if (valueWrapper.isMultipleCoded) {
+        const answers = valueWrapper.getValue();
+        const oldValueIndex = _.indexOf(answers, oldValue);
+        
+        if (oldValueIndex >= 0) {
+            const newAnswers = _.reject(answers, answer => answer === oldValue);
+            newAnswers.splice(oldValueIndex, 0, newValue);
+            observation.valueJSON = new MultipleCodedValues(newAnswers);
+            return true;
+        }
+    } 
+    // Handle single coded value
+    else if (valueWrapper.getValue() === oldValue) {
+        observation.valueJSON = new SingleCodedValue(newValue);
+        return true;
+    }
+    
+    return false;
+}
 
-                const newAnswers = _.reject(answers, answer => answer === oldValue);
-                newAnswers.splice(oldValueIndex, 0, newValue);
-                observation.valueJSON = new MultipleCodedValues(newAnswers);
-            } else {
-                observation.valueJSON = new SingleCodedValue(newValue);
+// Helper to find and update media in question group
+_updateMediaInQuestionGroup(questionGroup, conceptUUID, oldValue, newValue) {
+    if (!questionGroup || !questionGroup.getValue) return false;
+    
+    const groupObservations = questionGroup.getValue();
+    if (!groupObservations || !Array.isArray(groupObservations)) return false;
+    
+    // Find media observation either by concept UUID or by value
+    const mediaObs = _.find(groupObservations, obs => 
+        obs.concept.uuid === conceptUUID || 
+        (Concept.dataType.Media.includes(obs.concept.datatype) && 
+         obs.getValue && obs.getValue() === oldValue));
+    
+    // Update if found
+    return this._updateMediaValueInObservation(mediaObs, oldValue, newValue);
+}
+
+// Helper to find and update media in repeatable question group
+_updateMediaInRepeatableQuestionGroup(repeatableGroup, conceptUUID, oldValue, newValue) {
+    if (!repeatableGroup || !repeatableGroup.getAllQuestionGroupObservations) return false;
+    
+    const allGroups = repeatableGroup.getAllQuestionGroupObservations();
+    if (!allGroups || !allGroups.length) return false;
+    
+    // Check each group in the repeatable question group
+    let updated = false;
+    
+    allGroups.forEach(group => {
+        if (this._updateMediaInQuestionGroup(group, conceptUUID, oldValue, newValue)) {
+            updated = true;
+        }
+    });
+    
+    return updated;
+}
+
+// Helper to process a question group (regular or repeatable) and update media within it
+_processQuestionGroupWrapper(wrapper, conceptUUID, oldValue, newValue, sourceName) {
+    if (!wrapper) return false;
+    
+    // Determine if it's a repeatable question group or regular question group
+    const isRepeatable = wrapper.isRepeatable && wrapper.isRepeatable();
+    
+    // Process the appropriate group type
+    return isRepeatable
+        ? this._updateMediaInRepeatableQuestionGroup(wrapper, conceptUUID, oldValue, newValue)
+        : this._updateMediaInQuestionGroup(wrapper, conceptUUID, oldValue, newValue);
+}
+
+replaceMediaObservation(oldValue, newValue, conceptUUID) {
+    console.log(`[INFO] Replacing media: ${oldValue} → ${newValue}`);
+    
+    // Case 1: No concept UUID provided, use value-based replacement
+    if (_.isNil(conceptUUID)) {
+        return this.updateObservationBasedOnValue(oldValue, newValue);
+    }
+    
+    // Case 2: Direct top-level observation with matching concept UUID
+    const directObservation = _.find(this.observations, obs => obs.concept.uuid === conceptUUID);
+    if (directObservation) {
+        // Direct media observation
+        if (Concept.dataType.Media.includes(directObservation.concept.datatype)) {
+            if (this._updateMediaValueInObservation(directObservation, oldValue, newValue)) {
+                console.log(`[INFO] Updated media in direct observation`);
+                return;
+            }
+        }
+        // Question Group containing the media
+        else if (directObservation.concept.datatype === Concept.dataType.QuestionGroup) {
+            const valueWrapper = directObservation.getValueWrapper();
+            if (this._processQuestionGroupWrapper(valueWrapper, conceptUUID, oldValue, newValue)) {
+                console.log(`[INFO] Updated media in question group`);
+                return;
             }
         }
     }
+    
+    // Case 3: Search in nested structures when no direct match found
+    let updated = false;
+    
+    _.forEach(this.observations, obs => {
+        // Only process question groups
+        if (obs.concept.datatype !== Concept.dataType.QuestionGroup) return;
+        
+        const valueWrapper = obs.getValueWrapper && obs.getValueWrapper();
+        if (!valueWrapper) return;
+        
+        if (this._processQuestionGroupWrapper(valueWrapper, conceptUUID, oldValue, newValue)) {
+            updated = true;
+        }
+    });
+    
+    if (updated) {
+        console.log(`[INFO] Updated media in nested structure`);
+    }
+}
 
     toString(I18n) {
         let display = "";
