@@ -576,19 +576,15 @@ _processQuestionGroupWrapper(wrapper, conceptUUID, oldValue, newValue, sourceNam
 replaceMediaObservation(oldValue, newValue, conceptUUID) {
     console.log(`[INFO] Replacing media: ${oldValue} → ${newValue}`);
     
-    // Case 1: No concept UUID provided, use value-based replacement
-    if (_.isNil(conceptUUID)) {
-        return this.updateObservationBasedOnValue(oldValue, newValue);
-    }
-    
-    // Case 2: Direct top-level observation with matching concept UUID
+    // Since conceptUUID is always provided in practice, optimize for that case first
+    // Try to find direct top-level observation with matching concept UUID
     const directObservation = _.find(this.observations, obs => obs.concept.uuid === conceptUUID);
     if (directObservation) {
         // Direct media observation
         if (Concept.dataType.Media.includes(directObservation.concept.datatype)) {
             if (this._updateMediaValueInObservation(directObservation, oldValue, newValue)) {
                 console.log(`[INFO] Updated media in direct observation`);
-                return;
+                return true;
             }
         }
         // Question Group containing the media
@@ -596,12 +592,12 @@ replaceMediaObservation(oldValue, newValue, conceptUUID) {
             const valueWrapper = directObservation.getValueWrapper();
             if (this._processQuestionGroupWrapper(valueWrapper, conceptUUID, oldValue, newValue)) {
                 console.log(`[INFO] Updated media in question group`);
-                return;
+                return true;
             }
         }
     }
     
-    // Case 3: Search in nested structures when no direct match found
+    // Check nested structures (this works both with and without conceptUUID)
     let updated = false;
     
     _.forEach(this.observations, obs => {
@@ -618,7 +614,12 @@ replaceMediaObservation(oldValue, newValue, conceptUUID) {
     
     if (updated) {
         console.log(`[INFO] Updated media in nested structure`);
+        return true;
     }
+    
+    // As a fallback, use value-based replacement if we couldn't find it by concept
+    // This ensures backward compatibility and handles edge cases
+    return this.updateObservationBasedOnValue(oldValue, newValue);
 }
 
     toString(I18n) {
