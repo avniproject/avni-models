@@ -980,6 +980,11 @@ function createRealmConfig() {
                     }
                 });
             }
+            if (oldDB.schemaVersion < 202) {
+                _.forEach(newDB.objects("SubjectType"), (stype) => {
+                    stype.loadedSince = EntitySyncStatus.REALLY_OLD_DATE.getTime();
+                });
+            }
         },
     };
 }
