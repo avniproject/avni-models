@@ -168,6 +168,7 @@ export default class Concept extends BaseEntity {
         GroupAffiliation: "GroupAffiliation",
         QuestionGroup: "QuestionGroup",
         File: "File",
+        Signature: "Signature",
         Encounter: "Encounter",
         get Media() {
             return [this.Image, this.ImageV2, this.Video, this.Audio, this.File];
