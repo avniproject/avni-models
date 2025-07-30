@@ -984,7 +984,7 @@ function createRealmConfig() {
                 const entities = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0","SubjectType");
                 if (entities.length === 1) {
                     const stype = entities[0];
-                    stype.loadedSince = EntitySyncStatus.REALLY_OLD_DATE.getTime();
+                    stype.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
                 }
             }
         },
