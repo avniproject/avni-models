@@ -981,11 +981,11 @@ function createRealmConfig() {
                 });
             }
             if (oldDB.schemaVersion < 203) {
-                const entities = newDB.objects(EntitySyncStatus.schema.name).filtered("entityName = $0","SubjectType");
-                if (entities.length === 1) {
-                    const stype = entities[0];
-                    stype.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
-                }
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
+                    if (ess.entityName === 'SubjectType') {
+                        ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
             }
         },
     };
