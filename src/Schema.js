@@ -256,7 +256,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 202,
+        schemaVersion: 203,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -980,7 +980,7 @@ function createRealmConfig() {
                     }
                 });
             }
-            if (oldDB.schemaVersion < 202) {
+            if (oldDB.schemaVersion < 203) {
                 _.forEach(newDB.objects("SubjectType"), (stype) => {
                     stype.loadedSince = EntitySyncStatus.REALLY_OLD_DATE.getTime();
                 });
