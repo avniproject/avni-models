@@ -17,7 +17,7 @@ class SyncTelemetry extends BaseEntity {
       entityStatus: "string",
       syncSource: 'string?',
       deviceInfo: "string",
-      appInfo: "string"
+      appInfo: "string?"
     },
   };
 
@@ -146,7 +146,7 @@ class SyncTelemetry extends BaseEntity {
   }
 
   getAppInfo() {
-    return JSON.parse(this.appInfo);
+    return this.appInfo === '' ? {} : JSON.parse(this.appInfo);
   }
 
   get toResource() {
