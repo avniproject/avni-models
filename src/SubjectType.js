@@ -19,6 +19,7 @@ class SubjectType extends ReferenceEntity {
       type: 'string',
       subjectSummaryRule: {type: 'string', optional: true},
       programEligibilityCheckRule: {type: 'string', optional: true},
+      memberAdditionEligibilityCheckRule: {type: 'string', optional: true},
       uniqueName: {type: 'bool', default: false},
       validFirstNameFormat: { type: SchemaNames.Format, optional: true },
       validMiddleNameFormat: { type: SchemaNames.Format, optional: true },
@@ -93,6 +94,14 @@ class SubjectType extends ReferenceEntity {
 
   set programEligibilityCheckRule(x) {
       this.that.programEligibilityCheckRule = x;
+  }
+
+  get memberAdditionEligibilityCheckRule() {
+      return this.that.memberAdditionEligibilityCheckRule;
+  }
+
+  set memberAdditionEligibilityCheckRule(x) {
+      this.that.memberAdditionEligibilityCheckRule = x;
   }
 
   get uniqueName() {
@@ -234,6 +243,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.type = operationalSubjectType.type;
     subjectType.subjectSummaryRule = operationalSubjectType.subjectSummaryRule;
     subjectType.programEligibilityCheckRule = operationalSubjectType.programEligibilityCheckRule;
+    subjectType.memberAdditionEligibilityCheckRule = operationalSubjectType.memberAdditionEligibilityCheckRule;
     subjectType.uniqueName = operationalSubjectType.uniqueName;
     subjectType.allowMiddleName = operationalSubjectType.allowMiddleName;
     subjectType.lastNameOptional = operationalSubjectType.lastNameOptional;
@@ -261,6 +271,7 @@ class SubjectType extends ReferenceEntity {
     cloned.type = this.type;
     cloned.subjectSummaryRule = this.subjectSummaryRule;
     cloned.programEligibilityCheckRule = this.programEligibilityCheckRule;
+    cloned.memberAdditionEligibilityCheckRule = this.memberAdditionEligibilityCheckRule;
     cloned.allowEmptyLocation = this.allowEmptyLocation;
     cloned.allowMiddleName = this.allowMiddleName;
     cloned.lastNameOptional = this.lastNameOptional;
