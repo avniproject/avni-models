@@ -234,6 +234,15 @@ class AbstractEncounter extends BaseEntity {
             : this.encounterLocation.clone();
         encounter.cancelLocation = _.isNil(this.cancelLocation) ? null : this.cancelLocation.clone();
         encounter.approvalStatuses = this.approvalStatuses;
+
+        encounter.createdBy = this.createdBy;
+        encounter.createdByUUID = this.createdByUUID;
+        encounter.lastModifiedBy = this.lastModifiedBy;
+        encounter.lastModifiedByUUID = this.lastModifiedByUUID;
+
+        encounter.filledBy = this.filledBy;
+        encounter.filledByUUID = this.filledByUUID;
+
         return encounter;
     }
 
