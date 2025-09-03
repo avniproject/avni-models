@@ -170,6 +170,7 @@ export default class Concept extends BaseEntity {
         File: "File",
         Signature: "Signature",
         Encounter: "Encounter",
+        QR: "QR",
         get Media() {
             return [this.Image, this.ImageV2, this.Video, this.Audio, this.File, this.Signature];
         },
