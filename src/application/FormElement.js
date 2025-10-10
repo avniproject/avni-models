@@ -29,7 +29,7 @@ class FormElement extends BaseEntity {
             concept: { type: 'object', objectType: 'Concept' },
             type: {type: "string", optional: true},
             formElementGroup: { type: 'object', objectType: 'FormElementGroup' },
-            validFormat: {type: "EmbeddedFormat", optional: true},
+            validFormat: { type: 'object', objectType: 'EmbeddedFormat', optional: true },
             voided: {type: "bool", default: false},
             rule: {type: "string", optional: true},
             groupUuid: {type: "string", optional: true},
