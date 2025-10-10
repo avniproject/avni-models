@@ -98,13 +98,18 @@ class SchemaAuditor {
         });
 
         // Check 4: Old object reference syntax (main migration target)
-        const oldSyntaxMatches = [
-            ...content.matchAll(/(\w+):\s*"([A-Z]\w+)"\s*,/g)
-        ];
+        // Node v10 compatible alternative to matchAll()
+        const getMatches = (str, regex) => {
+            const matches = [];
+            let match;
+            while ((match = regex.exec(str)) !== null) {
+                matches.push(match);
+            }
+            return matches;
+        };
 
-        const oldSyntaxWithType = [
-            ...content.matchAll(/(\w+):\s*\{type:\s*"([A-Z]\w+)"[^}]*\}/g)
-        ];
+        const oldSyntaxMatches = getMatches(content, /(\w+):\s*"([A-Z]\w+)"\s*,/g);
+        const oldSyntaxWithType = getMatches(content, /(\w+):\s*\{type:\s*"([A-Z]\w+)"[^}]*\}/g);
 
         // Filter out primitive types
         const primitiveTypes = ['string', 'int', 'float', 'double', 'bool', 'date', 'data', 'list'];

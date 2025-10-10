@@ -45,9 +45,24 @@ function isCustomObjectType(typeName) {
 }
 
 // Patterns to match and convert
+// IMPORTANT: Order matters! Apply more specific patterns first
 const PATTERNS = [
     {
-        // Pattern 1: Simple object reference: propertyName: "ObjectType"
+        // Pattern 1: Object reference with type but no objectType (SPECIFIC - apply first!)
+        // gender: {type: "Gender", optional: true}
+        // Should become: gender: { type: 'object', objectType: 'Gender', optional: true }
+        // Captures any additional properties after type
+        regex: /(\s+)(\w+):\s*\{\s*type:\s*"([A-Z]\w+)"((?:\s*,\s*\w+:\s*(?:true|false|\"[^\"]*\"))*)\s*\}/g,
+        replacement: (match, indent, propName, objectType, additionalProps) => {
+            if (!isCustomObjectType(objectType)) {
+                return match;
+            }
+            return `${indent}${propName}: { type: 'object', objectType: '${objectType}'${additionalProps} }`;
+        }
+    },
+    {
+        // Pattern 2: Simple object reference (GENERAL - apply after specific patterns!)
+        // propertyName: "ObjectType"
         // Match properties like: subjectType: "SubjectType",
         regex: /(\s+)(\w+):\s*"([A-Z]\w+)"\s*,/g,
         replacement: (match, indent, propName, objectType) => {
@@ -55,19 +70,6 @@ const PATTERNS = [
                 return match;
             }
             return `${indent}${propName}: { type: 'object', objectType: '${objectType}' },`;
-        }
-    },
-    {
-        // Pattern 2: Object reference with type but no objectType
-        // gender: {type: "Gender", optional: true}
-        // Should become: gender: { type: 'object', objectType: 'Gender', optional: true }
-        regex: /(\s+)(\w+):\s*\{\s*type:\s*"([A-Z]\w+)"\s*(,\s*optional:\s*(true|false))?\s*\}/g,
-        replacement: (match, indent, propName, objectType, optionalPart, optionalValue) => {
-            if (!isCustomObjectType(objectType)) {
-                return match;
-            }
-            const optional = optionalPart ? `, optional: ${optionalValue}` : '';
-            return `${indent}${propName}: { type: 'object', objectType: '${objectType}'${optional} }`;
         }
     }
 ];
@@ -181,8 +183,13 @@ class RealmSchemaMigrator {
             return;
         }
 
-        // Find all schema definitions
-        const schemaMatches = [...content.matchAll(/static\s+schema\s*=\s*\{/g)];
+        // Find all schema definitions (Node v10 compatible)
+        const schemaMatches = [];
+        const schemaRegex = /static\s+schema\s*=\s*\{/g;
+        let match;
+        while ((match = schemaRegex.exec(content)) !== null) {
+            schemaMatches.push({ index: match.index });
+        }
         
         // Process in reverse order to maintain correct indices
         for (let i = schemaMatches.length - 1; i >= 0; i--) {

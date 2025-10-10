@@ -91,6 +91,21 @@ class BreakingChangesChecker {
     }
 
     /**
+     * Check if a line is a false positive
+     */
+    isFalsePositive(line, patternName) {
+        // Filter out common false positives for .keys() and .entries()
+        if (patternName === 'RealmObject.keys()' || patternName === 'RealmObject.entries()') {
+            // Exclude Array.keys(), Map.keys(), Set.keys(), etc.
+            if (line.match(/Array\([^)]*\)\.keys\(\)/)) return true;  // Array(n).keys()
+            if (line.match(/\[\.\.\..*\.keys\(\)\]/)) return true;     // [...map.keys()]
+            if (line.match(/this\.\w*(Map|Set)\.keys\(\)/)) return true; // this.someMap.keys()
+            if (line.match(/this\.\w*(Map|Set)\.entries\(\)/)) return true;
+        }
+        return false;
+    }
+
+    /**
      * Check a single file
      */
     checkFile(filePath) {
@@ -116,13 +131,20 @@ class BreakingChangesChecker {
                     }
                 }
 
+                const codeSnippet = lines[lineNumber - 1].trim();
+                
+                // Skip false positives
+                if (this.isFalsePositive(codeSnippet, name)) {
+                    continue;
+                }
+
                 this.findings.push({
                     file: relativePath,
                     line: lineNumber,
                     pattern: name,
                     fix: fix,
                     severity: severity,
-                    codeSnippet: lines[lineNumber - 1].trim(),
+                    codeSnippet: codeSnippet,
                     context: context
                 });
             }
