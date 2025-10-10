@@ -18,8 +18,8 @@ class Task extends BaseEntity {
         properties: {
             uuid: "string",
             name: "string",
-            taskType: "TaskType",
-            taskStatus: "TaskStatus",
+            taskType: { type: 'object', objectType: 'TaskType' },
+            taskStatus: { type: 'object', objectType: 'TaskStatus' },
             scheduledOn: {type: "date"},
             completedOn: {type: "date", optional: true},
             metadata: {type: "list", objectType: "Observation"},

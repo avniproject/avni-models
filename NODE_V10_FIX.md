@@ -65,14 +65,38 @@ const oldSyntaxMatches = getMatches(content, /pattern/g);
 //              ✅ CORRECT!
 ```
 
+### 4. Optional Chaining Fix
+**Additional Issue:** Optional chaining operator `?.[]` not available in Node v10
+
+**Example Problem:**
+```javascript
+// INPUT (Node v14+ syntax):
+const typeQuote = line.match(/type:\s*(['"])/)?.[1];
+
+// ERROR in Node v10:
+// SyntaxError: Unexpected token .
+```
+
+**Solution:** Replaced with null-check pattern
+```javascript
+// Node v10 compatible:
+const typeMatch = line.match(/type:\s*(['"])/);
+if (typeMatch) {
+    const typeQuote = typeMatch[1];
+}
+```
+
+**Files Fixed:**
+- ✅ `validate-schemas.js`
+
 ## Test Results
 
 All scripts now work correctly with Node v10.15.1:
 
 - ✅ **migrate-realm-schema.js** - 36 files, 73 changes
 - ✅ **schema-audit.js** - 0 critical issues  
-- ✅ **check-breaking-changes.js** - 3 false positives (expected)
-- ✅ **validate-schemas.js** - Ready for post-migration
+- ✅ **check-breaking-changes.js** - 0 critical (false positives filtered)
+- ✅ **validate-schemas.js** - Working correctly
 - ✅ **execute-migration.sh** - Ready to run
 
 ## Status

@@ -200,17 +200,22 @@ class SchemaValidator {
                 }
             }
 
-            // Check for mismatched quotes
+            // Check for mismatched quotes (Node v10 compatible)
             if (line.match(/type:\s*['"][^'"]*['"]/) && line.match(/objectType:\s*['"][^'"]*['"]/)) {
-                const typeQuote = line.match(/type:\s*(['"])/)?.[1];
-                const objectTypeQuote = line.match(/objectType:\s*(['"])/)?.[1];
+                const typeMatch = line.match(/type:\s*(['"])/);
+                const objectTypeMatch = line.match(/objectType:\s*(['"])/);
                 
-                if (typeQuote !== objectTypeQuote) {
-                    issues.push({
-                        line: idx + 1,
-                        message: 'Inconsistent quote styles',
-                        fix: 'Use consistent quotes (all single or all double)'
-                    });
+                if (typeMatch && objectTypeMatch) {
+                    const typeQuote = typeMatch[1];
+                    const objectTypeQuote = objectTypeMatch[1];
+                    
+                    if (typeQuote !== objectTypeQuote) {
+                        issues.push({
+                            line: idx + 1,
+                            message: 'Inconsistent quote styles',
+                            fix: 'Use consistent quotes (all single or all double)'
+                        });
+                    }
                 }
             }
         });

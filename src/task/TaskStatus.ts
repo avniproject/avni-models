@@ -13,7 +13,7 @@ class TaskStatus extends BaseEntity {
             uuid: "string",
             name: "string",
             isTerminal: {type: 'bool', default: false},
-            taskType: "TaskType",
+            taskType: { type: 'object', objectType: 'TaskType' },
             voided: {type: 'bool', default: false},
         },
     };

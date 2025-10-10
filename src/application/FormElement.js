@@ -26,14 +26,14 @@ class FormElement extends BaseEntity {
             displayOrder: "double",
             mandatory: "bool",
             keyValues: {type: "list", objectType: SchemaNames.KeyValue},
-            concept: "Concept",
+            concept: { type: 'object', objectType: 'Concept' },
             type: {type: "string", optional: true},
-            formElementGroup: "FormElementGroup",
+            formElementGroup: { type: 'object', objectType: 'FormElementGroup' },
             validFormat: {type: SchemaNames.Format, optional: true},
             voided: {type: "bool", default: false},
             rule: {type: "string", optional: true},
             groupUuid: {type: "string", optional: true},
-            documentation: {type: "Documentation", optional: true},
+            documentation: { type: 'object', objectType: 'Documentation', optional: true },
         },
     };
 

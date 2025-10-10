@@ -14,9 +14,9 @@ class DraftEncounter extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      encounterType: "EncounterType",
+      encounterType: { type: 'object', objectType: 'EncounterType' },
       encounterDateTime: {type: "date", optional: true},
-      individual: "Individual",
+      individual: { type: 'object', objectType: 'Individual' },
       observations: {type: "list", objectType: "Observation"},
       encounterLocation: {type: SchemaNames.Point, optional: true},
       name: {type: "string", optional: true},

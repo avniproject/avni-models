@@ -15,10 +15,10 @@ class Checklist extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            detail: "ChecklistDetail",
+            detail: { type: 'object', objectType: 'ChecklistDetail' },
             baseDate: "date",
             items: {type: "list", objectType: "ChecklistItem"},
-            programEnrolment: "ProgramEnrolment",
+            programEnrolment: { type: 'object', objectType: 'ProgramEnrolment' },
             ...AuditFields
         },
     };

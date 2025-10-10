@@ -26,7 +26,7 @@ class ProgramEncounter extends AbstractEncounter {
         properties: {
             uuid: {type: "string"},
             name: {type: "string", optional: true},
-            encounterType: {type: "EncounterType"},
+            encounterType: { type: 'object', objectType: 'EncounterType' },
             earliestVisitDateTime: {type: "date", optional: true},
             maxVisitDateTime: {type: "date", optional: true},
             encounterDateTime: {type: "date", optional: true},
@@ -38,7 +38,7 @@ class ProgramEncounter extends AbstractEncounter {
             cancelLocation: {type: SchemaNames.Point, optional: true},
             voided: {type: "bool", default: false},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},  //Reporting purposes
+            latestEntityApprovalStatus: { type: 'object', objectType: 'EntityApprovalStatus', optional: true },  //Reporting purposes
             ...AuditFields,
             filledBy: {type: "string", optional: true},
             filledByUUID: {type: "string", optional: true}

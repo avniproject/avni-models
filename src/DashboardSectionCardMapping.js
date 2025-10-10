@@ -10,8 +10,8 @@ class DashboardSectionCardMapping extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            dashboardSection: "DashboardSection",
-            card: "ReportCard",
+            dashboardSection: { type: 'object', objectType: 'DashboardSection' },
+            card: { type: 'object', objectType: 'ReportCard' },
             displayOrder: "double",
             voided: {type: "bool", default: false},
         },

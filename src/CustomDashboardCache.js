@@ -11,7 +11,7 @@ class CustomDashboardCache extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            dashboard: "Dashboard",
+            dashboard: { type: 'object', objectType: 'Dashboard' },
             updatedAt: {type: "date", optional: true},
             selectedValuesJSON: "string",
             filterApplied: "bool",

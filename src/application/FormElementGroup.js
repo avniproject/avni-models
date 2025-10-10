@@ -17,7 +17,7 @@ class FormElementGroup extends BaseEntity {
       name: "string",
       displayOrder: "double",
       formElements: { type: "list", objectType: "FormElement" },
-      form: "Form",
+      form: { type: 'object', objectType: 'Form' },
       voided: { type: "bool", default: false },
       rule: { type: "string", optional: true },
       startTime: {type: 'int', optional: true},

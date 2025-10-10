@@ -9,7 +9,7 @@ class DashboardFilter extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      dashboard: "Dashboard",
+      dashboard: { type: 'object', objectType: 'Dashboard' },
       name: "string",
       filterConfig: "string",
       voided: {type: "bool", default: false}

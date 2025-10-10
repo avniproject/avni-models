@@ -13,12 +13,12 @@ export default class IdentifierAssignment extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            identifierSource: "IdentifierSource",
+            identifierSource: { type: 'object', objectType: 'IdentifierSource' },
             identifier: "string",
             assignmentOrder: "double",
-            individual: {type: "Individual", optional: true},
+            individual: { type: 'object', objectType: 'Individual', optional: true },
             voided: {type: "bool", default: false},
-            programEnrolment: {type: "ProgramEnrolment", optional: true},
+            programEnrolment: { type: 'object', objectType: 'ProgramEnrolment', optional: true },
             used: {type: "bool", default: false, optional: false}, // required to maintain state for deleted (https://github.com/avniproject/avni-client/issues/1092#issuecomment-1767632083) and draft (https://github.com/avniproject/avni-client/issues/1356) entities
             ...AuditFields
         },

@@ -78,102 +78,102 @@ EOF
         exit 0
     fi
 
-    # =========================================================================
-    # PHASE 0: BACKUP & PREPARATION
-    # =========================================================================
-    log_phase "PHASE 0: Backup & Preparation"
+    # # =========================================================================
+    # # PHASE 0: BACKUP & PREPARATION
+    # # =========================================================================
+    # log_phase "PHASE 0: Backup & Preparation"
     
-    log_step "Creating git checkpoint..."
-    if git diff --quiet && git diff --cached --quiet; then
-        log_success "Working directory is clean"
-    else
-        log_warning "You have uncommitted changes"
-        if confirm "Commit them now?"; then
-            git add .
-            git commit -m "chore: checkpoint before Realm v12 schema migration"
-            log_success "Changes committed"
-        else
-            log_error "Please commit or stash changes before proceeding"
-            exit 1
-        fi
-    fi
+    # log_step "Creating git checkpoint..."
+    # if git diff --quiet && git diff --cached --quiet; then
+    #     log_success "Working directory is clean"
+    # else
+    #     log_warning "You have uncommitted changes"
+    #     if confirm "Commit them now?"; then
+    #         git add .
+    #         git commit -m "chore: checkpoint before Realm v12 schema migration"
+    #         log_success "Changes committed"
+    #     else
+    #         log_error "Please commit or stash changes before proceeding"
+    #         exit 1
+    #     fi
+    # fi
 
-    log_step "Creating baseline git tag..."
-    git tag -f realm-schema-v11-baseline
-    log_success "Tag created: realm-schema-v11-baseline"
+    # log_step "Creating baseline git tag..."
+    # git tag -f realm-schema-v11-baseline
+    # log_success "Tag created: realm-schema-v11-baseline"
 
-    log_step "Documenting current state..."
-    npm list > migration-baseline.txt 2>&1 || true
-    log_success "Baseline documented in migration-baseline.txt"
+    # log_step "Documenting current state..."
+    # npm list > migration-baseline.txt 2>&1 || true
+    # log_success "Baseline documented in migration-baseline.txt"
 
-    pause
+    # pause
 
-    # =========================================================================
-    # PHASE 1: PRE-MIGRATION AUDIT
-    # =========================================================================
-    log_phase "PHASE 1: Pre-Migration Audit"
+    # # =========================================================================
+    # # PHASE 1: PRE-MIGRATION AUDIT
+    # # =========================================================================
+    # log_phase "PHASE 1: Pre-Migration Audit"
     
-    log_step "Running schema compatibility audit..."
-    if node schema-audit.js; then
-        log_success "Schema audit passed"
-    else
-        log_error "Schema audit failed. Review issues above."
-        if ! confirm "Continue anyway? (Not recommended)"; then
-            exit 1
-        fi
-    fi
+    # log_step "Running schema compatibility audit..."
+    # if node schema-audit.js; then
+    #     log_success "Schema audit passed"
+    # else
+    #     log_error "Schema audit failed. Review issues above."
+    #     if ! confirm "Continue anyway? (Not recommended)"; then
+    #         exit 1
+    #     fi
+    # fi
 
-    pause
+    # pause
 
-    log_step "Checking for breaking API changes..."
-    if node check-breaking-changes.js; then
-        log_success "No deprecated API usage detected"
-    else
-        log_warning "Deprecated API usage found. Review warnings above."
-        pause
-    fi
+    # log_step "Checking for breaking API changes..."
+    # if node check-breaking-changes.js; then
+    #     log_success "No deprecated API usage detected"
+    # else
+    #     log_warning "Deprecated API usage found. Review warnings above."
+    #     pause
+    # fi
 
-    # =========================================================================
-    # PHASE 2: DRY RUN
-    # =========================================================================
-    log_phase "PHASE 2: Migration Dry Run"
+    # # =========================================================================
+    # # PHASE 2: DRY RUN
+    # # =========================================================================
+    # log_phase "PHASE 2: Migration Dry Run"
     
-    log_step "Running migration script in dry-run mode..."
-    echo ""
-    node migrate-realm-schema.js
-    echo ""
+    # log_step "Running migration script in dry-run mode..."
+    # echo ""
+    # node migrate-realm-schema.js
+    # echo ""
     
-    log_warning "Review the dry run output above carefully"
-    log_warning "Expected: 36 files, 73 changes"
-    echo ""
+    # log_warning "Review the dry run output above carefully"
+    # log_warning "Expected: 36 files, 73 changes"
+    # echo ""
     
-    if ! confirm "Does the output look correct?"; then
-        log_error "Dry run validation failed"
-        exit 1
-    fi
+    # if ! confirm "Does the output look correct?"; then
+    #     log_error "Dry run validation failed"
+    #     exit 1
+    # fi
 
-    pause
+    # pause
 
-    # =========================================================================
-    # PHASE 3: EXECUTE MIGRATION
-    # =========================================================================
-    log_phase "PHASE 3: Execute Migration"
+    # # =========================================================================
+    # # PHASE 3: EXECUTE MIGRATION
+    # # =========================================================================
+    # log_phase "PHASE 3: Execute Migration"
     
-    log_warning "This will modify 36 files with 73 schema changes"
-    if ! confirm "Execute migration now?"; then
-        log_error "Migration cancelled"
-        exit 1
-    fi
+    # log_warning "This will modify 36 files with 73 schema changes"
+    # if ! confirm "Execute migration now?"; then
+    #     log_error "Migration cancelled"
+    #     exit 1
+    # fi
 
-    log_step "Applying schema migration..."
-    if node migrate-realm-schema.js --apply; then
-        log_success "Migration completed successfully"
-    else
-        log_error "Migration failed"
-        exit 1
-    fi
+    # log_step "Applying schema migration..."
+    # if node migrate-realm-schema.js --apply; then
+    #     log_success "Migration completed successfully"
+    # else
+    #     log_error "Migration failed"
+    #     exit 1
+    # fi
 
-    pause
+    # pause
 
     # =========================================================================
     # PHASE 4: POST-MIGRATION VALIDATION

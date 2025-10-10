@@ -8,8 +8,8 @@ class GroupPrivileges extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      group: "Groups",
-      privilege: "Privilege",
+      group: { type: 'object', objectType: 'Groups' },
+      privilege: { type: 'object', objectType: 'Privilege' },
       subjectTypeUuid: "string",
       programUuid: "string?",
       programEncounterTypeUuid: "string?",

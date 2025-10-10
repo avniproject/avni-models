@@ -40,7 +40,7 @@ class Individual extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            subjectType: "SubjectType",
+            subjectType: { type: 'object', objectType: 'SubjectType' },
             name: "string",
             firstName: "string",
             middleName: {type: "string", optional: true},
@@ -48,9 +48,9 @@ class Individual extends BaseEntity {
             profilePicture: {type: "string", optional: true},
             dateOfBirth: {type: "date", optional: true},
             dateOfBirthVerified: {type: "bool", optional: true},
-            gender: {type: "Gender", optional: true},
+            gender: { type: 'object', objectType: 'Gender', optional: true },
             registrationDate: "date",
-            lowestAddressLevel: "AddressLevel",
+            lowestAddressLevel: { type: 'object', objectType: 'AddressLevel' },
             voided: {type: "bool", default: false},
             enrolments: {type: "list", objectType: SchemaNames.ProgramEnrolment},
             encounters: {type: "list", objectType: SchemaNames.Encounter},
@@ -61,7 +61,7 @@ class Individual extends BaseEntity {
             comments: {type: "list", objectType: "Comment"},
             groups: {type: "list", objectType: "GroupSubject"},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}, //Reporting purposes
+            latestEntityApprovalStatus: { type: 'object', objectType: 'EntityApprovalStatus', optional: true }, //Reporting purposes
             ...AuditFields
         }
     };
