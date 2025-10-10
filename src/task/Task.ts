@@ -23,7 +23,7 @@ class Task extends BaseEntity {
             scheduledOn: {type: "date"},
             completedOn: {type: "date", optional: true},
             metadata: {type: "list", objectType: "Observation"},
-            subject: {type: 'Individual', optional: true},
+            subject: { type: 'object', objectType: 'Individual', optional: true },
             observations: {type: "list", objectType: "Observation"},
             voided: {type: 'bool', default: false},
             ...AuditFields
