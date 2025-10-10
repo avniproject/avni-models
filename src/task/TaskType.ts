@@ -6,7 +6,7 @@ import SchemaNames from "../SchemaNames";
 
 class TaskType extends BaseEntity {
   static schema = {
-    name: SchemaNames.TaskType,
+    name: "TaskType",
     primaryKey: "uuid",
     properties: {
       uuid: "string",

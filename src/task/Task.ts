@@ -13,7 +13,7 @@ import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 
 class Task extends BaseEntity {
     static schema = {
-        name: SchemaNames.Task,
+        name: "Task",
         primaryKey: "uuid",
         properties: {
             uuid: "string",

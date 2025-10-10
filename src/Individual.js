@@ -57,7 +57,7 @@ class Individual extends BaseEntity {
             observations: {type: "list", objectType: "Observation"},
             relationships: {type: "list", objectType: "IndividualRelationship"},
             groupSubjects: {type: "list", objectType: "GroupSubject"},
-            registrationLocation: {type: SchemaNames.Point, optional: true},
+            registrationLocation: { type: 'object', objectType: 'Point', optional: true },
             comments: {type: "list", objectType: "Comment"},
             groups: {type: "list", objectType: "GroupSubject"},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},

@@ -18,13 +18,13 @@ class DraftEncounter extends BaseEntity {
       encounterDateTime: {type: "date", optional: true},
       individual: { type: 'object', objectType: 'Individual' },
       observations: {type: "list", objectType: "Observation"},
-      encounterLocation: {type: SchemaNames.Point, optional: true},
+      encounterLocation: { type: 'object', objectType: 'Point', optional: true },
       name: {type: "string", optional: true},
       earliestVisitDateTime: {type: "date", optional: true},
       maxVisitDateTime: {type: "date", optional: true},
       cancelDateTime: {type: "date", optional: true},
       cancelObservations: {type: "list", objectType: "Observation"},
-      cancelLocation: {type: SchemaNames.Point, optional: true},
+      cancelLocation: { type: 'object', objectType: 'Point', optional: true },
       voided: {type: "bool", default: false}
     },
   };

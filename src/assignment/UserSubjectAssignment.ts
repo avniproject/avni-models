@@ -6,7 +6,7 @@ import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 class UserSubjectAssignment extends BaseEntity {
 
     static schema = {
-        name: SchemaNames.UserSubjectAssignment,
+        name: "UserSubjectAssignment",
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',

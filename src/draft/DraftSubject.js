@@ -25,7 +25,7 @@ class DraftSubject extends BaseEntity {
       registrationDate: "date",
       lowestAddressLevel: { type: 'object', objectType: 'AddressLevel' },
       observations: {type: "list", objectType: "Observation"},
-      registrationLocation: {type: SchemaNames.Point, optional: true},
+      registrationLocation: { type: 'object', objectType: 'Point', optional: true },
       updatedOn: "date",
       totalMembers: {type: "string", optional: true}
     },
