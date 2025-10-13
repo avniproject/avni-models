@@ -10,8 +10,8 @@ class ChecklistItemStatus extends PersistedObject {
     embedded: true,
     properties: {
       state: "string",
-      from: { type: 'object', objectType: 'StringKeyNumericValue' },
-      to: { type: 'object', objectType: 'StringKeyNumericValue' },
+      from: { type: 'object', objectType: 'EmbeddedStringKeyNumericValue' },
+      to: { type: 'object', objectType: 'EmbeddedStringKeyNumericValue' },
       color: { type: "string", default: "yellow" },
       displayOrder: "double",
       start: "int",
