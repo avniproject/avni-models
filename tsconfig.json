@@ -7,7 +7,7 @@
         "noEmit": true,
         "target": "es5",
         "moduleResolution": "node",
-        "lib": ["es2015", "dom"]
+        "lib": ["es2020", "dom"]
     },
     "exclude": [
         "node_modules"
