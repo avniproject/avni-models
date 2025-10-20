@@ -2,6 +2,7 @@ import Settings from "./Settings";
 import LocaleMapping from "./LocaleMapping";
 import Concept from "./Concept";
 import ConceptAnswer from "./ConceptAnswer";
+import ConceptMedia from "./ConceptMedia";
 import Individual from "./Individual";
 import Family from "./Family";
 import AddressLevel, {LocationMapping} from "./AddressLevel";
@@ -97,6 +98,7 @@ const entities = [
     LocaleMapping,
     Settings,
     ConceptAnswer,
+    ConceptMedia,
     Concept,
     EncounterType,
     Gender,
@@ -256,7 +258,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 203,
+        schemaVersion: 204,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -983,6 +985,19 @@ function createRealmConfig() {
             if (oldDB.schemaVersion < 203) {
                 _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
                     if (ess.entityName === 'SubjectType') {
+                        ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
+            }
+            if (oldDB.schemaVersion < 204) {
+                _.forEach(newDB.objects(Concept.schema.name), (concept) => {
+                    if (!concept.media) {
+                        concept.media = [];
+                    }
+                });
+                // Reset EntitySyncStatus for Concept to refetch media URLs
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
+                    if (ess.entityName === 'Concept') {
                         ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
                     }
                 });

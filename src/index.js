@@ -9,6 +9,7 @@ import ChecklistItemStatus from "./ChecklistItemStatus";
 import CompositeDuration from "./CompositeDuration";
 import Concept from "./Concept";
 import ConceptAnswer from "./ConceptAnswer";
+import ConceptMedia from "./ConceptMedia";
 import Duration from "./Duration";
 import Encounter from "./Encounter";
 import EncounterType from "./EncounterType";
@@ -142,6 +143,7 @@ export {
     CompositeDuration,
     Concept,
     ConceptAnswer,
+    ConceptMedia,
     Duration,
     Encounter,
     EncounterType,

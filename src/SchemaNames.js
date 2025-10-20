@@ -39,6 +39,7 @@ class SchemaNames {
   static ChecklistItemStatus = "EmbeddedChecklistItemStatus";
   static Comment = "Comment";
   static Concept = "Concept";
+  static ConceptMedia = "ConceptMedia";
   static EntityApprovalStatus = "EntityApprovalStatus";
   static Point = "Point";
 }

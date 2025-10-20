@@ -4,7 +4,6 @@ import _ from "lodash";
 import MultipleCodedValues from "./observation/MultipleCodedValues";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import PrimitiveValue from "./observation/PrimitiveValue";
-import Duration from "./Duration";
 import CompositeDuration from "./CompositeDuration";
 import KeyValue from "./application/KeyValue";
 import PhoneNumber from "./PhoneNumber";
@@ -12,6 +11,7 @@ import Identifier from "./Identifier";
 import QuestionGroup from "./observation/QuestionGroup";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 import ConceptAnswer from "./ConceptAnswer";
+import ConceptMedia from "./ConceptMedia";
 import SchemaNames from "./SchemaNames";
 
 export default class Concept extends BaseEntity {
@@ -35,8 +35,7 @@ export default class Concept extends BaseEntity {
             unit: {type: "string", optional: true},
             keyValues: {type: "list", objectType: SchemaNames.KeyValue},
             voided: {type: "bool", default: false},
-            mediaUrl: {type: "string", optional: true},
-            mediaType: {type: "string", optional: true},
+            media: {type: "list", objectType: "ConceptMedia"},
         },
     };
 
@@ -84,21 +83,32 @@ export default class Concept extends BaseEntity {
         this.that.unit = x;
     }
 
-    get mediaUrl() {
-        return this.that.mediaUrl;
+    getImageMedia() {
+        return this.media ? this.media.filter(m => m.isImage()) : [];
     }
 
-    set mediaUrl(x) {
-        this.that.mediaUrl = x;
+    getVideoMedia() {
+        return this.media ? this.media.filter(m => m.isVideo()) : [];
     }
 
-    get mediaType() {
-        return this.that.mediaType;
+    hasImage() {
+        return this.getImageMedia().length > 0;
     }
 
-    set mediaType(x) {
-        this.that.mediaType = x;
+    hasVideo() {
+        return this.getVideoMedia().length > 0;
     }
+
+    getImageUrl() {
+        const imageMedia = this.getImageMedia();
+        return imageMedia.length > 0 ? imageMedia[0].url : null;
+    }
+
+    getVideoUrl() {
+        const videoMedia = this.getVideoMedia();
+        return videoMedia.length > 0 ? videoMedia[0].url : null;
+    }
+
 
     get name() {
         return this.that.name;
@@ -130,6 +140,14 @@ export default class Concept extends BaseEntity {
 
     set keyValues(x) {
         this.that.keyValues = this.fromEntityList(x);
+    }
+
+    get media() {
+        return this.toEntityList("media", ConceptMedia);
+    }
+
+    set media(x) {
+        this.that.media = this.fromEntityList(x);
     }
 
     static keys = {
@@ -186,8 +204,12 @@ export default class Concept extends BaseEntity {
         concept.unit = conceptResource.unit;
         concept.voided = conceptResource.voided || false; //This change should be independently deployable irrespective of server
         concept.keyValues = _.map(conceptResource.keyValues, KeyValue.fromResource);
-        concept.mediaUrl = conceptResource.mediaUrl;
-        concept.mediaType = conceptResource.mediaType;
+
+        // Handle media array format from server
+        if (conceptResource.media) {
+            concept.media = _.map(conceptResource.media, ConceptMedia.fromResource);
+        }
+
         return concept;
     }
 
@@ -414,27 +436,13 @@ export default class Concept extends BaseEntity {
         return (keyValue === KeyValue.ContactYesValue);
     }
 
-    isMediaTypeImage() {
-        return this.mediaType === MediaType.Image;
-    }
-
-    hasMediaType() {
-        return !_.isNil(this.mediaType);
-    }
-
-    hasMediaUrl() {
-        return !_.isNil(this.mediaUrl) && this.mediaUrl !== '';
-    }
 
     hasAnswersWithMedia() {
-        return _.some(this.answers, (answer) => answer.concept.hasMediaUrl() || answer.concept.hasMediaType());
+        return _.some(this.answers, (answer) => answer.concept.hasMedia());
     }
 
     hasMedia() {
-        return this.hasMediaUrl() || this.hasMediaType() || this.hasAnswersWithMedia();
+        return this.media && this.media.length > 0 || this.hasAnswersWithMedia();
     }
 }
 
-export const MediaType = {
-    Image: "Image"
-};
