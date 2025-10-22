@@ -35,7 +35,7 @@ export default class Concept extends BaseEntity {
             unit: {type: "string", optional: true},
             keyValues: {type: "list", objectType: SchemaNames.KeyValue},
             voided: {type: "bool", default: false},
-            media: {type: "list", objectType: "ConceptMedia"},
+            media: {type: "list", objectType: "ConceptMedia", default: []},
         },
     };
 
@@ -84,11 +84,11 @@ export default class Concept extends BaseEntity {
     }
 
     getImageMedia() {
-        return this.media ? this.media.filter(m => m.isImage()) : [];
+        return this.media.filter(m => m.isImage());
     }
 
     getVideoMedia() {
-        return this.media ? this.media.filter(m => m.isVideo()) : [];
+        return this.media.filter(m => m.isVideo());
     }
 
     hasImage() {
@@ -442,7 +442,7 @@ export default class Concept extends BaseEntity {
     }
 
     hasMedia() {
-        return this.media && this.media.length > 0 || this.hasAnswersWithMedia();
+        return this.media.length > 0 || this.hasAnswersWithMedia();
     }
 }
 

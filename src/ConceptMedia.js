@@ -4,6 +4,7 @@ import General from "./utility/General";
 export default class ConceptMedia extends BaseEntity {
     static schema = {
         name: "ConceptMedia",
+        embedded: true,
         primaryKey: "uuid",
         properties: {
             uuid: "string",
