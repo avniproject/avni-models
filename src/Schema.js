@@ -990,12 +990,6 @@ function createRealmConfig() {
                 });
             }
             if (oldDB.schemaVersion < 204) {
-                _.forEach(newDB.objects(Concept.schema.name), (concept) => {
-                    if (!concept.media) {
-                        concept.media = [];
-                    }
-                });
-                // Reset EntitySyncStatus for Concept to refetch media URLs
                 _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
                     if (ess.entityName === 'Concept') {
                         ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
