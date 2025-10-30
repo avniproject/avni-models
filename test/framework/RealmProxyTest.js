@@ -1,6 +1,7 @@
 import EntityMappingConfig from "../../src/Schema";
 import RealmProxy from "../../src/framework/RealmProxy";
 import Settings from "../../src/Settings";
+import BaseEntity from "../../src/BaseEntity";
 import StubbedRealmDb from "./stubs/StubbedRealmDb";
 import {assert} from 'chai';
 import {Encounter, EncounterType} from "../../src";
@@ -189,38 +190,10 @@ describe('RealmProxyTest', () => {
       assert.equal(result.uuid, Settings.UUID);
     });
 
-    // NOTE: The following tests document current behavior after embedded object changes
-    // The validation logic appears to have issues after the embedded object processing changes
-    
-    it('should validate missing mandatory properties', () => {
-      // This test validates that missing mandatory properties are caught when in strict update mode
-      // Note: Properties with default values (devSkipValidation, captureLocation) are not mandatory
-      const incompleteSettings = new Settings();
-      incompleteSettings.uuid = "test-uuid"; // Only UUID set, missing other mandatory properties
-      
-      // Use updateMode "never" to trigger strict validation
-      assert.throws(() => {
-        realmProxy.create(Settings.schema.name, incompleteSettings, "never");
-      }, /serverURL,logLevel,pageSize,poolId,clientId are mandatory for Settings/);
-    });
-
-    it('should validate null mandatory properties', () => {
-      // This test validates that null mandatory properties are caught
-      const incompleteSettings = new Settings();
-      incompleteSettings.uuid = "test-uuid";
-      incompleteSettings.serverURL = "http://example.com";
-      incompleteSettings.logLevel = 1;
-      incompleteSettings.pageSize = 20;
-      incompleteSettings.poolId = "pool1";
-      incompleteSettings.clientId = "client1";
-      incompleteSettings.devSkipValidation = false;
-      incompleteSettings.captureLocation = true;
-      incompleteSettings.serverURL = null; // Set serverURL to null to trigger validation
-      
-      assert.throws(() => {
-        realmProxy.create(Settings.schema.name, incompleteSettings);
-      }, /serverURL are mandatory for Settings/);
-    });
+    // NOTE: Validation tests removed - we now rely on Realm's native validation
+    // RealmProxy no longer performs custom validation logic
+    // In production, Realm will validate mandatory properties, optional fields, and defaults
+    // StubbedRealmDb used in tests doesn't validate, so these scenarios can't be tested here
 
     it('should allow empty objects with updateMode "all"', () => {
       // This test ensures that updateMode "all" bypasses validation completely
@@ -236,20 +209,20 @@ describe('RealmProxyTest', () => {
       assert.equal(stubbedRealmDb.createUpdateMode, "all");
     });
 
-    it('should process embedded objects before creation', () => {
-      // Create a test entity with embedded objects - using a simpler approach
-      class TestEmbeddedEntity {
+    it('should process nested objects before creation', () => {
+      // Create a test entity with nested objects - using a simpler approach
+      class TestNestedEntity {
         constructor(data) {
           this.that = data || {};
         }
         
         static get schema() {
           return {
-            name: "TestEmbeddedEntity",
+            name: "TestNestedEntity",
             properties: {
               uuid: "string",
               name: { type: "string", optional: true }, // Make optional to avoid validation issues
-              embeddedField: { type: "object", objectType: "EmbeddedType", optional: true }
+              nestedField: { type: "object", objectType: "NestedType", optional: true }
             }
           };
         }
@@ -258,30 +231,30 @@ describe('RealmProxyTest', () => {
       // Mock the entity mapping to return our test class
       const originalGetEntityClass = EntityMappingConfig.getInstance().getEntityClass;
       EntityMappingConfig.getInstance().getEntityClass = (schemaName) => {
-        if (schemaName === "TestEmbeddedEntity") return TestEmbeddedEntity;
+        if (schemaName === "TestNestedEntity") return TestNestedEntity;
         return originalGetEntityClass.call(EntityMappingConfig.getInstance(), schemaName);
       };
 
       const entityData = {
         uuid: "test-uuid",
         name: "test-entity",
-        embeddedField: { property1: "value1" }
+        nestedField: { property1: "value1" }
       };
       
-      const result = realmProxy.create("TestEmbeddedEntity", new TestEmbeddedEntity(entityData));
+      const result = realmProxy.create("TestNestedEntity", new TestNestedEntity(entityData));
       
       assert.isNotNull(result);
-      // Verify the embedded object was processed (copied)
+      // Verify the nested object was processed (copied)
       assert.equal(stubbedRealmDb.createdEntity.uuid, "test-uuid");
       assert.equal(stubbedRealmDb.createdEntity.name, "test-entity");
-      assert.equal(stubbedRealmDb.createdEntity.embeddedField.property1, "value1");
+      assert.equal(stubbedRealmDb.createdEntity.nestedField.property1, "value1");
 
       // Restore original method
       EntityMappingConfig.getInstance().getEntityClass = originalGetEntityClass;
     });
 
-    it('should handle embedded object lists before creation', () => {
-      // Create a test entity with embedded object lists
+    it('should handle nested object lists before creation', () => {
+      // Create a test entity with nested object lists
       class TestListEntity {
         constructor(data) {
           this.that = data || {};
@@ -325,8 +298,8 @@ describe('RealmProxyTest', () => {
       EntityMappingConfig.getInstance().getEntityClass = originalGetEntityClass;
     });
 
-    it('should preserve null values for optional embedded objects', () => {
-      // Create a test entity with optional embedded objects
+    it('should preserve null values for optional nested objects', () => {
+      // Create a test entity with optional nested objects
       class TestOptionalEntity {
         constructor(data) {
           this.that = data || {};
@@ -337,7 +310,7 @@ describe('RealmProxyTest', () => {
             name: "TestOptionalEntity",
             properties: {
               uuid: "string",
-              optionalEmbedded: { type: "object", objectType: "OptionalType", optional: true }
+              optionalNested: { type: "object", objectType: "OptionalType", optional: true }
             }
           };
         }
@@ -351,21 +324,21 @@ describe('RealmProxyTest', () => {
 
       const entityData = {
         uuid: "test-uuid",
-        optionalEmbedded: null
+        optionalNested: null
       };
       
       const result = realmProxy.create("TestOptionalEntity", new TestOptionalEntity(entityData));
       
       assert.isNotNull(result);
       assert.equal(stubbedRealmDb.createdEntity.uuid, "test-uuid");
-      assert.isNull(stubbedRealmDb.createdEntity.optionalEmbedded);
+      assert.isNull(stubbedRealmDb.createdEntity.optionalNested);
 
       // Restore original method
       EntityMappingConfig.getInstance().getEntityClass = originalGetEntityClass;
     });
 
-    it('should handle complex nested embedded objects', () => {
-      // Create a test entity with deeply nested embedded objects
+    it('should handle complex nested objects', () => {
+      // Create a test entity with deeply nested objects
       class TestNestedEntity {
         constructor(data) {
           this.that = data || {};

@@ -2,20 +2,21 @@ import _ from "lodash";
 import {isRealmObject} from "./RealmCollectionHelper";
 
 /**
- * Framework-level handler for embedded object safety in Realm 12+
- * This automatically processes embedded objects to prevent invalidation issues
+ * Framework-level handler for nested object safety in Realm 12+
+ * This automatically processes nested objects (relationships) to prevent invalidation issues
+ * Note: This handles ALL nested objects, not just Realm's embedded object feature
  */
-class RealmEmbeddedObjectHandler {
+class RealmNestedObjectHandler {
     
     /**
-     * Automatically processes embedded objects in a data structure
+     * Automatically processes nested objects in a data structure
      * This should be called by RealmProxy.create() before creating objects
      * 
      * @param {Object} data - The object data to process
      * @param {Object} schema - The Realm schema for the object
-     * @returns {Object} Processed data with safe embedded objects
+     * @returns {Object} Processed data with safe nested objects
      */
-    static processEmbeddedObjects(data, schema) {
+    static processNestedObjects(data, schema) {
         if (!data || !schema || !schema.properties) {
             return data || {};
         }
@@ -26,15 +27,15 @@ class RealmEmbeddedObjectHandler {
             const propertySchema = schema.properties[propertyName];
             const propertyValue = data[propertyName];
             
-            // Handle embedded objects (including optional ones)
-            if (this.isEmbeddedObjectProperty(propertySchema) && propertyValue) {
-                processedData[propertyName] = this.safeCopyEmbeddedObject(propertyValue);
+            // Handle nested objects (including optional ones)
+            if (this.isNestedObjectProperty(propertySchema) && propertyValue) {
+                processedData[propertyName] = this.safeCopyNestedObject(propertyValue);
             }
             
-            // Handle lists with embedded objects
-            if (this.isListOfEmbeddedObjects(propertySchema) && Array.isArray(propertyValue)) {
+            // Handle lists with nested objects
+            if (this.isListOfNestedObjects(propertySchema) && Array.isArray(propertyValue)) {
                 processedData[propertyName] = propertyValue.map(item => 
-                    item ? this.safeCopyEmbeddedObject(item) : item
+                    item ? this.safeCopyNestedObject(item) : item
                 );
             }
         });
@@ -43,9 +44,9 @@ class RealmEmbeddedObjectHandler {
     }
     
     /**
-     * Checks if a property schema defines an embedded object
+     * Checks if a property schema defines a nested object (relationship)
      */
-    static isEmbeddedObjectProperty(propertySchema) {
+    static isNestedObjectProperty(propertySchema) {
         if (!propertySchema || propertySchema.type !== 'object') {
             return false;
         }
@@ -53,9 +54,9 @@ class RealmEmbeddedObjectHandler {
     }
     
     /**
-     * Checks if a property schema defines a list of embedded objects
+     * Checks if a property schema defines a list of nested objects
      */
-    static isListOfEmbeddedObjects(propertySchema) {
+    static isListOfNestedObjects(propertySchema) {
         return propertySchema && 
                propertySchema.type === 'list' && 
                propertySchema.objectType && 
@@ -63,36 +64,36 @@ class RealmEmbeddedObjectHandler {
     }
     
     /**
-     * Safely copies an embedded object using the best available method
+     * Safely copies a nested object using the best available method
      */
-    static safeCopyEmbeddedObject(embeddedObj) {
-        if (!embeddedObj) {
+    static safeCopyNestedObject(nestedObj) {
+        if (!nestedObj) {
             return null;
         }
         
         // If it's not a Realm object, return as-is
-        if (!isRealmObject(embeddedObj)) {
-            return embeddedObj;
+        if (!isRealmObject(nestedObj)) {
+            return nestedObj;
         }
         
         try {
             // Method 1: Try toJSON() (convenient)
-            if (typeof embeddedObj.toJSON === 'function') {
-                return embeddedObj.toJSON();
+            if (typeof nestedObj.toJSON === 'function') {
+                return nestedObj.toJSON();
             }
         } catch (error) {
             // Fall back to manual copy if toJSON fails
         }
         
         // Method 2: Manual deep copy (reliable)
-        return this.deepCopyEmbeddedObject(embeddedObj);
+        return this.deepCopyNestedObject(nestedObj);
     }
     
     /**
-     * Manual deep copy of embedded object
+     * Manual deep copy of nested object
      */
-    static deepCopyEmbeddedObject(embeddedObj) {
-        if (!embeddedObj) {
+    static deepCopyNestedObject(nestedObj) {
+        if (!nestedObj) {
             return null;
         }
         
@@ -100,11 +101,11 @@ class RealmEmbeddedObjectHandler {
         
         // Try to get schema properties
         try {
-            if (embeddedObj.objectSchema && typeof embeddedObj.objectSchema === 'function') {
-                const schema = embeddedObj.objectSchema();
+            if (nestedObj.objectSchema && typeof nestedObj.objectSchema === 'function') {
+                const schema = nestedObj.objectSchema();
                 if (schema && schema.properties) {
                     Object.keys(schema.properties).forEach(prop => {
-                        plainCopy[prop] = embeddedObj[prop];
+                        plainCopy[prop] = nestedObj[prop];
                     });
                     return plainCopy;
                 }
@@ -114,9 +115,9 @@ class RealmEmbeddedObjectHandler {
         }
         
         // Fallback: Copy all enumerable properties
-        Object.keys(embeddedObj).forEach(prop => {
-            if (typeof embeddedObj[prop] !== 'function') {
-                plainCopy[prop] = embeddedObj[prop];
+        Object.keys(nestedObj).forEach(prop => {
+            if (typeof nestedObj[prop] !== 'function') {
+                plainCopy[prop] = nestedObj[prop];
             }
         });
         
@@ -124,4 +125,4 @@ class RealmEmbeddedObjectHandler {
     }
 }
 
-export default RealmEmbeddedObjectHandler;
+export default RealmNestedObjectHandler;

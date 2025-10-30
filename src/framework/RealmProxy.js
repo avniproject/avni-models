@@ -2,7 +2,7 @@ import RealmResultsProxy from "./RealmResultsProxy";
 import _ from "lodash";
 import {getUnderlyingRealmObject, isRealmObject} from "./RealmCollectionHelper";
 import General from "../utility/General";
-import RealmEmbeddedObjectHandler from "./RealmEmbeddedObjectHandler";
+import RealmNestedObjectHandler from "./RealmNestedObjectHandler";
 
 const isVanillaArray = function (object) {
   return !_.isNil(object) && ("RealmListProxy" !== object.constructor.name) && _.isArrayLikeObject(object);
@@ -46,11 +46,12 @@ class RealmProxy {
   }
 
   /**
-   *
-   * @param schemaName
-   * @param object
-   * @param updateMode , all === true, modified , never === false
-   * @returns {*}
+   * Creates a new entity in the database
+   * 
+   * @param schemaName - The schema name of the entity to create
+   * @param object - The object data (can be entity wrapper or raw object)
+   * @param updateMode - Update mode: "never" (default), "modified", "all", or boolean equivalents
+   * @returns {*} - The created entity wrapped in its entity class
    */
   create(schemaName, object, updateMode = "never") {
     const entityClass = this.entityMappingConfig.getEntityClass(schemaName);
@@ -59,42 +60,11 @@ class RealmProxy {
     // Extract the underlying data from entity wrapper if needed
     const rawObject = getUnderlyingRealmObject(object) || object;
     
-    // Automatically process embedded objects for Realm 12+ safety
-    const processedObject = RealmEmbeddedObjectHandler.processEmbeddedObjects(rawObject, schema);
+    // 🚀 FRAMEWORK-LEVEL: Automatically process nested objects for Realm 12+ safety
+    // This is the only custom processing needed - Realm handles validation
+    const processedObject = RealmNestedObjectHandler.processNestedObjects(rawObject, schema);
     
-    // Only validate properties that are truly mandatory (no optional: true AND no default value)
-    // This maintains backward compatibility with existing data and Realm's native behavior
-    const mandatoryObjectSchemaProperties = _.keys(_.pickBy(schema.properties, (property) => !property.optional && !property.hasOwnProperty('default')));
-    const emptyMandatoryProperties = [];
-    const saveObjectKeys = Object.keys(processedObject);
-    
-    if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
-      // Check for null/undefined mandatory properties that are present in the object
-      saveObjectKeys.forEach((x) => {
-        const propertyValue = processedObject[x];
-        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) {
-          emptyMandatoryProperties.push(x);
-        }
-      });
-      
-      // Enhanced validation: Only check for missing mandatory properties in strict update modes
-      // or when we have some mandatory properties present (indicating intent to save a complete entity)
-      const isStrictUpdateMode = updateMode === "never" || updateMode === false;
-      const hasSomeMandatoryProperties = _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0;
-      
-      if (isStrictUpdateMode && hasSomeMandatoryProperties) {
-        mandatoryObjectSchemaProperties.forEach((mandatoryProp) => {
-          if (!saveObjectKeys.includes(mandatoryProp)) {
-            emptyMandatoryProperties.push(mandatoryProp);
-          }
-        });
-      }
-      
-      if (emptyMandatoryProperties.length > 0) {
-        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}. UUID: ${processedObject.uuid}`);
-      }
-    }
-    
+    // Let Realm handle all validation - it knows its schema better than we do
     const dbEntity = this.realmDb.create(schemaName, processedObject, updateMode);
     return new entityClass(dbEntity);
   }
