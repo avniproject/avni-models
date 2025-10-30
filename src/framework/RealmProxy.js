@@ -54,24 +54,45 @@ class RealmProxy {
    */
   create(schemaName, object, updateMode = "never") {
     const entityClass = this.entityMappingConfig.getEntityClass(schemaName);
-    const underlyingObject = getUnderlyingRealmObject(object);
     const schema = entityClass.schema;
     
+    // Extract the underlying data from entity wrapper if needed
+    const rawObject = getUnderlyingRealmObject(object) || object;
+    
     // 🚀 FRAMEWORK-LEVEL: Automatically process embedded objects for Realm 12+ safety
-    const processedObject = RealmEmbeddedObjectHandler.processEmbeddedObjects(underlyingObject, schema);
+    const processedObject = RealmEmbeddedObjectHandler.processEmbeddedObjects(rawObject, schema);
     
     const mandatoryObjectSchemaProperties = _.keys(_.pickBy(schema.properties, (property) => !property.optional));
     const emptyMandatoryProperties = [];
     const saveObjectKeys = Object.keys(processedObject);
+    
     if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
+      // Check for null/undefined mandatory properties that are present in the object
       saveObjectKeys.forEach((x) => {
         const propertyValue = processedObject[x];
-        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x);
+        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) {
+          emptyMandatoryProperties.push(x);
+        }
       });
+      
+      // Enhanced validation: Only check for missing mandatory properties in strict update modes
+      // or when we have some mandatory properties present (indicating intent to save a complete entity)
+      const isStrictUpdateMode = updateMode === "never" || updateMode === false;
+      const hasSomeMandatoryProperties = _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0;
+      
+      if (isStrictUpdateMode && hasSomeMandatoryProperties) {
+        mandatoryObjectSchemaProperties.forEach((mandatoryProp) => {
+          if (!saveObjectKeys.includes(mandatoryProp)) {
+            emptyMandatoryProperties.push(mandatoryProp);
+          }
+        });
+      }
+      
       if (emptyMandatoryProperties.length > 0) {
         throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}. UUID: ${processedObject.uuid}`);
       }
     }
+    
     const dbEntity = this.realmDb.create(schemaName, processedObject, updateMode);
     return new entityClass(dbEntity);
   }
