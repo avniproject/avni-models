@@ -59,10 +59,12 @@ class RealmProxy {
     // Extract the underlying data from entity wrapper if needed
     const rawObject = getUnderlyingRealmObject(object) || object;
     
-    // 🚀 FRAMEWORK-LEVEL: Automatically process embedded objects for Realm 12+ safety
+    // Automatically process embedded objects for Realm 12+ safety
     const processedObject = RealmEmbeddedObjectHandler.processEmbeddedObjects(rawObject, schema);
     
-    const mandatoryObjectSchemaProperties = _.keys(_.pickBy(schema.properties, (property) => !property.optional));
+    // Only validate properties that are truly mandatory (no optional: true AND no default value)
+    // This maintains backward compatibility with existing data and Realm's native behavior
+    const mandatoryObjectSchemaProperties = _.keys(_.pickBy(schema.properties, (property) => !property.optional && !property.hasOwnProperty('default')));
     const emptyMandatoryProperties = [];
     const saveObjectKeys = Object.keys(processedObject);
     

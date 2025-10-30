@@ -194,13 +194,14 @@ describe('RealmProxyTest', () => {
     
     it('should validate missing mandatory properties', () => {
       // This test validates that missing mandatory properties are caught when in strict update mode
+      // Note: Properties with default values (devSkipValidation, captureLocation) are not mandatory
       const incompleteSettings = new Settings();
       incompleteSettings.uuid = "test-uuid"; // Only UUID set, missing other mandatory properties
       
       // Use updateMode "never" to trigger strict validation
       assert.throws(() => {
         realmProxy.create(Settings.schema.name, incompleteSettings, "never");
-      }, /serverURL,logLevel,pageSize,poolId,clientId,devSkipValidation,captureLocation are mandatory for Settings/);
+      }, /serverURL,logLevel,pageSize,poolId,clientId are mandatory for Settings/);
     });
 
     it('should validate null mandatory properties', () => {
