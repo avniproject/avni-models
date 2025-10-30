@@ -2,6 +2,7 @@ import RealmResultsProxy from "./RealmResultsProxy";
 import _ from "lodash";
 import {getUnderlyingRealmObject, isRealmObject} from "./RealmCollectionHelper";
 import General from "../utility/General";
+import RealmEmbeddedObjectHandler from "./RealmEmbeddedObjectHandler";
 
 const isVanillaArray = function (object) {
   return !_.isNil(object) && ("RealmListProxy" !== object.constructor.name) && _.isArrayLikeObject(object);
@@ -47,27 +48,31 @@ class RealmProxy {
   /**
    *
    * @param schemaName
-   * @param properties
+   * @param object
    * @param updateMode , all === true, modified , never === false
    * @returns {*}
    */
-  create(schemaName, properties, updateMode = "never") {
-    const underlyingObject = _.isNil(properties.that) ? properties : properties.that;
+  create(schemaName, object, updateMode = "never") {
     const entityClass = this.entityMappingConfig.getEntityClass(schemaName);
-    const mandatoryObjectSchemaProperties = this.entityMappingConfig.getMandatoryObjectSchemaProperties(schemaName);
+    const underlyingObject = getUnderlyingRealmObject(object);
+    const schema = entityClass.schema;
+    
+    // 🚀 FRAMEWORK-LEVEL: Automatically process embedded objects for Realm 12+ safety
+    const processedObject = RealmEmbeddedObjectHandler.processEmbeddedObjects(underlyingObject, schema);
+    
+    const mandatoryObjectSchemaProperties = _.keys(_.pickBy(schema.properties, (property) => !property.optional));
     const emptyMandatoryProperties = [];
-
-    const saveObjectKeys = Object.keys(underlyingObject);
+    const saveObjectKeys = Object.keys(processedObject);
     if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
       saveObjectKeys.forEach((x) => {
-        const propertyValue = underlyingObject[x];
+        const propertyValue = processedObject[x];
         if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x);
       });
       if (emptyMandatoryProperties.length > 0) {
-        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}. UUID: ${underlyingObject.uuid}`);
+        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}. UUID: ${processedObject.uuid}`);
       }
     }
-    const dbEntity = this.realmDb.create(schemaName, underlyingObject, updateMode);
+    const dbEntity = this.realmDb.create(schemaName, processedObject, updateMode);
     return new entityClass(dbEntity);
   }
 
