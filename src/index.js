@@ -48,6 +48,7 @@ import ReferenceEntity from "./ReferenceEntity";
 import RuleDependency from "./RuleDependency";
 import Rule from "./Rule";
 import Schema from "./Schema";
+import {RealmEmbeddedObjectUtils, EmbeddedObjectPatterns} from "./framework/RealmEmbeddedObjectUtils";
 import Settings from "./Settings";
 import SingleCodedValue from "./observation/SingleCodedValue";
 import SingleSelectFilter from "./application/SingleSelectFilter";
@@ -250,6 +251,8 @@ export {
     MenuItem,
     UserSubjectAssignment,
     RealmProxy,
+    RealmEmbeddedObjectUtils,
+    EmbeddedObjectPatterns,
     ah,
     getUnderlyingRealmCollection,
     getUnderlyingRealmObject,
