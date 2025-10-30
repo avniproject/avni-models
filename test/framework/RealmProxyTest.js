@@ -195,6 +195,62 @@ describe('RealmProxyTest', () => {
     // In production, Realm will validate mandatory properties, optional fields, and defaults
     // StubbedRealmDb used in tests doesn't validate, so these scenarios can't be tested here
 
+    it('should validate nested object processing', () => {
+      // Test that the framework properly processes nested objects without breaking validation
+      // This validates the RealmNestedObjectHandler integration
+      
+      const MockEntity = class extends BaseEntity {
+        static schema = {
+          name: "MockEntity",
+          primaryKey: "uuid",
+          properties: {
+            uuid: "string",
+            name: "string",
+            nestedObject: { type: "object", objectType: "MockNestedEntity" }
+          },
+        };
+      };
+
+      const MockNestedEntity = class extends BaseEntity {
+        static schema = {
+          name: "MockNestedEntity", 
+          primaryKey: "uuid",
+          properties: {
+            uuid: "string",
+            value: "string"
+          },
+        };
+      };
+      
+      // Store original getEntityClass
+      const originalGetEntityClass = realmProxy.entityMappingConfig.getEntityClass;
+      
+      // Register mock entities for testing
+      realmProxy.entityMappingConfig.getEntityClass = (schemaName) => {
+        if (schemaName === "MockEntity") return MockEntity;
+        if (schemaName === "MockNestedEntity") return MockNestedEntity;
+        return originalGetEntityClass.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      try {
+        // Test nested object creation works
+        const testObject = new MockEntity();
+        testObject.uuid = "test-uuid";
+        testObject.name = "test-name";
+        testObject.nestedObject = {
+          uuid: "nested-uuid", 
+          value: "nested-value"
+        };
+        
+        assert.doesNotThrow(() => {
+          realmProxy.create("MockEntity", testObject, "never");
+        });
+      } finally {
+        // Restore original getEntityClass
+        realmProxy.entityMappingConfig.getEntityClass = originalGetEntityClass;
+      }
+    });
+
     it('should allow empty objects with updateMode "all"', () => {
       // This test ensures that updateMode "all" bypasses validation completely
       const emptySettings = new Settings();
