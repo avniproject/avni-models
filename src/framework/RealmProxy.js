@@ -61,10 +61,36 @@ class RealmProxy {
     const rawObject = getUnderlyingRealmObject(object) || object;
     
     // 🚀 FRAMEWORK-LEVEL: Automatically process nested objects for Realm 12+ safety
-    // This is the only custom processing needed - Realm handles validation
     const processedObject = RealmNestedObjectHandler.processNestedObjects(rawObject, schema);
     
-    // Let Realm handle all validation - it knows its schema better than we do
+    // Lightweight validation: Check for null/undefined mandatory properties  
+    // This provides clear error messages for debugging production issues
+    // Validates when:
+    // 1. In strict creation mode ("never" or false), OR
+    // 2. Touching any mandatory property (prevents setting mandatory fields to null)
+    const mandatoryObjectSchemaProperties = this.entityMappingConfig.getMandatoryObjectSchemaProperties(schemaName);
+    const saveObjectKeys = Object.keys(processedObject);
+    
+    if (updateMode === "never" || updateMode === false || 
+        _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
+      const emptyMandatoryProperties = [];
+      
+      saveObjectKeys.forEach((key) => {
+        const propertyValue = processedObject[key];
+        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (mandatoryProp) => mandatoryProp === key)) {
+          emptyMandatoryProperties.push(key);
+        }
+      });
+      
+      if (emptyMandatoryProperties.length > 0) {
+        throw new Error(
+          `${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, ` +
+          `Keys being saved - ${saveObjectKeys.join(",")}. UUID: ${processedObject.uuid}`
+        );
+      }
+    }
+    
+    // Let Realm handle remaining validation (types, constraints, etc.)
     const dbEntity = this.realmDb.create(schemaName, processedObject, updateMode);
     return new entityClass(dbEntity);
   }

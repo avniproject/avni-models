@@ -121,15 +121,14 @@ describe('RealmProxyTest', () => {
       assert.equal(stubbedRealmDb.createUpdateMode, "never");
     });
 
-    it('should create entity with updateMode "all" even with missing mandatory fields', () => {
+    it('should create entity with updateMode "all" when not touching mandatory fields', () => {
       const incompleteSettings = new Settings();
-      // Don't set UUID
+      // Don't set any properties - not touching mandatory fields
+      // This is allowed with updateMode "all" because we're not explicitly setting mandatory fields to null
       
-      // Should not throw error with updateMode "all"
       const result = realmProxy.create(Settings.schema.name, incompleteSettings, "all");
       
       assert.isNotNull(result);
-      // createdEntity is now the raw processed object
       assert.isDefined(stubbedRealmDb.createdEntity);
       assert.equal(stubbedRealmDb.createUpdateMode, "all");
     });
@@ -190,10 +189,214 @@ describe('RealmProxyTest', () => {
       assert.equal(result.uuid, Settings.UUID);
     });
 
-    // NOTE: Validation tests removed - we now rely on Realm's native validation
-    // RealmProxy no longer performs custom validation logic
-    // In production, Realm will validate mandatory properties, optional fields, and defaults
-    // StubbedRealmDb used in tests doesn't validate, so these scenarios can't be tested here
+    // Validation tests for mandatory properties
+    // These tests ensure we catch real production issues with clear error messages
+    
+    it('should validate missing mandatory property with UUID in error', () => {
+      // Simulates: Error privilege are mandatory for GroupPrivileges... UUID: 4d9d7895-3610-40a0-af4a-c1c473d3d7b6
+      const MockEntity = class extends BaseEntity {
+        static schema = {
+          name: "GroupPrivileges",
+          primaryKey: "uuid",
+          properties: {
+            uuid: "string",
+            group: "string",
+            privilege: "string",  // mandatory
+            allow: "bool"
+          }
+        };
+      };
+      
+      const originalGetEntityClass = realmProxy.entityMappingConfig.getEntityClass;
+      const originalGetMandatory = realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties;
+      
+      realmProxy.entityMappingConfig.getEntityClass = (schemaName) => {
+        if (schemaName === "GroupPrivileges") return MockEntity;
+        return originalGetEntityClass.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = (schemaName) => {
+        if (schemaName === "GroupPrivileges") return ["uuid", "group", "privilege"];
+        return originalGetMandatory.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      try {
+        // Create entity with null mandatory property
+        const entityData = {
+          uuid: "4d9d7895-3610-40a0-af4a-c1c473d3d7b6",
+          group: "test-group",
+          privilege: null,  // null mandatory property
+          allow: true
+        };
+        const incompleteEntity = new MockEntity(entityData);
+        
+        assert.throws(() => {
+          realmProxy.create("GroupPrivileges", incompleteEntity, "never");
+        }, /privilege are mandatory for GroupPrivileges.*UUID: 4d9d7895-3610-40a0-af4a-c1c473d3d7b6/);
+      } finally {
+        realmProxy.entityMappingConfig.getEntityClass = originalGetEntityClass;
+        realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = originalGetMandatory;
+      }
+    });
+
+    it('should validate multiple missing mandatory properties', () => {
+      // Simulates: Error lowestAddressLevel,subjectType are mandatory for Individual
+      const MockEntity = class extends BaseEntity {
+        static schema = {
+          name: "Individual",
+          primaryKey: "uuid",
+          properties: {
+            uuid: "string",
+            firstName: "string",
+            lowestAddressLevel: "string",  // mandatory
+            subjectType: "string"  // mandatory
+          }
+        };
+      };
+      
+      const originalGetEntityClass = realmProxy.entityMappingConfig.getEntityClass;
+      const originalGetMandatory = realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties;
+      
+      realmProxy.entityMappingConfig.getEntityClass = (schemaName) => {
+        if (schemaName === "Individual") return MockEntity;
+        return originalGetEntityClass.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = (schemaName) => {
+        if (schemaName === "Individual") return ["uuid", "firstName", "lowestAddressLevel", "subjectType"];
+        return originalGetMandatory.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      try {
+        // Create entity with multiple null mandatory properties
+        const entityData = {
+          uuid: "491770df-4046-4430-a846-26b7d4789128",
+          firstName: "Test",
+          lowestAddressLevel: null,  // null
+          subjectType: null  // null
+        };
+        const incompleteEntity = new MockEntity(entityData);
+        
+        assert.throws(() => {
+          realmProxy.create("Individual", incompleteEntity, "never");
+        }, /lowestAddressLevel,subjectType are mandatory for Individual/);
+      } finally {
+        realmProxy.entityMappingConfig.getEntityClass = originalGetEntityClass;
+        realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = originalGetMandatory;
+      }
+    });
+
+    it('should validate missing relationship property', () => {
+      // Simulates: Error individualB are mandatory for IndividualRelationship
+      const MockEntity = class extends BaseEntity {
+        static schema = {
+          name: "IndividualRelationship",
+          primaryKey: "uuid",
+          properties: {
+            uuid: "string",
+            relationship: "string",
+            individualA: "string",
+            individualB: "string"  // mandatory relationship
+          }
+        };
+      };
+      
+      const originalGetEntityClass = realmProxy.entityMappingConfig.getEntityClass;
+      const originalGetMandatory = realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties;
+      
+      realmProxy.entityMappingConfig.getEntityClass = (schemaName) => {
+        if (schemaName === "IndividualRelationship") return MockEntity;
+        return originalGetEntityClass.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = (schemaName) => {
+        if (schemaName === "IndividualRelationship") return ["uuid", "relationship", "individualA", "individualB"];
+        return originalGetMandatory.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      try {
+        // Create entity with undefined mandatory relationship
+        const entityData = {
+          uuid: "e649fe3e-723b-4836-bf2c-963569608cd2",
+          relationship: "test-relationship",
+          individualA: "person-a",
+          individualB: undefined  // undefined mandatory relationship
+        };
+        const incompleteEntity = new MockEntity(entityData);
+        
+        assert.throws(() => {
+          realmProxy.create("IndividualRelationship", incompleteEntity, "never");
+        }, /individualB are mandatory for IndividualRelationship.*UUID: e649fe3e-723b-4836-bf2c-963569608cd2/);
+      } finally {
+        realmProxy.entityMappingConfig.getEntityClass = originalGetEntityClass;
+        realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = originalGetMandatory;
+      }
+    });
+
+    it('should validate mandatory properties when touched, regardless of update mode', () => {
+      // Validation triggers when touching mandatory properties to prevent data corruption
+      const MockEntity = class extends BaseEntity {
+        static schema = {
+          name: "TestEntity",
+          primaryKey: "uuid",
+          properties: {
+            uuid: "string",
+            mandatoryField: "string",
+            optionalField: { type: "string", optional: true }
+          }
+        };
+      };
+      
+      const originalGetEntityClass = realmProxy.entityMappingConfig.getEntityClass;
+      const originalGetMandatory = realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties;
+      
+      realmProxy.entityMappingConfig.getEntityClass = (schemaName) => {
+        if (schemaName === "TestEntity") return MockEntity;
+        return originalGetEntityClass.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = (schemaName) => {
+        if (schemaName === "TestEntity") return ["uuid", "mandatoryField"];
+        return originalGetMandatory.call(realmProxy.entityMappingConfig, schemaName);
+      };
+      
+      try {
+        // Should throw with updateMode "never" when mandatory field is null
+        const entityDataNull = {
+          uuid: "test-uuid",
+          mandatoryField: null
+        };
+        const entityNull = new MockEntity(entityDataNull);
+        
+        assert.throws(() => {
+          realmProxy.create("TestEntity", entityNull, "never");
+        }, /mandatoryField are mandatory for TestEntity/);
+        
+        // Should also throw with updateMode false
+        assert.throws(() => {
+          realmProxy.create("TestEntity", entityNull, false);
+        }, /mandatoryField are mandatory for TestEntity/);
+        
+        // Should ALSO throw with updateMode "all" when touching mandatory field with null
+        // This prevents data corruption
+        assert.throws(() => {
+          realmProxy.create("TestEntity", entityNull, "all");
+        }, /mandatoryField are mandatory for TestEntity/);
+        
+        // Should NOT throw with updateMode "all" when NOT touching mandatory fields
+        const entityOptional = new MockEntity({
+          uuid: "test-uuid-2",
+          optionalField: "some value"
+        });
+        
+        assert.doesNotThrow(() => {
+          realmProxy.create("TestEntity", entityOptional, "all");
+        });
+      } finally {
+        realmProxy.entityMappingConfig.getEntityClass = originalGetEntityClass;
+        realmProxy.entityMappingConfig.getMandatoryObjectSchemaProperties = originalGetMandatory;
+      }
+    });
 
     it('should validate nested object processing', () => {
       // Test that the framework properly processes nested objects without breaking validation
@@ -251,16 +454,15 @@ describe('RealmProxyTest', () => {
       }
     });
 
-    it('should allow empty objects with updateMode "all"', () => {
-      // This test ensures that updateMode "all" bypasses validation completely
+    it('should allow empty objects with updateMode "all" when not touching mandatory fields', () => {
+      // updateMode "all" allows updates without touching mandatory fields
+      // Validation only triggers if we explicitly set mandatory fields to null
       const emptySettings = new Settings();
-      // Don't set any properties
+      // Don't set any properties - not touching mandatory fields
       
-      // Should not throw error with updateMode "all"
       const result = realmProxy.create(Settings.schema.name, emptySettings, "all");
       
       assert.isNotNull(result);
-      // createdEntity is now the raw processed object
       assert.isDefined(stubbedRealmDb.createdEntity);
       assert.equal(stubbedRealmDb.createUpdateMode, "all");
     });
