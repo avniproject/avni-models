@@ -5,7 +5,6 @@ export default class ConceptMedia extends BaseEntity {
     static schema = {
         name: "ConceptMedia",
         embedded: true,
-        primaryKey: "uuid",
         properties: {
             uuid: "string",
             url: {type: "string", optional: true},
