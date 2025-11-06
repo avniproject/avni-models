@@ -13,17 +13,17 @@ import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 
 class Task extends BaseEntity {
     static schema = {
-        name: SchemaNames.Task,
+        name: "Task",
         primaryKey: "uuid",
         properties: {
             uuid: "string",
             name: "string",
-            taskType: "TaskType",
-            taskStatus: "TaskStatus",
+            taskType: { type: 'object', objectType: 'TaskType' },
+            taskStatus: { type: 'object', objectType: 'TaskStatus' },
             scheduledOn: {type: "date"},
             completedOn: {type: "date", optional: true},
             metadata: {type: "list", objectType: "Observation"},
-            subject: {type: 'Individual', optional: true},
+            subject: { type: 'object', objectType: 'Individual', optional: true },
             observations: {type: "list", objectType: "Observation"},
             voided: {type: 'bool', default: false},
             ...AuditFields

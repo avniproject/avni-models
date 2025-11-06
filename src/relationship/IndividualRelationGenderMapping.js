@@ -11,8 +11,8 @@ class IndividualRelationGenderMapping extends BaseEntity{
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      relation: "IndividualRelation",
-      gender: "Gender",
+      relation: { type: 'object', objectType: 'IndividualRelation' },
+      gender: { type: 'object', objectType: 'Gender' },
       voided: { type: "bool", default: false },
     },
   };

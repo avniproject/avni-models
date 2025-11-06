@@ -29,19 +29,19 @@ class ProgramEnrolment extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            program: "Program",
+            program: { type: 'object', objectType: 'Program' },
             enrolmentDateTime: "date",
             observations: {type: "list", objectType: "Observation"},
             programExitDateTime: {type: "date", optional: true},
             programExitObservations: {type: "list", objectType: "Observation"},
             encounters: {type: "list", objectType: SchemaNames.ProgramEncounter},
             checklists: {type: "list", objectType: "Checklist"},
-            individual: "Individual",
-            enrolmentLocation: {type: SchemaNames.Point, optional: true},
-            exitLocation: {type: SchemaNames.Point, optional: true},
+            individual: { type: 'object', objectType: 'Individual' },
+            enrolmentLocation: { type: 'object', objectType: 'Point', optional: true },
+            exitLocation: { type: 'object', objectType: 'Point', optional: true },
             voided: {type: "bool", default: false},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},   //Reporting purposes
+            latestEntityApprovalStatus: { type: 'object', objectType: 'EntityApprovalStatus', optional: true },   //Reporting purposes
             ...AuditFields
         },
     };

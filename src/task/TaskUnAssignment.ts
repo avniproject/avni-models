@@ -5,7 +5,7 @@ import {AuditFields, mapAuditFields} from "../utility/AuditUtil";
 
 class TaskUnAssignment extends BaseEntity {
     static schema = {
-        name: SchemaNames.TaskUnAssignment,
+        name: "TaskUnAssignment",
         primaryKey: 'uuid',
         properties: {
             uuid: 'string',

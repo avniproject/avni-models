@@ -14,9 +14,9 @@ class IndividualRelationship extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            relationship: "IndividualRelationshipType",
-            individualA: "Individual",
-            individualB: "Individual",
+            relationship: { type: 'object', objectType: 'IndividualRelationshipType' },
+            individualA: { type: 'object', objectType: 'Individual' },
+            individualB: { type: 'object', objectType: 'Individual' },
             enterDateTime: {type: "date", optional: true},
             exitDateTime: {type: "date", optional: true},
             exitObservations: {type: "list", objectType: "Observation"},

@@ -11,7 +11,7 @@ class VideoTelemetric extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      video: "Video",
+      video: { type: 'object', objectType: 'Video' },
       playerOpenTime: "date",
       playerCloseTime: "date",
       videoStartTime: "double", //in seconds

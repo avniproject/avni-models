@@ -7,13 +7,13 @@ import SchemaNames from "../SchemaNames";
 class TaskStatus extends BaseEntity {
 
     static schema = {
-        name: SchemaNames.TaskStatus,
+        name: "TaskStatus",
         primaryKey: "uuid",
         properties: {
             uuid: "string",
             name: "string",
             isTerminal: {type: 'bool', default: false},
-            taskType: "TaskType",
+            taskType: { type: 'object', objectType: 'TaskType' },
             voided: {type: 'bool', default: false},
         },
     };

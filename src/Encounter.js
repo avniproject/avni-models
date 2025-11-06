@@ -17,20 +17,20 @@ class Encounter extends AbstractEncounter {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      encounterType: "EncounterType",
+      encounterType: { type: 'object', objectType: 'EncounterType' },
       encounterDateTime: {type: "date", optional: true},
-      individual: SchemaNames.Individual,
+      individual: { type: 'object', objectType: 'Individual' },
       observations: {type: "list", objectType: "Observation"},
-      encounterLocation: {type: SchemaNames.Point, optional: true},
+      encounterLocation: { type: 'object', objectType: 'Point', optional: true },
       name: {type: "string", optional: true},
       earliestVisitDateTime: {type: "date", optional: true},
       maxVisitDateTime: {type: "date", optional: true},
       cancelDateTime: {type: "date", optional: true},
       cancelObservations: {type: "list", objectType: "Observation"},
-      cancelLocation: {type: SchemaNames.Point, optional: true},
+      cancelLocation: { type: 'object', objectType: 'Point', optional: true },
       voided: {type: "bool", default: false},
       approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-      latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true}, //Reporting purposes
+      latestEntityApprovalStatus: { type: 'object', objectType: 'EntityApprovalStatus', optional: true }, //Reporting purposes
       ...AuditFields,
       filledBy: {type: "string", optional: true},
       filledByUUID: {type: "string", optional: true}

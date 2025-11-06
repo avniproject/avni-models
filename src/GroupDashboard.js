@@ -12,8 +12,8 @@ class GroupDashboard extends BaseEntity {
             uuid: "string",
             primaryDashboard: {type: "bool", default: false},
             secondaryDashboard: {type: "bool", default: false},
-            group: {type: "Groups", optional: true},
-            dashboard: "Dashboard",
+            group: { type: 'object', objectType: 'Groups', optional: true },
+            dashboard: { type: 'object', objectType: 'Dashboard' },
             voided: {type: "bool", default: false}
         },
     };

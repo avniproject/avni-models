@@ -11,7 +11,7 @@ class DocumentationItem extends BaseEntity {
             content: {type: "string", optional: true},
             language: {type: "string", optional: true},
             contentHtml: {type: "string", optional: true},
-            documentation: {type: 'Documentation'},
+            documentation: {type: 'object', objectType: 'Documentation' },
             voided: {type: "bool", default: false},
         }
     };

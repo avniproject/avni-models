@@ -22,8 +22,8 @@ export class LocationMapping extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      parent: "AddressLevel",
-      child: "AddressLevel",
+      parent: { type: 'object', objectType: 'AddressLevel' },
+      child: { type: 'object', objectType: 'AddressLevel' },
       voided: {type: "bool", default: false},
     },
   };

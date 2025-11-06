@@ -15,8 +15,8 @@ class SubjectProgramEligibility extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            subject: "Individual",
-            program: "Program",
+            subject: { type: 'object', objectType: 'Individual' },
+            program: { type: 'object', objectType: 'Program' },
             checkDate: "date",
             eligible: {type: "bool", default: false},
             observations: {type: "list", objectType: "Observation"},

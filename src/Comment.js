@@ -14,12 +14,12 @@ class Comment extends BaseEntity {
         properties: {
             uuid: "string",
             text: "string",
-            subject: "Individual",
+            subject: { type: 'object', objectType: 'Individual' },
             displayUsername: "string",
             createdByUsername: "string",
             createdDateTime: "date",
             lastModifiedDateTime: "date",
-            commentThread: "CommentThread",
+            commentThread: { type: 'object', objectType: 'CommentThread' },
             voided: {type: "bool", default: false},
             ...AuditFields
         },

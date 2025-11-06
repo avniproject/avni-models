@@ -1,0 +1,21 @@
+Upgrade to Realm v12.14.2 with validation
+
+Required changes for Realm v12 compatibility:
+- Realm: 11.23.0 → 12.14.2
+- TypeScript: 3.7.4 → 5.0.0 (for v12 type definitions)
+- Node: v10 → v18 (minimum runtime requirement)
+- tsconfig: ES2020 libs for BigInt/AsyncGenerator support
+
+Validation:
+- 86 schemas validated for v12 compatibility
+- All list properties have explicit objectType
+- Custom proxy wrappers tested and working
+- Migrated 1.4M+ observations successfully
+
+Files:
+- package.json: Updated dependencies
+- tsconfig.json: ES2020 library support
+- .nvmrc: Node v18 requirement
+- scripts/validateSchemas.js: Schema validator
+- test/framework/RealmV12CompatibilityTest.js: Compatibility tests
+- REALM_V12_NOTES.md: Upgrade documentation

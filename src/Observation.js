@@ -19,7 +19,7 @@ class Observation extends PersistedObject {
     static schema = {
         name: "Observation",
         properties: {
-            concept: "Concept",
+            concept: { type: 'object', objectType: 'Concept' },
             valueJSON: "string",
         },
     };

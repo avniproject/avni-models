@@ -22,12 +22,12 @@ class ChecklistItem extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            detail: "ChecklistItemDetail",
+            detail: { type: 'object', objectType: 'ChecklistItemDetail' },
             completionDate: {type: "date", optional: true},
             observations: {type: "list", objectType: "Observation"},
-            checklist: "Checklist",
+            checklist: { type: 'object', objectType: 'Checklist' },
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
-            latestEntityApprovalStatus: {type: "EntityApprovalStatus", optional: true},  //Reporting purposes
+            latestEntityApprovalStatus: { type: 'object', objectType: 'EntityApprovalStatus', optional: true },  //Reporting purposes
             ...AuditFields
         },
     };

@@ -8,7 +8,7 @@ export default class ConceptAnswer extends BaseEntity {
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      concept: "Concept",
+      concept: { type: 'object', objectType: 'Concept' },
       answerOrder: "double",
       abnormal: "bool",
       unique: "bool",

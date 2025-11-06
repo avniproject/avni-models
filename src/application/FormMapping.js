@@ -12,13 +12,13 @@ class FormMapping extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            form: "Form",
-            subjectType: {type: "SubjectType", optional: true},
+            form: { type: 'object', objectType: 'Form' },
+            subjectType: { type: 'object', objectType: 'SubjectType', optional: true },
             entityUUID: {type: "string", optional: true},
             observationsTypeEntityUUID: {type: "string", optional: true},
             voided: {type: "bool", default: false},
             enableApproval: {type: "bool", default: false},
-            taskType: {type: "TaskType", optional: true}
+            taskType: { type: 'object', objectType: 'TaskType', optional: true }
         },
     };
 

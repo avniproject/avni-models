@@ -14,9 +14,9 @@ class GroupSubject extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            groupSubject: "Individual",
-            memberSubject: "Individual",
-            groupRole: "GroupRole",
+            groupSubject: { type: 'object', objectType: 'Individual' },
+            memberSubject: { type: 'object', objectType: 'Individual' },
+            groupRole: { type: 'object', objectType: 'GroupRole' },
             membershipStartDate: "date",
             membershipEndDate: {type: "date", optional: true},
             voided: {type: "bool", default: false},

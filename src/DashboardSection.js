@@ -8,7 +8,7 @@ class DashboardSection extends BaseEntity {
         primaryKey: "uuid",
         properties: {
             uuid: "string",
-            dashboard: "Dashboard",
+            dashboard: { type: 'object', objectType: 'Dashboard' },
             name: {type: "string", optional: true},
             description: {type: "string", optional: true},
             viewType: "string",

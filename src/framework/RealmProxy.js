@@ -2,6 +2,7 @@ import RealmResultsProxy from "./RealmResultsProxy";
 import _ from "lodash";
 import {getUnderlyingRealmObject, isRealmObject} from "./RealmCollectionHelper";
 import General from "../utility/General";
+import RealmNestedObjectHandler from "./RealmNestedObjectHandler";
 
 const isVanillaArray = function (object) {
   return !_.isNil(object) && ("RealmListProxy" !== object.constructor.name) && _.isArrayLikeObject(object);
@@ -45,29 +46,52 @@ class RealmProxy {
   }
 
   /**
-   *
-   * @param schemaName
-   * @param properties
-   * @param updateMode , all === true, modified , never === false
-   * @returns {*}
+   * Creates a new entity in the database
+   * 
+   * @param schemaName - The schema name of the entity to create
+   * @param object - The object data (can be entity wrapper or raw object)
+   * @param updateMode - Update mode: "never" (default), "modified", "all", or boolean equivalents
+   * @returns {*} - The created entity wrapped in its entity class
    */
-  create(schemaName, properties, updateMode = "never") {
-    const underlyingObject = _.isNil(properties.that) ? properties : properties.that;
+  create(schemaName, object, updateMode = "never") {
     const entityClass = this.entityMappingConfig.getEntityClass(schemaName);
+    const schema = entityClass.schema;
+    
+    // Extract the underlying data from entity wrapper if needed
+    const rawObject = getUnderlyingRealmObject(object) || object;
+    
+    // 🚀 FRAMEWORK-LEVEL: Automatically process nested objects for Realm 12+ safety
+    const processedObject = RealmNestedObjectHandler.processNestedObjects(rawObject, schema);
+    
+    // Lightweight validation: Check for null/undefined mandatory properties  
+    // This provides clear error messages for debugging production issues
+    // Validates when:
+    // 1. In strict creation mode ("never" or false), OR
+    // 2. Touching any mandatory property (prevents setting mandatory fields to null)
     const mandatoryObjectSchemaProperties = this.entityMappingConfig.getMandatoryObjectSchemaProperties(schemaName);
-    const emptyMandatoryProperties = [];
-
-    const saveObjectKeys = Object.keys(underlyingObject);
-    if (updateMode === "never" || updateMode === false || _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
-      saveObjectKeys.forEach((x) => {
-        const propertyValue = underlyingObject[x];
-        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (y) => y === x)) emptyMandatoryProperties.push(x);
+    const saveObjectKeys = Object.keys(processedObject);
+    
+    if (updateMode === "never" || updateMode === false || 
+        _.intersection(mandatoryObjectSchemaProperties, saveObjectKeys).length > 0) {
+      const emptyMandatoryProperties = [];
+      
+      saveObjectKeys.forEach((key) => {
+        const propertyValue = processedObject[key];
+        if (_.isNil(propertyValue) && _.some(mandatoryObjectSchemaProperties, (mandatoryProp) => mandatoryProp === key)) {
+          emptyMandatoryProperties.push(key);
+        }
       });
+      
       if (emptyMandatoryProperties.length > 0) {
-        throw new Error(`${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, Keys being saved - ${saveObjectKeys}. UUID: ${underlyingObject.uuid}`);
+        throw new Error(
+          `${emptyMandatoryProperties.join(",")} are mandatory for ${schemaName}, ` +
+          `Keys being saved - ${saveObjectKeys.join(",")}. UUID: ${processedObject.uuid}`
+        );
       }
     }
-    const dbEntity = this.realmDb.create(schemaName, underlyingObject, updateMode);
+    
+    // Let Realm handle remaining validation (types, constraints, etc.)
+    const dbEntity = this.realmDb.create(schemaName, processedObject, updateMode);
     return new entityClass(dbEntity);
   }
 

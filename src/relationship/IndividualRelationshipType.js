@@ -11,8 +11,8 @@ class IndividualRelationshipType extends ReferenceEntity {
     properties: {
       uuid: "string",
       name: "string",
-      individualAIsToBRelation: "IndividualRelation",
-      individualBIsToARelation: "IndividualRelation",
+      individualAIsToBRelation: { type: 'object', objectType: 'IndividualRelation' },
+      individualBIsToARelation: { type: 'object', objectType: 'IndividualRelation' },
       voided: { type: "bool", default: false },
     },
   };

@@ -9,8 +9,8 @@ class GroupRole extends BaseEntity{
     primaryKey: "uuid",
     properties: {
       uuid: "string",
-      groupSubjectType: "SubjectType",
-      memberSubjectType: "SubjectType",
+      groupSubjectType: { type: 'object', objectType: 'SubjectType' },
+      memberSubjectType: { type: 'object', objectType: 'SubjectType' },
       role: "string",
       primary: { type: "bool", default: false },
       maximumNumberOfMembers: "double",

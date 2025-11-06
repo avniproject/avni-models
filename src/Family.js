@@ -24,8 +24,8 @@ class Family extends BaseEntity {
     properties: {
       uuid: "string",
       registrationDate: "date",
-      lowestAddressLevel: "AddressLevel",
-      headOfFamily: "Individual",
+      lowestAddressLevel: { type: 'object', objectType: 'AddressLevel' },
+      headOfFamily: { type: 'object', objectType: 'Individual' },
       typeOfFamily: "string",
       householdNumber: "string",
       members: { type: "list", objectType: "Individual" },

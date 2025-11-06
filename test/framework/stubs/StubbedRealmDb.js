@@ -16,6 +16,13 @@ class StubbedRealmDb {
       this.map.get(type).push(x);
   }
 
+  create(schemaName, object, updateMode) {
+    this.createdEntity = object;
+    this.createUpdateMode = updateMode;
+    this.createSchemaName = schemaName;
+    return object.that || object; // Return the underlying object for entity creation
+  }
+
   delete(object) {
     this.deletedObject = object;
   }
