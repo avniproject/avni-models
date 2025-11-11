@@ -19,7 +19,8 @@ jobs:
               with:
                   node-version: '18'
                   registry-url: 'https://registry.npmjs.org'
-
+            - name: Update npm
+              run: npm install -g npm@latest
             - name: Install yarn
               run: npm install -g yarn
             - run: yarn install
