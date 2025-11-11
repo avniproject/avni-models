@@ -1,0 +1,28 @@
+name: Publish Package
+
+on:
+    push:
+        tags:
+            - 'v*'
+
+permissions:
+    id-token: write  # Required for OIDC
+    contents: read
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '18'
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Install yarn
+              run: npm install -g yarn
+            - run: yarn build
+            - run: yarn validate:schemas
+            - run: yarn test
+            - run: npm publish
