@@ -55,10 +55,7 @@ workflows:
   version: 2
   test_deploy:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /^v.*/
+      - build
 #      - publish:
 #          requires:
 #            - build
