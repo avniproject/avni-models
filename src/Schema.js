@@ -258,7 +258,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 204,
+        schemaVersion: 205,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -993,6 +993,20 @@ function createRealmConfig() {
                 _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
                     if (ess.entityName === 'Concept') {
                         ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
+            }
+
+            if (oldDB.schemaVersion < 205) {
+                _.forEach(newDB.objects("Concept"), (concept) => {
+                    const oldConcept = oldDB.objects("Concept").filtered(`uuid = "${concept.uuid}"`)[0];
+                    if (oldConcept && oldConcept.mediaUrl && oldConcept.mediaType) {
+                        const conceptMedia = {
+                            uuid: General.randomUUID(),
+                            url: oldConcept.mediaUrl,
+                            type: oldConcept.mediaType
+                        };
+                        concept.media.push(conceptMedia);
                     }
                 });
             }
