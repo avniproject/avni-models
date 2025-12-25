@@ -14,6 +14,7 @@ import ObservationsHolder from "./ObservationsHolder";
 import {findMediaObservations} from "./Media";
 import Point from "./geo/Point";
 import SubjectType from "./SubjectType";
+import SubjectLocation from "./SubjectLocation";
 import Observation from "./Observation";
 import GroupSubject from "./GroupSubject";
 import EntityApprovalStatus from "./EntityApprovalStatus";
@@ -58,6 +59,7 @@ class Individual extends BaseEntity {
             relationships: {type: "list", objectType: "IndividualRelationship"},
             groupSubjects: {type: "list", objectType: "GroupSubject"},
             registrationLocation: { type: 'object', objectType: 'Point', optional: true },
+            subjectLocation: { type: 'object', objectType: 'SubjectLocation', optional: true },
             comments: {type: "list", objectType: "Comment"},
             groups: {type: "list", objectType: "GroupSubject"},
             approvalStatuses: {type: "list", objectType: "EntityApprovalStatus"},
@@ -206,6 +208,14 @@ class Individual extends BaseEntity {
         this.that.registrationLocation = this.fromObject(x);
     }
 
+    get subjectLocation() {
+        return this.toEntity("subjectLocation", SubjectLocation);
+    }
+
+    set subjectLocation(x) {
+        this.that.subjectLocation = this.fromObject(x);
+    }
+
     get latestEntityApprovalStatus() {
         return _.maxBy(this.approvalStatuses, 'statusDateTime')
     }
@@ -346,6 +356,10 @@ class Individual extends BaseEntity {
             resource["registrationLocation"] = this.registrationLocation.toResource;
         }
 
+        if (!_.isNil(this.subjectLocation)) {
+            resource["subjectLocation"] = this.subjectLocation.toResource;
+        }
+
         resource["observations"] = [];
         this.observations.forEach((obs) => {
             resource["observations"].push(obs.toResource);
@@ -430,6 +444,8 @@ class Individual extends BaseEntity {
         individual.name = individual.nameString;
         if (!_.isNil(individualResource.registrationLocation))
             individual.registrationLocation = Point.fromResource(individualResource.registrationLocation);
+        if (!_.isNil(individualResource.subjectLocation))
+            individual.subjectLocation = SubjectLocation.fromResource(individualResource.subjectLocation);
         individual.subjectType = subjectType;
         mapAuditFields(individual, individualResource);
         return individual;
@@ -791,6 +807,9 @@ class Individual extends BaseEntity {
         individual.registrationLocation = _.isNil(this.registrationLocation)
             ? null
             : this.registrationLocation.clone();
+        individual.subjectLocation = _.isNil(this.subjectLocation)
+            ? null
+            : this.subjectLocation.clone();
         individual.relationships = this.relationships;
         individual.groupSubjects = this.groupSubjects;
         individual.groups = this.groups;
@@ -1220,6 +1239,7 @@ class Individual extends BaseEntity {
             groups: this.groups,
             voided: this.voided,
             registrationLocation: this.registrationLocation,
+            subjectLocation: this.subjectLocation,
             subjectType: this.subjectType,
             comments: this.comments,
         };

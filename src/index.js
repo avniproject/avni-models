@@ -131,6 +131,7 @@ import Locations from './location/Locations';
 import Range from './reports/Range';
 import ReportCardResult from "./reports/ReportCardResult";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
+import SubjectLocation from "./SubjectLocation";
 
 export {
     AbstractEncounter,
@@ -270,5 +271,6 @@ export {
     Locations,
     Range,
     ReportCardResult,
-    NestedReportCardResult
+    NestedReportCardResult,
+    SubjectLocation
 };
