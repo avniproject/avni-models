@@ -90,10 +90,12 @@ import MigrationsHelper from "./MigrationsHelper";
 import MetaDataService from "./service/MetaDataService";
 import ReportCardResult from "./reports/ReportCardResult";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
+import SubjectLocation from "./SubjectLocation";
 
 const entities = [
     ReportCardResult,
     NestedReportCardResult,
+    SubjectLocation,
     DashboardFilter,
     LocaleMapping,
     Settings,
@@ -258,7 +260,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 205,
+        schemaVersion: 206,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
