@@ -253,6 +253,8 @@ class FormElement extends BaseEntity {
         } else if (this.concept.datatype === Concept.dataType.Date && !moment(value, 'YYYY-MM-DD').isValid() &&
             ((!this.mandatory && !_.isNil(value)) || (this.mandatory))) {
             failure.messageKey = "invalidDateFormat";
+        } else if (this.concept.datatype === Concept.dataType.Date && !_.isNil(value) && moment(value, 'YYYY-MM-DD').isValid() && !this.isDateWithinValidRange(value)) {
+            failure.messageKey = "invalidDate";
         } else if (
             this.mandatory &&
             this.concept.datatype === Concept.dataType.Duration &&
@@ -268,6 +270,14 @@ class FormElement extends BaseEntity {
             return new ValidationResult(true, this.uuid, null);
         }
         return failure;
+    }
+
+    isDateWithinValidRange(date) {
+        if (!date) return true;
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        const currentDate = new Date();
+        const yearDifference = Math.abs(currentDate.getFullYear() - dateObj.getFullYear());
+        return yearDifference <= 2000;
     }
 
     getAnswers() {

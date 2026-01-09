@@ -158,6 +158,41 @@ describe("FormElementTest", () => {
       assertSuccess(createFormElement(dataType, mandatory).validate(undefined));
     });
 
+    it("should return success true for dates within 2000 years range", () => {
+      assertSuccess(createFormElement(dataType, true).validate(new Date('1950-01-01')));
+      assertSuccess(createFormElement(dataType, false).validate(new Date('1950-01-01')));
+    });
+
+    it("should return success false for dates over 2000 years range", () => {
+      const mandatory = false;
+      assertFailure(createFormElement(dataType, true).validate(new Date('0024-01-01')), "invalidDate");
+      assertFailure(createFormElement(dataType, false).validate(new Date('0024-01-01')), "invalidDate");
+
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 2001);
+      assertFailure(createFormElement(dataType, true).validate(futureDate), "invalidDate");
+      assertFailure(createFormElement(dataType, false).validate(futureDate), "invalidDate");
+    });
+
+    it("should validate boundary cases correctly for date range", () => {
+      const currentYear = new Date().getFullYear();
+
+      const exactlyTwoThousandYearsAgo = new Date();
+      exactlyTwoThousandYearsAgo.setFullYear(currentYear - 2000);
+      assertSuccess(createFormElement(dataType, true).validate(exactlyTwoThousandYearsAgo));
+        assertSuccess(createFormElement(dataType, false).validate(exactlyTwoThousandYearsAgo));
+
+      const exactlyTwoThousandYearsFuture = new Date();
+      exactlyTwoThousandYearsFuture.setFullYear(currentYear + 2000);
+      assertSuccess(createFormElement(dataType, true).validate(exactlyTwoThousandYearsFuture));
+        assertSuccess(createFormElement(dataType, false).validate(exactlyTwoThousandYearsFuture));
+
+      const overTwoThousandYearsAgo = new Date();
+      overTwoThousandYearsAgo.setFullYear(currentYear - 2001);
+      assertFailure(createFormElement(dataType, true).validate(overTwoThousandYearsAgo), "invalidDate");
+        assertFailure(createFormElement(dataType, false).validate(overTwoThousandYearsAgo), "invalidDate");
+    });
+
   });
 
   describe("FormElement.validate DateTime Concept", () => {
