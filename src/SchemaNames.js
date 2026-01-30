@@ -1,7 +1,6 @@
 class SchemaNames {
   static Family = "Family";
   static AddressLevel = "AddressLevel";
-  static DraftEncounter = "DraftEncounter";
   static EntitySyncStatus = "EntitySyncStatus";
   static Individual = "Individual";
   static ProgramEnrolment = "ProgramEnrolment";
@@ -20,6 +19,9 @@ class SchemaNames {
   static StringKeyNumericValue = "EmbeddedStringKeyNumericValue";
   static UserSubjectAssignment = "UserSubjectAssignment";
   static DraftSubject = "DraftSubject";
+  static DraftEncounter = "DraftEncounter";
+  static DraftEnrolment = "DraftEnrolment";
+  static DraftProgramEncounter = "DraftProgramEncounter";
   static SubjectProgramEligibility = "SubjectProgramEligibility";
   static IndividualRelation = "IndividualRelation";
   static IndividualRelationGenderMapping = "IndividualRelationGenderMapping";

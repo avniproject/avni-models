@@ -25,7 +25,8 @@ class DraftEncounter extends BaseEntity {
       cancelDateTime: {type: "date", optional: true},
       cancelObservations: {type: "list", objectType: "Observation"},
       cancelLocation: { type: 'object', objectType: 'Point', optional: true },
-      voided: {type: "bool", default: false}
+      voided: {type: "bool", default: false},
+      updatedOn: "date"
     },
   };
 
@@ -121,6 +122,14 @@ class DraftEncounter extends BaseEntity {
       this.that.cancelLocation = this.fromObject(x);
   }
 
+  get updatedOn() {
+      return this.that.updatedOn;
+  }
+
+  set updatedOn(x) {
+      this.that.updatedOn = x;
+  }
+
   static create(encounter) {
     const draftEncounter = new DraftEncounter();
     draftEncounter.uuid = encounter.uuid;
@@ -136,6 +145,7 @@ class DraftEncounter extends BaseEntity {
     draftEncounter.cancelObservations = ObservationsHolder.clone(encounter.cancelObservations);
     draftEncounter.cancelLocation = encounter.cancelLocation;
     draftEncounter.voided = encounter.voided;
+    draftEncounter.updatedOn = new Date();
     return draftEncounter;
   }
 

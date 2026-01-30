@@ -61,6 +61,8 @@ import ReportCard from "./ReportCard";
 import Dashboard from "./Dashboard";
 import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import DraftSubject from './draft/DraftSubject';
+import DraftEnrolment from './draft/DraftEnrolment';
+import DraftProgramEncounter from './draft/DraftProgramEncounter';
 import StandardReportCardType from "./StandardReportCardType";
 import ApprovalStatus from "./ApprovalStatus";
 import EntityApprovalStatus from "./EntityApprovalStatus";
@@ -178,6 +180,8 @@ const entities = [
     Task,
     TaskUnAssignment,
     DraftEncounter,
+    DraftEnrolment,
+    DraftProgramEncounter,
     SubjectProgramEligibility,
     MenuItem,
     UserSubjectAssignment
@@ -260,7 +264,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 206,
+        schemaVersion: 207,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1009,6 +1013,18 @@ function createRealmConfig() {
                             type: oldConcept.mediaType
                         };
                         concept.media.push(conceptMedia);
+                    }
+                });
+            }
+
+            if (oldDB.schemaVersion < 207) {
+                const now = new Date();
+                _.forEach(newDB.objects("DraftEncounter"), (draftEncounter) => {
+                    draftEncounter.updatedOn = now;
+                });
+                _.forEach(newDB.objects("DraftSubject"), (draftSubject) => {
+                    if (!draftSubject.updatedOn) {
+                        draftSubject.updatedOn = now;
                     }
                 });
             }

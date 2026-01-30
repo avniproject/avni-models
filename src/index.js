@@ -114,6 +114,8 @@ import TaskStatus from "./task/TaskStatus";
 import TaskType from "./task/TaskType";
 import TaskUnAssignment from "./task/TaskUnAssignment";
 import DraftEncounter from './draft/DraftEncounter';
+import DraftEnrolment from './draft/DraftEnrolment';
+import DraftProgramEncounter from './draft/DraftProgramEncounter';
 import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import RealmProxy from "./framework/RealmProxy";
@@ -250,6 +252,8 @@ export {
     TaskType,
     TaskUnAssignment,
     DraftEncounter,
+    DraftEnrolment,
+    DraftProgramEncounter,
     SubjectProgramEligibility,
     MenuItem,
     UserSubjectAssignment,
