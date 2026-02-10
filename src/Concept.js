@@ -186,9 +186,10 @@ export default class Concept extends BaseEntity {
         GroupAffiliation: "GroupAffiliation",
         QuestionGroup: "QuestionGroup",
         File: "File",
+        Signature: "Signature",
         Encounter: "Encounter",
         get Media() {
-            return [this.Image, this.ImageV2, this.Video, this.Audio, this.File];
+            return [this.Image, this.ImageV2, this.Video, this.Audio, this.File, this.Signature];
         },
     };
 
@@ -353,7 +354,7 @@ export default class Concept extends BaseEntity {
     }
 
     isMediaConcept() {
-        return _.includes([Concept.dataType.Image, Concept.dataType.ImageV2, Concept.dataType.Video, Concept.dataType.File], this.datatype);
+        return _.includes([Concept.dataType.Image, Concept.dataType.ImageV2, Concept.dataType.Video, Concept.dataType.File, Concept.dataType.Signature], this.datatype);
     }
 
     isMediaSelectConcept() {
