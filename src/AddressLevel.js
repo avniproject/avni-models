@@ -183,7 +183,9 @@ class AddressLevel extends BaseEntity {
   }
 
   static fromResource(resource, entityService) {
-    return AddressLevel.create(resource, entityService);
+    const existing = entityService.findByKey("uuid", resource.uuid, AddressLevel.schema.name);
+    const existingLocationMappings = existing && existing.locationMappings ? existing.locationMappings : [];
+    return AddressLevel.create({...resource, locationMappings: existingLocationMappings}, entityService);
   }
 
   static associateLocationMapping(locationMapping, locationMappingRes, entityService) {
