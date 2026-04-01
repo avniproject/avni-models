@@ -369,6 +369,11 @@ class FormElement extends BaseEntity {
         return _.isNil(unique) ? false : unique.getValue();
     }
 
+    get restrictGalleryUpload() {
+        const restrictGalleryUpload = this.recordByKey("restrictGalleryUpload");
+        return _.isNil(restrictGalleryUpload) ? false : restrictGalleryUpload.getValue();
+    }
+
     get styles() {
         const style = {};
         const backgroundColour = this.recordValueByKey("backgroundColour");
