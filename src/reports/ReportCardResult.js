@@ -92,11 +92,11 @@ class ReportCardResult extends BaseEntity {
         return reportCardResult;
     }
 
-    static fromQueryResult(result, reportCard) {
+    static fromQueryResult(result) {
         const reportCardResult = ReportCardResult.create(result.primaryValue, result.secondaryValue, _.isFunction(result.lineListFunction), result.hasErrorMsg);
         if (!result.hasErrorMsg) {
             reportCardResult.cardName = result.cardName;
-            reportCardResult.cardColor = _.isNil(result.cardColor) ? (reportCard ? reportCard.colour : undefined) : result.cardColor;
+            reportCardResult.cardColor = result.cardColor;
             reportCardResult.textColor = result.textColor;
         }
         return reportCardResult;
