@@ -16,6 +16,9 @@ class ReportCardResult extends BaseEntity {
             reportCard: "string",
             primaryValue: "string",
             secondaryValue: "string",
+            cardName: {type: "string", optional: true},
+            cardColor: {type: "string", optional: true},
+            textColor: {type: "string", optional: true},
         }
     }
 
@@ -55,6 +58,30 @@ class ReportCardResult extends BaseEntity {
         this.that.reportCard = x;
     }
 
+    get cardName() {
+        return this.that.cardName;
+    }
+
+    set cardName(x) {
+        this.that.cardName = x;
+    }
+
+    get cardColor() {
+        return this.that.cardColor;
+    }
+
+    set cardColor(x) {
+        this.that.cardColor = x;
+    }
+
+    get textColor() {
+        return this.that.textColor;
+    }
+
+    set textColor(x) {
+        this.that.textColor = x;
+    }
+
     static create(primaryValue, secondaryValue, clickable, hasErrorMsg = false) {
         const reportCardResult = new ReportCardResult();
         reportCardResult.uuid = General.randomUUID();
@@ -65,8 +92,14 @@ class ReportCardResult extends BaseEntity {
         return reportCardResult;
     }
 
-    static fromQueryResult(result) {
-        return ReportCardResult.create(result.primaryValue, result.secondaryValue, _.isFunction(result.lineListFunction), result.hasErrorMsg);
+    static fromQueryResult(result, reportCard) {
+        const reportCardResult = ReportCardResult.create(result.primaryValue, result.secondaryValue, _.isFunction(result.lineListFunction), result.hasErrorMsg);
+        if (!result.hasErrorMsg) {
+            reportCardResult.cardName = result.cardName;
+            reportCardResult.cardColor = _.isNil(result.cardColor) ? (reportCard ? reportCard.colour : undefined) : result.cardColor;
+            reportCardResult.textColor = result.textColor;
+        }
+        return reportCardResult;
     }
 
     get lineListFunction() {
