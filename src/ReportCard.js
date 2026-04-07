@@ -10,6 +10,11 @@ import Duration from "./Duration";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
 
 class ReportCard extends BaseEntity {
+    static actionTypes = {
+        ViewSubjectProfile: "ViewSubjectProfile",
+        DoVisit: "DoVisit"
+    };
+
     static schema = {
         name: "ReportCard",
         primaryKey: "uuid",
@@ -26,7 +31,8 @@ class ReportCard extends BaseEntity {
             standardReportCardInputSubjectTypes: {type: "list", objectType: "SubjectType"},
             standardReportCardInputPrograms: {type: "list", objectType: "Program"},
             standardReportCardInputEncounterTypes: {type: "list", objectType: "EncounterType"},
-            standardReportCardInputRecentDurationJSON: {type: "string", optional: true}
+            standardReportCardInputRecentDurationJSON: {type: "string", optional: true},
+            action: {type: "string", optional: true},
         },
     };
 
@@ -186,6 +192,8 @@ class ReportCard extends BaseEntity {
         });
         reportCard.setStandardReportCardInputRecentDurationJSON(resource.standardReportCardInputRecentDuration);
 
+        reportCard.action = resource.action || null;
+
         return reportCard;
     }
 
@@ -228,6 +236,15 @@ class ReportCard extends BaseEntity {
             return NestedReportCardResult.create(primaryValue, secondaryValue, false, true, itemKey);
         });
     }
+
+    get action() {
+        return this.that.action;
+    }
+
+    set action(x) {
+        this.that.action = x;
+    }
+
 }
 
 export default ReportCard;
