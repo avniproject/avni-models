@@ -15,6 +15,11 @@ class ReportCard extends BaseEntity {
         DoVisit: "DoVisit"
     };
 
+    static visitTypes = {
+        Scheduled: "Scheduled",
+        Unplanned: "Unplanned"
+    };
+
     static schema = {
         name: "ReportCard",
         primaryKey: "uuid",
@@ -33,6 +38,10 @@ class ReportCard extends BaseEntity {
             standardReportCardInputEncounterTypes: {type: "list", objectType: "EncounterType"},
             standardReportCardInputRecentDurationJSON: {type: "string", optional: true},
             action: {type: "string", optional: true},
+            actionDetailSubjectType: {type: "object", objectType: "SubjectType", optional: true},
+            actionDetailProgram: {type: "object", objectType: "Program", optional: true},
+            actionDetailEncounterType: {type: "object", objectType: "EncounterType", optional: true},
+            actionDetailVisitType: {type: "string", optional: true},
         },
     };
 
@@ -193,6 +202,18 @@ class ReportCard extends BaseEntity {
         reportCard.setStandardReportCardInputRecentDurationJSON(resource.standardReportCardInputRecentDuration);
 
         reportCard.action = resource.action || null;
+        if (resource.actionDetail) {
+            if (resource.actionDetail.subjectTypeUUID) {
+                reportCard.actionDetailSubjectType = entityService.findByUUID(resource.actionDetail.subjectTypeUUID, SubjectType.schema.name);
+            }
+            if (resource.actionDetail.programUUID) {
+                reportCard.actionDetailProgram = entityService.findByUUID(resource.actionDetail.programUUID, Program.schema.name);
+            }
+            if (resource.actionDetail.encounterTypeUUID) {
+                reportCard.actionDetailEncounterType = entityService.findByUUID(resource.actionDetail.encounterTypeUUID, EncounterType.schema.name);
+            }
+            reportCard.actionDetailVisitType = resource.actionDetail.visitType || null;
+        }
 
         return reportCard;
     }
@@ -245,6 +266,45 @@ class ReportCard extends BaseEntity {
         this.that.action = x;
     }
 
+    get actionDetailSubjectType() {
+        return this.toEntity("actionDetailSubjectType", SubjectType);
+    }
+
+    set actionDetailSubjectType(x) {
+        this.that.actionDetailSubjectType = this.fromObject(x);
+    }
+
+    get actionDetailProgram() {
+        return this.toEntity("actionDetailProgram", Program);
+    }
+
+    set actionDetailProgram(x) {
+        this.that.actionDetailProgram = this.fromObject(x);
+    }
+
+    get actionDetailEncounterType() {
+        return this.toEntity("actionDetailEncounterType", EncounterType);
+    }
+
+    set actionDetailEncounterType(x) {
+        this.that.actionDetailEncounterType = this.fromObject(x);
+    }
+
+    get actionDetailVisitType() {
+        return this.that.actionDetailVisitType;
+    }
+
+    set actionDetailVisitType(x) {
+        this.that.actionDetailVisitType = x;
+    }
+
+    isActionDoVisit() {
+        return this.action === ReportCard.actionTypes.DoVisit;
+    }
+
+    isScheduledVisitType() {
+        return this.actionDetailVisitType === ReportCard.visitTypes.Scheduled;
+    }
 }
 
 export default ReportCard;
