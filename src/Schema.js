@@ -58,6 +58,7 @@ import GroupSubject from "./GroupSubject";
 import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
+import CustomCardConfig from "./CustomCardConfig";
 import Dashboard from "./Dashboard";
 import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import DraftSubject from './draft/DraftSubject';
@@ -158,6 +159,7 @@ const entities = [
     DashboardCache,
     CustomDashboardCache,
     LocationHierarchy,
+    CustomCardConfig,
     ReportCard,
     Dashboard,
     DashboardSectionCardMapping,
@@ -264,7 +266,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 208,
+        schemaVersion: 209,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1032,6 +1034,13 @@ function createRealmConfig() {
                 _.forEach(newDB.objects("DraftSubject"), (draftSubject) => {
                     if (!draftSubject.updatedOn) {
                         draftSubject.updatedOn = now;
+                    }
+                });
+            }
+            if (oldDB.schemaVersion < 209) {
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
+                    if (ess.entityName === 'ReportCard') {
+                        ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
                     }
                 });
             }

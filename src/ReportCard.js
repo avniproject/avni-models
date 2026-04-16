@@ -8,6 +8,7 @@ import Program from "./Program";
 import EncounterType from "./EncounterType";
 import Duration from "./Duration";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
+import CustomCardConfig from "./CustomCardConfig";
 
 class ReportCard extends BaseEntity {
     static actionTypes = {
@@ -42,6 +43,7 @@ class ReportCard extends BaseEntity {
             actionDetailProgram: {type: "object", objectType: "Program", optional: true},
             actionDetailEncounterType: {type: "object", objectType: "EncounterType", optional: true},
             actionDetailVisitType: {type: "string", optional: true},
+            customCardConfig: {type: "object", objectType: "CustomCardConfig", optional: true},
         },
     };
 
@@ -215,6 +217,11 @@ class ReportCard extends BaseEntity {
             reportCard.actionDetailVisitType = resource.actionDetail.visitType || null;
         }
 
+        reportCard.customCardConfig = entityService.findByUUID(
+            ResourceUtil.getUUIDFor(resource, "customCardConfigUUID"),
+            CustomCardConfig.schema.name
+        );
+
         return reportCard;
     }
 
@@ -304,6 +311,18 @@ class ReportCard extends BaseEntity {
 
     isScheduledVisitType() {
         return this.actionDetailVisitType === ReportCard.visitTypes.Scheduled;
+    }
+
+    get customCardConfig() {
+        return this.toEntity("customCardConfig", CustomCardConfig);
+    }
+
+    set customCardConfig(x) {
+        this.that.customCardConfig = this.fromObject(x);
+    }
+
+    isFullyCustom() {
+        return !_.isNil(this.customCardConfig);
     }
 }
 

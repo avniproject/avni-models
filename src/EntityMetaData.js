@@ -45,6 +45,7 @@ import GroupSubject from "./GroupSubject";
 import GroupRole from "./GroupRole";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
+import CustomCardConfig from "./CustomCardConfig";
 import Dashboard from "./Dashboard";
 import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import StandardReportCardType from "./StandardReportCardType";
@@ -306,6 +307,8 @@ const locationHierarchy = refData(LocationHierarchy, {
 });
 const reportCard = refData(ReportCard,
     {res: "card", syncWeight: 0, apiVersion: "v2"});
+const customCardConfig = refData(CustomCardConfig,
+    {res: "customCardConfig", syncWeight: 0, apiVersion: "v2"});
 const dashboard = refData(Dashboard, {res: "dashboard", syncWeight: 0, apiVersion: "v2"});
 const dashboardFilter = refData(DashboardFilter, {
     res: 'dashboardFilter',
@@ -472,6 +475,7 @@ class EntityMetaData {
             dashboardFilter,
             dashboard,
             reportCard,
+            customCardConfig,
             standardReportCardType,
             menuItem,
             locationHierarchy,
