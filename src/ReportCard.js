@@ -11,6 +11,13 @@ import NestedReportCardResult from "./reports/NestedReportCardResult";
 import CustomCardConfig from "./CustomCardConfig";
 
 class ReportCard extends BaseEntity {
+    static cardTypes = {
+        standard: "standard",
+        nested: "nested",
+        customData: "customData",
+        fullyCustom: "fullyCustom",
+    };
+
     static actionTypes = {
         ViewSubjectProfile: "ViewSubjectProfile",
         DoVisit: "DoVisit"
@@ -323,6 +330,12 @@ class ReportCard extends BaseEntity {
 
     isFullyCustom() {
         return !_.isNil(this.customCardConfig);
+    }
+
+    static deriveCardType(card) {
+        if (card.customCardConfig) return ReportCard.cardTypes.fullyCustom;
+        if (card.standardReportCardType) return ReportCard.cardTypes.standard;
+        return card.nested ? ReportCard.cardTypes.nested : ReportCard.cardTypes.customData;
     }
 }
 
