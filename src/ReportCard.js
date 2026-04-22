@@ -329,7 +329,7 @@ class ReportCard extends BaseEntity {
     }
 
     isFullyCustom() {
-        return !_.isNil(this.customCardConfig);
+        return !_.isNil(this.customCardConfig) && !this.customCardConfig.voided;
     }
 
     static deriveCardType(card) {
