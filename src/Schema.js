@@ -256,7 +256,7 @@ function migrateEmbeddedObjects(oldDB, newDB,) {
     newDB.deleteModel("StringKeyNumericValue")
 }
 
-const VersionWithEmbeddedMigrationProblem = 185;
+const VersionWithEmbeddedMigrationProblem = 186;
 
 function createRealmConfig() {
     return {

@@ -28,6 +28,11 @@ class ReportCard extends BaseEntity {
         Unplanned: "Unplanned"
     };
 
+    static onActionCompletionTypes = {
+        goToSubjectProfile: "goToSubjectProfile",
+        goToSourceScreen: "goToSourceScreen",
+    };
+
     static schema = {
         name: "ReportCard",
         primaryKey: "uuid",
@@ -50,6 +55,7 @@ class ReportCard extends BaseEntity {
             actionDetailProgram: {type: "object", objectType: "Program", optional: true},
             actionDetailEncounterType: {type: "object", objectType: "EncounterType", optional: true},
             actionDetailVisitType: {type: "string", optional: true},
+            onActionCompletion: {type: "string", optional: true},
             customCardConfig: {type: "object", objectType: "CustomCardConfig", optional: true},
         },
     };
@@ -193,7 +199,7 @@ class ReportCard extends BaseEntity {
 
     static fromResource(resource, entityService) {
         const reportCard = General.assignFields(resource, ReportCard.newReportCard(),
-            ["uuid", "name", "query", "description", "colour", "voided", "nested", "countOfCards"]);
+            ["uuid", "name", "query", "description", "colour", "voided", "nested", "countOfCards", "onActionCompletion"]);
         reportCard.standardReportCardType = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "standardReportCardUUID"),
@@ -310,6 +316,14 @@ class ReportCard extends BaseEntity {
 
     set actionDetailVisitType(x) {
         this.that.actionDetailVisitType = x;
+    }
+
+    get onActionCompletion() {
+        return this.that.onActionCompletion;
+    }
+
+    set onActionCompletion(x) {
+        this.that.onActionCompletion = x;
     }
 
     isActionDoVisit() {
