@@ -66,7 +66,10 @@ class Privilege extends BaseEntity {
     approveEnrolment: "Approve Enrolment",
     approveEncounter: "Approve Encounter",
     approveChecklistItem: "Approve ChecklistItem",
-    viewEditEntitiesOnDataEntryApp: 'View Or Edit Entities On DataEntry App'
+    viewEditEntitiesOnDataEntryApp: 'View Or Edit Entities On DataEntry App',
+    shareSubject: "Share subject",
+    shareEnrolment: "Share enrolment",
+    shareEncounter: "Share encounter",
   };
 
   static PrivilegeType = {
@@ -130,6 +133,9 @@ class Privilege extends BaseEntity {
     EditTaskType: "EditTaskType",
     ViewEditEntitiesOnDataEntryApp: "ViewEditEntitiesOnDataEntryApp",
     DeleteOrganisationConfiguration: "DeleteOrganisationConfiguration",
+    ShareSubject: "ShareSubject",
+    ShareEnrolment: "ShareEnrolment",
+    ShareEncounter: "ShareEncounter",
   }
 
   static privilegeEntityType = {
