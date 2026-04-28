@@ -10,6 +10,7 @@ class CustomCardConfig extends BaseEntity {
             name: "string",
             htmlFileS3Key: "string",
             dataRule: {type: "string", optional: true},
+            translations: {type: "string", optional: true},
             voided: {type: "bool", default: false},
         },
     };
@@ -42,9 +43,35 @@ class CustomCardConfig extends BaseEntity {
         this.that.dataRule = x;
     }
 
+    get translations() {
+        return this.that.translations;
+    }
+
+    set translations(x) {
+        this.that.translations = x;
+    }
+
+    getTranslations() {
+        if (!this.translations) {
+            return {};
+        }
+        try {
+            const parsed = JSON.parse(this.translations);
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
     static fromResource(resource) {
-        return General.assignFields(resource, new CustomCardConfig(),
+        const config = General.assignFields(resource, new CustomCardConfig(),
             ["uuid", "name", "htmlFileS3Key", "dataRule", "voided"]);
+        if (resource && "translations" in resource) {
+            config.translations = resource.translations && typeof resource.translations === 'object'
+                ? JSON.stringify(resource.translations)
+                : null;
+        }
+        return config;
     }
 }
 
