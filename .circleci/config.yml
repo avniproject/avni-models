@@ -14,8 +14,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "package.json" }}
-            - v2-dependencies-
+            - v3-dependencies-{{ checksum "yarn.lock" }}
+            - v3-dependencies-
 
       - run: yarn install
 
@@ -29,12 +29,12 @@ jobs:
 
       - run:
           name: Run Tests
-          command: yarn test
+          command: yarn test-ci
 
       - save_cache:
           paths:
             - node_modules
-          key: v2-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
           root: ~/repo
