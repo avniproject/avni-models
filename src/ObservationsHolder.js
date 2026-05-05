@@ -155,10 +155,14 @@ class ObservationsHolder {
             (a, b) => a.uuid === b.uuid && a.questionGroupIndex === b.questionGroupIndex
         );
         applicableFormElements.forEach((fe) => {
-            if (fe.concept.isCodedConcept() && (!_.isEmpty(fe.answersToShow) || !_.isEmpty(fe.answersToExclude))) {
+            const hasFilters = !_.isEmpty(fe.answersToShow) || !_.isEmpty(fe.answersToExclude);
+            if (!hasFilters) return;
+            if (fe.concept.isCodedConcept()) {
                 fe.isQuestionGroup() ?
                     this.removeNonApplicableAnswersFromQuestionGroup(fe, fe.isSingleSelect(), allFormElements) :
                     this.removeNonApplicableAnswers(fe, fe.isSingleSelect(), this.getObservation(fe.concept));
+            } else if (fe.concept.isSubjectConcept()) {
+                this.removeNonApplicableSubjectAnswers(fe, fe.isSingleSelect(), this.getObservation(fe.concept));
             }
         });
         return _.flatten(inApplicableFormElements.map(fe => this._removeObs(fe))).filter(obs => !_.isEmpty(obs));
@@ -206,6 +210,24 @@ class ObservationsHolder {
             const newObservation = Observation.create(observation.concept, newValue);
             this.observations.push(newObservation);
         }
+    }
+
+    //private
+    removeNonApplicableSubjectAnswers(fe, isSingleSelect, observation) {
+        if (_.isEmpty(observation)) return;
+        const allowedUUIDs = fe.getApplicableSubjectUUIDs();
+        const excludedUUIDs = fe.getExcludedSubjectUUIDs();
+        const currentValues = _.flatten([observation.getValue()]);
+        const applicableValues = _.filter(currentValues, value => {
+            if (allowedUUIDs && !_.includes(allowedUUIDs, value)) return false;
+            if (_.includes(excludedUUIDs, value)) return false;
+            return true;
+        });
+        if (applicableValues.length === currentValues.length) return;
+        ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
+        const newValue = isSingleSelect ? new SingleCodedValue(_.head(applicableValues)) : new MultipleCodedValues(applicableValues);
+        const newObservation = Observation.create(observation.concept, newValue);
+        this.observations.push(newObservation);
     }
 
     /*

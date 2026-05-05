@@ -300,6 +300,15 @@ class FormElement extends BaseEntity {
         return _.map(this.getAnswers(), ca => ca.concept.uuid);
     }
 
+    getApplicableSubjectUUIDs() {
+        if (!_.isEmpty(this.answersToShow)) return [...this.answersToShow];
+        return null;
+    }
+
+    getExcludedSubjectUUIDs() {
+        return _.isEmpty(this.answersToExclude) ? [] : [...this.answersToExclude];
+    }
+
     getAnswerWithConceptName(conceptName) {
         return _.find(this.concept.getAnswers(), (answer) => answer.concept.name === conceptName);
     }
