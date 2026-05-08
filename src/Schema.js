@@ -266,7 +266,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 209,
+        schemaVersion: 210,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1042,6 +1042,16 @@ function createRealmConfig() {
                     if (ess.entityName === 'ReportCard') {
                         ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
                     }
+                });
+            }
+            if (oldDB.schemaVersion < 210) {
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
+                    if (ess.entityName === 'CustomCardConfig') {
+                        ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
+                _.forEach(newDB.objects("CustomCardConfig"), (config) => {
+                    config.translations = null;
                 });
             }
         },
