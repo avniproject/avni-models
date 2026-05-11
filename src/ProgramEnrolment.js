@@ -404,11 +404,11 @@ class ProgramEnrolment extends BaseEntity {
             })
             .value();
     }
-
-    get isActive() {
-        return _.isNil(this.programExitDateTime);
+    /*Fix to isActive */ 
+    isActive(programName) {
+        return this.program.name===programName && _.isNil(this.programExitDateTime) && !this.voided;
     }
-
+    
     addEncounter(programEncounter) {
         if (!_.some(this.encounters, (encounter) => encounter.uuid === programEncounter.uuid))
             this.encounters.push(programEncounter);
