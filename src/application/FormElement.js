@@ -281,7 +281,7 @@ class FormElement extends BaseEntity {
     }
 
     getAnswers() {
-        const allAnswers = this.concept.getAnswers();
+        const allAnswers = this.concept.getAnswers().filter((ca) => !ca.concept.voided);
         if (!_.isEmpty(this.answersToShow)) {
             return _.filter(allAnswers, (allConceptAnswer) => _.includes(this.answersToShow, allConceptAnswer.concept.name));
         } else {
