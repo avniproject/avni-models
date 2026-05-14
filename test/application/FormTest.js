@@ -138,4 +138,39 @@ describe('Form', () => {
     assert.equal(bar2b2Concept.name, orderedObservationsPerFEG[1].sortedObservationsArray[1].concept.name);
 
   });
+
+  describe("share rule fields", () => {
+    it("hasShareRule returns false when shareRule is missing or whitespace", () => {
+      const form = EntityFactory.createForm("f");
+      assert.isFalse(form.hasShareRule());
+      form.shareRule = "   ";
+      assert.isFalse(form.hasShareRule());
+    });
+
+    it("hasShareRule returns true when shareRule has content", () => {
+      const form = EntityFactory.createForm("f");
+      form.shareRule = "({params}) => ({text: 'hi'})";
+      assert.isTrue(form.hasShareRule());
+    });
+
+    it("hasShareTemplate mirrors shareTemplateS3Key presence", () => {
+      const form = EntityFactory.createForm("f");
+      assert.isFalse(form.hasShareTemplate());
+      form.shareTemplateS3Key = "abc.html";
+      assert.isTrue(form.hasShareTemplate());
+    });
+
+    it("getShareTranslations returns parsed object when valid JSON", () => {
+      const form = EntityFactory.createForm("f");
+      form.shareTranslations = JSON.stringify({"shareRule.hi": "Hello"});
+      assert.deepEqual(form.getShareTranslations(), {"shareRule.hi": "Hello"});
+    });
+
+    it("getShareTranslations returns empty object when missing or invalid", () => {
+      const form = EntityFactory.createForm("f");
+      assert.deepEqual(form.getShareTranslations(), {});
+      form.shareTranslations = "not json";
+      assert.deepEqual(form.getShareTranslations(), {});
+    });
+  });
 });

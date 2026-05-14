@@ -323,4 +323,31 @@ describe("FormElementTest", () => {
     const formElement = TestFormElementFactory.create({name: "foo", keyValues: [TestKeyValueFactory.create({key: "unique", value: true})]});
     assert.equal(formElement.isUnique, true);
   });
+
+  describe("FormElement.getAnswers for coded concepts", () => {
+    const buildCodedFE = () => {
+      const concept = EntityFactory.createConcept("Color", Concept.dataType.Coded);
+      EntityFactory.addCodedAnswers(concept, ["Red", "Green", "Blue"]);
+      return EntityFactory.createFormElement("Color FE", false, concept, 1, "SingleSelect");
+    };
+
+    it("returns only answers whose concept name appears in answersToShow", () => {
+      const fe = buildCodedFE();
+      fe.answersToShow = ["Red", "Green"];
+      const names = fe.getAnswers().map(ca => ca.concept.name);
+      assert.deepEqual(names.sort(), ["Green", "Red"]);
+    });
+
+    it("returns all answers when answersToShow is empty", () => {
+      const fe = buildCodedFE();
+      assert.equal(fe.getAnswers().length, 3);
+    });
+
+    it("excludes answers in answersToExclude when answersToShow is empty", () => {
+      const fe = buildCodedFE();
+      fe.answersToExclude = [{concept: {name: "Blue"}}];
+      const names = fe.getAnswers().map(ca => ca.concept.name);
+      assert.deepEqual(names.sort(), ["Green", "Red"]);
+    });
+  });
 });
