@@ -23,7 +23,10 @@ class Form extends BaseEntity {
             visitScheduleRule: {type: "string", optional: true},
             validationRule: {type: "string", optional: true},
             checklistsRule: {type: "string", optional: true},
-            taskScheduleRule: {type: "string", optional: true}
+            taskScheduleRule: {type: "string", optional: true},
+            shareRule: {type: "string", optional: true},
+            shareTemplateS3Key: {type: "string", optional: true},
+            shareTranslations: {type: "string", optional: true}
         },
     };
 
@@ -103,6 +106,48 @@ class Form extends BaseEntity {
         this.that.taskScheduleRule = x;
     }
 
+    get shareRule() {
+        return this.that.shareRule;
+    }
+
+    set shareRule(x) {
+        this.that.shareRule = x;
+    }
+
+    get shareTemplateS3Key() {
+        return this.that.shareTemplateS3Key;
+    }
+
+    set shareTemplateS3Key(x) {
+        this.that.shareTemplateS3Key = x;
+    }
+
+    get shareTranslations() {
+        return this.that.shareTranslations;
+    }
+
+    set shareTranslations(x) {
+        this.that.shareTranslations = x;
+    }
+
+    hasShareRule() {
+        return !_.isEmpty(_.trim(this.shareRule));
+    }
+
+    hasShareTemplate() {
+        return !_.isEmpty(_.trim(this.shareTemplateS3Key));
+    }
+
+    getShareTranslations() {
+        if (!this.shareTranslations) return {};
+        try {
+            const parsed = JSON.parse(this.shareTranslations);
+            return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
     static safeInstance() {
         const form = new Form();
         form.formElementGroups = [];
@@ -117,7 +162,7 @@ class Form extends BaseEntity {
     }
 
     static fromResource(resource, entityService) {
-        return General.assignFields(resource, new Form(), [
+        const form = General.assignFields(resource, new Form(), [
             "uuid",
             "name",
             "formType",
@@ -127,8 +172,16 @@ class Form extends BaseEntity {
             "taskScheduleRule",
             "validationRule",
             "checklistsRule",
-            "taskScheduleRule"
+            "taskScheduleRule",
+            "shareRule",
+            "shareTemplateS3Key"
         ]);
+        if (resource && "shareTranslations" in resource) {
+            form.shareTranslations = resource.shareTranslations && typeof resource.shareTranslations === "object"
+                ? JSON.stringify(resource.shareTranslations)
+                : null;
+        }
+        return form;
     }
 
     static merge = () => BaseEntity.mergeOn("formElementGroups");
