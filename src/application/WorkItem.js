@@ -17,6 +17,12 @@ export default class WorkItem {
     ADD_MEMBER: "ADD_MEMBER",
     HOUSEHOLD: "HOUSEHOLD",
     REMOVE_MEMBER: "REMOVE_MEMBER",
+    SHARE: "SHARE",
+  };
+
+  static shareFormat = {
+    PDF: "pdf",
+    TEXT: "text",
   };
 
   constructor(id, type, parameters) {
@@ -51,6 +57,13 @@ export default class WorkItem {
     }
     if (this.type === WorkItem.type.REMOVE_MEMBER) {
       this.ensureFieldExists("groupSubjectUUID");
+    }
+    if (this.type === WorkItem.type.SHARE) {
+      const format = _.get(this.parameters, "format");
+      assertTrue(
+        format === WorkItem.shareFormat.PDF || format === WorkItem.shareFormat.TEXT,
+        `Work Item id: ${this.id}, type: SHARE, format must be 'pdf' or 'text', got '${format}'`
+      );
     }
   }
 

@@ -48,5 +48,32 @@ describe('WorkItem', () => {
         expect(workItemWithoutType).toThrow('Work item must be one of WorkItem.type');
         expect(encounterWithoutIndividual).toThrow('subjectUUID is mandatory');
         expect(programEncounterWithoutIndividual).toThrow('subjectUUID is mandatory');
-    })
+    });
+
+    describe('SHARE work item', () => {
+        const subjectUUID = '25479684-7ae4-44d8-bfd2-d5321dbc28bc';
+
+        it('accepts pdf format', () => {
+            new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID, format: 'pdf'}).validate();
+        });
+
+        it('accepts text format', () => {
+            new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID, format: 'text'}).validate();
+        });
+
+        it('rejects missing format', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID}).validate();
+            expect(fn).toThrow(/format must be 'pdf' or 'text'/);
+        });
+
+        it('rejects invalid format', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID, format: 'docx'}).validate();
+            expect(fn).toThrow(/format must be 'pdf' or 'text'/);
+        });
+
+        it('rejects missing subjectUUID', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE, {format: 'pdf'}).validate();
+            expect(fn).toThrow('subjectUUID is mandatory');
+        });
+    });
 });
