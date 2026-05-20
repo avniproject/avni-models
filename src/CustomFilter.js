@@ -2,6 +2,7 @@ class CustomFilter {
     static type = {
         Name: "Name",
         Age: "Age",
+        DateOfBirth: "DateOfBirth",
         SearchAll: "SearchAll",
         Gender: "Gender",
         RegistrationDate: "RegistrationDate",
@@ -19,6 +20,7 @@ class CustomFilter {
         const clonedTypes = {...CustomFilter.type};
         delete clonedTypes.Name;
         delete clonedTypes.Age;
+        delete clonedTypes.DateOfBirth;
         delete clonedTypes.SearchAll;
         return clonedTypes;
     }
