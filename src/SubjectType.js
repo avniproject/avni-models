@@ -32,7 +32,8 @@ class SubjectType extends ReferenceEntity {
       lastNameOptional: {type: 'bool', default: false},
       directlyAssignable: {type: 'bool', default: false},
       nameHelpText: {type: "string", optional: true},
-      settings: {type: "string", default: '{}'}
+      settings: {type: "string", default: '{}'},
+      attendanceEnabled: {type: 'bool', default: false}
     }
   };
 
@@ -208,6 +209,14 @@ class SubjectType extends ReferenceEntity {
      this.that.settings = x;
   }
 
+  get attendanceEnabled() {
+      return this.that.attendanceEnabled;
+  }
+
+  set attendanceEnabled(x) {
+      this.that.attendanceEnabled = x;
+  }
+
   static types = {
     Person: 'Person',
     Individual: 'Individual',
@@ -257,6 +266,7 @@ class SubjectType extends ReferenceEntity {
     subjectType.syncRegistrationConcept2 = ResourceUtil.getUUIDFor(operationalSubjectType, 'syncRegistrationConcept2');
     subjectType.nameHelpText = ResourceUtil.getUUIDFor(operationalSubjectType, 'nameHelpText');
     subjectType.settings = !_.isNil(operationalSubjectType.settings) ? JSON.stringify(operationalSubjectType.settings) : '{}';
+    subjectType.attendanceEnabled = !!operationalSubjectType.attendanceEnabled;
     return subjectType;
   }
 
@@ -286,6 +296,7 @@ class SubjectType extends ReferenceEntity {
     cloned.syncRegistrationConcept2 = this.syncRegistrationConcept2;
     cloned.nameHelpText = this.nameHelpText;
     cloned.settings = this.settings;
+    cloned.attendanceEnabled = this.attendanceEnabled;
     return cloned;
   }
 
@@ -323,6 +334,14 @@ class SubjectType extends ReferenceEntity {
 
   getSetting(settingName) {
       return this.getSettings()[settingName];
+  }
+
+  getAttendanceTypes(allAttendanceTypes) {
+      if (_.isEmpty(allAttendanceTypes)) return [];
+      return _.chain(allAttendanceTypes)
+          .filter((at) => at && !at.voided && at.subjectTypeUUID === this.uuid)
+          .sortBy((at) => _.isNil(at.sortOrder) ? 0 : at.sortOrder)
+          .value();
   }
 }
 

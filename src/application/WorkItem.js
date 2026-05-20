@@ -18,6 +18,7 @@ export default class WorkItem {
     HOUSEHOLD: "HOUSEHOLD",
     REMOVE_MEMBER: "REMOVE_MEMBER",
     SHARE: "SHARE",
+    SHARE_SESSION: "SHARE_SESSION",
   };
 
   static shareFormat = {
@@ -36,7 +37,12 @@ export default class WorkItem {
     assertTrue(WorkItem.type[this.type], "Work item must be one of WorkItem.type");
     if (
       !_.includes(
-        [WorkItem.type.REGISTRATION, WorkItem.type.ADD_MEMBER, WorkItem.type.HOUSEHOLD],
+        [
+          WorkItem.type.REGISTRATION,
+          WorkItem.type.ADD_MEMBER,
+          WorkItem.type.HOUSEHOLD,
+          WorkItem.type.SHARE_SESSION,
+        ],
         this.type
       )
     ) {
@@ -59,12 +65,20 @@ export default class WorkItem {
       this.ensureFieldExists("groupSubjectUUID");
     }
     if (this.type === WorkItem.type.SHARE) {
-      const format = _.get(this.parameters, "format");
-      assertTrue(
-        format === WorkItem.shareFormat.PDF || format === WorkItem.shareFormat.TEXT,
-        `Work Item id: ${this.id}, type: SHARE, format must be 'pdf' or 'text', got '${format}'`
-      );
+      this.validateShareFormat();
     }
+    if (this.type === WorkItem.type.SHARE_SESSION) {
+      this.ensureFieldExists("sessionUUID");
+      this.validateShareFormat();
+    }
+  }
+
+  validateShareFormat() {
+    const format = _.get(this.parameters, "format");
+    assertTrue(
+      format === WorkItem.shareFormat.PDF || format === WorkItem.shareFormat.TEXT,
+      `Work Item id: ${this.id}, type: ${this.type}, format must be 'pdf' or 'text', got '${format}'`
+    );
   }
 
   fieldMissingError(field) {

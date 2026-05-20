@@ -44,6 +44,11 @@ class SchemaNames {
   static ConceptMedia = "ConceptMedia";
   static EntityApprovalStatus = "EntityApprovalStatus";
   static Point = "Point";
+  static Calendar = "Calendar";
+  static CalendarDateMarker = "CalendarDateMarker";
+  static AttendanceType = "AttendanceType";
+  static Session = "Session";
+  static AttendanceRecord = "AttendanceRecord";
 }
 
 export default SchemaNames;

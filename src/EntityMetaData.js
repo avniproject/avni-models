@@ -69,6 +69,11 @@ import SubjectProgramEligibility from "./program/SubjectProgramEligibility";
 import MenuItem from "./application/MenuItem";
 import UserSubjectAssignment from "./assignment/UserSubjectAssignment";
 import DashboardFilter from "./reports/DashboardFilter";
+import Calendar from "./Calendar";
+import CalendarDateMarker from "./CalendarDateMarker";
+import AttendanceType from "./AttendanceType";
+import Session from "./Session";
+import AttendanceRecord from "./AttendanceRecord";
 
 const refData = (clazz, {
     res,
@@ -453,6 +458,26 @@ const subjectProgramEligibility = txData(SubjectProgramEligibility, {
 
 const userSubjectAssignment = txData(UserSubjectAssignment, {syncWeight: 0});
 
+// Calendars + Attendance (issue #63). Resource names default to the camelCase of the
+// schema name; if avni-server publishes different REST roots they can be passed via {res, resUrl}.
+const calendar = refData(Calendar, {syncWeight: 1});
+const calendarDateMarker = refData(CalendarDateMarker, {parent: calendar, syncWeight: 1});
+const attendanceType = refData(AttendanceType, {parent: subjectType, syncWeight: 1});
+const session = txData(Session, {
+    parent: individual,
+    syncWeight: 7,
+    privilegeParam: "subjectTypeUuid",
+    privilegeEntity: Privilege.privilegeEntityType.subject,
+    privilegeName: Privilege.privilegeName.editSubject,
+});
+const attendanceRecord = txData(AttendanceRecord, {
+    parent: session,
+    syncWeight: 8,
+    privilegeParam: "subjectTypeUuid",
+    privilegeEntity: Privilege.privilegeEntityType.subject,
+    privilegeName: Privilege.privilegeName.editSubject,
+});
+
 class EntityMetaData {
     schemaName;
     entityName;
@@ -506,6 +531,9 @@ class EntityMetaData {
             program,
             gender,
             groupRole,
+            calendarDateMarker,
+            calendar,
+            attendanceType,
             subjectType,
             conceptAnswer,
             concept,
@@ -534,6 +562,8 @@ class EntityMetaData {
             individualRelationship,
             checklistItem,
             checklist,
+            attendanceRecord,
+            session,
             encounter,
             identifierAssignment,
             programEncounter,
