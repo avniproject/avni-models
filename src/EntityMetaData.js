@@ -464,12 +464,14 @@ const calendar = refData(Calendar, {syncWeight: 1});
 const calendarDateMarker = refData(CalendarDateMarker, {syncWeight: 1});
 const attendanceType = refData(AttendanceType, {syncWeight: 1});
 const session = txData(Session, {
+    resUrl: "session",
     syncWeight: 7,
     privilegeParam: "subjectTypeUuid",
     privilegeEntity: Privilege.privilegeEntityType.subject,
     privilegeName: Privilege.privilegeName.editSubject,
 });
 const attendanceRecord = txData(AttendanceRecord, {
+    resUrl: "attendanceRecord",
     syncWeight: 8,
     privilegeParam: "subjectTypeUuid",
     privilegeEntity: Privilege.privilegeEntityType.subject,
