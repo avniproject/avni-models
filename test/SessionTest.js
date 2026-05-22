@@ -343,6 +343,14 @@ describe("Session", () => {
       expect(session.reasonConceptUUID).toBeNull();
       expect(records).toHaveLength(1);
     });
+
+    it("markHeld carries reasonConceptUUID when supplied (Mark-Anyway-Held path)", () => {
+      const session = newSession();
+      const records = session.markHeld({s1: {status: "Present"}}, "holiday-override-reason");
+      expect(session.status).toBe(Session.status.HELD);
+      expect(session.reasonConceptUUID).toBe("holiday-override-reason");
+      expect(records).toHaveLength(1);
+    });
   });
 
   describe("fromResource / toResource", () => {

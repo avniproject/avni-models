@@ -147,9 +147,13 @@ class Session extends BaseEntity {
 
   // Caller iterates the returned records and persists them in the same realm.write.
   // rosterByStudentUUID: { [studentUUID]: { status: 'Present'|'Absent', reasonConceptUUID?: string } }
-  markHeld(rosterByStudentUUID) {
+  // reasonConceptUUID: optional session-level reason. Required by the server for
+  // Mark-Anyway-Held (Held on weekly_off/public_holiday); ignored on a working day.
+  // Default null preserves prior semantics (e.g. re-mark-Held after DidntHappen
+  // clears the previously-stored reason).
+  markHeld(rosterByStudentUUID, reasonConceptUUID = null) {
     this.status = Session.status.HELD;
-    this.reasonConceptUUID = null;
+    this.reasonConceptUUID = reasonConceptUUID || null;
     this.markedAt = new Date();
     const records = [];
     _.forOwn(rosterByStudentUUID || {}, (entry, studentUUID) => {
