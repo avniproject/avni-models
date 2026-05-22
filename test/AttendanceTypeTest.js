@@ -16,11 +16,11 @@ describe("AttendanceType.config", () => {
   it("round-trips UUIDs, share rule (with quotes + newlines), and booleans", () => {
     const shareRule = "function shareTemplate(p) {\n  return 'Attendance: \"X\" present';\n}";
     const cfg = {
-      session_outcome_reason_concept_uuid: "concept-A",
-      absence_reason_concept_uuid: "concept-B",
-      follow_up_encounter_type_uuid: "et-C",
-      share_rule: shareRule,
-      auto_share_on_save: true,
+      sessionOutcomeReasonConcept: "concept-A",
+      absenceReasonConcept: "concept-B",
+      followUpEncounterType: "et-C",
+      shareRule: shareRule,
+      autoShareOnSave: true,
     };
     const at = newAttendanceType(cfg);
     expect(at.getSessionOutcomeReasonConceptUUID()).toBe("concept-A");
@@ -42,16 +42,16 @@ describe("AttendanceType.config", () => {
   it("setConfig then getConfig round-trips deep-equal", () => {
     const at = newAttendanceType({});
     const obj = {
-      session_outcome_reason_concept_uuid: "x",
-      auto_share_on_save: false,
-      share_rule: "noop",
+      sessionOutcomeReasonConcept: "x",
+      autoShareOnSave: false,
+      shareRule: "noop",
     };
     at.setConfig(obj);
     expect(at.getConfig()).toEqual(obj);
   });
 
   it("isAutoShareOnSave coerces truthy values to boolean", () => {
-    const at = newAttendanceType({auto_share_on_save: "yes"});
+    const at = newAttendanceType({autoShareOnSave: "yes"});
     expect(at.isAutoShareOnSave()).toBe(true);
   });
 
@@ -61,7 +61,7 @@ describe("AttendanceType.config", () => {
       subjectTypeUUID: "st-1",
       name: "Type",
       sortOrder: 2,
-      config: {auto_share_on_save: true},
+      config: {autoShareOnSave: true},
       voided: false,
     });
     expect(at.isAutoShareOnSave()).toBe(true);

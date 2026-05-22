@@ -117,7 +117,7 @@ describe("Session", () => {
 
     it("only fires for Absent records with no reason", () => {
       const session = newSession();
-      const at = newAttendanceType({follow_up_encounter_type_uuid: encounterTypeUUID});
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const presentStudent = General.randomUUID();
       const absentWithReason = General.randomUUID();
       const absentNoReason = General.randomUUID();
@@ -144,7 +144,7 @@ describe("Session", () => {
 
     it("non-program path produces general Encounter with the student as individual", () => {
       const session = newSession();
-      const at = newAttendanceType({follow_up_encounter_type_uuid: encounterTypeUUID});
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const student = newStudent(studentUUID);
       const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
@@ -167,7 +167,7 @@ describe("Session", () => {
 
     it("program path produces ProgramEncounter using resolved enrolment", () => {
       const session = newSession();
-      const at = newAttendanceType({follow_up_encounter_type_uuid: encounterTypeUUID});
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const student = newStudent(studentUUID);
       const enrolment = new ProgramEnrolment();
@@ -188,7 +188,7 @@ describe("Session", () => {
 
     it("program path skips students with no resolvable enrolment", () => {
       const session = newSession();
-      const at = newAttendanceType({follow_up_encounter_type_uuid: encounterTypeUUID});
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
       const created = session.autoCreateFollowUps({
@@ -206,7 +206,7 @@ describe("Session", () => {
     it("creates distinct UUIDs when called for two sessions on the same student/day", () => {
       const session1 = newSession();
       const session2 = newSession();
-      const at = newAttendanceType({follow_up_encounter_type_uuid: encounterTypeUUID});
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const r1 = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
       const r2 = [newRecord({subjectUUID: studentUUID, status: "Absent"})];

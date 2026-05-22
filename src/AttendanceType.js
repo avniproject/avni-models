@@ -4,11 +4,11 @@ import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
 import _ from "lodash";
 
 const CONFIG_KEYS = {
-  SESSION_OUTCOME_REASON_CONCEPT_UUID: "session_outcome_reason_concept_uuid",
-  ABSENCE_REASON_CONCEPT_UUID: "absence_reason_concept_uuid",
-  FOLLOW_UP_ENCOUNTER_TYPE_UUID: "follow_up_encounter_type_uuid",
-  SHARE_RULE: "share_rule",
-  AUTO_SHARE_ON_SAVE: "auto_share_on_save",
+  SESSION_OUTCOME_REASON_CONCEPT: "sessionOutcomeReasonConcept",
+  ABSENCE_REASON_CONCEPT: "absenceReasonConcept",
+  FOLLOW_UP_ENCOUNTER_TYPE: "followUpEncounterType",
+  SHARE_RULE: "shareRule",
+  AUTO_SHARE_ON_SAVE: "autoShareOnSave",
 };
 
 class AttendanceType extends BaseEntity {
@@ -110,15 +110,15 @@ class AttendanceType extends BaseEntity {
   }
 
   getSessionOutcomeReasonConceptUUID() {
-    return this.getConfig()[CONFIG_KEYS.SESSION_OUTCOME_REASON_CONCEPT_UUID] || null;
+    return this.getConfig()[CONFIG_KEYS.SESSION_OUTCOME_REASON_CONCEPT] || null;
   }
 
   getAbsenceReasonConceptUUID() {
-    return this.getConfig()[CONFIG_KEYS.ABSENCE_REASON_CONCEPT_UUID] || null;
+    return this.getConfig()[CONFIG_KEYS.ABSENCE_REASON_CONCEPT] || null;
   }
 
   getFollowUpEncounterTypeUUID() {
-    return this.getConfig()[CONFIG_KEYS.FOLLOW_UP_ENCOUNTER_TYPE_UUID] || null;
+    return this.getConfig()[CONFIG_KEYS.FOLLOW_UP_ENCOUNTER_TYPE] || null;
   }
 
   getShareRule() {
