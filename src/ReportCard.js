@@ -9,6 +9,7 @@ import EncounterType from "./EncounterType";
 import Duration from "./Duration";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
 import CustomCardConfig from "./CustomCardConfig";
+import AttendanceType from "./AttendanceType";
 
 class ReportCard extends BaseEntity {
     static cardTypes = {
@@ -20,7 +21,8 @@ class ReportCard extends BaseEntity {
 
     static actionTypes = {
         ViewSubjectProfile: "ViewSubjectProfile",
-        DoVisit: "DoVisit"
+        DoVisit: "DoVisit",
+        MarkAttendance: "MarkAttendance"
     };
 
     static visitTypes = {
@@ -55,6 +57,7 @@ class ReportCard extends BaseEntity {
             actionDetailProgram: {type: "object", objectType: "Program", optional: true},
             actionDetailEncounterType: {type: "object", objectType: "EncounterType", optional: true},
             actionDetailVisitType: {type: "string", optional: true},
+            actionDetailAttendanceType: {type: "object", objectType: "AttendanceType", optional: true},
             onActionCompletion: {type: "string", optional: true},
             customCardConfig: {type: "object", objectType: "CustomCardConfig", optional: true},
         },
@@ -227,6 +230,9 @@ class ReportCard extends BaseEntity {
             if (resource.actionDetail.encounterTypeUUID) {
                 reportCard.actionDetailEncounterType = entityService.findByUUID(resource.actionDetail.encounterTypeUUID, EncounterType.schema.name);
             }
+            if (resource.actionDetail.attendanceTypeUUID) {
+                reportCard.actionDetailAttendanceType = entityService.findByUUID(resource.actionDetail.attendanceTypeUUID, AttendanceType.schema.name);
+            }
             reportCard.actionDetailVisitType = resource.actionDetail.visitType || null;
         }
 
@@ -318,6 +324,14 @@ class ReportCard extends BaseEntity {
         this.that.actionDetailVisitType = x;
     }
 
+    get actionDetailAttendanceType() {
+        return this.toEntity("actionDetailAttendanceType", AttendanceType);
+    }
+
+    set actionDetailAttendanceType(x) {
+        this.that.actionDetailAttendanceType = this.fromObject(x);
+    }
+
     get onActionCompletion() {
         return this.that.onActionCompletion;
     }
@@ -328,6 +342,10 @@ class ReportCard extends BaseEntity {
 
     isActionDoVisit() {
         return this.action === ReportCard.actionTypes.DoVisit;
+    }
+
+    isActionMarkAttendance() {
+        return this.action === ReportCard.actionTypes.MarkAttendance;
     }
 
     isScheduledVisitType() {

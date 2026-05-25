@@ -276,7 +276,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 212,
+        schemaVersion: 213,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1069,6 +1069,11 @@ function createRealmConfig() {
                 // Session, AttendanceRecord schemas and SubjectType.attendanceEnabled
                 // (bool default false). Realm backfills the new boolean and the new
                 // schemas have no pre-existing rows.
+            }
+            if (oldDB.schemaVersion < 213) {
+                // Additive: ReportCard.actionDetailAttendanceType (optional ref to
+                // AttendanceType) for the new MarkAttendance action. Existing rows
+                // remain null.
             }
         },
     };
