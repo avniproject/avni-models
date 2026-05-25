@@ -135,6 +135,12 @@ import Range from './reports/Range';
 import ReportCardResult from "./reports/ReportCardResult";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
 import SubjectLocation from "./SubjectLocation";
+import Calendar from "./Calendar";
+import CalendarDateMarker from "./CalendarDateMarker";
+import AttendanceType from "./AttendanceType";
+import Session from "./Session";
+import AttendanceRecord from "./AttendanceRecord";
+import Calendars from "./location/Calendars";
 
 export {
     AbstractEncounter,
@@ -278,5 +284,11 @@ export {
     Range,
     ReportCardResult,
     NestedReportCardResult,
-    SubjectLocation
+    SubjectLocation,
+    Calendar,
+    CalendarDateMarker,
+    AttendanceType,
+    Session,
+    AttendanceRecord,
+    Calendars
 };

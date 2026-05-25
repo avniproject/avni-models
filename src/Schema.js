@@ -94,6 +94,11 @@ import MetaDataService from "./service/MetaDataService";
 import ReportCardResult from "./reports/ReportCardResult";
 import NestedReportCardResult from "./reports/NestedReportCardResult";
 import SubjectLocation from "./SubjectLocation";
+import Calendar from "./Calendar";
+import CalendarDateMarker from "./CalendarDateMarker";
+import AttendanceType from "./AttendanceType";
+import Session from "./Session";
+import AttendanceRecord from "./AttendanceRecord";
 
 const entities = [
     ReportCardResult,
@@ -186,7 +191,12 @@ const entities = [
     DraftProgramEncounter,
     SubjectProgramEligibility,
     MenuItem,
-    UserSubjectAssignment
+    UserSubjectAssignment,
+    Calendar,
+    CalendarDateMarker,
+    AttendanceType,
+    Session,
+    AttendanceRecord
 ];
 
 function migrateObjectTypeFieldToEmbedded(newDB, oldDB, schemaName, field, creatorFn) {
@@ -266,7 +276,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 211,
+        schemaVersion: 212,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1053,6 +1063,12 @@ function createRealmConfig() {
                 _.forEach(newDB.objects("CustomCardConfig"), (config) => {
                     config.translations = null;
                 });
+            }
+            if (oldDB.schemaVersion < 212) {
+                // Additive: introduces Calendar, CalendarDateMarker, AttendanceType,
+                // Session, AttendanceRecord schemas and SubjectType.attendanceEnabled
+                // (bool default false). Realm backfills the new boolean and the new
+                // schemas have no pre-existing rows.
             }
         },
     };

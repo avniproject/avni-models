@@ -48,5 +48,63 @@ describe('WorkItem', () => {
         expect(workItemWithoutType).toThrow('Work item must be one of WorkItem.type');
         expect(encounterWithoutIndividual).toThrow('subjectUUID is mandatory');
         expect(programEncounterWithoutIndividual).toThrow('subjectUUID is mandatory');
-    })
+    });
+
+    describe('SHARE work item', () => {
+        const subjectUUID = '25479684-7ae4-44d8-bfd2-d5321dbc28bc';
+
+        it('accepts pdf format', () => {
+            new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID, format: 'pdf'}).validate();
+        });
+
+        it('accepts text format', () => {
+            new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID, format: 'text'}).validate();
+        });
+
+        it('rejects missing format', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID}).validate();
+            expect(fn).toThrow(/format must be 'pdf' or 'text'/);
+        });
+
+        it('rejects invalid format', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE, {subjectUUID, format: 'docx'}).validate();
+            expect(fn).toThrow(/format must be 'pdf' or 'text'/);
+        });
+
+        it('rejects missing subjectUUID', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE, {format: 'pdf'}).validate();
+            expect(fn).toThrow('subjectUUID is mandatory');
+        });
+    });
+
+    describe('SHARE_SESSION work item', () => {
+        const sessionUUID = 'a5d8b2f0-1c47-4a4b-9be3-6c33d61e1b88';
+
+        it('accepts pdf format', () => {
+            new WorkItem('id1', WorkItem.type.SHARE_SESSION, {sessionUUID, format: 'pdf'}).validate();
+        });
+
+        it('accepts text format', () => {
+            new WorkItem('id1', WorkItem.type.SHARE_SESSION, {sessionUUID, format: 'text'}).validate();
+        });
+
+        it('rejects missing sessionUUID', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE_SESSION, {format: 'pdf'}).validate();
+            expect(fn).toThrow('sessionUUID is mandatory');
+        });
+
+        it('rejects missing format', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE_SESSION, {sessionUUID}).validate();
+            expect(fn).toThrow(/format must be 'pdf' or 'text'/);
+        });
+
+        it('rejects invalid format', () => {
+            const fn = () => new WorkItem('id1', WorkItem.type.SHARE_SESSION, {sessionUUID, format: 'docx'}).validate();
+            expect(fn).toThrow(/format must be 'pdf' or 'text'/);
+        });
+
+        it('does not require subjectUUID', () => {
+            new WorkItem('id1', WorkItem.type.SHARE_SESSION, {sessionUUID, format: 'pdf'}).validate();
+        });
+    });
 });
