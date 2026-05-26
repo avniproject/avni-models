@@ -205,14 +205,20 @@ class Session extends BaseEntity {
     if (!followUpEncounterTypeUUID) return [];
     if (!encounterType) return [];
 
-    const startOfToday = moment().startOf("day").toDate();
-    const maxVisit = moment().startOf("day").add(2, "days").toDate();
+    const base = moment(this.scheduledDate).startOf("day");
+    const earliestVisit = base.clone().toDate();
+    const maxVisit = base.clone().add(2, "days").toDate();
     const created = [];
 
     _.forEach(attendanceRecords || [], (record) => {
       if (!record) return;
       if (record.status !== AttendanceRecord.status.ABSENT) return;
       if (!_.isNil(record.reasonConceptUUID)) return;
+      // Re-mark path: an existing AttendanceRecord may already point at a
+      // previously-created follow-up encounter. Don't create a second one —
+      // leave the link in place; voidStaleFollowUps handles the inverse case
+      // (student transitioned out of "absent-no-reason").
+      if (record.followUpEncounterUUID) return;
       const student = studentLookup ? studentLookup(record.subjectUUID) : null;
       if (!student) return;
 
@@ -224,7 +230,7 @@ class Session extends BaseEntity {
         encounter.uuid = General.randomUUID();
         encounter.encounterType = encounterType;
         encounter.programEnrolment = enrolment;
-        encounter.earliestVisitDateTime = startOfToday;
+        encounter.earliestVisitDateTime = earliestVisit;
         encounter.maxVisitDateTime = maxVisit;
         encounter.observations = [];
         encounter.cancelObservations = [];
@@ -234,7 +240,7 @@ class Session extends BaseEntity {
         encounter.uuid = General.randomUUID();
         encounter.encounterType = encounterType;
         encounter.individual = student;
-        encounter.earliestVisitDateTime = startOfToday;
+        encounter.earliestVisitDateTime = earliestVisit;
         encounter.maxVisitDateTime = maxVisit;
         encounter.observations = [];
         encounter.cancelObservations = [];
