@@ -159,9 +159,31 @@ describe("Session", () => {
       expect(enc).toBeInstanceOf(Encounter);
       expect(enc.individual.uuid).toBe(student.uuid);
       expect(enc.encounterType.uuid).toBe(encounterType.uuid);
-      const startOfToday = moment().startOf("day").toDate().getTime();
-      expect(enc.earliestVisitDateTime.getTime()).toBe(startOfToday);
-      const expectedMax = moment().startOf("day").add(2, "days").toDate().getTime();
+      const expectedEarliest = moment(session.scheduledDate).startOf("day").toDate().getTime();
+      expect(enc.earliestVisitDateTime.getTime()).toBe(expectedEarliest);
+      const expectedMax = moment(session.scheduledDate).startOf("day").add(2, "days").toDate().getTime();
+      expect(enc.maxVisitDateTime.getTime()).toBe(expectedMax);
+    });
+
+    it("schedules off the session.scheduledDate, not today (retroactive mark)", () => {
+      const session = newSession();
+      const fiveDaysAgo = moment().subtract(5, "days").format("YYYY-MM-DD");
+      session.scheduledDate = fiveDaysAgo;
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
+      const studentUUID = General.randomUUID();
+      const student = newStudent(studentUUID);
+      const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const created = session.autoCreateFollowUps({
+        attendanceRecords: records,
+        attendanceType: at,
+        encounterType,
+        studentLookup: () => student,
+      });
+      expect(created).toHaveLength(1);
+      const enc = created[0];
+      const expectedEarliest = moment(fiveDaysAgo).startOf("day").toDate().getTime();
+      expect(enc.earliestVisitDateTime.getTime()).toBe(expectedEarliest);
+      const expectedMax = moment(fiveDaysAgo).startOf("day").add(2, "days").toDate().getTime();
       expect(enc.maxVisitDateTime.getTime()).toBe(expectedMax);
     });
 
@@ -201,6 +223,29 @@ describe("Session", () => {
       });
       expect(created).toHaveLength(0);
       expect(records[0].followUpEncounterUUID).toBeNull();
+    });
+
+    it("re-mark path: does not create a duplicate when the record is already linked to a follow-up", () => {
+      const session = newSession();
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
+      const studentUUID = General.randomUUID();
+      const student = newStudent(studentUUID);
+      const priorFollowUpUUID = General.randomUUID();
+      const records = [
+        newRecord({
+          subjectUUID: studentUUID,
+          status: "Absent",
+          followUpEncounterUUID: priorFollowUpUUID,
+        }),
+      ];
+      const created = session.autoCreateFollowUps({
+        attendanceRecords: records,
+        attendanceType: at,
+        encounterType,
+        studentLookup: () => student,
+      });
+      expect(created).toHaveLength(0);
+      expect(records[0].followUpEncounterUUID).toBe(priorFollowUpUUID);
     });
 
     it("creates distinct UUIDs when called for two sessions on the same student/day", () => {
