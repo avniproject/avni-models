@@ -276,7 +276,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 213,
+        schemaVersion: 214,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1074,6 +1074,14 @@ function createRealmConfig() {
                 // Additive: ReportCard.actionDetailAttendanceType (optional ref to
                 // AttendanceType) for the new MarkAttendance action. Existing rows
                 // remain null.
+            }
+            if (oldDB.schemaVersion < 214) {
+                // Backfill AttendanceRecord.needsFollowUp from existing follow-up
+                // linkage so historical follow-ups survive the first re-save under
+                // the new flag-based rule.
+                _.forEach(newDB.objects(SchemaNames.AttendanceRecord), (rec) => {
+                    rec.needsFollowUp = !_.isNil(rec.followUpEncounterUUID);
+                });
             }
         },
     };

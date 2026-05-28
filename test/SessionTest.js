@@ -44,7 +44,7 @@ function newEncounterType(uuid) {
   return et;
 }
 
-function newRecord({subjectUUID, status, reasonConceptUUID = null, followUpEncounterUUID = null}) {
+function newRecord({subjectUUID, status, reasonConceptUUID = null, followUpEncounterUUID = null, needsFollowUp = false}) {
   const r = new AttendanceRecord();
   r.uuid = General.randomUUID();
   r.sessionUUID = "session-1";
@@ -52,6 +52,7 @@ function newRecord({subjectUUID, status, reasonConceptUUID = null, followUpEncou
   r.status = status;
   r.reasonConceptUUID = reasonConceptUUID;
   r.followUpEncounterUUID = followUpEncounterUUID;
+  r.needsFollowUp = needsFollowUp;
   r.voided = false;
   return r;
 }
@@ -104,7 +105,7 @@ describe("Session", () => {
       const session = newSession();
       const at = newAttendanceType({});
       const studentUUID = General.randomUUID();
-      const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const records = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const created = session.autoCreateFollowUps({
         attendanceRecords: records,
         attendanceType: at,
@@ -115,16 +116,18 @@ describe("Session", () => {
       expect(records[0].followUpEncounterUUID).toBeNull();
     });
 
-    it("only fires for Absent records with no reason", () => {
+    it("only fires for Absent records where needsFollowUp is true", () => {
       const session = newSession();
       const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
-      const presentStudent = General.randomUUID();
-      const absentWithReason = General.randomUUID();
-      const absentNoReason = General.randomUUID();
+      const presentFlagged = General.randomUUID();
+      const absentUnflagged = General.randomUUID();
+      const absentFlagged = General.randomUUID();
       const records = [
-        newRecord({subjectUUID: presentStudent, status: "Present"}),
-        newRecord({subjectUUID: absentWithReason, status: "Absent", reasonConceptUUID: "sick"}),
-        newRecord({subjectUUID: absentNoReason, status: "Absent"}),
+        // Present rows never trigger, even if the flag is set.
+        newRecord({subjectUUID: presentFlagged, status: "Present", needsFollowUp: true}),
+        // Absent rows without the flag no longer trigger under the new rule.
+        newRecord({subjectUUID: absentUnflagged, status: "Absent"}),
+        newRecord({subjectUUID: absentFlagged, status: "Absent", needsFollowUp: true}),
       ];
       const lookup = (uuid) => newStudent(uuid);
       const created = session.autoCreateFollowUps({
@@ -135,11 +138,27 @@ describe("Session", () => {
       });
       expect(created).toHaveLength(1);
       expect(created[0]).toBeInstanceOf(Encounter);
-      const triggered = _.find(records, (r) => r.subjectUUID === absentNoReason);
+      const triggered = _.find(records, (r) => r.subjectUUID === absentFlagged);
       expect(triggered.followUpEncounterUUID).toBe(created[0].uuid);
-      // the other two records remain unlinked
       expect(records[0].followUpEncounterUUID).toBeNull();
       expect(records[1].followUpEncounterUUID).toBeNull();
+    });
+
+    it("fires for Absent records flagged for follow-up even when a reason is set (decoupling)", () => {
+      const session = newSession();
+      const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
+      const studentUUID = General.randomUUID();
+      const records = [
+        newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUID: "drop-out", needsFollowUp: true}),
+      ];
+      const created = session.autoCreateFollowUps({
+        attendanceRecords: records,
+        attendanceType: at,
+        encounterType,
+        studentLookup: (uuid) => newStudent(uuid),
+      });
+      expect(created).toHaveLength(1);
+      expect(records[0].followUpEncounterUUID).toBe(created[0].uuid);
     });
 
     it("non-program path produces general Encounter with the student as individual", () => {
@@ -147,7 +166,7 @@ describe("Session", () => {
       const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const student = newStudent(studentUUID);
-      const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const records = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const created = session.autoCreateFollowUps({
         attendanceRecords: records,
         attendanceType: at,
@@ -172,7 +191,7 @@ describe("Session", () => {
       const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const student = newStudent(studentUUID);
-      const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const records = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const created = session.autoCreateFollowUps({
         attendanceRecords: records,
         attendanceType: at,
@@ -194,7 +213,7 @@ describe("Session", () => {
       const student = newStudent(studentUUID);
       const enrolment = new ProgramEnrolment();
       enrolment.uuid = General.randomUUID();
-      const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const records = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const created = session.autoCreateFollowUps({
         attendanceRecords: records,
         attendanceType: at,
@@ -212,7 +231,7 @@ describe("Session", () => {
       const session = newSession();
       const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
-      const records = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const records = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const created = session.autoCreateFollowUps({
         attendanceRecords: records,
         attendanceType: at,
@@ -235,6 +254,7 @@ describe("Session", () => {
         newRecord({
           subjectUUID: studentUUID,
           status: "Absent",
+          needsFollowUp: true,
           followUpEncounterUUID: priorFollowUpUUID,
         }),
       ];
@@ -253,8 +273,8 @@ describe("Session", () => {
       const session2 = newSession();
       const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
-      const r1 = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
-      const r2 = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const r1 = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
+      const r2 = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const opts = {
         attendanceType: at,
         encounterType,
@@ -294,7 +314,7 @@ describe("Session", () => {
       const session = newSession();
       const studentUUID = General.randomUUID();
       const encounterUUID = General.randomUUID();
-      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", followUpEncounterUUID: encounterUUID})];
+      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true, followUpEncounterUUID: encounterUUID})];
       // student is now Present
       const next = [newRecord({subjectUUID: studentUUID, status: "Present"})];
       const encounter = newScheduledEncounter(encounterUUID);
@@ -307,12 +327,12 @@ describe("Session", () => {
       expect(result.skipped).toHaveLength(0);
     });
 
-    it("voids when the student is now Absent-with-reason", () => {
+    it("voids when needsFollowUp is unchecked while still Absent", () => {
       const session = newSession();
       const studentUUID = General.randomUUID();
       const encounterUUID = General.randomUUID();
-      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", followUpEncounterUUID: encounterUUID})];
-      const next = [newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUID: "now-known"})];
+      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true, followUpEncounterUUID: encounterUUID})];
+      const next = [newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUID: "now-known", needsFollowUp: false})];
       const encounter = newScheduledEncounter(encounterUUID);
       const lookup = (uuid) => (uuid === encounterUUID ? encounter : null);
 
@@ -325,7 +345,7 @@ describe("Session", () => {
       const session = newSession();
       const studentUUID = General.randomUUID();
       const encounterUUID = General.randomUUID();
-      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", followUpEncounterUUID: encounterUUID})];
+      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true, followUpEncounterUUID: encounterUUID})];
       const next = [newRecord({subjectUUID: studentUUID, status: "Present"})];
       const encounter = newEncounterWithObservations(encounterUUID);
       const lookup = (uuid) => (uuid === encounterUUID ? encounter : null);
@@ -340,7 +360,7 @@ describe("Session", () => {
       const session = newSession();
       const studentUUID = General.randomUUID();
       const encounterUUID = General.randomUUID();
-      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", followUpEncounterUUID: encounterUUID})];
+      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true, followUpEncounterUUID: encounterUUID})];
       const next = [newRecord({subjectUUID: studentUUID, status: "Present"})];
       const encounter = newStartedEncounter(encounterUUID);
       const lookup = (uuid) => (uuid === encounterUUID ? encounter : null);
@@ -350,12 +370,12 @@ describe("Session", () => {
       expect(result.skipped).toHaveLength(1);
     });
 
-    it("leaves a still-warranted follow-up alone (Absent + no reason in both states)", () => {
+    it("leaves a still-warranted follow-up alone (Absent + needsFollowUp in both states)", () => {
       const session = newSession();
       const studentUUID = General.randomUUID();
       const encounterUUID = General.randomUUID();
-      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", followUpEncounterUUID: encounterUUID})];
-      const next = [newRecord({subjectUUID: studentUUID, status: "Absent"})];
+      const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true, followUpEncounterUUID: encounterUUID})];
+      const next = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true})];
       const encounter = newScheduledEncounter(encounterUUID);
       const lookup = (uuid) => (uuid === encounterUUID ? encounter : null);
 

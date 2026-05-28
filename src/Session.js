@@ -213,11 +213,11 @@ class Session extends BaseEntity {
     _.forEach(attendanceRecords || [], (record) => {
       if (!record) return;
       if (record.status !== AttendanceRecord.status.ABSENT) return;
-      if (!_.isNil(record.reasonConceptUUID)) return;
+      if (!record.needsFollowUp) return;
       // Re-mark path: an existing AttendanceRecord may already point at a
       // previously-created follow-up encounter. Don't create a second one —
       // leave the link in place; voidStaleFollowUps handles the inverse case
-      // (student transitioned out of "absent-no-reason").
+      // (needsFollowUp cleared while still Absent).
       if (record.followUpEncounterUUID) return;
       const student = studentLookup ? studentLookup(record.subjectUUID) : null;
       if (!student) return;
@@ -267,7 +267,7 @@ class Session extends BaseEntity {
       const stillNeedsFollowUp =
         next &&
         next.status === AttendanceRecord.status.ABSENT &&
-        _.isNil(next.reasonConceptUUID);
+        next.needsFollowUp;
       if (stillNeedsFollowUp) return;
       const encounter = encounterLookup ? encounterLookup(prev.followUpEncounterUUID) : null;
       if (!encounter) return;

@@ -14,6 +14,7 @@ class AttendanceRecord extends BaseEntity {
       status: "string",
       reasonConceptUUID: {type: "string", optional: true},
       followUpEncounterUUID: {type: "string", optional: true},
+      needsFollowUp: {type: "bool", default: false},
       voided: {type: "bool", default: false},
       ...AuditFields,
     },
@@ -68,6 +69,14 @@ class AttendanceRecord extends BaseEntity {
     this.that.followUpEncounterUUID = x;
   }
 
+  get needsFollowUp() {
+    return this.that.needsFollowUp;
+  }
+
+  set needsFollowUp(x) {
+    this.that.needsFollowUp = x;
+  }
+
   get createdBy() {
     return this.that.createdBy;
   }
@@ -116,6 +125,7 @@ class AttendanceRecord extends BaseEntity {
     record.status = resource.status;
     record.reasonConceptUUID = resource.reasonConceptUUID || null;
     record.followUpEncounterUUID = resource.followUpEncounterUUID || null;
+    record.needsFollowUp = !!resource.needsFollowUp;
     record.voided = !!resource.voided;
     mapAuditFields(record, resource);
     return record;
@@ -125,6 +135,7 @@ class AttendanceRecord extends BaseEntity {
     const resource = _.pick(this, ["uuid", "sessionUUID", "subjectUUID", "status", "voided"]);
     resource.reasonConceptUUID = this.reasonConceptUUID || null;
     resource.followUpEncounterUUID = this.followUpEncounterUUID || null;
+    resource.needsFollowUp = !!this.needsFollowUp;
     return resource;
   }
 }
