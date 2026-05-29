@@ -276,7 +276,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 215,
+        schemaVersion: 216,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1092,6 +1092,9 @@ function createRealmConfig() {
                     const reason = oldRecords[i].reasonConceptUUID;
                     newRecords[i].reasonConceptUUIDs = _.isNil(reason) ? [] : [reason];
                 }
+            }
+            if (oldDB.schemaVersion < 216) {
+                // GroupSubject.removalReasonConceptUUID added (additive optional string). No backfill needed.
             }
         },
     };

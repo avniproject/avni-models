@@ -227,7 +227,8 @@ class SubjectType extends ReferenceEntity {
 
     static settingKeys = {
         displayRegistrationDetails: 'displayRegistrationDetails',
-        displayPlannedEncounters: 'displayPlannedEncounters'
+        displayPlannedEncounters: 'displayPlannedEncounters',
+        removalReasonConceptUuid: 'removalReasonConceptUuid'
     };
 
   static create(name, group = false, household = false, type) {

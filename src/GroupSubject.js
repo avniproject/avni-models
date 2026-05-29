@@ -19,6 +19,7 @@ class GroupSubject extends BaseEntity {
             groupRole: { type: 'object', objectType: 'GroupRole' },
             membershipStartDate: "date",
             membershipEndDate: {type: "date", optional: true},
+            removalReasonConceptUUID: {type: "string", optional: true},
             voided: {type: "bool", default: false},
             ...AuditFields
         },
@@ -68,6 +69,14 @@ class GroupSubject extends BaseEntity {
         this.that.membershipEndDate = x;
     }
 
+    get removalReasonConceptUUID() {
+        return this.that.removalReasonConceptUUID;
+    }
+
+    set removalReasonConceptUUID(x) {
+        this.that.removalReasonConceptUUID = x;
+    }
+
     get createdBy() {
         return this.that.createdBy;
     }
@@ -107,6 +116,7 @@ class GroupSubject extends BaseEntity {
         resource.groupRoleUUID = this.groupRole.uuid;
         resource.membershipStartDate = this.membershipStartDate;
         resource.membershipEndDate = this.membershipEndDate;
+        resource.removalReasonConceptUUID = this.removalReasonConceptUUID;
         resource.voided = this.voided;
         return resource;
     }
@@ -127,6 +137,7 @@ class GroupSubject extends BaseEntity {
                       groupRole,
                       membershipStartDate,
                       membershipEndDate,
+                      removalReasonConceptUUID,
                   }) {
         const groupSubjectEntity = GroupSubject.createEmptyInstance(uuid);
         groupSubjectEntity.groupSubject = groupSubject;
@@ -134,6 +145,7 @@ class GroupSubject extends BaseEntity {
         groupSubjectEntity.groupRole = groupRole;
         groupSubjectEntity.membershipStartDate = membershipStartDate.value;
         groupSubjectEntity.membershipEndDate = membershipEndDate.value;
+        groupSubjectEntity.removalReasonConceptUUID = removalReasonConceptUUID;
         return groupSubjectEntity;
     }
 
@@ -168,7 +180,7 @@ class GroupSubject extends BaseEntity {
         const groupSubjectEntity = General.assignFields(
             resource,
             new GroupSubject(),
-            ["uuid", "voided"],
+            ["uuid", "voided", "removalReasonConceptUUID"],
             ["membershipStartDate", "membershipEndDate"]
         );
         groupSubjectEntity.groupSubject = groupOrHouseholdSubject;
@@ -186,6 +198,7 @@ class GroupSubject extends BaseEntity {
         groupSubjectEntity.groupRole = this.groupRole;
         groupSubjectEntity.membershipStartDate = this.membershipStartDate;
         groupSubjectEntity.membershipEndDate = this.membershipEndDate;
+        groupSubjectEntity.removalReasonConceptUUID = this.removalReasonConceptUUID;
         groupSubjectEntity.voided = this.voided;
         return groupSubjectEntity;
     }
@@ -198,6 +211,7 @@ class GroupSubject extends BaseEntity {
             groupRole: this.groupRole,
             membershipStartDate: this.membershipStartDate,
             membershipEndDate: this.membershipEndDate,
+            removalReasonConceptUUID: this.removalReasonConceptUUID,
             voided: this.voided,
         };
     }
