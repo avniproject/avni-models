@@ -44,13 +44,13 @@ function newEncounterType(uuid) {
   return et;
 }
 
-function newRecord({subjectUUID, status, reasonConceptUUID = null, followUpEncounterUUID = null, needsFollowUp = false}) {
+function newRecord({subjectUUID, status, reasonConceptUUIDs = [], followUpEncounterUUID = null, needsFollowUp = false}) {
   const r = new AttendanceRecord();
   r.uuid = General.randomUUID();
   r.sessionUUID = "session-1";
   r.subjectUUID = subjectUUID;
   r.status = status;
-  r.reasonConceptUUID = reasonConceptUUID;
+  r.reasonConceptUUIDs = reasonConceptUUIDs;
   r.followUpEncounterUUID = followUpEncounterUUID;
   r.needsFollowUp = needsFollowUp;
   r.voided = false;
@@ -65,7 +65,7 @@ describe("Session", () => {
       const studentB = General.randomUUID();
       const records = session.markHeld({
         [studentA]: {status: "Present"},
-        [studentB]: {status: "Absent", reasonConceptUUID: "concept-sick"},
+        [studentB]: {status: "Absent", reasonConceptUUIDs: ["concept-sick"]},
       });
 
       expect(session.status).toBe(Session.status.HELD);
@@ -74,8 +74,8 @@ describe("Session", () => {
       const byStudent = _.keyBy(records, "subjectUUID");
       expect(byStudent[studentA].status).toBe("Present");
       expect(byStudent[studentB].status).toBe("Absent");
-      expect(byStudent[studentB].reasonConceptUUID).toBe("concept-sick");
-      expect(byStudent[studentA].reasonConceptUUID).toBeNull();
+      expect(byStudent[studentB].reasonConceptUUIDs).toEqual(["concept-sick"]);
+      expect(byStudent[studentA].reasonConceptUUIDs).toEqual([]);
       records.forEach((r) => expect(r.sessionUUID).toBe(session.uuid));
     });
   });
@@ -149,7 +149,7 @@ describe("Session", () => {
       const at = newAttendanceType({followUpEncounterType: encounterTypeUUID});
       const studentUUID = General.randomUUID();
       const records = [
-        newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUID: "drop-out", needsFollowUp: true}),
+        newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUIDs: ["drop-out"], needsFollowUp: true}),
       ];
       const created = session.autoCreateFollowUps({
         attendanceRecords: records,
@@ -332,7 +332,7 @@ describe("Session", () => {
       const studentUUID = General.randomUUID();
       const encounterUUID = General.randomUUID();
       const prev = [newRecord({subjectUUID: studentUUID, status: "Absent", needsFollowUp: true, followUpEncounterUUID: encounterUUID})];
-      const next = [newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUID: "now-known", needsFollowUp: false})];
+      const next = [newRecord({subjectUUID: studentUUID, status: "Absent", reasonConceptUUIDs: ["now-known"], needsFollowUp: false})];
       const encounter = newScheduledEncounter(encounterUUID);
       const lookup = (uuid) => (uuid === encounterUUID ? encounter : null);
 
@@ -403,7 +403,7 @@ describe("Session", () => {
     it("markHeld after markDidntHappen clears reasonConceptUUID back to null", () => {
       const session = newSession();
       session.markDidntHappen({uuid: "reason-uuid"}, "Power cut");
-      const records = session.markHeld({s1: {status: "Absent", reasonConceptUUID: "sick"}});
+      const records = session.markHeld({s1: {status: "Absent", reasonConceptUUIDs: ["sick"]}});
       expect(session.status).toBe(Session.status.HELD);
       expect(session.reasonConceptUUID).toBeNull();
       expect(records).toHaveLength(1);

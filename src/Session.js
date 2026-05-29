@@ -146,7 +146,7 @@ class Session extends BaseEntity {
   }
 
   // Caller iterates the returned records and persists them in the same realm.write.
-  // rosterByStudentUUID: { [studentUUID]: { status: 'Present'|'Absent', reasonConceptUUID?: string } }
+  // rosterByStudentUUID: { [studentUUID]: { status: 'Present'|'Absent', reasonConceptUUIDs?: string[] } }
   // reasonConceptUUID: optional session-level reason. Required by the server for
   // Mark-Anyway-Held (Held on weekly_off/public_holiday); ignored on a working day.
   // Default null preserves prior semantics (e.g. re-mark-Held after DidntHappen
@@ -162,7 +162,7 @@ class Session extends BaseEntity {
       record.sessionUUID = this.uuid;
       record.subjectUUID = studentUUID;
       record.status = entry.status;
-      record.reasonConceptUUID = entry.reasonConceptUUID || null;
+      record.reasonConceptUUIDs = entry.reasonConceptUUIDs || [];
       record.followUpEncounterUUID = null;
       record.voided = false;
       records.push(record);
