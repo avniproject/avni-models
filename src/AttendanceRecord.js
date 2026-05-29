@@ -12,7 +12,7 @@ class AttendanceRecord extends BaseEntity {
       sessionUUID: "string",
       subjectUUID: "string",
       status: "string",
-      reasonConceptUUIDs: {type: "string[]", default: []},
+      reasonConceptUUIDs: {type: "list", objectType: "string"},
       followUpEncounterUUID: {type: "string", optional: true},
       needsFollowUp: {type: "bool", default: false},
       voided: {type: "bool", default: false},
