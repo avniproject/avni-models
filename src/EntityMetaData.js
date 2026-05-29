@@ -293,7 +293,7 @@ const identifierAssignment = txData(IdentifierAssignment, {apiQueryParams: {"dev
 const ruleFailureTelemetry = txData(RuleFailureTelemetry, {
     resUrl: "ruleFailureTelemetry",
     syncWeight: 0,
-    syncPullFRequired: false
+    syncPullRequired: false
 });
 
 const groups = refData(Groups, {res: "groups", syncWeight: 0});
