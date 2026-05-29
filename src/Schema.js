@@ -276,7 +276,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 214,
+        schemaVersion: 215,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1082,6 +1082,16 @@ function createRealmConfig() {
                 _.forEach(newDB.objects(SchemaNames.AttendanceRecord), (rec) => {
                     rec.needsFollowUp = !_.isNil(rec.followUpEncounterUUID);
                 });
+            }
+            if (oldDB.schemaVersion < 215) {
+                // reasonConceptUUID (single, optional) -> reasonConceptUUIDs (string[]).
+                // A set reason becomes a one-element array; null becomes [].
+                const oldRecords = oldDB.objects(SchemaNames.AttendanceRecord);
+                const newRecords = newDB.objects(SchemaNames.AttendanceRecord);
+                for (let i = 0; i < oldRecords.length; i++) {
+                    const reason = oldRecords[i].reasonConceptUUID;
+                    newRecords[i].reasonConceptUUIDs = _.isNil(reason) ? [] : [reason];
+                }
             }
         },
     };
