@@ -163,6 +163,7 @@ class Session extends BaseEntity {
       record.subjectUUID = studentUUID;
       record.status = entry.status;
       record.reasonConceptUUIDs = entry.reasonConceptUUIDs || [];
+      record.needsFollowUp = !!entry.needsFollowUp;
       record.followUpEncounterUUID = null;
       record.voided = false;
       records.push(record);
