@@ -229,6 +229,7 @@ class Session extends BaseEntity {
         if (!enrolment) return;
         encounter = new ProgramEncounter();
         encounter.uuid = General.randomUUID();
+        encounter.name = encounterType.name;
         encounter.encounterType = encounterType;
         encounter.programEnrolment = enrolment;
         encounter.earliestVisitDateTime = earliestVisit;
@@ -239,6 +240,7 @@ class Session extends BaseEntity {
       } else {
         encounter = new Encounter();
         encounter.uuid = General.randomUUID();
+        encounter.name = encounterType.name;
         encounter.encounterType = encounterType;
         encounter.individual = student;
         encounter.earliestVisitDateTime = earliestVisit;
