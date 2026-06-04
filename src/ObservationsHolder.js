@@ -438,8 +438,12 @@ _updateMediaValueInObservation(observation, oldValue, newValue) {
     // Handle multiple coded values
     else if (valueWrapper.isMultipleCoded) {
         const answers = valueWrapper.getValue();
-        if (_.includes(answers, oldValue)) {
-            const newAnswers = _.map(answers, (answer) => answer === oldValue ? newValue : answer);
+        const oldValueIndex = _.indexOf(answers, oldValue);
+        if (oldValueIndex >= 0) {
+            // Duplicate occurrences are not meaningful for media values — collapse them
+            // into the single replaced entry.
+            const newAnswers = _.reject(answers, (answer) => answer === oldValue);
+            newAnswers.splice(oldValueIndex, 0, newValue);
             observation.valueJSON = new MultipleCodedValues(newAnswers, valueWrapper.answerSource);
             return true;
         }

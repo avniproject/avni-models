@@ -252,14 +252,14 @@ describe('ObservationHolderTest', () => {
             assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["u.jpg"]);
         });
 
-        it('replaces every duplicate occurrence in a multi-select, preserving count and order', function () {
+        it('collapses duplicate occurrences in a multi-select into the single replaced entry', function () {
             const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
             const obs = TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["d.jpg", "d.jpg", "other.jpg"])});
             const observationsHolder = new ObservationsHolder([obs]);
 
             assert.isTrue(observationsHolder.replaceMediaObservation("d.jpg", "u.jpg", concept.uuid));
-            assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["u.jpg", "u.jpg", "other.jpg"]);
-            assert.equal(observationsHolder.observations[0].valueJSON.answer.length, 3);
+            // Duplicates are not meaningful for media values; the replace dedups them.
+            assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["u.jpg", "other.jpg"]);
         });
 
         it('preserves answerSource of the wrapper on replace (multi-select and single-select)', function () {
