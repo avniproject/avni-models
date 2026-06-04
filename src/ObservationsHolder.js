@@ -12,50 +12,6 @@ import General from "./utility/General";
 import RepeatableQuestionGroup from "./observation/RepeatableQuestionGroup";
 import ah from "./framework/ArrayHelper";
 
-// Helper function to find media observation by value
-const findMediaObservationByValue = (observations, targetValue) => {
-    if (!observations || !Array.isArray(observations)) return null;
-
-    return _.find(observations, obs => {
-        // Check direct value
-        if (obs.getValue && obs.getValue() === targetValue) return true;
-
-        // Check coded values (for MultipleCodedValues)
-        const valueJSON = obs.valueJSON;
-        if (valueJSON && valueJSON.answer && Array.isArray(valueJSON.answer)) {
-            return valueJSON.answer.includes(targetValue);
-        }
-
-        return false;
-    });
-};
-
-// Helper function to update media value
-const updateMediaValue = (mediaObs, oldVal, newVal) => {
-    if (!mediaObs) return false;
-
-    // For coded values, we need to update the array content
-    if (mediaObs.valueJSON && mediaObs.valueJSON.answer && Array.isArray(mediaObs.valueJSON.answer)) {
-        const answerIndex = mediaObs.valueJSON.answer.indexOf(oldVal);
-        if (answerIndex >= 0) {
-            mediaObs.valueJSON.answer[answerIndex] = newVal;
-            return true;
-        }
-    } else {
-        // Regular value update
-        mediaObs.setValue(mediaObs.concept.getValueWrapperFor(newVal));
-        return true;
-    }
-
-    return false;
-};
-
-// Process each question group observation
-const processQuestionGroupObservations = (observations, oldVal, newVal) => {
-    const mediaObs = findMediaObservationByValue(observations, oldVal);
-    return mediaObs ? updateMediaValue(mediaObs, oldVal, newVal) : false;
-};
-
 class ObservationsHolder {
     constructor(observations) {
         this.observations = observations;
@@ -78,10 +34,6 @@ class ObservationsHolder {
 
     getObservation(concept) {
         return this.findObservation(concept);
-    }
-
-    findObservationByValue(value) {
-        return _.find(this.observations, (observation) => observation.getValue() === value);
     }
 
     /*
@@ -452,53 +404,6 @@ class ObservationsHolder {
         }
     }
 
-    //private
-    updateObservationBasedOnValue(oldValue, newValue) {
-        // Try to find at top level first
-        const observation = this.findObservationByValue(oldValue);
-        if (observation) {
-            observation.setValue(observation.concept.getValueWrapperFor(newValue));
-            return true;
-        }
-
-        // Search in nested structures if not found at top level
-        let updated = false;
-
-        // Iterate through all observations
-        _.forEach(this.observations, obs => {
-            // Skip non-question group observations
-            if (obs.concept.datatype !== Concept.dataType.QuestionGroup) return;
-
-            const valueWrapper = obs.getValueWrapper && obs.getValueWrapper();
-            if (!valueWrapper) return;
-
-            // Handle RepeatableQuestionGroup
-            if (valueWrapper.isRepeatable && valueWrapper.isRepeatable()) {
-                const allGroups = valueWrapper.getAllQuestionGroupObservations &&
-                                valueWrapper.getAllQuestionGroupObservations();
-
-                if (allGroups && allGroups.length) {
-                    // Check each group in the repeatable question group
-                    allGroups.forEach(group => {
-                        const groupObservations = group.getValue && group.getValue();
-                        if (processQuestionGroupObservations(groupObservations, oldValue, newValue)) {
-                            updated = true;
-                        }
-                    });
-                }
-            }
-            // Handle regular QuestionGroup
-            else {
-                const groupObservations = valueWrapper.getValue && valueWrapper.getValue();
-                if (processQuestionGroupObservations(groupObservations, oldValue, newValue)) {
-                    updated = true;
-                }
-            }
-        });
-
-        return updated;
-    }
-
     // Helper method to update media value in an observation
 _updateMediaValueInObservation(observation, oldValue, newValue) {
     if (!observation) return false;
@@ -508,7 +413,13 @@ _updateMediaValueInObservation(observation, oldValue, newValue) {
 
     // Handle ImageV2 type
     if (observation.concept.datatype === Concept.dataType.ImageV2) {
-        const mediaObjects = JSON.parse(valueWrapper.getValue());
+        let mediaObjects;
+        try {
+            mediaObjects = JSON.parse(valueWrapper.getValue());
+        } catch (e) {
+            // A malformed value can't reference the file; one bad obs must not crash the whole scan.
+            return false;
+        }
         let updated = false;
 
         const newAnswers = _.map(mediaObjects, mediaObject => {
@@ -520,25 +431,24 @@ _updateMediaValueInObservation(observation, oldValue, newValue) {
         });
 
         if (updated) {
-            observation.valueJSON = new PrimitiveValue(JSON.stringify(newAnswers), Concept.dataType.ImageV2);
+            observation.valueJSON = new PrimitiveValue(JSON.stringify(newAnswers), Concept.dataType.ImageV2, valueWrapper.answerSource);
             return true;
         }
     }
     // Handle multiple coded values
     else if (valueWrapper.isMultipleCoded) {
         const answers = valueWrapper.getValue();
-        const oldValueIndex = _.indexOf(answers, oldValue);
-
-        if (oldValueIndex >= 0) {
-            const newAnswers = _.reject(answers, answer => answer === oldValue);
-            newAnswers.splice(oldValueIndex, 0, newValue);
-            observation.valueJSON = new MultipleCodedValues(newAnswers);
+        if (_.includes(answers, oldValue)) {
+            const newAnswers = _.map(answers, (answer) => answer === oldValue ? newValue : answer);
+            observation.valueJSON = new MultipleCodedValues(newAnswers, valueWrapper.answerSource);
             return true;
         }
     }
     // Handle single coded value
     else if (valueWrapper.getValue() === oldValue) {
-        observation.valueJSON = new SingleCodedValue(newValue);
+        const newWrapper = observation.concept.getValueWrapperFor(newValue);
+        newWrapper.answerSource = valueWrapper.answerSource;
+        observation.valueJSON = newWrapper;
         return true;
     }
 
@@ -556,7 +466,7 @@ _updateMediaValueInObservation(observation, oldValue, newValue) {
             const groupObservations = group && group.getValue && group.getValue();
             if (!Array.isArray(groupObservations)) return;
             _.forEach(groupObservations, (childObs) => {
-                if (Concept.dataType.Media.includes(childObs.concept.datatype)
+                if (childObs.concept.isMediaConcept()
                     && this._updateMediaValueInObservation(childObs, oldValue, newValue)) {
                     updated = true;
                 }
@@ -573,7 +483,7 @@ _updateMediaValueInObservation(observation, oldValue, newValue) {
     replaceMediaObservation(oldValue, newValue, conceptUUID) {
         let updated = false;
         _.forEach(this.observations, (obs) => {
-            if (Concept.dataType.Media.includes(obs.concept.datatype)) {
+            if (obs.concept.isMediaConcept()) {
                 if (this._updateMediaValueInObservation(obs, oldValue, newValue)) updated = true;
             } else if (obs.concept.datatype === Concept.dataType.QuestionGroup) {
                 const wrapper = obs.getValueWrapper && obs.getValueWrapper();

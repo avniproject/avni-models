@@ -960,13 +960,6 @@ class Individual extends BaseEntity {
         return new ObservationsHolder(this.observations).replaceMediaObservation(originalValue, newValue, conceptUUID);
     }
 
-    replaceObservation(originalValue, newValue) {
-        new ObservationsHolder(this.observations).updateObservationBasedOnValue(
-            originalValue,
-            newValue
-        );
-    }
-
     //TODO use polymorphism to avoid if checks based on this
     isPerson() {
         //TODO this nil check is not required when migration works properly

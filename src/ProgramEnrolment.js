@@ -742,17 +742,6 @@ class ProgramEnrolment extends BaseEntity {
         return inObservations || inExitObservations;
     }
 
-    replaceObservation(originalValue, newValue) {
-        new ObservationsHolder(this.observations).updateObservationBasedOnValue(
-            originalValue,
-            newValue
-        );
-        new ObservationsHolder(this.programExitObservations).updateObservationBasedOnValue(
-            originalValue,
-            newValue
-        );
-    }
-
     getName() {
         return "ProgramEnrolment";
     }

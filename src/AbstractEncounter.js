@@ -375,17 +375,6 @@ class AbstractEncounter extends BaseEntity {
         return inObservations || inCancelObservations;
     }
 
-    replaceObservation(originalValue, newValue) {
-        new ObservationsHolder(this.observations).updateObservationBasedOnValue(
-            originalValue,
-            newValue
-        );
-        new ObservationsHolder(this.cancelObservations).updateObservationBasedOnValue(
-            originalValue,
-            newValue
-        );
-    }
-
     getEntityTypeName() {
         return this.encounterType.name;
     }

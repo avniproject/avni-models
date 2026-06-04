@@ -1,4 +1,5 @@
 import {assert} from "chai";
+import _ from "lodash";
 import EntityFactory from "./EntityFactory";
 import ObservationsHolder from "../src/ObservationsHolder";
 import Concept from "../src/Concept";
@@ -12,6 +13,9 @@ import QuestionGroup from '../src/observation/QuestionGroup';
 import MultipleCodedValues from "../src/observation/MultipleCodedValues";
 import FormElementStatus from "../src/application/FormElementStatus";
 import RepeatableQuestionGroup from "../src/observation/RepeatableQuestionGroup";
+import Encounter from "../src/Encounter";
+import ProgramEnrolment from "../src/ProgramEnrolment";
+import {findMediaObservations} from "../src/Media";
 
 function getMediaAnswerElement(observationsHolder, index) {
     return getMediaAnswer(observationsHolder)[index];
@@ -237,6 +241,155 @@ describe('ObservationHolderTest', () => {
 
             assert.isFalse(observationsHolder.replaceMediaObservation("missing.jpg", "https://s3/missing.jpg", concept.uuid));
             assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["a.jpg"]);
+        });
+
+        it('replaces by value even when the conceptUUID hint matches nothing', function () {
+            const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            const obs = TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["x.jpg"])});
+            const observationsHolder = new ObservationsHolder([obs]);
+
+            assert.isTrue(observationsHolder.replaceMediaObservation("x.jpg", "u.jpg", "some-uuid-matching-nothing"));
+            assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["u.jpg"]);
+        });
+
+        it('replaces every duplicate occurrence in a multi-select, preserving count and order', function () {
+            const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            const obs = TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["d.jpg", "d.jpg", "other.jpg"])});
+            const observationsHolder = new ObservationsHolder([obs]);
+
+            assert.isTrue(observationsHolder.replaceMediaObservation("d.jpg", "u.jpg", concept.uuid));
+            assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["u.jpg", "u.jpg", "other.jpg"]);
+            assert.equal(observationsHolder.observations[0].valueJSON.answer.length, 3);
+        });
+
+        it('preserves answerSource of the wrapper on replace (multi-select and single-select)', function () {
+            const nonDefaultSource = Observation.AnswerSource.Auto;
+            assert.notEqual(nonDefaultSource, Observation.AnswerSource.Manual);
+
+            // multi-select
+            const multiConcept = EntityFactory.createConcept("Multi Image", Concept.dataType.Image, "multi-concept");
+            const multiObs = TestObservationFactory.create({concept: multiConcept, valueJSON: new MultipleCodedValues(["a.jpg"], nonDefaultSource)});
+            const multiHolder = new ObservationsHolder([multiObs]);
+            assert.isTrue(multiHolder.replaceMediaObservation("a.jpg", "u.jpg", multiConcept.uuid));
+            assert.equal(multiHolder.observations[0].valueJSON.answerSource, nonDefaultSource);
+
+            // single-select
+            const singleConcept = EntityFactory.createConcept("Single Image", Concept.dataType.Image, "single-concept");
+            const singleObs = TestObservationFactory.create({concept: singleConcept, valueJSON: new PrimitiveValue("a.jpg", Concept.dataType.Image, nonDefaultSource)});
+            const singleHolder = new ObservationsHolder([singleObs]);
+            assert.isTrue(singleHolder.replaceMediaObservation("a.jpg", "u.jpg", singleConcept.uuid));
+            assert.equal(singleHolder.observations[0].valueJSON.answerSource, nonDefaultSource);
+        });
+
+        it('writes the concept-appropriate wrapper for a single-value media replace', function () {
+            const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            const obs = TestObservationFactory.create({concept, valueJSON: new PrimitiveValue("p.jpg", Concept.dataType.Image)});
+            const observationsHolder = new ObservationsHolder([obs]);
+
+            assert.isTrue(observationsHolder.replaceMediaObservation("p.jpg", "https://s3/p.jpg", concept.uuid));
+            // Media concepts are select concepts (Concept.isMediaSelectConcept), so
+            // getValueWrapperFor yields a SingleCodedValue — the shape every media write produces.
+            assert.instanceOf(observationsHolder.observations[0].valueJSON, SingleCodedValue);
+            assert.equal(observationsHolder.observations[0].getValue(), "https://s3/p.jpg");
+        });
+
+        it('does not throw on a malformed ImageV2 observation and still replaces a sibling', function () {
+            const imageV2Concept = EntityFactory.createConcept("ImageV2", Concept.dataType.ImageV2, "imagev2-concept");
+            const mediaConcept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+
+            const malformedObs = TestObservationFactory.create({concept: imageV2Concept, valueJSON: new PrimitiveValue("not-json", Concept.dataType.ImageV2)});
+            const mediaObs = TestObservationFactory.create({concept: mediaConcept, valueJSON: new MultipleCodedValues(["t.jpg"])});
+            const observationsHolder = new ObservationsHolder([malformedObs, mediaObs]);
+
+            let replaced;
+            assert.doesNotThrow(() => {
+                replaced = observationsHolder.replaceMediaObservation("t.jpg", "u.jpg");
+            });
+            assert.isTrue(replaced);
+            assert.deepEqual(observationsHolder.observations[1].valueJSON.answer, ["u.jpg"]);
+        });
+
+        it('returns false (no throw) when the only observation is a malformed ImageV2', function () {
+            const imageV2Concept = EntityFactory.createConcept("ImageV2", Concept.dataType.ImageV2, "imagev2-concept");
+            const malformedObs = TestObservationFactory.create({concept: imageV2Concept, valueJSON: new PrimitiveValue("not-json", Concept.dataType.ImageV2)});
+            const observationsHolder = new ObservationsHolder([malformedObs]);
+
+            let replaced;
+            assert.doesNotThrow(() => {
+                replaced = observationsHolder.replaceMediaObservation("t.jpg", "u.jpg");
+            });
+            assert.isFalse(replaced);
+        });
+
+        it('Encounter.replaceMediaObservation covers cancelObservations', function () {
+            const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            const cancelObs = TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["c.jpg"])});
+
+            const encounter = Encounter.createEmptyInstance();
+            encounter.observations = [];
+            encounter.cancelObservations = [cancelObs];
+
+            assert.isTrue(encounter.replaceMediaObservation("c.jpg", "u.jpg", concept.uuid));
+            assert.deepEqual(encounter.cancelObservations[0].valueJSON.answer, ["u.jpg"]);
+
+            // value present in neither collection
+            const encounter2 = Encounter.createEmptyInstance();
+            encounter2.observations = [];
+            encounter2.cancelObservations = [TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["c.jpg"])})];
+            assert.isFalse(encounter2.replaceMediaObservation("missing.jpg", "u.jpg", concept.uuid));
+        });
+
+        it('ProgramEnrolment.replaceMediaObservation covers programExitObservations', function () {
+            const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            const exitObs = TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["e.jpg"])});
+
+            const enrolment = ProgramEnrolment.createEmptyInstance();
+            enrolment.observations = [];
+            enrolment.programExitObservations = [exitObs];
+
+            assert.isTrue(enrolment.replaceMediaObservation("e.jpg", "u.jpg", concept.uuid));
+            assert.deepEqual(enrolment.programExitObservations[0].valueJSON.answer, ["u.jpg"]);
+
+            // value present in neither collection
+            const enrolment2 = ProgramEnrolment.createEmptyInstance();
+            enrolment2.observations = [];
+            enrolment2.programExitObservations = [TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["e.jpg"])})];
+            assert.isFalse(enrolment2.replaceMediaObservation("missing.jpg", "u.jpg", concept.uuid));
+        });
+
+        it('replace can rewrite everything the enqueue side finds (round-trip invariant)', function () {
+            const topConcept = EntityFactory.createConcept("Top Image", Concept.dataType.Image, "top-concept");
+            const qgConcept = EntityFactory.createConcept("Question Group", Concept.dataType.QuestionGroup, "qg-concept");
+            const qgChildConcept = EntityFactory.createConcept("QG Image", Concept.dataType.Image, "qg-child-concept");
+            const rqgConcept = EntityFactory.createConcept("Repeatable Group", Concept.dataType.QuestionGroup, "rqg-concept");
+            const rqgChildConcept = EntityFactory.createConcept("RQG Image", Concept.dataType.Image, "rqg-child-concept");
+
+            const topObs = TestObservationFactory.create({concept: topConcept, valueJSON: new MultipleCodedValues(["top.jpg"])});
+
+            const qgChildObs = TestObservationFactory.create({concept: qgChildConcept, valueJSON: new MultipleCodedValues(["qgchild.jpg"])});
+            const qgObs = new Observation();
+            qgObs.concept = qgConcept;
+            qgObs.valueJSON = new QuestionGroup([qgChildObs]);
+
+            const rqgChildObs1 = TestObservationFactory.create({concept: rqgChildConcept, valueJSON: new MultipleCodedValues(["rqg1.jpg"])});
+            const rqgChildObs2 = TestObservationFactory.create({concept: rqgChildConcept, valueJSON: new MultipleCodedValues(["rqg2.jpg"])});
+            const rqgObs = new Observation();
+            rqgObs.concept = rqgConcept;
+            rqgObs.valueJSON = new RepeatableQuestionGroup([new QuestionGroup([rqgChildObs1]), new QuestionGroup([rqgChildObs2])]);
+
+            const observations = [topObs, qgObs, rqgObs];
+
+            const mediaObservations = findMediaObservations(observations);
+            assert.isAbove(mediaObservations.length, 0);
+
+            _.forEach(mediaObservations, (mediaObs) => {
+                const isImageV2 = mediaObs.concept.datatype === Concept.dataType.ImageV2;
+                const values = isImageV2 ? [] : _.flatten([mediaObs.getValue()]);
+                _.forEach(values, (value) => {
+                    assert.isTrue(new ObservationsHolder(observations).replaceMediaObservation(value, "u-" + value),
+                        `expected replace to succeed for value ${value}`);
+                });
+            });
         });
     });
 
