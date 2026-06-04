@@ -545,103 +545,43 @@ _updateMediaValueInObservation(observation, oldValue, newValue) {
     return false;
 }
 
-// Helper to find and update media in question group
-_updateMediaInQuestionGroup(questionGroup, conceptUUID, oldValue, newValue) {
-    if (!questionGroup || !questionGroup.getValue) return false;
-
-    const groupObservations = questionGroup.getValue();
-    if (!groupObservations || !Array.isArray(groupObservations)) return false;
-
-    // Find media observation either by concept UUID or by value
-    const mediaObs = _.find(groupObservations, obs =>
-        obs.concept.uuid === conceptUUID ||
-        (Concept.dataType.Media.includes(obs.concept.datatype) &&
-         obs.getValue && obs.getValue() === oldValue));
-
-    // Update if found
-    return this._updateMediaValueInObservation(mediaObs, oldValue, newValue);
-}
-
-// Helper to find and update media in repeatable question group
-_updateMediaInRepeatableQuestionGroup(repeatableGroup, conceptUUID, oldValue, newValue) {
-    if (!repeatableGroup || !repeatableGroup.getAllQuestionGroupObservations) return false;
-
-    const allGroups = repeatableGroup.getAllQuestionGroupObservations();
-    if (!allGroups || !allGroups.length) return false;
-
-    // Check each group in the repeatable question group
-    let updated = false;
-
-    allGroups.forEach(group => {
-        if (this._updateMediaInQuestionGroup(group, conceptUUID, oldValue, newValue)) {
-            updated = true;
-        }
-    });
-
-    return updated;
-}
-
-// Helper to process a question group (regular or repeatable) and update media within it
-_processQuestionGroupWrapper(wrapper, conceptUUID, oldValue, newValue, sourceName) {
-    if (!wrapper) return false;
-
-    // Determine if it's a repeatable question group or regular question group
-    const isRepeatable = wrapper.isRepeatable && wrapper.isRepeatable();
-
-    // Process the appropriate group type
-    return isRepeatable
-        ? this._updateMediaInRepeatableQuestionGroup(wrapper, conceptUUID, oldValue, newValue)
-        : this._updateMediaInQuestionGroup(wrapper, conceptUUID, oldValue, newValue);
-}
-
-replaceMediaObservation(oldValue, newValue, conceptUUID) {
-    console.log(`[INFO] Replacing media: ${oldValue} → ${newValue}`);
-
-    // Since conceptUUID is always provided in practice, optimize for that case first
-    // Try to find direct top-level observation with matching concept UUID
-    const directObservation = _.find(this.observations, obs => obs.concept.uuid === conceptUUID);
-    if (directObservation) {
-        // Direct media observation
-        if (Concept.dataType.Media.includes(directObservation.concept.datatype)) {
-            if (this._updateMediaValueInObservation(directObservation, oldValue, newValue)) {
-                console.log(`[INFO] Updated media in direct observation`);
-                return true;
-            }
-        }
-        // Question Group containing the media
-        else if (directObservation.concept.datatype === Concept.dataType.QuestionGroup) {
-            const valueWrapper = directObservation.getValueWrapper();
-            if (this._processQuestionGroupWrapper(valueWrapper, conceptUUID, oldValue, newValue)) {
-                console.log(`[INFO] Updated media in question group`);
-                return true;
-            }
-        }
+    // Replaces oldValue in every matching media child of a question-group wrapper (regular or
+    // repeatable) — every group/row, every child; does not stop at the first match.
+    _replaceMediaInGroupWrapper(wrapper, oldValue, newValue) {
+        const groups = wrapper.isRepeatable && wrapper.isRepeatable()
+            ? (wrapper.getAllQuestionGroupObservations ? wrapper.getAllQuestionGroupObservations() : [])
+            : [wrapper];
+        let updated = false;
+        _.forEach(groups, (group) => {
+            const groupObservations = group && group.getValue && group.getValue();
+            if (!Array.isArray(groupObservations)) return;
+            _.forEach(groupObservations, (childObs) => {
+                if (Concept.dataType.Media.includes(childObs.concept.datatype)
+                    && this._updateMediaValueInObservation(childObs, oldValue, newValue)) {
+                    updated = true;
+                }
+            });
+        });
+        return updated;
     }
 
-    // Check nested structures (this works both with and without conceptUUID)
-    let updated = false;
-
-    _.forEach(this.observations, obs => {
-        // Only process question groups
-        if (obs.concept.datatype !== Concept.dataType.QuestionGroup) return;
-
-        const valueWrapper = obs.getValueWrapper && obs.getValueWrapper();
-        if (!valueWrapper) return;
-
-        if (this._processQuestionGroupWrapper(valueWrapper, conceptUUID, oldValue, newValue)) {
-            updated = true;
-        }
-    });
-
-    if (updated) {
-        console.log(`[INFO] Updated media in nested structure`);
-        return true;
+    // Replaces oldValue with newValue in EVERY observation referencing it — top-level media
+    // observations and those inside (repeatable) question groups. The same media value can be
+    // referenced by multiple concepts with different select types (e.g. a rule-copied read-only
+    // display element), so the scan is value-driven; conceptUUID is retained only for caller
+    // compatibility. Returns true if at least one observation was updated.
+    replaceMediaObservation(oldValue, newValue, conceptUUID) {
+        let updated = false;
+        _.forEach(this.observations, (obs) => {
+            if (Concept.dataType.Media.includes(obs.concept.datatype)) {
+                if (this._updateMediaValueInObservation(obs, oldValue, newValue)) updated = true;
+            } else if (obs.concept.datatype === Concept.dataType.QuestionGroup) {
+                const wrapper = obs.getValueWrapper && obs.getValueWrapper();
+                if (wrapper && this._replaceMediaInGroupWrapper(wrapper, oldValue, newValue)) updated = true;
+            }
+        });
+        return updated;
     }
-
-    // As a fallback, use value-based replacement if we couldn't find it by concept
-    // This ensures backward compatibility and handles edge cases
-    return this.updateObservationBasedOnValue(oldValue, newValue);
-}
 
     toString(I18n) {
         let display = "";

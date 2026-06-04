@@ -736,7 +736,10 @@ class ProgramEnrolment extends BaseEntity {
     }
 
     replaceMediaObservation(originalValue, newValue, conceptUUID) {
-        new ObservationsHolder(this.observations).replaceMediaObservation(originalValue, newValue, conceptUUID);
+        // Both collections, no short-circuit — findMediaObservations enqueues from both.
+        const inObservations = new ObservationsHolder(this.observations).replaceMediaObservation(originalValue, newValue, conceptUUID);
+        const inExitObservations = new ObservationsHolder(this.programExitObservations).replaceMediaObservation(originalValue, newValue, conceptUUID);
+        return inObservations || inExitObservations;
     }
 
     replaceObservation(originalValue, newValue) {

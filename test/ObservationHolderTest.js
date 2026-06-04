@@ -151,8 +151,92 @@ describe('ObservationHolderTest', () => {
             const updatedRQG = observationsHolder.observations[0].valueJSON;
             const updatedGroup = updatedRQG.repeatableObservations[0];
             const updatedMediaObs = updatedGroup.groupObservations[0];
-            
+
             assert.equal(updatedMediaObs.valueJSON.answer[0], "found_and_updated.jpg");
+        });
+
+        it('should replace the value in every observation referencing it - across concepts and select types', function () {
+            // RQG single-select source + top-level multi-select rule-copied display (tanuh Suspicious Images Display)
+            const rqgConcept = EntityFactory.createConcept("Take Photos", Concept.dataType.QuestionGroup, "rqg-concept");
+            const oralImageConcept = EntityFactory.createConcept("Oral Image", Concept.dataType.Image, "oral-image-concept");
+            const displayConcept = EntityFactory.createConcept("Suspicious Images Display", Concept.dataType.Image, "display-concept");
+
+            const oralImageObs = TestObservationFactory.create({
+                concept: oralImageConcept,
+                valueJSON: new PrimitiveValue("57137301.jpg", Concept.dataType.Image)
+            });
+            const rqgObservation = new Observation();
+            rqgObservation.concept = rqgConcept;
+            rqgObservation.valueJSON = new RepeatableQuestionGroup([new QuestionGroup([oralImageObs])]);
+
+            const displayObs = TestObservationFactory.create({
+                concept: displayConcept,
+                valueJSON: new MultipleCodedValues(["https://s3/cfaafbaf.jpg", "57137301.jpg"])
+            });
+
+            const observationsHolder = new ObservationsHolder([rqgObservation, displayObs]);
+            // concept hint points at the RQG child — the other reference must still be replaced
+            const replaced = observationsHolder.replaceMediaObservation("57137301.jpg", "https://s3/57137301.jpg", oralImageConcept.uuid);
+
+            assert.isTrue(replaced);
+            const rqgChild = observationsHolder.observations[0].valueJSON.repeatableObservations[0].groupObservations[0];
+            assert.equal(rqgChild.valueJSON.answer, "https://s3/57137301.jpg");
+            assert.deepEqual(observationsHolder.observations[1].valueJSON.answer,
+                ["https://s3/cfaafbaf.jpg", "https://s3/57137301.jpg"]);
+        });
+
+        it('should replace both when the source is top-level and the duplicate is inside an RQG row', function () {
+            const sourceConcept = EntityFactory.createConcept("Photo", Concept.dataType.Image, "source-concept");
+            const rqgConcept = EntityFactory.createConcept("Display Group", Concept.dataType.QuestionGroup, "rqg-concept");
+            const displayConcept = EntityFactory.createConcept("Display Images", Concept.dataType.Image, "display-concept");
+
+            const sourceObs = TestObservationFactory.create({
+                concept: sourceConcept,
+                valueJSON: new PrimitiveValue("photo.jpg", Concept.dataType.Image)
+            });
+            const displayObs = TestObservationFactory.create({
+                concept: displayConcept,
+                valueJSON: new MultipleCodedValues(["photo.jpg"])
+            });
+            const rqgObservation = new Observation();
+            rqgObservation.concept = rqgConcept;
+            rqgObservation.valueJSON = new RepeatableQuestionGroup([new QuestionGroup([displayObs])]);
+
+            const observationsHolder = new ObservationsHolder([sourceObs, rqgObservation]);
+            const replaced = observationsHolder.replaceMediaObservation("photo.jpg", "https://s3/photo.jpg", sourceConcept.uuid);
+
+            assert.isTrue(replaced);
+            assert.equal(observationsHolder.observations[0].valueJSON.answer, "https://s3/photo.jpg");
+            const rqgChild = observationsHolder.observations[1].valueJSON.repeatableObservations[0].groupObservations[0];
+            assert.deepEqual(rqgChild.valueJSON.answer, ["https://s3/photo.jpg"]);
+        });
+
+        it('should replace in every RQG row referencing the value', function () {
+            const rqgConcept = EntityFactory.createConcept("Group", Concept.dataType.QuestionGroup, "rqg-concept");
+            const mediaConcept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+
+            const row1Obs = TestObservationFactory.create({concept: mediaConcept, valueJSON: new MultipleCodedValues(["dup.jpg"])});
+            const row2Obs = TestObservationFactory.create({concept: mediaConcept, valueJSON: new MultipleCodedValues(["dup.jpg", "other.jpg"])});
+            const rqgObservation = new Observation();
+            rqgObservation.concept = rqgConcept;
+            rqgObservation.valueJSON = new RepeatableQuestionGroup([new QuestionGroup([row1Obs]), new QuestionGroup([row2Obs])]);
+
+            const observationsHolder = new ObservationsHolder([rqgObservation]);
+            const replaced = observationsHolder.replaceMediaObservation("dup.jpg", "https://s3/dup.jpg", mediaConcept.uuid);
+
+            assert.isTrue(replaced);
+            const rows = observationsHolder.observations[0].valueJSON.repeatableObservations;
+            assert.deepEqual(rows[0].groupObservations[0].valueJSON.answer, ["https://s3/dup.jpg"]);
+            assert.deepEqual(rows[1].groupObservations[0].valueJSON.answer, ["https://s3/dup.jpg", "other.jpg"]);
+        });
+
+        it('should return false when no observation references the value', function () {
+            const concept = EntityFactory.createConcept("Image", Concept.dataType.Image, "media-concept");
+            const obs = TestObservationFactory.create({concept, valueJSON: new MultipleCodedValues(["a.jpg"])});
+            const observationsHolder = new ObservationsHolder([obs]);
+
+            assert.isFalse(observationsHolder.replaceMediaObservation("missing.jpg", "https://s3/missing.jpg", concept.uuid));
+            assert.deepEqual(observationsHolder.observations[0].valueJSON.answer, ["a.jpg"]);
         });
     });
 

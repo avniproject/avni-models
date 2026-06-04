@@ -957,7 +957,7 @@ class Individual extends BaseEntity {
     }
 
     replaceMediaObservation(originalValue, newValue, conceptUUID) {
-        new ObservationsHolder(this.observations).replaceMediaObservation(originalValue, newValue, conceptUUID);
+        return new ObservationsHolder(this.observations).replaceMediaObservation(originalValue, newValue, conceptUUID);
     }
 
     replaceObservation(originalValue, newValue) {
