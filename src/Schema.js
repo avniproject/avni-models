@@ -1075,17 +1075,20 @@ function createRealmConfig() {
                 // AttendanceType) for the new MarkAttendance action. Existing rows
                 // remain null.
             }
-            if (oldDB.schemaVersion < 214) {
+            if (oldDB.schemaVersion >= 212 && oldDB.schemaVersion < 214) {
                 // Backfill AttendanceRecord.needsFollowUp from existing follow-up
                 // linkage so historical follow-ups survive the first re-save under
-                // the new flag-based rule.
+                // the new flag-based rule. Skipped when upgrading from < 212, where
+                // AttendanceRecord did not exist yet (no rows to backfill).
                 _.forEach(newDB.objects(SchemaNames.AttendanceRecord), (rec) => {
                     rec.needsFollowUp = !_.isNil(rec.followUpEncounterUUID);
                 });
             }
-            if (oldDB.schemaVersion < 215) {
+            if (oldDB.schemaVersion >= 212 && oldDB.schemaVersion < 215) {
                 // reasonConceptUUID (single, optional) -> reasonConceptUUIDs (string[]).
                 // A set reason becomes a one-element array; null becomes [].
+                // Guarded to >= 212: reading oldDB.objects(AttendanceRecord) when the
+                // old schema predates the type throws "not found in schema".
                 const oldRecords = oldDB.objects(SchemaNames.AttendanceRecord);
                 const newRecords = newDB.objects(SchemaNames.AttendanceRecord);
                 for (let i = 0; i < oldRecords.length; i++) {
