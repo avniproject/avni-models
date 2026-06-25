@@ -59,6 +59,7 @@ import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import CustomCardConfig from "./CustomCardConfig";
+import DownloadableContent from "./DownloadableContent";
 import Dashboard from "./Dashboard";
 import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import DraftSubject from './draft/DraftSubject';
@@ -178,6 +179,7 @@ const entities = [
     Comment,
     CommentThread,
     Extension,
+    DownloadableContent,
     SubjectMigration,
     ResetSync,
     Documentation,
@@ -276,7 +278,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 216,
+        schemaVersion: 217,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1098,6 +1100,11 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 216) {
                 // GroupSubject.removalReasonConceptUUID added (additive optional string). No backfill needed.
+            }
+            if (oldDB.schemaVersion < 217) {
+                // Additive: introduces the DownloadableContent reference-data schema
+                // (avniproject/avni-models#67). New entity, no pre-existing rows; first
+                // reference-data sync populates it. Nothing to backfill.
             }
         },
     };

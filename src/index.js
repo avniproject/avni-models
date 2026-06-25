@@ -86,6 +86,7 @@ import DashboardCache from "./DashboardCache";
 import LocationHierarchy from "./LocationHierarchy";
 import ReportCard from "./ReportCard";
 import CustomCardConfig from "./CustomCardConfig";
+import DownloadableContent from "./DownloadableContent";
 import Dashboard from "./Dashboard";
 import DashboardSectionCardMapping from "./DashboardSectionCardMapping";
 import DraftSubject from './draft/DraftSubject';
@@ -232,6 +233,7 @@ export {
     LocationHierarchy,
     ReportCard,
     CustomCardConfig,
+    DownloadableContent,
     Dashboard,
     DashboardSectionCardMapping,
     DraftSubject,

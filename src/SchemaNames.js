@@ -8,6 +8,7 @@ class SchemaNames {
   static Encounter = "Encounter";
   static ChecklistItem = "ChecklistItem";
   static Extension = "Extension";
+  static DownloadableContent = "DownloadableContent";
   static Identifier = "Identifier";
   static Form = "Form";
   static Format = "EmbeddedFormat";

@@ -57,6 +57,7 @@ import News from "./News";
 import Comment from "./Comment";
 import CommentThread from "./CommentThread";
 import Extension from "./Extension";
+import DownloadableContent from "./DownloadableContent";
 import SubjectMigration from "./SubjectMigration";
 import ResetSync from "./ResetSync";
 import Documentation from "./Documentation";
@@ -304,6 +305,9 @@ const groupPrivileges = refData(GroupPrivileges, {
 });
 const privilege = refData(Privilege, {res: "privilege", syncWeight: 0});
 const extension = refData(Extension, {res: "extensions", syncWeight: 0, filter: ''});
+// Mirrors the server endpoint /v2/downloadableContent/search/lastModified
+// (avniproject/avni-server#1019). Reference/metadata data synced to every device.
+const downloadableContent = refData(DownloadableContent, {res: "downloadableContent", syncWeight: 0, apiVersion: "v2"});
 const groupRole = refData(GroupRole, {res: "groupRole", syncWeight: 0});
 const locationHierarchy = refData(LocationHierarchy, {
     res: "locations",
@@ -570,6 +574,7 @@ class EntityMetaData {
             programEnrolment,
             individual,
             extension,
+            downloadableContent,
             userInfo,
             ruleFailureTelemetry,
             syncTelemetry,
