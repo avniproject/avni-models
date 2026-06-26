@@ -305,8 +305,6 @@ const groupPrivileges = refData(GroupPrivileges, {
 });
 const privilege = refData(Privilege, {res: "privilege", syncWeight: 0});
 const extension = refData(Extension, {res: "extensions", syncWeight: 0, filter: ''});
-// Mirrors the server endpoint /v2/downloadableContent/search/lastModified
-// (avniproject/avni-server#1019). Reference/metadata data synced to every device.
 const downloadableContent = refData(DownloadableContent, {res: "downloadableContent", syncWeight: 0, apiVersion: "v2"});
 const groupRole = refData(GroupRole, {res: "groupRole", syncWeight: 0});
 const locationHierarchy = refData(LocationHierarchy, {

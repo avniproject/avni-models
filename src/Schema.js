@@ -1102,9 +1102,7 @@ function createRealmConfig() {
                 // GroupSubject.removalReasonConceptUUID added (additive optional string). No backfill needed.
             }
             if (oldDB.schemaVersion < 217) {
-                // Additive: introduces the DownloadableContent reference-data schema
-                // (avniproject/avni-models#67). New entity, no pre-existing rows; first
-                // reference-data sync populates it. Nothing to backfill.
+                // DownloadableContent added (new reference-data entity). No backfill needed.
             }
         },
     };
