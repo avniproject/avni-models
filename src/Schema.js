@@ -278,7 +278,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 217,
+        schemaVersion: 218,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1103,6 +1103,9 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 217) {
                 // DownloadableContent added (new reference-data entity). No backfill needed.
+            }
+            if (oldDB.schemaVersion < 218) {
+                // AttendanceRecord.otherReasonText added (additive optional string). No backfill needed.
             }
         },
     };

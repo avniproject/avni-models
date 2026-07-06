@@ -65,7 +65,7 @@ describe("Session", () => {
       const studentB = General.randomUUID();
       const records = session.markHeld({
         [studentA]: {status: "Present"},
-        [studentB]: {status: "Absent", reasonConceptUUIDs: ["concept-sick"]},
+        [studentB]: {status: "Absent", reasonConceptUUIDs: ["concept-other"], otherReasonText: "family wedding"},
       });
 
       expect(session.status).toBe(Session.status.HELD);
@@ -74,8 +74,10 @@ describe("Session", () => {
       const byStudent = _.keyBy(records, "subjectUUID");
       expect(byStudent[studentA].status).toBe("Present");
       expect(byStudent[studentB].status).toBe("Absent");
-      expect(byStudent[studentB].reasonConceptUUIDs).toEqual(["concept-sick"]);
+      expect(byStudent[studentB].reasonConceptUUIDs).toEqual(["concept-other"]);
+      expect(byStudent[studentB].otherReasonText).toBe("family wedding");
       expect(byStudent[studentA].reasonConceptUUIDs).toEqual([]);
+      expect(byStudent[studentA].otherReasonText).toBeNull();
       records.forEach((r) => expect(r.sessionUUID).toBe(session.uuid));
     });
   });

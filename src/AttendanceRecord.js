@@ -13,6 +13,7 @@ class AttendanceRecord extends BaseEntity {
       subjectUUID: "string",
       status: "string",
       reasonConceptUUIDs: {type: "list", objectType: "string"},
+      otherReasonText: {type: "string", optional: true},
       followUpEncounterUUID: {type: "string", optional: true},
       needsFollowUp: {type: "bool", default: false},
       voided: {type: "bool", default: false},
@@ -59,6 +60,14 @@ class AttendanceRecord extends BaseEntity {
 
   set reasonConceptUUIDs(x) {
     this.that.reasonConceptUUIDs = x || [];
+  }
+
+  get otherReasonText() {
+    return this.that.otherReasonText;
+  }
+
+  set otherReasonText(x) {
+    this.that.otherReasonText = x || null;
   }
 
   get followUpEncounterUUID() {
@@ -126,6 +135,7 @@ class AttendanceRecord extends BaseEntity {
     record.reasonConceptUUIDs = Array.isArray(resource.reasonConceptUUIDs)
       ? resource.reasonConceptUUIDs
       : (resource.reasonConceptUUID ? [resource.reasonConceptUUID] : []);
+    record.otherReasonText = resource.otherReasonText || null;
     record.followUpEncounterUUID = resource.followUpEncounterUUID || null;
     record.needsFollowUp = !!resource.needsFollowUp;
     record.voided = !!resource.voided;
@@ -136,6 +146,7 @@ class AttendanceRecord extends BaseEntity {
   get toResource() {
     const resource = _.pick(this, ["uuid", "sessionUUID", "subjectUUID", "status", "voided"]);
     resource.reasonConceptUUIDs = this.reasonConceptUUIDs || [];
+    resource.otherReasonText = this.otherReasonText || null;
     resource.followUpEncounterUUID = this.followUpEncounterUUID || null;
     resource.needsFollowUp = !!this.needsFollowUp;
     return resource;
