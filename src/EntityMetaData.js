@@ -543,7 +543,7 @@ class EntityMetaData {
             groupPrivileges,
             groups,
             privilege,
-
+            ruleFailureTelemetry,
             resetSync,
             subjectMigration,
             userSubjectAssignment,
@@ -574,7 +574,6 @@ class EntityMetaData {
             extension,
             downloadableContent,
             userInfo,
-            ruleFailureTelemetry,
             syncTelemetry,
         ];
     }
