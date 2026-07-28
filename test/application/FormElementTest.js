@@ -350,4 +350,43 @@ describe("FormElementTest", () => {
       assert.deepEqual(names.sort(), ["Green", "Red"]);
     });
   });
+
+  describe("isApplicableSubjectUUID", () => {
+    const buildSubjectFE = (answersToShow, answersToExclude) => {
+      const concept = EntityFactory.createConcept("Member", Concept.dataType.Subject);
+      const fe = EntityFactory.createFormElement("Member FE", false, concept, 1, "MultiSelect");
+      fe.answersToShow = answersToShow;
+      fe.answersToExclude = answersToExclude;
+      return fe;
+    };
+
+    it("allows everything when no allow-list and nothing excluded", () => {
+      const fe = buildSubjectFE(undefined, undefined);
+      assert.isTrue(fe.isApplicableSubjectUUID("a"));
+    });
+
+    it("treats empty allow-list as show-all", () => {
+      const fe = buildSubjectFE([], []);
+      assert.isTrue(fe.isApplicableSubjectUUID("anything"));
+    });
+
+    it("excludes listed uuids even without an allow-list", () => {
+      const fe = buildSubjectFE(undefined, ["b"]);
+      assert.isTrue(fe.isApplicableSubjectUUID("a"));
+      assert.isFalse(fe.isApplicableSubjectUUID("b"));
+    });
+
+    it("restricts to the allow-list when present", () => {
+      const fe = buildSubjectFE(["a", "b"], undefined);
+      assert.isTrue(fe.isApplicableSubjectUUID("a"));
+      assert.isFalse(fe.isApplicableSubjectUUID("c"));
+    });
+
+    it("applies exclusion on top of the allow-list", () => {
+      const fe = buildSubjectFE(["a", "b", "c"], ["b"]);
+      assert.isTrue(fe.isApplicableSubjectUUID("a"));
+      assert.isFalse(fe.isApplicableSubjectUUID("b"));
+      assert.isTrue(fe.isApplicableSubjectUUID("c"));
+    });
+  });
 });

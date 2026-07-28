@@ -309,6 +309,14 @@ class FormElement extends BaseEntity {
         return _.isEmpty(this.answersToExclude) ? [] : [...this.answersToExclude];
     }
 
+    // Single source of truth for subject answer applicability; display filters and
+    // value pruning must both use this so they cannot diverge.
+    isApplicableSubjectUUID(subjectUUID) {
+        const allowedUUIDs = this.getApplicableSubjectUUIDs();
+        if (allowedUUIDs && !_.includes(allowedUUIDs, subjectUUID)) return false;
+        return !_.includes(this.getExcludedSubjectUUIDs(), subjectUUID);
+    }
+
     getAnswerWithConceptName(conceptName) {
         return _.find(this.concept.getAnswers(), (answer) => answer.concept.name === conceptName);
     }

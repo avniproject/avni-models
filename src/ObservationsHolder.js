@@ -167,14 +167,8 @@ class ObservationsHolder {
     //private
     removeNonApplicableSubjectAnswers(fe, isSingleSelect, observation) {
         if (_.isEmpty(observation)) return;
-        const allowedUUIDs = fe.getApplicableSubjectUUIDs();
-        const excludedUUIDs = fe.getExcludedSubjectUUIDs();
         const currentValues = _.flatten([observation.getValue()]);
-        const applicableValues = _.filter(currentValues, value => {
-            if (allowedUUIDs && !_.includes(allowedUUIDs, value)) return false;
-            if (_.includes(excludedUUIDs, value)) return false;
-            return true;
-        });
+        const applicableValues = _.filter(currentValues, value => fe.isApplicableSubjectUUID(value));
         if (applicableValues.length === currentValues.length) return;
         ah.remove(this.observations, (obs) => obs.concept.uuid === observation.concept.uuid);
         const newValue = isSingleSelect ? new SingleCodedValue(_.head(applicableValues)) : new MultipleCodedValues(applicableValues);
