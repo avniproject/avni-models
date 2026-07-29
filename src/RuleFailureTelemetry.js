@@ -133,6 +133,7 @@ class RuleFailureTelemetry extends BaseEntity {
 
   get toResource() {
     return _.pick(this, [
+      "uuid",
       "ruleUuid",
       "individualUuid",
       "errorMessage",
