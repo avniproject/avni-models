@@ -393,7 +393,7 @@ class AbstractEncounter extends BaseEntity {
         const conceptPattern = /{.*?}/g;
         let identifierTemplateString = templateString;
         _.forEach(templateString.match(conceptPattern), identifier => {
-            const value = identifier === '{Date}' ? General.toDisplayDate(this.encounterDateTime) :
+            const value = identifier === '{Date}' ? this.getDisplayDateWithState(i18n) :
                 this.getValueForDisplay(identifier.replace(/[{}]/g, ''), {
                     conceptService,
                     subjectService,
@@ -404,6 +404,17 @@ class AbstractEncounter extends BaseEntity {
             identifierTemplateString = identifierTemplateString.replace(identifier, value);
         });
         return identifierTemplateString;
+    }
+
+    // Scheduled and cancelled encounters have no encounterDateTime; dating them by
+    // it alone renders "Invalid date", and an unmarked scheduled date is
+    // indistinguishable from a completed one.
+    getDisplayDateWithState(i18n) {
+        const translate = (key) => _.isNil(i18n) ? key : i18n.t(key);
+        if (!_.isNil(this.encounterDateTime)) return General.toDisplayDate(this.encounterDateTime);
+        if (!_.isNil(this.cancelDateTime)) return `${General.toDisplayDate(this.cancelDateTime)} (${translate('cancelled')})`;
+        if (!_.isNil(this.earliestVisitDateTime)) return `${General.toDisplayDate(this.earliestVisitDateTime)} (${translate('scheduledDate')})`;
+        return "";
     }
 
     getValueForDisplay(conceptName, {
