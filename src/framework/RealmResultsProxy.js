@@ -1,5 +1,25 @@
 import RealmResultsProxyHandler from "./RealmResultsProxyHandler";
 import _ from "lodash";
+import {getUnderlyingRealmObject} from "./RealmCollectionHelper";
+
+const unwrapValue = function (value) {
+    const underlyingObject = getUnderlyingRealmObject(value);
+    return _.isNil(underlyingObject) ? value : underlyingObject;
+};
+
+/*
+Realm 12 rejects avni wrappers handed to it as query arguments ("Unable to convert an object with ctor 'X'
+to a Mixed"), so anything going into a query is reduced to what realm gave us - the same unwrapping
+RealmProxy.create does, extended element wise over arrays the way RealmProxy.delete already handles them,
+so that IN queries are covered too. One level is the right depth: IN takes a flat list. Primitives, dates
+and nils have no underlying object and pass through untouched. A RealmListProxy is an array, but is
+resolved by its own realmList ahead of the array branch.
+ */
+const unwrapQueryArg = function (arg) {
+    const unwrappedArg = unwrapValue(arg);
+    if (unwrappedArg !== arg) return unwrappedArg;
+    return _.isArray(arg) ? arg.map(unwrapValue) : arg;
+};
 
 //https://www.mongodb.com/docs/realm-sdks/js/latest/Realm.Collection.html
 //RealmCollection as per realm documentation returns RealmResults. But there are no extra methods/properties in realm results, so we are using realm collection proxy for realm results and don't have a separate proxy class for it
@@ -50,7 +70,8 @@ class RealmResultsProxy {
     filtered(query, ...args) {
         if (this.logQueries)
             console.log(this.entityClass, query, ...args);
-        const realmResultsProxy = RealmResultsProxy.create(this.realmCollection.filtered(query, ...args), this.entityClass);
+        const unwrappedArgs = args.map(unwrapQueryArg);
+        const realmResultsProxy = RealmResultsProxy.create(this.realmCollection.filtered(query, ...unwrappedArgs), this.entityClass);
         realmResultsProxy.setLogQueries(this.logQueries);
         return realmResultsProxy;
     }
