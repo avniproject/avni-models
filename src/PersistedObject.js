@@ -1,6 +1,7 @@
 import _ from "lodash";
 import RealmListProxy from "./framework/RealmListProxy";
 import RealmObjectSchema from "./framework/RealmObjectSchema";
+import {unwrapForRealm} from "./framework/RealmCollectionHelper";
 
 class PersistedObject {
   constructor(that) {
@@ -21,7 +22,7 @@ class PersistedObject {
     let realmList = null;
     if (!_.isNil(list)) {
       realmList = [];
-      list.forEach((x) => realmList.push(x.that));
+      list.forEach((x) => realmList.push(unwrapForRealm(x)));
     }
     return realmList;
   }

@@ -1,24 +1,16 @@
 import RealmResultsProxyHandler from "./RealmResultsProxyHandler";
 import _ from "lodash";
-import {getUnderlyingRealmObject} from "./RealmCollectionHelper";
-
-const unwrapValue = function (value) {
-    const underlyingObject = getUnderlyingRealmObject(value);
-    return _.isNil(underlyingObject) ? value : underlyingObject;
-};
+import {unwrapForRealm} from "./RealmCollectionHelper";
 
 /*
-Realm 12 rejects avni wrappers handed to it as query arguments ("Unable to convert an object with ctor 'X'
-to a Mixed"), so anything going into a query is reduced to what realm gave us - the same unwrapping
-RealmProxy.create does, extended element wise over arrays the way RealmProxy.delete already handles them,
-so that IN queries are covered too. One level is the right depth: IN takes a flat list. Primitives, dates
-and nils have no underlying object and pass through untouched. A RealmListProxy is an array, but is
-resolved by its own realmList ahead of the array branch.
+Query arguments are unwrapped element wise over arrays too, the way RealmProxy.delete already handles them,
+so that IN queries are covered. One level is the right depth: IN takes a flat list. A RealmListProxy is an
+array, but is resolved by its own realmList ahead of the array branch.
  */
 const unwrapQueryArg = function (arg) {
-    const unwrappedArg = unwrapValue(arg);
+    const unwrappedArg = unwrapForRealm(arg);
     if (unwrappedArg !== arg) return unwrappedArg;
-    return _.isArray(arg) ? arg.map(unwrapValue) : arg;
+    return _.isArray(arg) ? arg.map(unwrapForRealm) : arg;
 };
 
 //https://www.mongodb.com/docs/realm-sdks/js/latest/Realm.Collection.html
