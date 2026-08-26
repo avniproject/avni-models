@@ -267,18 +267,32 @@ class FormElementGroup extends BaseEntity {
   filterElements(formElementStatuses) {
     const filteredFormElements = [];
     const allFormElements = this.getFormElements();
-    _.forEach(formElementStatuses, ({questionGroupIndex, uuid, visibility, answersToShow, answersToSkip}) => {
+    _.forEach(formElementStatuses, ({questionGroupIndex, uuid, visibility, answersToShow, answersToSkip, captureGuidance}) => {
       const formElement = _.find(allFormElements, fe => fe.uuid === uuid);
-      if (visibility && formElement) {
-        //clone is required to assign different questionGroupIndex to the same form element
-        const newFormElement = formElement.clone();
-        newFormElement.setAnswersToShow = answersToShow;
-        newFormElement.answersToSkip = answersToSkip;
-        newFormElement.questionGroupIndex = questionGroupIndex;
-        filteredFormElements.push(newFormElement);
-      }
+      if (!formElement) return;
+      const blockedGuidedCamera = _.isNil(visibility) && FormElementGroup._isGuidedCamera(formElement);
+      if (!visibility && !blockedGuidedCamera) return;
+      //clone is required to assign different questionGroupIndex to the same form element
+      const newFormElement = formElement.clone();
+      newFormElement.setAnswersToShow = answersToShow;
+      newFormElement.answersToSkip = answersToSkip;
+      newFormElement.questionGroupIndex = questionGroupIndex;
+      newFormElement.captureGuidance = blockedGuidedCamera ?
+        FormElementGroup._misconfiguredGuidance(captureGuidance) : captureGuidance;
+      filteredFormElements.push(newFormElement);
     });
     return FormElementGroup._sortedFormElements(filteredFormElements);
+  }
+
+  static _isGuidedCamera(formElement) {
+    const value = _.invoke(formElement, "recordValueByKey", "guidedCamera");
+    return value === true || value === "true";
+  }
+
+  // Nil visibility only: `false` is how a rule deliberately hides a question.
+  static _misconfiguredGuidance(captureGuidance) {
+    const existing = _.isPlainObject(captureGuidance) ? captureGuidance : {};
+    return {...existing, blockCapture: {reason: "misconfiguration"}};
   }
 
   areAllFormElementsEmpty(filteredFormElements, observationHolder) {
