@@ -1,4 +1,5 @@
 import _ from "lodash";
+
 class FormElementStatus {
   constructor(uuid, visibility, value, answersToSkip = [], validationErrors = [], answersToShow = [],
               resetValueIfNull = false) {
@@ -24,12 +25,17 @@ class FormElementStatus {
     oredFormElementStatus.validationErrors = this.validationErrors;
     oredFormElementStatus.answersToShow = this.answersToShow;
     oredFormElementStatus.questionGroupIndex = this.questionGroupIndex;
+    oredFormElementStatus.captureGuidance = this.captureGuidance;
     oredFormElementStatus.initializedWithNullValueOnPurpose = this.initializedWithNullValueOnPurpose;
     return oredFormElementStatus;
   }
 
   addQuestionGroupInformation(questionGroupIndex) {
     this.questionGroupIndex = questionGroupIndex;
+  }
+
+  addCaptureGuidance(captureGuidance) {
+    this.captureGuidance = captureGuidance;
   }
 
   or(formElementStatus) {
