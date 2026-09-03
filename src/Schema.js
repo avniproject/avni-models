@@ -278,7 +278,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 218,
+        schemaVersion: 219,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1106,6 +1106,11 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 218) {
                 // AttendanceRecord.otherReasonText added (additive optional string). No backfill needed.
+            }
+            if (oldDB.schemaVersion < 219) {
+                // EntityApprovalStatus.observations added (additive optional list). No backfill needed -
+                // every decision recorded before this carries no answers, and an empty list is the
+                // correct reading of that.
             }
         },
     };

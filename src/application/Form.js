@@ -412,6 +412,7 @@ class Form extends BaseEntity {
     }
 
     static formTypes = {
+        Approval: "Approval",
         ChecklistItem: "ChecklistItem",
         Encounter: "Encounter",
         IndividualEncounterCancellation: "IndividualEncounterCancellation",
@@ -421,6 +422,7 @@ class Form extends BaseEntity {
         ProgramEncounterCancellation: "ProgramEncounterCancellation",
         ProgramEnrolment: "ProgramEnrolment",
         ProgramExit: "ProgramExit",
+        Rejection: "Rejection",
         SubjectEnrolmentEligibility: "SubjectEnrolmentEligibility",
         Task: "Task",
     };
