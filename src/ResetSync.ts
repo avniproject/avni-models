@@ -33,11 +33,21 @@ class ResetSync extends BaseEntity {
     this.that.hasMigrated = x;
   }
 
-  static fromResource(resource) {
+  // hasMigrated is a device-side decision — it records that this reset has already
+  // been honoured — and the server neither holds nor returns it. The wipe re-seeds the
+  // ResetSync checkpoint at 1900, so later syncs re-pull rows that are already done;
+  // carry the local flag across so a server-shaped resource cannot un-mark them.
+  //
+  // Left ABSENT when there is no local row, never set to false: both persist paths
+  // upsert only the properties present on the object, so an explicit false would
+  // overwrite a local true. A genuinely new row takes the schema default of false.
+  static fromResource(resource, entityService) {
     const resetSync = new ResetSync();
     resetSync.uuid = resource.uuid;
     resetSync.voided = resource.voided;
     resetSync.subjectTypeUUID = ResourceUtil.getUUIDFor(resource, 'subjectTypeUUID');
+    const existing = entityService && entityService.findByKey("uuid", resource.uuid, ResetSync.schema.name);
+    if (existing) resetSync.hasMigrated = existing.hasMigrated;
     return resetSync;
   }
 
