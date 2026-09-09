@@ -7,6 +7,7 @@ import Concept from "../src/Concept";
 import Form from "../src/application/Form";
 import EntityFactory from "./EntityFactory";
 import General from "../src/utility/General";
+import EntityMetaData from "../src/EntityMetaData";
 
 /**
  * avniproject/avni-models#71 - an approval decision carries the answers the approver gave on the
@@ -191,5 +192,38 @@ describe('EntityApprovalStatusTest', () => {
         assert.equal("IndividualProfile", Form.formTypes.IndividualProfile);
         assert.equal("ProgramEncounter", Form.formTypes.ProgramEncounter);
         assert.equal("Task", Form.formTypes.Task);
+    });
+
+    /**
+     * The schema-version-220 migration clears a device's approval sync markers so the whole approval
+     * history is pulled again with its answers. It finds them with `entityName ENDSWITH
+     * 'EntityApprovalStatus'`, which cannot be run here - migrations need a real Realm - so what is
+     * asserted is the naming the query depends on.
+     *
+     * Rename one of these markers and the migration silently stops resetting it: no error, and answers
+     * recorded by another approver never arrive on this device. That is why it is pinned rather than left
+     * to be noticed. The count is asserted too, because a sixth marker added without the suffix would
+     * pass a suffix-only check on the five that already exist.
+     */
+    it('names every approval sync marker so the version 220 migration can find it', () => {
+        const namesOf = (metadata) => metadata
+            .filter(({schemaName}) => schemaName === EntityApprovalStatus.schema.name)
+            .map(({entityName}) => entityName);
+
+        const allMarkers = namesOf(EntityMetaData.model());
+        assert.isNotEmpty(allMarkers);
+        allMarkers.forEach((entityName) => assert.isTrue(_.endsWith(entityName, 'EntityApprovalStatus'),
+            `${entityName} would not be reset by the version 220 migration, so answers recorded on another device would never reach this one`));
+
+        // The pulled markers are the ones that carry a loadedSince and therefore the ones the migration
+        // exists for. Named individually because a sixth added without the suffix would sail through the
+        // check above on the five that already have it.
+        assert.sameMembers([
+            'SubjectEntityApprovalStatus',
+            'EncounterEntityApprovalStatus',
+            'ProgramEncounterEntityApprovalStatus',
+            'ProgramEnrolmentEntityApprovalStatus',
+            'ChecklistItemEntityApprovalStatus'
+        ], namesOf(EntityMetaData.getEntitiesToBePulled()));
     });
 });

@@ -278,7 +278,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 219,
+        schemaVersion: 220,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1111,6 +1111,21 @@ function createRealmConfig() {
                 // EntityApprovalStatus.observations added (additive optional list). No backfill needed -
                 // every decision recorded before this carries no answers, and an empty list is the
                 // correct reading of that.
+            }
+            if (oldDB.schemaVersion < 220) {
+                // Version 219's reading was right about decisions this device recorded and wrong about the
+                // rest. A device only pulls approval rows changed since its last sync, so a decision another
+                // approver recorded with answers - on their device, before this one upgraded - is already
+                // sitting here with an empty answer list and will never be pulled again. Dropping the sync
+                // markers makes the next sync fetch the whole approval history afresh, answers included.
+                //
+                // Approval rows sync under one marker per approvable entity type (SubjectEntityApprovalStatus,
+                // EncounterEntityApprovalStatus, and so on), not under the schema name. Matching only
+                // "EntityApprovalStatus", as the version 173 migration does, hits a marker the client never
+                // writes and would silently reset nothing.
+                const approvalSyncStatuses = newDB.objects(EntitySyncStatus.schema.name)
+                    .filtered("entityName ENDSWITH 'EntityApprovalStatus'");
+                newDB.delete(approvalSyncStatuses);
             }
         },
     };
