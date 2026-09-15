@@ -132,6 +132,26 @@ class EntityApprovalStatus extends BaseEntity {
         this.that.observations = this.fromEntityList(x);
     }
 
+    /**
+     * The shared form machinery reads answers off the entity being filled in, not off the
+     * ObservationsHolder wrapping it - RuleEvaluationService#getRepeatableObservationSize calls this to
+     * size a repeatable question group before any rule runs. Every other entity a form can be filled
+     * against defines it, so without it a decision form carrying a question group opened and then died
+     * on Next (avniproject/avni-client#2091). Same body as Individual and AbstractEncounter.
+     */
+    findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+        const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+        return _.find(observations, (observation) => {
+            return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
+        });
+    }
+
+    findGroupedObservation(parentConceptNameOrUuid) {
+        const groupedObservations = _.find(this.observations, (observation) =>
+            (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+        return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
+    }
+
     get createdBy() {
         return this.that.createdBy;
     }
