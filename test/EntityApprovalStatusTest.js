@@ -226,4 +226,26 @@ describe('EntityApprovalStatusTest', () => {
             'ChecklistItemEntityApprovalStatus'
         ], namesOf(EntityMetaData.getEntitiesToBePulled()));
     });
+
+    /**
+     * Why the version 220 migration moves loadedSince instead of deleting the rows.
+     *
+     * The client's EntitySyncStatusService.setup() recreates a marker only where privilegeParam is empty,
+     * and it writes an empty entityTypeUuid when it does. Every approval marker carries a privilegeParam
+     * and a real entityTypeUuid, so setup() would not put a deleted one back - its return would depend on
+     * updateAsPerSyncDetails landing first, with SyncService's unguarded read of
+     * currentEntitySyncStatus.uuid waiting if it did not.
+     *
+     * Drop the privilegeParam from these and deleting becomes safe while moving the watermark stays
+     * safe - so this is pinned as the reason, not as a preference.
+     */
+    it('scopes approval sync markers per entity type, which is why the migration moves the watermark', () => {
+        const approvalMarkers = EntityMetaData.getEntitiesToBePulled()
+            .filter(({schemaName}) => schemaName === EntityApprovalStatus.schema.name);
+
+        assert.isNotEmpty(approvalMarkers);
+        approvalMarkers.forEach(({entityName, privilegeParam}) =>
+            assert.isNotEmpty(privilegeParam,
+                `${entityName} has no privilegeParam, so the client's setup() would recreate it and deleting it would become the simpler fix`));
+    });
 });

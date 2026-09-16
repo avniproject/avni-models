@@ -1116,16 +1116,34 @@ function createRealmConfig() {
                 // Version 219's reading was right about decisions this device recorded and wrong about the
                 // rest. A device only pulls approval rows changed since its last sync, so a decision another
                 // approver recorded with answers - on their device, before this one upgraded - is already
-                // sitting here with an empty answer list and will never be pulled again. Dropping the sync
-                // markers makes the next sync fetch the whole approval history afresh, answers included.
+                // sitting here with an empty answer list and will never be pulled again. Moving the markers
+                // back makes the next sync fetch the whole approval history afresh, answers included.
                 //
-                // Approval rows sync under one marker per approvable entity type (SubjectEntityApprovalStatus,
-                // EncounterEntityApprovalStatus, and so on), not under the schema name. Matching only
-                // "EntityApprovalStatus", as the version 173 migration does, hits a marker the client never
-                // writes and would silently reset nothing.
-                const approvalSyncStatuses = newDB.objects(EntitySyncStatus.schema.name)
-                    .filtered("entityName ENDSWITH 'EntityApprovalStatus'");
-                newDB.delete(approvalSyncStatuses);
+                // ENDSWITH, not an equality check: approval rows sync under one marker per approvable entity
+                // type (SubjectEntityApprovalStatus, EncounterEntityApprovalStatus, and so on), not under the
+                // schema name. Matching only "EntityApprovalStatus", as the version 173 migration does, hits a
+                // marker the client never writes and has always reset nothing.
+                //
+                // The watermark is moved rather than the rows deleted. Deleting is the riskier of the two and
+                // this file does it only twice against five that move loadedSince:
+                //   - EntitySyncStatusService.get() ends in .slice()[0], so it is undefined once the row is
+                //     gone, and SyncService reads currentEntitySyncStatus.uuid off it with no guard.
+                //   - setup() does not put these rows back. It creates one row per entity NAME with an empty
+                //     entityTypeUuid, and only where privilegeParam is empty - but every approval marker
+                //     carries a privilegeParam and a real entityTypeUuid, and those come from
+                //     updateAsPerSyncDetails off the server response instead.
+                // So a delete leaves the rows' return depending on the server response landing first, with an
+                // unguarded dereference waiting if it does not. Moving loadedSince keeps the row, its uuid and
+                // its entityTypeUuid, and shifts only the watermark.
+                //
+                // Nothing needs clearing alongside it: observations is a new column and already empty on every
+                // existing row, so unlike the version 210 CustomCardConfig migration there is no stale value
+                // that would survive the re-pull.
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (entitySyncStatus) => {
+                    if (_.endsWith(entitySyncStatus.entityName, 'EntityApprovalStatus')) {
+                        entitySyncStatus.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
             }
         },
     };
