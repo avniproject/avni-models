@@ -1124,17 +1124,14 @@ function createRealmConfig() {
                 // schema name. Matching only "EntityApprovalStatus", as the version 173 migration does, hits a
                 // marker the client never writes and has always reset nothing.
                 //
-                // The watermark is moved rather than the rows deleted. Deleting is the riskier of the two and
-                // this file does it only twice against five that move loadedSince:
-                //   - EntitySyncStatusService.get() ends in .slice()[0], so it is undefined once the row is
-                //     gone, and SyncService reads currentEntitySyncStatus.uuid off it with no guard.
-                //   - setup() does not put these rows back. It creates one row per entity NAME with an empty
-                //     entityTypeUuid, and only where privilegeParam is empty - but every approval marker
-                //     carries a privilegeParam and a real entityTypeUuid, and those come from
-                //     updateAsPerSyncDetails off the server response instead.
-                // So a delete leaves the rows' return depending on the server response landing first, with an
-                // unguarded dereference waiting if it does not. Moving loadedSince keeps the row, its uuid and
-                // its entityTypeUuid, and shifts only the watermark.
+                // The watermark is moved rather than the rows deleted, which this file does only twice against
+                // five that move loadedSince. A delete would usually be repaired before it bit: a sync calls
+                // updateAsPerSyncDetails early, which rewrites these rows from the server's sync details,
+                // ahead of the pull that reads currentEntitySyncStatus.uuid with no guard. The exposure is the
+                // window before that first successful call, and setup() does not cover it - it writes one row
+                // per entity NAME with an empty entityTypeUuid, while these are one row per entity TYPE with a
+                // real one. Moving loadedSince has no such window: the row, its uuid and its entityTypeUuid
+                // all stay. EntityApprovalStatusTest pins the per-type shape the choice rests on.
                 //
                 // Nothing needs clearing alongside it: observations is a new column and already empty on every
                 // existing row, so unlike the version 210 CustomCardConfig migration there is no stale value

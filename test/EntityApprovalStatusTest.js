@@ -230,22 +230,26 @@ describe('EntityApprovalStatusTest', () => {
     /**
      * Why the version 220 migration moves loadedSince instead of deleting the rows.
      *
-     * The client's EntitySyncStatusService.setup() recreates a marker only where privilegeParam is empty,
-     * and it writes an empty entityTypeUuid when it does. Every approval marker carries a privilegeParam
-     * and a real entityTypeUuid, so setup() would not put a deleted one back - its return would depend on
-     * updateAsPerSyncDetails landing first, with SyncService's unguarded read of
-     * currentEntitySyncStatus.uuid waiting if it did not.
+     * These markers are per entity TYPE - apiQueryParamKey is entityTypeUuid, so there is one row per
+     * subject type, per encounter type and so on, each carrying a real entityTypeUuid. The client's
+     * EntitySyncStatusService.setup() only ever writes one row per entity NAME with an empty
+     * entityTypeUuid, and SyncService looks the marker up by the real one. So no shape of metadata makes
+     * setup() put a deleted per-type marker back - which is what pins the decision, rather than the
+     * privilegeParam that also happens to keep setup() away from them.
      *
-     * Drop the privilegeParam from these and deleting becomes safe while moving the watermark stays
-     * safe - so this is pinned as the reason, not as a preference.
+     * privilegeParam is asserted alongside it as the nearer canary: it is the condition setup() actually
+     * tests, so losing it is the first sign this reasoning needs re-reading against the client.
      */
     it('scopes approval sync markers per entity type, which is why the migration moves the watermark', () => {
         const approvalMarkers = EntityMetaData.getEntitiesToBePulled()
             .filter(({schemaName}) => schemaName === EntityApprovalStatus.schema.name);
 
         assert.isNotEmpty(approvalMarkers);
-        approvalMarkers.forEach(({entityName, privilegeParam}) =>
+        approvalMarkers.forEach(({entityName, apiQueryParamKey, privilegeParam}) => {
+            assert.equal(apiQueryParamKey, 'entityTypeUuid',
+                `${entityName} is no longer synced per entity type, so re-check whether the version 220 migration still needs to move the watermark`);
             assert.isNotEmpty(privilegeParam,
-                `${entityName} has no privilegeParam, so the client's setup() would recreate it and deleting it would become the simpler fix`));
+                `${entityName} has lost its privilegeParam - re-read the version 220 migration comment against the client's setup()`);
+        });
     });
 });
