@@ -2,6 +2,7 @@ import BaseEntity from "./BaseEntity";
 import General from "./utility/General";
 import ResourceUtil from "./utility/ResourceUtil";
 import ApprovalStatus from "./ApprovalStatus";
+import Observation from "./Observation";
 import _ from 'lodash';
 import SchemaNames from "./SchemaNames";
 import {AuditFields, mapAuditFields} from "./utility/AuditUtil";
@@ -24,6 +25,11 @@ class EntityApprovalStatus extends BaseEntity {
             statusDateTime: "date",
             autoApproved: {type: "bool", default: false},
             voided: {type: "bool", default: false},
+            // The answers the approver gave on the Approval or Rejection form for this decision.
+            // Held on the decision rather than the approved entity so a second rejection cannot
+            // overwrite the first one's reasons. objectType is explicit because Realm v12 requires it
+            // and scripts/validateSchemas.js fails the build without it.
+            observations: {type: 'list', objectType: 'Observation'},
             ...AuditFields
         },
     };
@@ -118,6 +124,34 @@ class EntityApprovalStatus extends BaseEntity {
         this.that.autoApproved = x;
     }
 
+    get observations() {
+        return this.toEntityList("observations", Observation);
+    }
+
+    set observations(x) {
+        this.that.observations = this.fromEntityList(x);
+    }
+
+    /**
+     * The shared form machinery reads answers off the entity being filled in, not off the
+     * ObservationsHolder wrapping it - RuleEvaluationService#getRepeatableObservationSize calls this to
+     * size a repeatable question group before any rule runs. Every other entity a form can be filled
+     * against defines it, so without it a decision form carrying a question group opened and then died
+     * on Next (avniproject/avni-client#2091). Same body as Individual and AbstractEncounter.
+     */
+    findObservation(conceptNameOrUuid, parentConceptNameOrUuid) {
+        const observations = _.isNil(parentConceptNameOrUuid) ? this.observations : this.findGroupedObservation(parentConceptNameOrUuid);
+        return _.find(observations, (observation) => {
+            return (observation.concept.name === conceptNameOrUuid) || (observation.concept.uuid === conceptNameOrUuid);
+        });
+    }
+
+    findGroupedObservation(parentConceptNameOrUuid) {
+        const groupedObservations = _.find(this.observations, (observation) =>
+            (observation.concept.name === parentConceptNameOrUuid) || (observation.concept.uuid === parentConceptNameOrUuid));
+        return _.isEmpty(groupedObservations) ? [] : groupedObservations.getValue();
+    }
+
     get createdBy() {
         return this.that.createdBy;
     }
@@ -162,13 +196,22 @@ class EntityApprovalStatus extends BaseEntity {
         resource["entityUuid"] = this.entityUUID;
         resource["entityTypeUuid"] = this.entityTypeUuid;
         resource.statusDateTime = General.isoFormat(this.statusDateTime);
+        // The payload is a field whitelist, so the schema property alone sends nothing. Without this the
+        // approver's answers are silently dropped on the way out, with no error anywhere.
+        resource.observations = _.map(this.observations, "toResource");
         return resource;
     }
 
     static fromResource(resource, entityService) {
+        // The fifth and sixth arguments are the inbound half of the same whitelist: assignObsFields
+        // resolves each answer's concept through entityService, and assigns an empty list when the
+        // resource has no observations key - which is what every client released before this feature
+        // sends.
         const entityApprovalStatus = General.assignFields(resource, new EntityApprovalStatus(),
             ["uuid", "entityType", "approvalStatusComment", "autoApproved", "voided", "entityTypeUuid"],
-            ["statusDateTime"]);
+            ["statusDateTime"],
+            ["observations"],
+            entityService);
         entityApprovalStatus.approvalStatus = entityService.findByKey(
             "uuid",
             ResourceUtil.getUUIDFor(resource, "approvalStatusUUID"),
@@ -179,7 +222,9 @@ class EntityApprovalStatus extends BaseEntity {
         return entityApprovalStatus;
     }
 
-    static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUuid) {
+    // observations is trailing and defaulted so the existing six-argument callers - the client's
+    // EntityApprovalStatusService.saveStatus among them - keep working untouched.
+    static create(entityUUID, entityType, approvalStatus, approvalStatusComment, autoApproved, entityTypeUuid, observations = []) {
         const entityApprovalStatus = new EntityApprovalStatus();
         entityApprovalStatus.uuid = General.randomUUID();
         entityApprovalStatus.entityUUID = entityUUID;
@@ -188,6 +233,7 @@ class EntityApprovalStatus extends BaseEntity {
         entityApprovalStatus.approvalStatus = approvalStatus;
         entityApprovalStatus.approvalStatusComment = approvalStatusComment;
         entityApprovalStatus.autoApproved = autoApproved;
+        entityApprovalStatus.observations = observations;
         entityApprovalStatus.statusDateTime = new Date();
         return entityApprovalStatus;
     }

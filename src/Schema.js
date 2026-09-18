@@ -278,7 +278,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 218,
+        schemaVersion: 220,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1106,6 +1106,41 @@ function createRealmConfig() {
             }
             if (oldDB.schemaVersion < 218) {
                 // AttendanceRecord.otherReasonText added (additive optional string). No backfill needed.
+            }
+            if (oldDB.schemaVersion < 219) {
+                // EntityApprovalStatus.observations added (additive optional list). No backfill needed -
+                // every decision recorded before this carries no answers, and an empty list is the
+                // correct reading of that.
+            }
+            if (oldDB.schemaVersion < 220) {
+                // Version 219's reading was right about decisions this device recorded and wrong about the
+                // rest. A device only pulls approval rows changed since its last sync, so a decision another
+                // approver recorded with answers - on their device, before this one upgraded - is already
+                // sitting here with an empty answer list and will never be pulled again. Moving the markers
+                // back makes the next sync fetch the whole approval history afresh, answers included.
+                //
+                // ENDSWITH, not an equality check: approval rows sync under one marker per approvable entity
+                // type (SubjectEntityApprovalStatus, EncounterEntityApprovalStatus, and so on), not under the
+                // schema name. Matching only "EntityApprovalStatus", as the version 173 migration does, hits a
+                // marker the client never writes and has always reset nothing.
+                //
+                // The watermark is moved rather than the rows deleted, which this file does only twice against
+                // five that move loadedSince. A delete would usually be repaired before it bit: a sync calls
+                // updateAsPerSyncDetails early, which rewrites these rows from the server's sync details,
+                // ahead of the pull that reads currentEntitySyncStatus.uuid with no guard. The exposure is the
+                // window before that first successful call, and setup() does not cover it - it writes one row
+                // per entity NAME with an empty entityTypeUuid, while these are one row per entity TYPE with a
+                // real one. Moving loadedSince has no such window: the row, its uuid and its entityTypeUuid
+                // all stay. EntityApprovalStatusTest pins the per-type shape the choice rests on.
+                //
+                // Nothing needs clearing alongside it: observations is a new column and already empty on every
+                // existing row, so unlike the version 210 CustomCardConfig migration there is no stale value
+                // that would survive the re-pull.
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (entitySyncStatus) => {
+                    if (_.endsWith(entitySyncStatus.entityName, 'EntityApprovalStatus')) {
+                        entitySyncStatus.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
             }
         },
     };

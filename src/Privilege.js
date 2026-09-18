@@ -137,6 +137,8 @@ class Privilege extends BaseEntity {
     ShareEnrolment: "ShareEnrolment",
     ShareEncounter: "ShareEncounter",
     ManageCalendars: "ManageCalendars",
+    EditApproval: "EditApproval",
+    EditRejection: "EditRejection",
   }
 
   static privilegeEntityType = {
