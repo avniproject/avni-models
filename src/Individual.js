@@ -837,8 +837,9 @@ class Individual extends BaseEntity {
         return _.some(this.nonVoidedEnrolments(), (enrolment) => enrolment.isActive);
     }
 
+    //fix get cause isActive not boolean
     get firstActiveOrRecentEnrolment() {
-        return _(this.nonVoidedEnrolments()).sortBy(["isActive", "enrolmentDateTime"]).last();
+        return _(this.nonVoidedEnrolments()).sortBy([(enrolment)=> _.isNil(enrolment.programExitDateTime),"enrolmentDateTime"]).last();
     }
 
     get hasEnrolments() {
