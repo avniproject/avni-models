@@ -4,6 +4,7 @@ import SchemaNames from "../SchemaNames";
 class KeyValue extends PersistedObject {
   static PrimaryContactKey = "primary_contact";
   static ContactNumberKey = "contact_number";
+  static HiddenKey = "hidden";
   static ContactYesValue = "yes";
 
   static schema = {

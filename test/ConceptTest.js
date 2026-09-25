@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import Concept from "../src/Concept";
 import ConceptAnswer from "../src/ConceptAnswer";
 import _ from "lodash";
+import KeyValue from "../src/application/KeyValue";
 
 describe('ConceptTest', () => {
 
@@ -70,6 +71,43 @@ describe('ConceptTest', () => {
         assert.equal(lastConceptAnswer.concept.uuid, otherConceptUUID);
     });
 
+    describe('isHidden', () => {
+        function conceptWithKeyValues(keyValues) {
+            return Concept.create("AI Verdict", Concept.dataType.Coded, keyValues);
+        }
+
+        it('is hidden when the hidden key holds the text true', () => {
+            assert.isTrue(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: "true"}]).isHidden());
+        });
+
+        it('is hidden when the hidden key holds a boolean true from the server', () => {
+            assert.isTrue(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: true}]).isHidden());
+        });
+
+        it('is not hidden when the hidden key holds false', () => {
+            assert.isFalse(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: "false"}]).isHidden());
+            assert.isFalse(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: false}]).isHidden());
+        });
+
+        it('is not hidden when the hidden key holds anything other than true', () => {
+            assert.isFalse(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: "yes"}]).isHidden());
+            assert.isFalse(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: "1"}]).isHidden());
+            assert.isFalse(conceptWithKeyValues([{key: KeyValue.HiddenKey, value: ""}]).isHidden());
+        });
+
+        it('is not hidden when other keys are present but hidden is not', () => {
+            assert.isFalse(conceptWithKeyValues([{key: KeyValue.PrimaryContactKey, value: "yes"}]).isHidden());
+        });
+
+        it('is not hidden and does not fail when the concept has no key-values at all', () => {
+            assert.isFalse(new Concept().isHidden());
+            assert.isFalse(conceptWithKeyValues([]).isHidden());
+        });
+
+        it('declares the key name once, as hidden', () => {
+            assert.equal(KeyValue.HiddenKey, "hidden");
+        });
+    });
 });
 
 let createNumericConcept = function (lowAbsolute, hiAbsolute, lowNormal, hiNormal) {

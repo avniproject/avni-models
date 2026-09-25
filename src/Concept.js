@@ -436,6 +436,15 @@ export default class Concept extends BaseEntity {
         return (keyValue === KeyValue.ContactYesValue);
     }
 
+    /**
+     * A hidden concept is stored and synced like any other but never drawn or validated in the
+     * apps. Only a parsed boolean true hides; any other stored value leaves the concept visible.
+     * See avniproject/avni-product#1905.
+     */
+    isHidden() {
+        return this.recordValueByKey(KeyValue.HiddenKey) === true;
+    }
+
 
     hasAnswersWithMedia() {
         return _.some(this.answers, (answer) => answer.concept.hasMedia());
