@@ -194,9 +194,13 @@ class FormElementGroup extends BaseEntity {
 
   validate(observationHolder, filteredFormElements) {
     const validationResults = [];
-    filteredFormElements.forEach((formElement) => {
+    // A hidden concept (avniproject/avni-product#1905) is never drawn, so it must never block the
+    // worker: no mandatory check, no range or format check. It stays in filteredFormElements —
+    // removing it from that list is what deletes its observation — and is skipped only here.
+    const elementsToValidate = _.reject(filteredFormElements, (formElement) => formElement.concept.isHidden());
+    elementsToValidate.forEach((formElement) => {
       if (formElement.concept.isQuestionGroup()) {
-        const childFormElements = _.filter(filteredFormElements, fe => fe.groupUuid === formElement.uuid);
+        const childFormElements = _.filter(elementsToValidate, fe => fe.groupUuid === formElement.uuid);
         const observations = observationHolder.findObservation(formElement.concept);
         if (formElement.repeatable) {
           const repeatableQuestionGroup = _.isEmpty(observations) ? new RepeatableQuestionGroup() : observations.getValueWrapper();
