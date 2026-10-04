@@ -149,6 +149,27 @@ describe('ProgramEnrolmentTest', () => {
                 null, false).valueJSON, obs2.valueJSON);
         });
 
+        it('should verify if the enrolment is active for a specific program',()=>{
+            const enrolment = new ProgramEnrolment();
+            enrolment.program = { name: 'Child' };
+            enrolment.programExitDateTime = null;
+            enrolment.voided = false;
+            
+            // Test Positive case
+            assert.isTrue(enrolment.isActive('Child'));
+
+            //Test Negative case: nameProgram
+            assert.isFalse(enrolment.isActive('Pregnancy'));
+
+            // Test Negative case: exit from the program
+            enrolment.programExitDateTime = new Date();
+            assert.isFalse(enrolment.isActive('child'));
+
+            //Test Negative case: is voided
+            enrolment.programExitDateTime = null;
+            enrolment.voided = true;
+            assert.isFalse(enrolment.isActive('child'))
+        })
     });
 
     function createEncounter(date, name) {
