@@ -222,7 +222,8 @@ class SubjectType extends ReferenceEntity {
     Individual: 'Individual',
     Group: 'Group',
     Household: 'Household',
-    User: 'User'
+    User: 'User',
+    Asset: 'Asset'
   };
 
     static settingKeys = {
@@ -311,6 +312,10 @@ class SubjectType extends ReferenceEntity {
 
   isUser() {
     return this.type === SubjectType.types.User;
+  }
+
+  isAsset() {
+    return this.type === SubjectType.types.Asset;
   }
 
   registerIcon() {

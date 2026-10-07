@@ -68,3 +68,29 @@ describe("SubjectType.attendanceEnabled", () => {
     expect(st.attendanceEnabled).toBe(true);
   });
 });
+
+describe("SubjectType.isAsset", () => {
+  it("returns true when type is Asset", () => {
+    const st = SubjectType.fromResource({
+      subjectTypeUUID: General.randomUUID(),
+      name: "Activity",
+      group: false,
+      household: false,
+      active: true,
+      type: "Asset",
+    });
+    expect(st.isAsset()).toBe(true);
+  });
+
+  it("returns false for a non-Asset type", () => {
+    const st = SubjectType.fromResource({
+      subjectTypeUUID: General.randomUUID(),
+      name: "Person Subject",
+      group: false,
+      household: false,
+      active: true,
+      type: "Person",
+    });
+    expect(st.isAsset()).toBe(false);
+  });
+});
