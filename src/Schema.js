@@ -1145,6 +1145,20 @@ function createRealmConfig() {
             if (oldDB.schemaVersion < 221) {
                 // ReportCard.actionDetailDashboardUUID added (additive optional string) for the new
                 // OpenDashboard action.
+                //
+                // A phone that synced an Open dashboard card before this version stored the action and dropped
+                // the target dashboard. A device only pulls cards changed since its marker, so it would not
+                // fetch that card again until someone edits it. Moving the marker back makes the next sync fetch
+                // every card afresh, target included. The new field is empty on every existing row, so nothing
+                // else needs clearing.
+                //
+                // The phone's SQLite database never runs this migration. It needs the same reset in its own
+                // migration.
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
+                    if (ess.entityName === 'ReportCard') {
+                        ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
             }
         },
     };

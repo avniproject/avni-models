@@ -8,6 +8,10 @@ import AttendanceType from "../src/AttendanceType";
 import Dashboard from "../src/Dashboard";
 import EncounterType from "../src/EncounterType";
 import SubjectType from "../src/SubjectType";
+import EntityMappingConfig from "../src/Schema";
+import EntitySyncStatus from "../src/EntitySyncStatus";
+import EntityMetaData from "../src/EntityMetaData";
+import _ from "lodash";
 import {assert} from 'chai';
 
 it('is subject type filter supported', function () {
@@ -195,5 +199,93 @@ describe('ReportCard.fromResource — OpenDashboard', () => {
 
             assert.strictEqual(reportCard.isActionOpenDashboard(), action === 'OpenDashboard', `action: ${action}`);
         });
+    });
+});
+
+describe('Schema.onMigration — ReportCard sync marker', () => {
+    const realmConfig = EntityMappingConfig.getInstance().getRealmConfig();
+    const OCTOBER_FIRST = '2026-10-01T00:00:00.000Z';
+    const REALLY_OLD = EntitySyncStatus.REALLY_OLD_DATE.toISOString();
+
+    const marker = (entityName, loadedSince = OCTOBER_FIRST) => ({entityName, loadedSince: new Date(loadedSince)});
+
+    // The markers as name -> loadedSince, in ISO strings, so a failure shows which markers moved and to when.
+    const loadedSinceByName = (markers) =>
+        _.mapValues(_.keyBy(markers, 'entityName'), (m) => m.loadedSince && m.loadedSince.toISOString());
+
+    // Runs the migration for a phone upgrading from the given schema version, against a stand-in for the new database
+    // that holds only the given sync markers. Steps added after 221 also run against this stand-in, so a later step
+    // that needs .filtered() or oldDB must extend it.
+    // onMigration logs a line on every call, so console.log is held back for the call and restored in finally.
+    function migrateFrom(oldSchemaVersion, markers) {
+        const newDB = {
+            schemaVersion: 221,
+            objects: (schemaName) => schemaName === EntitySyncStatus.schema.name ? markers : []
+        };
+        const realLog = console.log;
+        console.log = () => {};
+
+        try {
+            realmConfig.onMigration({schemaVersion: oldSchemaVersion}, newDB);
+        } finally {
+            console.log = realLog;
+        }
+    }
+
+    it('the version 221 migration moves only the card sync marker back', () => {
+        assert.isAtLeast(realmConfig.schemaVersion, 221);
+        const markers = [
+            marker('ReportCard'),
+            marker('Dashboard'),
+            marker('CustomCardConfig'),
+            marker('StandardReportCardType')
+        ];
+
+        migrateFrom(220, markers);
+
+        assert.deepEqual(loadedSinceByName(markers), {
+            ReportCard: REALLY_OLD,
+            Dashboard: OCTOBER_FIRST,
+            CustomCardConfig: OCTOBER_FIRST,
+            StandardReportCardType: OCTOBER_FIRST
+        });
+    });
+
+    it('the version 221 migration leaves a card marker already at 1900 there', () => {
+        const markers = [marker('ReportCard', REALLY_OLD)];
+
+        assert.doesNotThrow(() => migrateFrom(220, markers));
+
+        assert.deepEqual(loadedSinceByName(markers), {ReportCard: REALLY_OLD});
+    });
+
+    it('the version 221 migration does nothing when there is no card marker', () => {
+        const markers = [marker('Dashboard'), marker('CustomCardConfig'), marker('StandardReportCardType')];
+
+        assert.doesNotThrow(() => migrateFrom(220, markers));
+
+        assert.deepEqual(loadedSinceByName(markers), {
+            Dashboard: OCTOBER_FIRST,
+            CustomCardConfig: OCTOBER_FIRST,
+            StandardReportCardType: OCTOBER_FIRST
+        });
+    });
+
+    it('the version 221 migration leaves the card marker alone for a phone already at 221', () => {
+        // Pins the step's guard for the day a later version exists: a phone at 221 must not fetch every card again.
+        const markers = [marker('ReportCard')];
+
+        migrateFrom(221, markers);
+
+        assert.deepEqual(loadedSinceByName(markers), {ReportCard: OCTOBER_FIRST});
+    });
+
+    it('names the card sync marker the way the version 221 migration matches it', () => {
+        // Found by its class, not by its name, because the name is what is under test. The phone writes
+        // entity.entityName as the marker's name (avni-client EntitySyncStatusService.setup).
+        const cardEntries = EntityMetaData.model().filter((entry) => entry.entityClass === ReportCard);
+
+        assert.lengthOf(cardEntries, 1);
+        assert.strictEqual(cardEntries[0].entityName, 'ReportCard');
     });
 });
