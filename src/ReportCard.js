@@ -22,7 +22,8 @@ class ReportCard extends BaseEntity {
     static actionTypes = {
         ViewSubjectProfile: "ViewSubjectProfile",
         DoVisit: "DoVisit",
-        MarkAttendance: "MarkAttendance"
+        MarkAttendance: "MarkAttendance",
+        OpenDashboard: "OpenDashboard"
     };
 
     static visitTypes = {
@@ -57,6 +58,7 @@ class ReportCard extends BaseEntity {
             actionDetailProgram: {type: "object", objectType: "Program", optional: true},
             actionDetailEncounterType: {type: "object", objectType: "EncounterType", optional: true},
             actionDetailVisitType: {type: "string", optional: true},
+            actionDetailDashboardUUID: {type: "string", optional: true},
             actionDetailAttendanceType: {type: "object", objectType: "AttendanceType", optional: true},
             onActionCompletion: {type: "string", optional: true},
             customCardConfig: {type: "object", objectType: "CustomCardConfig", optional: true},
@@ -234,6 +236,7 @@ class ReportCard extends BaseEntity {
                 reportCard.actionDetailAttendanceType = entityService.findByUUID(resource.actionDetail.attendanceTypeUUID, AttendanceType.schema.name);
             }
             reportCard.actionDetailVisitType = resource.actionDetail.visitType || null;
+            reportCard.actionDetailDashboardUUID = resource.actionDetail.dashboardUUID || null;
         }
 
         reportCard.customCardConfig = entityService.findByUUID(
@@ -324,6 +327,14 @@ class ReportCard extends BaseEntity {
         this.that.actionDetailVisitType = x;
     }
 
+    get actionDetailDashboardUUID() {
+        return this.that.actionDetailDashboardUUID;
+    }
+
+    set actionDetailDashboardUUID(x) {
+        this.that.actionDetailDashboardUUID = x;
+    }
+
     get actionDetailAttendanceType() {
         return this.toEntity("actionDetailAttendanceType", AttendanceType);
     }
@@ -346,6 +357,10 @@ class ReportCard extends BaseEntity {
 
     isActionMarkAttendance() {
         return this.action === ReportCard.actionTypes.MarkAttendance;
+    }
+
+    isActionOpenDashboard() {
+        return this.action === ReportCard.actionTypes.OpenDashboard;
     }
 
     isScheduledVisitType() {
