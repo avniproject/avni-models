@@ -237,6 +237,10 @@ class ReportCard extends BaseEntity {
             }
             reportCard.actionDetailVisitType = resource.actionDetail.visitType || null;
             reportCard.actionDetailDashboardUUID = resource.actionDetail.dashboardUUID || null;
+        } else {
+            // A View subject profile card, or a card with no action, arrives with no action details. The phone saves only
+            // the fields a card carries, so the target is set to null here to overwrite one an earlier sync stored.
+            reportCard.actionDetailDashboardUUID = null;
         }
 
         reportCard.customCardConfig = entityService.findByUUID(

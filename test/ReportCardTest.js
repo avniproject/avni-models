@@ -164,8 +164,17 @@ describe('ReportCard.fromResource — OpenDashboard', () => {
                 buildEntityService()
             );
         });
-        // isUndefined rather than isNotOk: the target is mapped only inside the actionDetail block, so it is never set here.
-        assert.isUndefined(viewSubjectProfile.actionDetailDashboardUUID);
+        assert.isNull(viewSubjectProfile.actionDetailDashboardUUID);
+    });
+
+    it('clears the target when a card arrives with no action details', () => {
+        // The server sends no action details for View subject profile or a card with no action, and the phone saves only
+        // the fields a card carries. The target must arrive as null for a target from an earlier sync to be overwritten.
+        [ReportCard.actionTypes.ViewSubjectProfile, null].forEach((action) => {
+            const reportCard = ReportCard.fromResource(buildResource(action, null), buildEntityService());
+
+            assert.isNull(reportCard.that.actionDetailDashboardUUID, `action: ${action}`);
+        });
     });
 
     it('keeps the Do visit details', () => {
