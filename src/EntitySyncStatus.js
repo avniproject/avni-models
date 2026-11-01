@@ -12,6 +12,9 @@ class EntitySyncStatus extends BaseEntity {
       entityName: "string",
       loadedSince: "date",
       entityTypeUuid: "string",
+      // Uuid of the last row received at loadedSince. With loadedSince it is the resume cursor
+      // (avniproject/avni-client#2099), so rows sharing one timestamp are not downloaded again.
+      lastUuid: {type: "string", optional: true},
     },
   };
 
@@ -43,12 +46,21 @@ class EntitySyncStatus extends BaseEntity {
       this.that.entityTypeUuid = x;
   }
 
-  static create(entityName, date, uuid, entityTypeUuid) {
+  get lastUuid() {
+      return this.that.lastUuid;
+  }
+
+  set lastUuid(x) {
+      this.that.lastUuid = x;
+  }
+
+  static create(entityName, date, uuid, entityTypeUuid, lastUuid = null) {
     var entitySyncStatus = new EntitySyncStatus();
     entitySyncStatus.uuid = uuid;
     entitySyncStatus.entityName = entityName;
     entitySyncStatus.loadedSince = date;
     entitySyncStatus.entityTypeUuid = entityTypeUuid;
+    entitySyncStatus.lastUuid = lastUuid;
     return entitySyncStatus;
   }
 
@@ -58,6 +70,7 @@ class EntitySyncStatus extends BaseEntity {
       entityName: this.entityName,
       loadedSince: this.loadedSince,
       entityTypeUuid: this.entityTypeUuid,
+      lastUuid: this.lastUuid,
       voided: this.voided,
     };
   }
