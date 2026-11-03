@@ -128,6 +128,8 @@ class DashboardFilterConfig {
     }
 
     subjectType;
+    presetSubjectType;
+    presetProgram;
     type;
     widget; //CustomFilter.widget
     groupSubjectTypeFilter;
@@ -260,6 +262,10 @@ class DashboardFilterConfig {
             request.observationBasedFilter = this.observationBasedFilter.toServerRequest()
         else if (this.isGroupSubjectTypeFilter())
             request.groupSubjectTypeFilter = this.groupSubjectTypeFilter.toServerRequest();
+        else if (this.type === CustomFilter.type.SubjectType) {
+            request.presetSubjectTypeUUID = this.presetSubjectType && this.presetSubjectType.uuid;
+            request.presetProgramUUID = this.presetProgram && this.presetProgram.uuid;
+        }
 
         return request;
     }
@@ -313,6 +319,8 @@ class DashboardFilterConfig {
         const clone = new DashboardFilterConfig();
         clone.type = this.type;
         clone.subjectType = this.subjectType;
+        clone.presetSubjectType = this.presetSubjectType;
+        clone.presetProgram = this.presetProgram;
         clone.widget = this.widget;
         clone.groupSubjectTypeFilter = this.groupSubjectTypeFilter;
         clone.observationBasedFilter = this.observationBasedFilter;
