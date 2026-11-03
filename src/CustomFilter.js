@@ -14,6 +14,7 @@ class CustomFilter {
         GroupSubject: "GroupSubject",
         SubjectType: "SubjectType",
         AsOnDate: "AsOnDate",
+        Program: "Program",
     };
 
     static getDashboardFilterTypes() {
@@ -22,6 +23,7 @@ class CustomFilter {
         delete clonedTypes.Age;
         delete clonedTypes.DateOfBirth;
         delete clonedTypes.SearchAll;
+        delete clonedTypes.Program;
         return clonedTypes;
     }
 
