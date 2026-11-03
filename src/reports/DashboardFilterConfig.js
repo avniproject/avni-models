@@ -247,6 +247,8 @@ class DashboardFilterConfig {
             return this.groupSubjectTypeFilter.isValid();
         else if (this.isWidgetRequired())
             return !_.isNil(this.widget);
+        else if (this.type === CustomFilter.type.SubjectType)
+            return _.isNil(this.presetProgram) || !_.isNil(this.presetSubjectType);
         else
             return true;
     }

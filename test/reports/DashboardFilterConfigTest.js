@@ -122,5 +122,42 @@ describe('DashboardFilterConfigTest', () => {
       assert.notProperty(request, 'presetSubjectTypeUUID');
       assert.notProperty(request, 'presetProgramUUID');
     });
+
+    it('a Subject Type filter with no preset is valid', () => {
+      assert.equal(subjectTypeFilter(undefined, undefined).isValid(), true);
+    });
+
+    it('a Subject Type filter with a preset subject type is valid', () => {
+      assert.equal(subjectTypeFilter(household, undefined).isValid(), true);
+    });
+
+    it('a Subject Type filter with a preset subject type and program is valid', () => {
+      assert.equal(subjectTypeFilter(patient, tb).isValid(), true);
+    });
+
+    it('cleared presets are valid', () => {
+      assert.equal(subjectTypeFilter(null, null).isValid(), true);
+    });
+
+    it('a preset program with no preset subject type is not valid', () => {
+      assert.equal(subjectTypeFilter(undefined, tb).isValid(), false);
+    });
+
+    it('a preset program left after its subject type is cleared is not valid', () => {
+      assert.equal(subjectTypeFilter(null, tb).isValid(), false);
+    });
+
+    it('another filter type is not made invalid by a preset it does not send', () => {
+      const gender = new DashboardFilterConfig();
+      gender.setType(CustomFilter.type.Gender);
+      gender.presetProgram = tb;
+      assert.equal(gender.isValid(), true);
+
+      const registrationDate = new DashboardFilterConfig();
+      registrationDate.setType(CustomFilter.type.RegistrationDate);
+      registrationDate.widget = CustomFilter.widget.Default;
+      registrationDate.presetProgram = tb;
+      assert.equal(registrationDate.isValid(), true);
+    });
   });
 });
