@@ -228,7 +228,7 @@ describe('Schema.onMigration — ReportCard sync marker', () => {
     // onMigration logs a line on every call, so console.log is held back for the call and restored in finally.
     function migrateFrom(oldSchemaVersion, markers) {
         const newDB = {
-            schemaVersion: 221,
+            schemaVersion: 222,
             objects: (schemaName) => schemaName === EntitySyncStatus.schema.name ? markers : []
         };
         const realLog = console.log;
@@ -280,11 +280,26 @@ describe('Schema.onMigration — ReportCard sync marker', () => {
         });
     });
 
-    it('the version 221 migration leaves the card marker alone for a phone already at 221', () => {
-        // Pins the step's guard for the day a later version exists: a phone at 221 must not fetch every card again.
-        const markers = [marker('ReportCard')];
+    it('the version 222 migration moves the card sync marker back for a phone at 221', () => {
+        // A phone at 221 already fetched every card once for the dashboard target; it fetches them again for the
+        // approval state of an Approve or Reject card.
+        assert.isAtLeast(realmConfig.schemaVersion, 222);
+        const markers = [marker('ReportCard'), marker('Dashboard'), marker('StandardReportCardType')];
 
         migrateFrom(221, markers);
+
+        assert.deepEqual(loadedSinceByName(markers), {
+            ReportCard: REALLY_OLD,
+            Dashboard: OCTOBER_FIRST,
+            StandardReportCardType: OCTOBER_FIRST
+        });
+    });
+
+    it('the card steps leave the card marker alone for a phone already at 222', () => {
+        // Pins the guards for the day a later version exists: a phone at 222 must not fetch every card again.
+        const markers = [marker('ReportCard')];
+
+        migrateFrom(222, markers);
 
         assert.deepEqual(loadedSinceByName(markers), {ReportCard: OCTOBER_FIRST});
     });
@@ -296,5 +311,91 @@ describe('Schema.onMigration — ReportCard sync marker', () => {
 
         assert.lengthOf(cardEntries, 1);
         assert.strictEqual(cardEntries[0].entityName, 'ReportCard');
+    });
+});
+
+describe('ReportCard — ApproveReject', () => {
+    function buildResource(action, actionDetail, standardReportCardUUID) {
+        return {
+            uuid: 'rc-1',
+            name: 'rc',
+            colour: '#fff',
+            voided: false,
+            standardReportCardInputSubjectTypes: [],
+            standardReportCardInputPrograms: [],
+            standardReportCardInputEncounterTypes: [],
+            action: action,
+            actionDetail: actionDetail,
+            _links: standardReportCardUUID ? {standardReportCardUUID: {href: standardReportCardUUID}} : {}
+        };
+    }
+
+    const entityService = (standardType = null) => ({
+        findByKey: () => standardType,
+        findByUUID: () => null
+    });
+
+    it('declares the approval state as an optional string', () => {
+        assert.deepEqual(ReportCard.schema.properties.actionDetailApprovalStatus, {type: "string", optional: true});
+    });
+
+    it('stores the approval state the action detail carries', () => {
+        const card = ReportCard.fromResource(buildResource('ApproveReject', {approvalStatus: 'Rejected'}), entityService());
+
+        assert.isTrue(card.isActionApproveReject());
+        assert.equal(card.actionDetailApprovalStatus, 'Rejected');
+        assert.isTrue(card.isApprovalCard());
+        assert.equal(card.getApprovalStatusForCard(), 'Rejected');
+        assert.isNull(card.actionDetailDashboardUUID);
+    });
+
+    it('sets the approval state to null when the card arrives with no action details', () => {
+        // Null, not left out, so saving the card overwrites a state an earlier sync stored.
+        const resynced = ReportCard.fromResource(buildResource('ViewSubjectProfile', null), entityService());
+
+        assert.isNull(resynced.actionDetailApprovalStatus);
+        assert.isFalse(resynced.isApprovalCard());
+        assert.isNull(resynced.getApprovalStatusForCard());
+    });
+
+    it('stores no approval state for a card with another action', () => {
+        const card = ReportCard.fromResource(buildResource('OpenDashboard', {dashboardUUID: 'd-1'}), entityService());
+
+        assert.isNull(card.actionDetailApprovalStatus);
+        assert.isFalse(card.isActionApproveReject());
+        assert.isFalse(card.isApprovalCard());
+        assert.isNull(card.getApprovalStatusForCard());
+    });
+
+    it('ignores a stray approval state on a card whose action is not Approve or Reject', () => {
+        const card = ReportCard.fromResource(buildResource('ViewSubjectProfile', {approvalStatus: 'Pending'}), entityService());
+
+        assert.isFalse(card.isApprovalCard());
+        assert.isNull(card.getApprovalStatusForCard());
+    });
+
+    it('a standard approval card keeps its own state', () => {
+        const pending = StandardReportCardTypeFactory.create({name: 'Pending approval', type: StandardReportCardType.types.PendingApproval});
+        const card = ReportCardFactory.create({standardReportCardType: pending});
+
+        assert.isTrue(card.isApprovalCard());
+        assert.equal(card.getApprovalStatusForCard(), 'Pending');
+    });
+
+    it('a standard card that is not an approval card has no state, whatever its action says', () => {
+        const total = StandardReportCardTypeFactory.create({name: 'Total', type: StandardReportCardType.types.Total});
+        const card = ReportCardFactory.create({standardReportCardType: total});
+        card.action = ReportCard.actionTypes.ApproveReject;
+        card.actionDetailApprovalStatus = 'Pending';
+
+        assert.isFalse(card.isApprovalCard());
+        assert.isNull(card.getApprovalStatusForCard());
+    });
+
+    it('an Approve or Reject card with no state set has no state', () => {
+        const card = ReportCard.fromResource(buildResource('ApproveReject', {}), entityService());
+
+        assert.isTrue(card.isApprovalCard());
+        assert.isNull(card.getApprovalStatusForCard());
     });
 });

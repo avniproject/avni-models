@@ -278,7 +278,7 @@ function createRealmConfig() {
             return doCompact;
         },
         //order is important, should be arranged according to the dependency
-        schemaVersion: 221,
+        schemaVersion: 222,
         onMigration: function (oldDB, newDB) {
             console.log("[AvniModels.Schema]", `Running migration with old schema version: ${oldDB.schemaVersion} and new schema version: ${newDB.schemaVersion}`);
             if (oldDB.schemaVersion === VersionWithEmbeddedMigrationProblem)
@@ -1154,6 +1154,20 @@ function createRealmConfig() {
                 //
                 // The phone's SQLite database never runs this migration. It needs the same reset in its own
                 // migration.
+                _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
+                    if (ess.entityName === 'ReportCard') {
+                        ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;
+                    }
+                });
+            }
+            if (oldDB.schemaVersion < 222) {
+                // ReportCard.actionDetailApprovalStatus added (additive optional string) for the new ApproveReject
+                // action, which opens the approval list from a card on a custom query.
+                //
+                // Same reason as version 221: a phone that synced an Approve or Reject card before this version stored
+                // the action and dropped its approval state, and would not fetch the card again until someone edits it.
+                // Moving the marker back makes the next sync fetch every card afresh. The phone's SQLite database needs
+                // the same reset in its own migration.
                 _.forEach(newDB.objects(EntitySyncStatus.schema.name), (ess) => {
                     if (ess.entityName === 'ReportCard') {
                         ess.loadedSince = EntitySyncStatus.REALLY_OLD_DATE;

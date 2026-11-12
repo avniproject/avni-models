@@ -23,7 +23,8 @@ class ReportCard extends BaseEntity {
         ViewSubjectProfile: "ViewSubjectProfile",
         DoVisit: "DoVisit",
         MarkAttendance: "MarkAttendance",
-        OpenDashboard: "OpenDashboard"
+        OpenDashboard: "OpenDashboard",
+        ApproveReject: "ApproveReject"
     };
 
     static visitTypes = {
@@ -59,6 +60,7 @@ class ReportCard extends BaseEntity {
             actionDetailEncounterType: {type: "object", objectType: "EncounterType", optional: true},
             actionDetailVisitType: {type: "string", optional: true},
             actionDetailDashboardUUID: {type: "string", optional: true},
+            actionDetailApprovalStatus: {type: "string", optional: true},
             actionDetailAttendanceType: {type: "object", objectType: "AttendanceType", optional: true},
             onActionCompletion: {type: "string", optional: true},
             customCardConfig: {type: "object", objectType: "CustomCardConfig", optional: true},
@@ -237,10 +239,13 @@ class ReportCard extends BaseEntity {
             }
             reportCard.actionDetailVisitType = resource.actionDetail.visitType || null;
             reportCard.actionDetailDashboardUUID = resource.actionDetail.dashboardUUID || null;
+            reportCard.actionDetailApprovalStatus = resource.actionDetail.approvalStatus || null;
         } else {
             // A View subject profile card, or a card with no action, arrives with no action details. The phone saves only
-            // the fields a card carries, so the target is set to null here to overwrite one an earlier sync stored.
+            // the fields a card carries, so the target and the approval state are set to null here to overwrite ones an
+            // earlier sync stored.
             reportCard.actionDetailDashboardUUID = null;
+            reportCard.actionDetailApprovalStatus = null;
         }
 
         reportCard.customCardConfig = entityService.findByUUID(
@@ -339,6 +344,17 @@ class ReportCard extends BaseEntity {
         this.that.actionDetailDashboardUUID = x;
     }
 
+    /**
+     * Which approval state an Approve or Reject card shows: one of ApprovalStatus.statuses (Pending, Approved, Rejected).
+     */
+    get actionDetailApprovalStatus() {
+        return this.that.actionDetailApprovalStatus;
+    }
+
+    set actionDetailApprovalStatus(x) {
+        this.that.actionDetailApprovalStatus = x;
+    }
+
     get actionDetailAttendanceType() {
         return this.toEntity("actionDetailAttendanceType", AttendanceType);
     }
@@ -365,6 +381,28 @@ class ReportCard extends BaseEntity {
 
     isActionOpenDashboard() {
         return this.action === ReportCard.actionTypes.OpenDashboard;
+    }
+
+    isActionApproveReject() {
+        return this.action === ReportCard.actionTypes.ApproveReject;
+    }
+
+    /**
+     * A card that opens the approval list: a standard Pending Approval, Approved or Rejected card, or a card on a
+     * custom query whose action is Approve or Reject.
+     */
+    isApprovalCard() {
+        if (this.isStandardReportType()) return this.standardReportCardType.isApprovalType();
+        return this.isActionApproveReject();
+    }
+
+    /**
+     * The approval state the card's list shows: the standard type's state, or the state set on an Approve or Reject
+     * card. Null for any other card.
+     */
+    getApprovalStatusForCard() {
+        if (this.isStandardReportType()) return this.standardReportCardType.isApprovalType() ? this.standardReportCardType.getApprovalStatusForType() : null;
+        return this.isActionApproveReject() ? this.actionDetailApprovalStatus || null : null;
     }
 
     isScheduledVisitType() {
