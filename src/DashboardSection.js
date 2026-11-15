@@ -64,7 +64,8 @@ class DashboardSection extends BaseEntity {
     static viewTypeName = {
         Tile: 'Tile',
         List: 'List',
-        Default: 'Default'
+        Default: 'Default',
+        FullPage: 'FullPage'
     };
 
     static fromResource(resource, entityService) {
