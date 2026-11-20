@@ -162,11 +162,13 @@ class General {
           observation.concept = concept;
           if (concept.isQuestionGroup()) {
             const valueJson = _.isArray(value) ?
-                this.getRepeatableQuestionValue(value, entityService) :
-                this.createQuestionGroupObservations(value, entityService);
+                this.getRepeatableQuestionValue(value, entityService, source) :
+                this.createQuestionGroupObservations(value, entityService, source);
             observation.valueJSON = JSON.stringify(valueJson);
           } else {
-            observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
+            const valueWrapper = this.valueWrapperOrNull(concept, value, source);
+            if (_.isNil(valueWrapper)) return;
+            observation.valueJSON = JSON.stringify(valueWrapper);
           }
           observations.push(observation);
         });
@@ -177,19 +179,38 @@ class General {
     return dest;
   }
 
-  static getRepeatableQuestionValue(values, entityService) {
-    const repeatableValues = _.map(values, value => this.createQuestionGroupObservations(value, entityService));
+  static getRepeatableQuestionValue(values, entityService, source) {
+    const repeatableValues = _.map(values, value => this.createQuestionGroupObservations(value, entityService, source));
     return new RepeatableQuestionGroup(repeatableValues);
   }
 
-  static createQuestionGroupObservations(keyValues, entityService) {
-    const questionGroupObservations = _.map(_.toPairs(keyValues), ([conceptUUID, value]) => {
+  static createQuestionGroupObservations(keyValues, entityService, source) {
+    const questionGroupObservations = [];
+    _.toPairs(keyValues).forEach(([conceptUUID, value]) => {
       const observation = new Observation();
       observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
-      observation.valueJSON = observation.concept.getValueWrapperFor(value);
-      return observation;
+      const valueWrapper = this.valueWrapperOrNull(observation.concept, value, source);
+      if (_.isNil(valueWrapper)) return;
+      observation.valueJSON = valueWrapper;
+      questionGroupObservations.push(observation);
     });
     return new QuestionGroup(questionGroupObservations);
+  }
+
+  // An answer from the server that cannot be read is left out of the record, so that one bad
+  // value does not fail the download of everything else (avniproject/avni-client#2250). Only the
+  // reading of the value is guarded: a question missing from the device still fails as before.
+  // The answer itself is field data and is kept out of the log.
+  static valueWrapperOrNull(concept, value, source) {
+    try {
+      return concept.getValueWrapperFor(value);
+    } catch (error) {
+      General.logError(
+        "General",
+        `Left out an answer that could not be read: ${concept.datatype} question ${concept.uuid} on record ${_.get(source, "uuid")} (${error.name})`
+      );
+      return null;
+    }
   }
 
   static pick(from, attributes, listAttributes) {
