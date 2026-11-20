@@ -166,9 +166,9 @@ class General {
                 this.createQuestionGroupObservations(value, entityService, source);
             observation.valueJSON = JSON.stringify(valueJson);
           } else {
-            const valueWrapper = this.valueWrapperOrNull(concept, value, source);
-            if (_.isNil(valueWrapper)) return;
-            observation.valueJSON = JSON.stringify(valueWrapper);
+            const answer = this.readAnswer(concept, value, source);
+            if (!answer.readable) return;
+            observation.valueJSON = JSON.stringify(answer.valueWrapper);
           }
           observations.push(observation);
         });
@@ -189,27 +189,33 @@ class General {
     _.toPairs(keyValues).forEach(([conceptUUID, value]) => {
       const observation = new Observation();
       observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
-      const valueWrapper = this.valueWrapperOrNull(observation.concept, value, source);
-      if (_.isNil(valueWrapper)) return;
-      observation.valueJSON = valueWrapper;
+      const answer = this.readAnswer(observation.concept, value, source);
+      if (!answer.readable) return;
+      observation.valueJSON = answer.valueWrapper;
       questionGroupObservations.push(observation);
     });
     return new QuestionGroup(questionGroupObservations);
   }
 
   // An answer from the server that cannot be read is left out of the record, so that one bad
-  // value does not fail the download of everything else (avniproject/avni-client#2250). Only the
-  // reading of the value is guarded: a question missing from the device still fails as before.
-  // The answer itself is field data and is kept out of the log.
-  static valueWrapperOrNull(concept, value, source) {
+  // value does not fail the download of everything else (avniproject/avni-client#2250). Only a
+  // reader that throws counts: a reader that returns nothing is passed on as before, and a
+  // question missing from the device still fails. The answer itself is field data, so neither it
+  // nor the error text, which can carry it, goes to the log.
+  static readAnswer(concept, value, source) {
+    if (_.isNil(concept)) {
+      throw new Error("A question in a record from the server is not on the device");
+    }
     try {
-      return concept.getValueWrapperFor(value);
+      return {readable: true, valueWrapper: concept.getValueWrapperFor(value)};
     } catch (error) {
+      const recordUuid = _.get(source, "uuid");
+      const record = _.isNil(recordUuid) ? "a record without a uuid" : `record ${recordUuid}`;
       General.logError(
         "General",
-        `Left out an answer that could not be read: ${concept.datatype} question ${concept.uuid} on record ${_.get(source, "uuid")} (${error.name})`
+        `Left out an answer that could not be read: ${concept.datatype} question ${concept.uuid} on ${record} (${error.name})`
       );
-      return null;
+      return {readable: false};
     }
   }
 

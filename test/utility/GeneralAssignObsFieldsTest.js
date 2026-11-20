@@ -8,10 +8,22 @@ describe("General.assignObsFields", () => {
     const durationConcept = TestConceptFactory.create({uuid: "duration-uuid", dataType: Concept.dataType.Duration});
     const textConcept = TestConceptFactory.create({uuid: "text-uuid", dataType: Concept.dataType.Text});
     const groupConcept = TestConceptFactory.create({uuid: "group-uuid", dataType: Concept.dataType.QuestionGroup});
+    const phoneConcept = TestConceptFactory.create({uuid: "phone-uuid", dataType: Concept.dataType.PhoneNumber});
+    // Fails the way a reader might, with the answer in the error text.
+    const failingConcept = {
+        uuid: "failing-uuid",
+        datatype: "Text",
+        isQuestionGroup: () => false,
+        getValueWrapperFor: (value) => {
+            throw new Error(`cannot read ${value}`);
+        },
+    };
     const concepts = {
         [durationConcept.uuid]: durationConcept,
         [textConcept.uuid]: textConcept,
         [groupConcept.uuid]: groupConcept,
+        [phoneConcept.uuid]: phoneConcept,
+        [failingConcept.uuid]: failingConcept,
     };
     const entityService = {findByKey: (key, uuid) => concepts[uuid]};
 
@@ -80,7 +92,34 @@ describe("General.assignObsFields", () => {
         assert.notInclude(message, "35");
     });
 
-    it("still fails when the question itself is not on the device", () => {
-        assert.throws(() => build({"unknown-uuid": "attended"}));
+    it("keeps the answer out of the log even when the error text carries it", () => {
+        build({"failing-uuid": "Sunita Devi"});
+
+        assert.equal(logError.mock.calls.length, 1);
+        assert.notInclude(logError.mock.calls[0][1], "Sunita");
+    });
+
+    it("says so when the record has no uuid to report", () => {
+        General.assignObsFields({locationProperties: {"duration-uuid": "35"}}, {}, ["locationProperties"], entityService);
+
+        assert.include(logError.mock.calls[0][1], "a record without a uuid");
+        assert.notInclude(logError.mock.calls[0][1], "undefined");
+    });
+
+    it("leaves alone an answer the reader returns nothing for, which is not a failure to read", () => {
+        const observations = build({"phone-uuid": "9999999999", "text-uuid": "attended"});
+
+        assert.deepEqual(conceptUuids(observations), ["phone-uuid", "text-uuid"]);
+        assert.equal(logError.mock.calls.length, 0);
+    });
+
+    it("still fails when the question itself is not on the device, and does not report it as an unreadable answer", () => {
+        assert.throws(() => build({"unknown-uuid": "attended"}), TypeError);
+        assert.equal(logError.mock.calls.length, 0);
+    });
+
+    it("still fails when a question inside a question group is not on the device", () => {
+        assert.throws(() => build({"group-uuid": {"unknown-uuid": "attended"}}), /not on the device/);
+        assert.equal(logError.mock.calls.length, 0);
     });
 });
