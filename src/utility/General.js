@@ -162,11 +162,13 @@ class General {
           observation.concept = concept;
           if (concept.isQuestionGroup()) {
             const valueJson = _.isArray(value) ?
-                this.getRepeatableQuestionValue(value, entityService) :
-                this.createQuestionGroupObservations(value, entityService);
+                this.getRepeatableQuestionValue(value, entityService, source) :
+                this.createQuestionGroupObservations(value, entityService, source);
             observation.valueJSON = JSON.stringify(valueJson);
           } else {
-            observation.valueJSON = JSON.stringify(observation.concept.getValueWrapperFor(value));
+            const answer = this.readAnswer(concept, value, source);
+            if (!answer.readable) return;
+            observation.valueJSON = JSON.stringify(answer.valueWrapper);
           }
           observations.push(observation);
         });
@@ -177,19 +179,44 @@ class General {
     return dest;
   }
 
-  static getRepeatableQuestionValue(values, entityService) {
-    const repeatableValues = _.map(values, value => this.createQuestionGroupObservations(value, entityService));
+  static getRepeatableQuestionValue(values, entityService, source) {
+    const repeatableValues = _.map(values, value => this.createQuestionGroupObservations(value, entityService, source));
     return new RepeatableQuestionGroup(repeatableValues);
   }
 
-  static createQuestionGroupObservations(keyValues, entityService) {
-    const questionGroupObservations = _.map(_.toPairs(keyValues), ([conceptUUID, value]) => {
+  static createQuestionGroupObservations(keyValues, entityService, source) {
+    const questionGroupObservations = [];
+    _.toPairs(keyValues).forEach(([conceptUUID, value]) => {
       const observation = new Observation();
       observation.concept = entityService.findByKey("uuid", conceptUUID, Concept.schema.name);
-      observation.valueJSON = observation.concept.getValueWrapperFor(value);
-      return observation;
+      const answer = this.readAnswer(observation.concept, value, source);
+      if (!answer.readable) return;
+      observation.valueJSON = answer.valueWrapper;
+      questionGroupObservations.push(observation);
     });
     return new QuestionGroup(questionGroupObservations);
+  }
+
+  // An answer from the server that cannot be read is left out of the record, so that one bad
+  // value does not fail the download of everything else (avniproject/avni-client#2250). Only a
+  // reader that throws counts: a reader that returns nothing is passed on as before, and a
+  // question missing from the device still fails. The answer itself is field data, so neither it
+  // nor the error text, which can carry it, goes to the log.
+  static readAnswer(concept, value, source) {
+    if (_.isNil(concept)) {
+      throw new Error("A question in a record from the server is not on the device");
+    }
+    try {
+      return {readable: true, valueWrapper: concept.getValueWrapperFor(value)};
+    } catch (error) {
+      const recordUuid = _.get(source, "uuid");
+      const record = _.isNil(recordUuid) ? "a record without a uuid" : `record ${recordUuid}`;
+      General.logError(
+        "General",
+        `Left out an answer that could not be read: ${concept.datatype} question ${concept.uuid} on ${record} (${error.name})`
+      );
+      return {readable: false};
+    }
   }
 
   static pick(from, attributes, listAttributes) {
